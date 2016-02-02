@@ -1,19 +1,25 @@
 .jumbotron {
   background: #532F8C;
   color: white;
-  padding-bottom: 80px; }
-  .jumbotron .btn-primary {
+  padding-bottom: 80px; 
+}
+.jumbotron .btn-primary {
     background: #845ac7;
-    border-color: #845ac7; }
-    .jumbotron .btn-primary:hover {
-      background: #7646c1; }
-  .jumbotron p {
+    border-color: #845ac7; 
+}
+.jumbotron .btn-primary:hover {
+      background: #7646c1; 
+}
+  .jumbotron p 
+{
     color: #d9ccee;
     max-width: 75%;
-    margin: 1em auto 2em; }
-  .navbar + .jumbotron {
-    margin-top: -20px; }
-  .jumbotron .lang-logo {
+    margin: 1em auto 2em; 
+}
+.navbar + .jumbotron {
+    margin-top: -20px; 
+}
+.jumbotron .lang-logo {
     display: block;
     background: #B01302;
     border-radius: 50%;
@@ -21,7 +27,40 @@
     width: 100px;
     height: 100px;
     margin: auto;
-    border: 2px solid white; }
-    .jumbotron .lang-logo img {
-      max-width: 100%; }
+    border: 2px solid white; 
+}
+.jumbotron .lang-logo img {
+      max-width: 100%; 
+}
 
+body {
+  text-align: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+
+h1, h2, h3, h4, p {
+    font-weight:200 !important;
+}
+
+#logged-in-text {
+  width: 50%;
+  position: absolute;
+  top: 30%;
+  left: 25%;
+}
+
+.home-login.btn {
+  margin: 1em 0;
+}
+
+.container {
+  margin-top:5em;
+}
+
+form {
+  margin: 0 auto;
+}

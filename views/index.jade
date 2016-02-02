@@ -6,13 +6,17 @@ html
     link(href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css', rel='stylesheet', media='screen')
     link(rel='stylesheet', href='/stylesheets/main.css')
   body
-  if (!user)
-    a(href="/login") Login
-    br
-    a(href="/register") Register
-  if (user)
-    p You are currently logged in as #{user.username}
-    a(href="/logout") Logout
+  .container
+    h1 Welcome to Rocky Mountain Patent
+    if (!user)
+      h2 Login or Register to Continue
+      a.home-login.btn.btn-default(href="/login") Login
+      &nbsp;
+      a.home-login.btn.btn-primary(href="/register") Register
+    if (user)
+      h2 You are currently logged in as #{user.username}
+      a.home-login.btn.btn-default( href="/logout" ) Log Out
+
 
   script(src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js')
   script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js')
