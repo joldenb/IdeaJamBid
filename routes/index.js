@@ -41,4 +41,26 @@ router.get('/ping', function(req, res){
     res.status(200).send("pong!");
 });
 
+// =====================================
+// GOOGLE ROUTES =======================
+// =====================================
+// send to google to do the authentication
+// profile gets us their basic information including their name
+// email gets their emails
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+router.get('/auth/google/callback', function(req, res, next) {
+  passport.authenticate('google', function(err, user, info) {
+    if (err) { return next(err); }
+    if (!user) { return res.redirect('/login'); }
+
+    res.render('index', { user : user });
+
+  })(req, res, next);
+});
+
+
+
+
+
 module.exports = router;

@@ -8,6 +8,8 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo/es5')(session);
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+var configAuth = require('./config/auth');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -56,6 +58,55 @@ var Account = require('./models/account');
 passport.use(new LocalStrategy(Account.authenticate()));
 passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
+
+// =========================================================================
+// GOOGLE ==================================================================
+// =========================================================================
+
+passport.use(new GoogleStrategy({
+
+    clientID        : configAuth.googleAuth.clientID,
+    clientSecret    : configAuth.googleAuth.clientSecret,
+    callbackURL     : configAuth.googleAuth.callbackURL,
+
+},
+function(token, refreshToken, profile, done) {
+    // make the code asynchronous
+    // User.findOne won't fire until we have all our data back from Google
+    process.nextTick(function() {
+
+        // try to find the user based on their google id
+        Account.findOne({ 'username' : profile.displayName }, function(err, user) {
+            if (err)
+                return done(err);
+
+            if (user) {
+
+                // if a user is found, log them in
+                return done(null, user);
+            } else {
+                // if the user isnt in our database, create a new user
+                var account = new Account({username: profile.displayName});
+
+                // set all of the relevant information
+                //account.google.id    = profile.id;
+                //account.google.token = token;
+                //account.google.name  = profile.displayName;
+                //account.google.email = profile.emails[0].value; // pull the first email
+
+                // save the user
+                Account.register(account, token, function(err, account) {
+                  if (err) {
+                    return ;
+                  }
+
+                });
+
+            }
+        });
+    });
+
+}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

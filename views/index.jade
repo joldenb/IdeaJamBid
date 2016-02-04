@@ -13,6 +13,11 @@ html
       a.home-login.btn.btn-default(href="/login") Login
       &nbsp;
       a.home-login.btn.btn-primary(href="/register") Register
+      br
+      p Login or Register with Google:
+      a(href="/auth/google",class="btn btn-danger") 
+        span.fa.fa-google-plus Google
+
     if (user)
       h2 You are currently logged in as #{user.username}
       a.home-login.btn.btn-default( href="/logout" ) Log Out
