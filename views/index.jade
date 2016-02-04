@@ -11,13 +11,15 @@ html
     if (!user)
       p.lead Login or Register to Continue
       a.home-login.btn.btn-default(href="/login") Login
-      &nbsp;
+      |  
       a.home-login.btn.btn-primary(href="/register") Register
       br
-      p Login or Register with Google:
+      p Login or with Social Media:
       a(href="/auth/google",class="btn btn-danger") 
         span.fa.fa-google-plus Google
-
+      |  
+      a(href="/auth/facebook",class="btn btn-primary") 
+        span.fa.fa-facebook Facebook
     if (user)
       h2 You are currently logged in as #{user.username}
       a.home-login.btn.btn-default( href="/logout" ) Log Out
@@ -25,5 +27,3 @@ html
 
   script(src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js')
   script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js')
-
-
