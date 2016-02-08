@@ -10,6 +10,7 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
+var LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
 var configAuth = require('./config/auth');
 
 var routes = require('./routes/index');
@@ -25,15 +26,6 @@ app.use(express.static(__dirname + '/public'));
 // views is directory for all template files
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
-
-//The root URL
-/*app.get('/', function(request, response) {
-  var result = '';
-  var times = process.env.TIMES || 5;
-  for (i=0; i < times; i++)
-    result += cool();
-  response.send(result);
-}); */
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -106,6 +98,47 @@ function(token, refreshToken, profile, done) {
         });
     });
 
+}));
+
+// =========================================================================
+// LINKEDIN ================================================================
+// =========================================================================
+passport.use(new LinkedInStrategy({
+        // pull in our app id and secret from our auth.js file
+        clientID        : configAuth.linkedinAuth.clientID,
+        clientSecret    : configAuth.linkedinAuth.clientSecret,
+        callbackURL     : configAuth.linkedinAuth.callbackURL
+  },
+  function(token, tokenSecret, profile, done) {
+
+    // make the code asynchronous
+    process.nextTick(function() {
+
+        var linkedinName = profile.first-name + " " + profile.last-name;
+        // try to find the user based on their google id
+        Account.findOne({ 'username' : linkedinName }, function(err, user) {
+            if (err)
+                return done(err);
+
+            if (user) {
+
+                // if a user is found, log them in
+                return done(null, user);
+            } else {
+                // if the user isnt in our database, create a new user
+                var account = new Account({username: linkedinName});
+
+                // save the user
+                Account.register(account, token, function(err, account) {
+                  if (err) {
+                    return ;
+                  }
+
+                });
+
+            }
+        });
+    });
 }));
 
 

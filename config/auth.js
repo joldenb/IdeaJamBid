@@ -9,10 +9,10 @@ module.exports = {
         'callbackURL'   : '/auth/facebook/callback'
     },
 
-    'twitterAuth' : {
-        'consumerKey'       : 'your-consumer-key-here',
-        'consumerSecret'    : 'your-client-secret-here',
-        'callbackURL'       : 'http://localhost:8080/auth/twitter/callback'
+    'linkedinAuth' : {
+        'clientID'       : '78hqau43n5u4pq',
+        'clientSecret'    : 'l0cvFkS5ydUgXuaR',
+        'callbackURL'       : '/auth/linkedin/callback'
     },
 
     'googleAuth' : {

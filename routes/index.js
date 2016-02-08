@@ -77,4 +77,24 @@ router.get('/auth/facebook/callback', function(req, res, next) {
   })(req, res, next);
 });
 
+// =====================================
+// LinkedIn ROUTES =====================
+// =====================================
+// send to google to do the authentication
+// profile gets us their basic information including their name
+// email gets their emails
+router.get('/auth/linkedin', passport.authenticate('linkedin', { scope:  'email' }));
+
+router.get('/auth/linkedin/callback', function(req, res, next) {
+  passport.authenticate('linkedin', function(err, user, info) {
+    if (err) { return next(err); }
+    if (!user) { return res.redirect('/login'); }
+
+    res.render('index', { user : user });
+
+  })(req, res, next);
+});
+
+
+
 module.exports = router;
