@@ -60,7 +60,7 @@ router.get('/auth/google/callback', function(req, res, next) {
 });
 
 // =====================================
-// Facebook ROUTES =======================
+// Facebook ROUTES =====================
 // =====================================
 // send to google to do the authentication
 // profile gets us their basic information including their name
@@ -76,8 +76,5 @@ router.get('/auth/facebook/callback', function(req, res, next) {
 
   })(req, res, next);
 });
-
-
-
 
 module.exports = router;

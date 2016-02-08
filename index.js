@@ -63,7 +63,6 @@ passport.deserializeUser(Account.deserializeUser());
 // =========================================================================
 // GOOGLE ==================================================================
 // =========================================================================
-
 passport.use(new GoogleStrategy({
 
     clientID        : configAuth.googleAuth.clientID,
@@ -111,9 +110,9 @@ function(token, refreshToken, profile, done) {
 
 
 // =========================================================================
-    // FACEBOOK ================================================================
-    // =========================================================================
-    passport.use(new FacebookStrategy({
+// FACEBOOK ================================================================
+// =========================================================================
+passport.use(new FacebookStrategy({
 
         // pull in our app id and secret from our auth.js file
         clientID        : configAuth.facebookAuth.clientID,
