@@ -107,14 +107,16 @@ passport.use(new LinkedInStrategy({
         // pull in our app id and secret from our auth.js file
         clientID        : configAuth.linkedinAuth.clientID,
         clientSecret    : configAuth.linkedinAuth.clientSecret,
-        callbackURL     : configAuth.linkedinAuth.callbackURL
+        callbackURL     : configAuth.linkedinAuth.callbackURL,
+        scope: ['r_emailaddress', 'r_basicprofile'],
+        state: true
   },
   function(token, tokenSecret, profile, done) {
 
     // make the code asynchronous
     process.nextTick(function() {
 
-        var linkedinName = profile.first-name + " " + profile.last-name;
+        var linkedinName = profile.displayName;
         // try to find the user based on their google id
         Account.findOne({ 'username' : linkedinName }, function(err, user) {
             if (err)
