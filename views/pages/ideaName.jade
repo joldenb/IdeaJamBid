@@ -7,12 +7,18 @@ html
     link(rel='stylesheet', href='/stylesheets/main.css')
   body
   .container
-    h1 Welcome #{user.username}
-    h2 Einstein Points: #{user.einsteinPoints}
-    h2 Rupees Remaining: #{user.rupees}
+    h1 What's your Idea?
+    form(role='form', action="/idea-name",method="post", style='max-width: 300px;')
+      .form-group
+        input.form-control(type='text', name="username", placeholder='Enter Username')
+      .form-group
+        input.form-control(type='password', name="password", placeholder='Password')
+      button.btn.btn-default(type='submit') Submit
+      |  
+
     a.home-login.btn.btn-default( href="/logout" ) Log Out
     |  
-    a.home-login.btn.btn-success( href="/idea-name" ) Begin a New Idea > 
+    a.home-login.btn.btn-success( href="#" ) Continue > 
 
   script(src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js')
   script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js')

@@ -36,6 +36,14 @@ router.get('/begin', function(req, res) {
     }
 });
 
+router.get('/idea-name', function(req, res) {
+    if(req.user){
+      res.render('pages/ideaName', { user : req.user });
+    } else {
+      res.redirect('/');
+    }
+});
+
 router.post('/login', passport.authenticate('local'), function(req, res) {
     res.redirect('/begin');
 });
