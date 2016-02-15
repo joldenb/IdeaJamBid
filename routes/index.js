@@ -1,5 +1,7 @@
 var express = require('express');
 var passport = require('passport');
+var mongoose = require('mongoose');
+var IdeaSeed = require('../models/ideaSeed');
 var Account = require('../models/account');
 var router = express.Router();
 
@@ -38,11 +40,24 @@ router.get('/begin', function(req, res) {
 
 router.get('/idea-name', function(req, res) {
     if(req.user){
+      var newIdea = new IdeaSeed({});
+      newIdea.save(function (err) {
+        var stop;
+      });
+      req.session.idea = newIdea._doc._id.toHexString();
       res.render('pages/ideaName', { user : req.user });
     } else {
       res.redirect('/');
     }
 });
+
+router.post('/idea-name', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {name : req.body.title, description : req.body.description},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+});
+
 
 router.post('/login', passport.authenticate('local'), function(req, res) {
     res.redirect('/begin');
@@ -52,11 +67,6 @@ router.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/');
 });
-
-
-// =====================================
-// GOOGLE ROUTES =======================
-// =====================================
 // send to google to do the authentication
 // profile gets us their basic information including their name
 // email gets their emails

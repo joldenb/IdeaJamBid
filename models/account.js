@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
-var IdeaSeed = require('./IdeaSeed');
+var IdeaSeed = mongoose.model('IdeaSeed');
 
 var Account = new Schema({
     username		: String,

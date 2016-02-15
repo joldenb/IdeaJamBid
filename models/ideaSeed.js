@@ -4,9 +4,8 @@ var passportLocalMongoose = require('passport-local-mongoose');
 
 var IdeaSeed = new Schema({
 	name		: String,
-	date		: Date
+	description	: String
 });
 
-IdeaSeed.plugin(passportLocalMongoose);
 
 module.exports = mongoose.model('IdeaSeed', IdeaSeed);
