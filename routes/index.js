@@ -7,7 +7,11 @@ var router = express.Router();
 
 
 router.get('/', function (req, res) {
-    res.render('index', { user : req.user });
+    if(req.user){
+      res.redirect('/begin');
+    } else {
+      res.render('index', { user : req.user });
+    }
 });
 
 router.get('/register', function(req, res) {
@@ -15,7 +19,8 @@ router.get('/register', function(req, res) {
 });
 
 router.post('/register', function(req, res) {
-    Account.register(new Account({ username : req.body.username }), req.body.password, function(err, account) {
+    Account.register(new Account({ username : req.body.username,
+      einsteinPoints: 0, rupees: 0 }), req.body.password, function(err, account) {
         if (err) {
             return res.render('pages/register', { account : account });
         }
@@ -45,7 +50,7 @@ router.get('/idea-name', function(req, res) {
         var stop;
       });
       req.session.idea = newIdea._doc._id.toHexString();
-      res.render('pages/ideaName', { user : req.user });
+      res.render('pages/ideaName', { user : req.user, idea : req.session.idea });
     } else {
       res.redirect('/');
     }
@@ -56,17 +61,62 @@ router.post('/idea-name', function(req, res) {
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
   });
+  res.redirect('/problem-solver');
 });
 
+router.post('/problem-solver', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {problem : req.body.problemToSolve},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/key-features');
+});
 
-router.post('/login', passport.authenticate('local'), function(req, res) {
+router.post('/key-features', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {firstFeature : req.body.firstFeature,
+    secondFeature : req.body.secondFeature, thirdFeature : req.body.thirdFeature},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/idea-seed-summary');
+});
+
+router.post('/napkin-sketch', function(req, res) {
+  res.redirect('/idea-seed-summary');
+});
+
+router.post('/login', passport.authenticate('local'), function(req,res){
     res.redirect('/begin');
+});
+
+router.get('/idea-seed-summary', function(req, res){
+  var currentIdea;
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/idea-seed-summary', { user : req.user, idea : currentIdea });
+  });
+});
+
+router.get('/napkin-sketch', function(req, res){
+  res.render('pages/problem-solver', { user : req.user, idea : req.session.idea });
+});
+
+router.get('/problem-solver', function(req, res){
+  res.render('pages/problem-solver', { user : req.user, idea : req.session.idea });
+});
+
+router.get('/key-features', function(req, res){
+  res.render('pages/key-features', { user : req.user, idea : req.session.idea });
 });
 
 router.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/');
 });
+
+// =====================================
+// Google ROUTES =====================
+// =====================================
 // send to google to do the authentication
 // profile gets us their basic information including their name
 // email gets their emails
@@ -77,7 +127,8 @@ router.get('/auth/google/callback', function(req, res, next) {
     if (err) { return next(err); }
     if (!user) { return res.redirect('/login'); }
 
-    res.render('index', { user : user });
+      passport.authenticate('local');
+      res.redirect('/begin');
 
   })(req, res, next);
 });
@@ -95,7 +146,8 @@ router.get('/auth/facebook/callback', function(req, res, next) {
     if (err) { return next(err); }
     if (!user) { return res.redirect('/login'); }
 
-    res.render('index', { user : user });
+      passport.authenticate('local');
+      res.redirect('/begin');
 
   })(req, res, next);
 });
@@ -113,7 +165,8 @@ router.get('/auth/linkedin/callback', function(req, res, next) {
     if (err) { return next(err); }
     if (!user) { return res.redirect('/login'); }
 
-    res.render('index', { user : user });
+      passport.authenticate('local');
+      res.redirect('/begin');
 
   })(req, res, next);
 });

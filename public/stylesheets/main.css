@@ -58,8 +58,29 @@ h1, h2, h3, h4, p {
   margin: 1em 0;
 }
 
+.header {
+  text-align: right;
+  color: white;
+  background-color: cornflowerblue;
+  font-size: large;
+}
+
+.header .home-logout {
+  margin: 1em;
+}
+
 .container {
   margin-top:5em;
+}
+
+.container.idea-summary {
+  text-align: left;
+  width: initial;
+  margin-left: 35%;
+}
+
+#formKeyFeatures textarea {
+  margin: 1em;
 }
 
 form {

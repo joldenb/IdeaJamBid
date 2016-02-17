@@ -11,19 +11,20 @@ html
     |  
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
 
-  .container
-    h1 What's your Idea?
-    form(role='form', id="formIdeaName" action="/idea-name", method="post", style='max-width: 300px;', data-idea-doc=idea)
-      .form-group
-        h3 Idea Title
-        |  
-        input.form-control(type='text', name="title", placeholder='Idea title here...')
-        h3 Idea Description
-        |  
-      .form-group
-        textarea.form-control(rows='6', cols="75", name="description", placeholder='Describe your idea...')
-      button.btn.btn-success(type='submit') Continue >
-      |  
+  .container.idea-summary
+    h1 In Summary
+      h3 Name : #{idea.name}
+      h3 Description : #{idea.description}
+      h3 Problem it will address : #{idea.problem}
+      h3 Features :
+      ul
+        li 
+          span #{idea.firstFeature}
+        li 
+          span #{idea.secondFeature}
+        li 
+          span #{idea.thirdFeature}
+      
 
 
   script(src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js')
