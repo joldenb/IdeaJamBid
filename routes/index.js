@@ -42,13 +42,6 @@ router.get('/begin-scoring', function(req, res) {
   });
 });
 
-router.get('/performability', function(req, res) {
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    res.render('pages/performability', { user : req.user, idea : currentIdea });
-  });
-});
-
 router.get('/begin', function(req, res) {
     if(req.user){
       res.render('pages/begin', { user : req.user });
@@ -86,17 +79,270 @@ router.post('/problem-solver', function(req, res) {
   res.redirect('/key-features');
 });
 
-router.post('/performability', function(req, res) {
-  var perfSliderOneValue = $("#perfSliderOne").value(),
-      perfSliderTwoValue = $("#perfSliderTwo").value(),
-      perfSliderThreeValue = $("#perfSliderThree").value();
+////////////////////////////////////////////////
+// Performability
+////////////////////////////////////////////////
+router.get('/performability', function(req, res) {
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/performability', { user : req.user, idea : currentIdea });
+  });
+});
 
-  IdeaSeed.update({_id : req.session.idea}, {performOne : perfSliderOneValue,
-    performTwo : perfSliderTwoValue, performThree : perfSliderThreeValue},
+router.post('/performability', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {performOne : req.body.perfSliderOneValue,
+    performTwo : req.body.perfSliderTwoValue, performThree : req.body.perfSliderThreeValue},
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
   });
-  res.redirect('/key-features');
+  res.redirect('/affordability');
+});
+
+////////////////////////////////////////////////
+// Affordability
+////////////////////////////////////////////////
+router.get('/affordability', function(req, res) {
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/affordability', { user : req.user, idea : currentIdea });
+  });
+});
+
+router.post('/affordability', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {affordOne : req.body.affordSliderOneValue},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/featurability');
+});
+
+////////////////////////////////////////////////
+// Featurability
+////////////////////////////////////////////////
+router.get('/featurability', function(req, res) {
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/featurability', { user : req.user, idea : currentIdea });
+  });
+});
+
+router.post('/featurability', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {featureOne : req.body.featureSliderOneValue},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/deliverability');
+});
+
+////////////////////////////////////////////////
+// Deliverability
+////////////////////////////////////////////////
+router.get('/deliverability', function(req, res) {
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/deliverability', { user : req.user, idea : currentIdea });
+  });
+});
+
+router.post('/deliverability', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {deliverOne : req.body.deliverSliderOneValue},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/useability');
+});
+
+////////////////////////////////////////////////
+// Useability
+////////////////////////////////////////////////
+router.get('/useability', function(req, res) {
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/useability', { user : req.user, idea : currentIdea });
+  });
+});
+
+router.post('/useability', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {useabilityOne : req.body.useabilitySliderOneValue},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/maintainability');
+});
+
+////////////////////////////////////////////////
+// Maintainability
+////////////////////////////////////////////////
+router.get('/maintainability', function(req, res) {
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/maintainability', { user : req.user, idea : currentIdea });
+  });
+});
+
+router.post('/maintainability', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {maintainOne : req.body.maintainSliderOneValue},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/durability');
+});
+
+////////////////////////////////////////////////
+// Durability
+////////////////////////////////////////////////
+router.get('/durability', function(req, res) {
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/durability', { user : req.user, idea : currentIdea });
+  });
+});
+
+router.post('/durability', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {durabilityOne : req.body.durabilitySliderOneValue},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/imageability');
+});
+
+////////////////////////////////////////////////
+// Imageability
+////////////////////////////////////////////////
+router.get('/imageability', function(req, res) {
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/imageability', { user : req.user, idea : currentIdea });
+  });
+});
+
+router.post('/imageability', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {imageOne : req.body.imageSliderOneValue},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/complexity');
+});
+
+////////////////////////////////////////////////
+// Complexity
+////////////////////////////////////////////////
+router.get('/complexity', function(req, res) {
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/complexity', { user : req.user, idea : currentIdea });
+  });
+});
+
+router.post('/complexity', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {complexOne : req.body.complexSliderOneValue},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/precision');
+});
+
+////////////////////////////////////////////////
+// Precision
+////////////////////////////////////////////////
+router.get('/precision', function(req, res) {
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/precision', { user : req.user, idea : currentIdea });
+  });
+});
+
+router.post('/precision', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {precisionOne : req.body.precisionSliderOneValue},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/variability');
+});
+////////////////////////////////////////////////
+// Variability
+////////////////////////////////////////////////
+router.get('/variability', function(req, res) {
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/variability', { user : req.user, idea : currentIdea });
+  });
+});
+
+router.post('/variability', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {variabilityOne : req.body.variabilitySliderOneValue},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/sensitivity');
+});
+////////////////////////////////////////////////
+// Sensitivity
+////////////////////////////////////////////////
+router.get('/sensitivity', function(req, res) {
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/sensitivity', { user : req.user, idea : currentIdea });
+  });
+});
+
+router.post('/sensitivity', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {sensitivityOne : req.body.sensitivitySliderOneValue},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/immaturity');
+});
+////////////////////////////////////////////////
+// Immaturity
+////////////////////////////////////////////////
+router.get('/immaturity', function(req, res) {
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/immaturity', { user : req.user, idea : currentIdea });
+  });
+});
+
+router.post('/immaturity', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {immatureOne : req.body.immatureSliderOneValue},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/dangerous');
+});
+////////////////////////////////////////////////
+// Dangerous
+////////////////////////////////////////////////
+router.get('/dangerous', function(req, res) {
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/dangerous', { user : req.user, idea : currentIdea });
+  });
+});
+
+router.post('/dangerous', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {dangerOne : req.body.dangerSliderOneValue},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/skills');
+});
+////////////////////////////////////////////////
+// Skill Intensive
+////////////////////////////////////////////////
+router.get('/skills', function(req, res) {
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/skills', { user : req.user, idea : currentIdea });
+  });
+});
+
+router.post('/skills', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {skillsOne : req.body.skillsSliderOneValue},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/');
 });
 
 router.post('/key-features', function(req, res) {

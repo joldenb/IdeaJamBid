@@ -1,0 +1,64 @@
+doctype html
+html
+  head
+    title= title
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    link(href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css', rel='stylesheet', media='screen')
+    link(rel='stylesheet', href='/stylesheets/main.css')
+    link(rel='stylesheet', href='//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css')  
+  body
+  .header
+    span.userName Howdy #{user.username}
+    |  
+    a.home-logout.btn.btn-default( href="/logout" ) Log Out
+
+  .container.scoreIdea
+    h1 Useability
+    h4 
+      | How easily and.or quickly can our customers learn to use the product?
+    br
+    form(role='form', id="formUseability" action="/useability", method="post", style='max-width: 600px;', data-idea-doc=idea)
+      .slider-container
+        .slider-end-labels
+          span.no-way No Way
+          span.yes-way Yes Way
+        #useabilityLabelOne.sliderLabel
+        #useabilitySliderOne
+      br
+      button.btn.btn-success Continue >
+
+  script(src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js')
+  script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js')
+  script(src='//code.jquery.com/ui/1.11.4/jquery-ui.js')
+  script(src='http://underscorejs.org/underscore-min.js')  
+  script(type="text/javascript").
+    var labelArr = _.range(101).map(function(number){
+      return number.toString();
+    });
+    var initialValue=50, min=1, max=100;
+
+    ////////////////////////////////////////////
+    // SET UP SLIDER ONE
+    ////////////////////////////////////////////
+    $("#useabilitySliderOne").slider({
+      value:initialValue,
+      min: min,
+      max: max,
+      step: 1,
+      slide: function( event, ui ) {
+          $("#useabilityLabelOne").text(labelArr[ui.value]);
+          $("#useabilityLabelOne").css("margin-left", (ui.value-min)/(max-min)*100+"%");
+          $("#useabilityLabelOne").css("left", "-50px");
+      }
+    });
+    $("#useabilityLabelOne").text(labelArr[initialValue]);
+    $("#useabilityLabelOne" ).css("margin-left", (initialValue -1)/(max-min)*100+"%");
+    $("#useabilityLabelOne").css("left", "-50px");
+
+    $("button.btn-success").click(function(event){
+      var sliderOneValue = $("#useabilitySliderOne").slider("value");
+      var inputOne = $("<input>")
+               .attr("type", "hidden")
+               .attr("name", "useabilitySliderOneValue").val(sliderOneValue);
+      $('#formUseability').append($(inputOne)).submit();
+    });

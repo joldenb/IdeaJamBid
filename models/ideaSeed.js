@@ -11,7 +11,21 @@ var IdeaSeed = new Schema({
 	thirdFeature	: String,
 	performOne		: Number,
 	performTwo		: Number,
-	performThree	: Number
+	performThree	: Number,
+	affordOne		: Number,
+	featureOne		: Number,
+	deliverOne		: Number,
+	useabilityOne	: Number,
+	maintainOne		: Number,
+	durabilityOne	: Number,
+	imageOne		: Number,
+	complexOne		: Number,
+	precisionOne	: Number,
+	variabilityOne	: Number,
+	sensitivityOne	: Number,
+	immatureOne		: Number,
+	dangerOne		: Number,
+	skillsOne		: Number
 });
 
 
