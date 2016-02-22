@@ -71,12 +71,27 @@ h1, h2, h3, h4, p {
 
 .container {
   margin-top:5em;
+  width: 50%;
 }
 
-.container.idea-summary {
+.container.idea-summary, .container.scoreIdea {
   text-align: left;
-  width: initial;
-  margin-left: 35%;
+  margin-left: 30%;
+}
+
+.slider-container {width : 80%; margin: 0px auto;}
+
+.sliderLabel{
+    margin-bottom:5px;
+    width : 100px;
+    height : 20px;
+    line-height : 20px;
+    position:relative;
+    text-align : center;
+}
+
+span.yes-way {
+  float:right;
 }
 
 #formKeyFeatures textarea {

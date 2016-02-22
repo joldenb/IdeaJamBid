@@ -35,6 +35,20 @@ router.get('/login', function(req, res) {
     res.render('pages/login', { user : req.user });
 });
 
+router.get('/begin-scoring', function(req, res) {
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/begin-scoring', { user : req.user, idea : currentIdea });
+  });
+});
+
+router.get('/performability', function(req, res) {
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/performability', { user : req.user, idea : currentIdea });
+  });
+});
+
 router.get('/begin', function(req, res) {
     if(req.user){
       res.render('pages/begin', { user : req.user });
@@ -50,7 +64,7 @@ router.get('/idea-name', function(req, res) {
         var stop;
       });
       req.session.idea = newIdea._doc._id.toHexString();
-      res.render('pages/ideaName', { user : req.user, idea : req.session.idea });
+      res.render('pages/idea-name', { user : req.user, idea : req.session.idea });
     } else {
       res.redirect('/');
     }
@@ -66,6 +80,19 @@ router.post('/idea-name', function(req, res) {
 
 router.post('/problem-solver', function(req, res) {
   IdeaSeed.update({_id : req.session.idea}, {problem : req.body.problemToSolve},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/key-features');
+});
+
+router.post('/performability', function(req, res) {
+  var perfSliderOneValue = $("#perfSliderOne").value(),
+      perfSliderTwoValue = $("#perfSliderTwo").value(),
+      perfSliderThreeValue = $("#perfSliderThree").value();
+
+  IdeaSeed.update({_id : req.session.idea}, {performOne : perfSliderOneValue,
+    performTwo : perfSliderTwoValue, performThree : perfSliderThreeValue},
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
   });

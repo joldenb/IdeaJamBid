@@ -8,7 +8,10 @@ var IdeaSeed = new Schema({
 	problem			: String,
 	firstFeature	: String,
 	secondFeature	: String,
-	thirdFeature	: String
+	thirdFeature	: String,
+	performOne		: Number,
+	performTwo		: Number,
+	performThree	: Number
 });
 
 

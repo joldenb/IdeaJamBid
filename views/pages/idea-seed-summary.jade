@@ -18,13 +18,15 @@ html
       h3 Problem it will address : #{idea.problem}
       h3 Features :
       ul
-        li 
-          span #{idea.firstFeature}
-        li 
-          span #{idea.secondFeature}
-        li 
-          span #{idea.thirdFeature}
+        li
+          h4 #{idea.firstFeature}
+        li
+          h4 #{idea.secondFeature}
+        li
+          h4 #{idea.thirdFeature}
       
+      a.home-login.btn.btn-success( href="/begin-scoring" ) Score Your Idea >
+
 
 
   script(src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js')
