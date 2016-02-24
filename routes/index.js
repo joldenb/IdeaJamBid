@@ -95,6 +95,12 @@ router.post('/performability', function(req, res) {
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
   });
+  Account.findById( req.user.id,
+    function (err, account) {
+      account.einsteinPoints = account.einsteinPoints + 5;
+      account.save(function (err) {
+      });
+  });
   res.redirect('/affordability');
 });
 
@@ -113,6 +119,13 @@ router.post('/affordability', function(req, res) {
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
   });
+  Account.findById( req.user.id,
+    function (err, account) {
+      account.einsteinPoints = account.einsteinPoints + 5;
+      account.save(function (err) {
+      });
+  });
+
   res.redirect('/featurability');
 });
 
@@ -130,6 +143,12 @@ router.post('/featurability', function(req, res) {
   IdeaSeed.update({_id : req.session.idea}, {featureOne : req.body.featureSliderOneValue},
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
+  });
+  Account.findById( req.user.id,
+    function (err, account) {
+      account.einsteinPoints = account.einsteinPoints + 5;
+      account.save(function (err) {
+      });
   });
   res.redirect('/deliverability');
 });
@@ -149,6 +168,12 @@ router.post('/deliverability', function(req, res) {
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
   });
+  Account.findById( req.user.id,
+    function (err, account) {
+      account.einsteinPoints = account.einsteinPoints + 5;
+      account.save(function (err) {
+      });
+  });
   res.redirect('/useability');
 });
 
@@ -166,6 +191,12 @@ router.post('/useability', function(req, res) {
   IdeaSeed.update({_id : req.session.idea}, {useabilityOne : req.body.useabilitySliderOneValue},
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
+  });
+  Account.findById( req.user.id,
+    function (err, account) {
+      account.einsteinPoints = account.einsteinPoints + 5;
+      account.save(function (err) {
+      });
   });
   res.redirect('/maintainability');
 });
@@ -185,6 +216,12 @@ router.post('/maintainability', function(req, res) {
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
   });
+  Account.findById( req.user.id,
+    function (err, account) {
+      account.einsteinPoints = account.einsteinPoints + 5;
+      account.save(function (err) {
+      });
+  });
   res.redirect('/durability');
 });
 
@@ -202,6 +239,12 @@ router.post('/durability', function(req, res) {
   IdeaSeed.update({_id : req.session.idea}, {durabilityOne : req.body.durabilitySliderOneValue},
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
+  });
+  Account.findById( req.user.id,
+    function (err, account) {
+      account.einsteinPoints = account.einsteinPoints + 5;
+      account.save(function (err) {
+      });
   });
   res.redirect('/imageability');
 });
@@ -221,6 +264,12 @@ router.post('/imageability', function(req, res) {
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
   });
+  Account.findById( req.user.id,
+    function (err, account) {
+      account.einsteinPoints = account.einsteinPoints + 5;
+      account.save(function (err) {
+      });
+  });
   res.redirect('/complexity');
 });
 
@@ -238,6 +287,12 @@ router.post('/complexity', function(req, res) {
   IdeaSeed.update({_id : req.session.idea}, {complexOne : req.body.complexSliderOneValue},
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
+  });
+  Account.findById( req.user.id,
+    function (err, account) {
+      account.einsteinPoints = account.einsteinPoints + 5;
+      account.save(function (err) {
+      });
   });
   res.redirect('/precision');
 });
@@ -257,6 +312,12 @@ router.post('/precision', function(req, res) {
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
   });
+  Account.findById( req.user.id,
+    function (err, account) {
+      account.einsteinPoints = account.einsteinPoints + 5;
+      account.save(function (err) {
+      });
+  });
   res.redirect('/variability');
 });
 ////////////////////////////////////////////////
@@ -273,6 +334,12 @@ router.post('/variability', function(req, res) {
   IdeaSeed.update({_id : req.session.idea}, {variabilityOne : req.body.variabilitySliderOneValue},
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
+  });
+  Account.findById( req.user.id,
+    function (err, account) {
+      account.einsteinPoints = account.einsteinPoints + 5;
+      account.save(function (err) {
+      });
   });
   res.redirect('/sensitivity');
 });
@@ -291,6 +358,12 @@ router.post('/sensitivity', function(req, res) {
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
   });
+  Account.findById( req.user.id,
+    function (err, account) {
+      account.einsteinPoints = account.einsteinPoints + 5;
+      account.save(function (err) {
+      });
+  });
   res.redirect('/immaturity');
 });
 ////////////////////////////////////////////////
@@ -307,6 +380,12 @@ router.post('/immaturity', function(req, res) {
   IdeaSeed.update({_id : req.session.idea}, {immatureOne : req.body.immatureSliderOneValue},
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
+  });
+  Account.findById( req.user.id,
+    function (err, account) {
+      account.einsteinPoints = account.einsteinPoints + 5;
+      account.save(function (err) {
+      });
   });
   res.redirect('/dangerous');
 });
@@ -325,6 +404,12 @@ router.post('/dangerous', function(req, res) {
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
   });
+  Account.findById( req.user.id,
+    function (err, account) {
+      account.einsteinPoints = account.einsteinPoints + 5;
+      account.save(function (err) {
+      });
+  });
   res.redirect('/skills');
 });
 ////////////////////////////////////////////////
@@ -341,6 +426,12 @@ router.post('/skills', function(req, res) {
   IdeaSeed.update({_id : req.session.idea}, {skillsOne : req.body.skillsSliderOneValue},
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
+  });
+  Account.findById( req.user.id,
+    function (err, account) {
+      account.einsteinPoints = account.einsteinPoints + 5;
+      account.save(function (err) {
+      });
   });
   res.redirect('/suggestion-summary');
 });

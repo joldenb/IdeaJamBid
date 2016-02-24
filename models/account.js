@@ -6,8 +6,8 @@ var IdeaSeed = mongoose.model('IdeaSeed');
 var Account = new Schema({
     username		: String,
     password		: String,
-    einsteinPoints	: Number,
-    rupees			: Number,
+    einsteinPoints	: {type: Number, default:0},
+    rupees			: {type: Number, default:0},
     ideaSeeds		: [IdeaSeed]
 });
 
