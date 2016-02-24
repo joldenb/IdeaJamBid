@@ -342,7 +342,14 @@ router.post('/skills', function(req, res) {
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
   });
-  res.redirect('/');
+  res.redirect('/suggestion-summary');
+});
+
+router.get('/suggestion-summary', function(req, res){
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/begin-scoring', { user : req.user, idea : currentIdea });
+  });
 });
 
 router.post('/key-features', function(req, res) {
@@ -400,8 +407,7 @@ router.get('/auth/google/callback', function(req, res, next) {
     if (err) { return next(err); }
     if (!user) { return res.redirect('/login'); }
 
-      passport.authenticate('local');
-      res.redirect('/begin');
+      res.render('pages/begin', {user : user});
 
   })(req, res, next);
 });
@@ -419,8 +425,7 @@ router.get('/auth/facebook/callback', function(req, res, next) {
     if (err) { return next(err); }
     if (!user) { return res.redirect('/login'); }
 
-      passport.authenticate('local');
-      res.redirect('/begin');
+      res.render('pages/begin', {user : user});
 
   })(req, res, next);
 });
@@ -438,8 +443,7 @@ router.get('/auth/linkedin/callback', function(req, res, next) {
     if (err) { return next(err); }
     if (!user) { return res.redirect('/login'); }
 
-      passport.authenticate('local');
-      res.redirect('/begin');
+      res.render('pages/begin', {user : user});
 
   })(req, res, next);
 });
