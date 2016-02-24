@@ -1,0 +1,80 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body
+  .header
+    span.userName Howdy #{user.username}
+    |  
+    a.home-logout.btn.btn-default( href="/logout" ) Log Out
+
+  .container.suggestion-summary
+    h1 In Summary
+      h3 Name : #{idea.name}
+      h3 Einstein Points Earned : #{user.einsteinPoints}
+      table
+        tr
+          th Targets/Tactics
+          th Functions
+          th Parts
+          th Life-Cycle Processes
+          th Materials
+          th People
+        tr
+          th Eliminate
+          td Suggest
+          td Suggest
+          td Suggest
+          td Suggest
+          td Suggest
+        tr
+          th Reduce
+          td Suggest
+          td Suggest
+          td Suggest
+          td Suggest
+          td Suggest
+        tr
+          th Substitute
+          td Suggest
+          td Suggest
+          td Suggest
+          td Suggest
+          td Suggest
+        tr
+          th Separate
+          td Suggest
+          td Suggest
+          td Suggest
+          td Suggest
+          td Suggest
+        tr
+          th Integrate
+          td Suggest
+          td Suggest
+          td Suggest
+          td Suggest
+          td Suggest
+        tr
+          th Re-Use
+          td Suggest
+          td Suggest
+          td Suggest
+          td Suggest
+          td Suggest
+        tr
+          th Standardize
+          td Suggest
+          td Suggest
+          td Suggest
+          td Suggest
+          td Suggest
+        tr
+          th Add
+          td Suggest
+          td Suggest
+          td Suggest
+          td Suggest
+          td Suggest
+      
+  include ../partials/js-includes.jade

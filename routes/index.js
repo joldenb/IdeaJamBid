@@ -439,7 +439,7 @@ router.post('/skills', function(req, res) {
 router.get('/suggestion-summary', function(req, res){
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    res.render('pages/begin-scoring', { user : req.user, idea : currentIdea });
+    res.render('pages/suggestion-summary', { user : req.user, idea : currentIdea });
   });
 });
 

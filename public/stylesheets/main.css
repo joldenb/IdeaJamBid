@@ -90,8 +90,16 @@ h1, h2, h3, h4, p {
     text-align : center;
 }
 
+.slider-end-labels {
+  padding-bottom: 1em;
+}
+
 span.yes-way {
   float:right;
+}
+
+span.no-way {
+  float: left;
 }
 
 #formKeyFeatures textarea {
@@ -100,4 +108,18 @@ span.yes-way {
 
 form {
   margin: 0 auto;
+}
+
+.suggestion-summary h1, .suggestion-summary h3 {
+  text-align: center;
+}
+
+td, th {
+  padding: .5em;
+  text-align: center;
+  width: 5%;
+}
+
+td {
+  border: 1px solid gray;
 }
