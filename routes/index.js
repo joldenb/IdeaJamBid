@@ -493,15 +493,11 @@ router.get('/logout', function(req, res) {
 // email gets their emails
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-router.get('/auth/google/callback', function(req, res, next) {
-  passport.authenticate('google', function(err, user, info) {
-    if (err) { return next(err); }
-    if (!user) { return res.redirect('/login'); }
-
-      res.render('pages/begin', {user : user});
-
-  })(req, res, next);
-});
+router.get('/auth/google/callback', 
+  passport.authenticate('google',{
+    successRedirect: '/begin',
+    failureRedirect: '/'
+}));
 
 // =====================================
 // Facebook ROUTES =====================
@@ -511,15 +507,11 @@ router.get('/auth/google/callback', function(req, res, next) {
 // email gets their emails
 router.get('/auth/facebook', passport.authenticate('facebook', { scope:  'email' }));
 
-router.get('/auth/facebook/callback', function(req, res, next) {
-  passport.authenticate('facebook', function(err, user, info) {
-    if (err) { return next(err); }
-    if (!user) { return res.redirect('/login'); }
-
-      res.render('pages/begin', {user : user});
-
-  })(req, res, next);
-});
+router.get('/auth/facebook/callback',
+  passport.authenticate('facebook',{
+    successRedirect: '/begin',
+    failureRedirect: '/'
+}));
 
 // =====================================
 // LinkedIn ROUTES =====================
@@ -529,15 +521,11 @@ router.get('/auth/facebook/callback', function(req, res, next) {
 // email gets their emails
 router.get('/auth/linkedin', passport.authenticate('linkedin'));
 
-router.get('/auth/linkedin/callback', function(req, res, next) {
-  passport.authenticate('linkedin', function(err, user, info) {
-    if (err) { return next(err); }
-    if (!user) { return res.redirect('/login'); }
-
-      res.render('pages/begin', {user : user});
-
-  })(req, res, next);
-});
+router.get('/auth/linkedin/callback', 
+  passport.authenticate('linkedin',{
+    successRedirect: '/begin',
+    failureRedirect: '/'
+}));
 
 
 

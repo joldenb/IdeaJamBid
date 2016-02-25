@@ -46,7 +46,7 @@ function(token, refreshToken, profile, done) {
                 // save the user
                 Account.register(account, token, function(err, account) {
                   if (err) {
-                    return ;
+                    return done(null, user);
                   }
 
                 });
@@ -56,6 +56,7 @@ function(token, refreshToken, profile, done) {
     });
 
 }));
+
 
 // =========================================================================
 // LINKEDIN ================================================================
@@ -90,7 +91,7 @@ passport.use(new LinkedInStrategy({
                 // save the user
                 Account.register(account, token, function(err, account) {
                   if (err) {
-                    return ;
+                    return done(null, user);
                   }
 
                 });
@@ -140,7 +141,7 @@ function(token, refreshToken, profile, done) {
                 // save the user
                 Account.register(account, token, function(err, account) {
                   if (err) {
-                    return ;
+                    return done(null, user);
                   }
 
                 });
@@ -150,5 +151,10 @@ function(token, refreshToken, profile, done) {
     });
 
 }));
+
+passport.serializeUser(Account.serializeUser());
+passport.deserializeUser(Account.deserializeUser());
+
+
 
 };
