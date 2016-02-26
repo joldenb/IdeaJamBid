@@ -123,3 +123,7 @@ td, th {
 td {
   border: 1px solid gray;
 }
+
+.suggestion-summary > table {
+  border:1px solid gray;
+}

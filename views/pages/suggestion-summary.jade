@@ -6,75 +6,116 @@ html
   .header
     span.userName Howdy #{user.username}
     |  
+    img(src="./avatar.png" height="75" width="75")
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
 
   .container.suggestion-summary
-    h1 In Summary
-      h3 Name : #{idea.name}
-      h3 Einstein Points Earned : #{user.einsteinPoints}
-      table
-        tr
-          th Targets/Tactics
-          th Functions
-          th Parts
-          th Life-Cycle Processes
-          th Materials
-          th People
-        tr
-          th Eliminate
-          td Suggest
-          td Suggest
-          td Suggest
-          td Suggest
-          td Suggest
-        tr
-          th Reduce
-          td Suggest
-          td Suggest
-          td Suggest
-          td Suggest
-          td Suggest
-        tr
-          th Substitute
-          td Suggest
-          td Suggest
-          td Suggest
-          td Suggest
-          td Suggest
-        tr
-          th Separate
-          td Suggest
-          td Suggest
-          td Suggest
-          td Suggest
-          td Suggest
-        tr
-          th Integrate
-          td Suggest
-          td Suggest
-          td Suggest
-          td Suggest
-          td Suggest
-        tr
-          th Re-Use
-          td Suggest
-          td Suggest
-          td Suggest
-          td Suggest
-          td Suggest
-        tr
-          th Standardize
-          td Suggest
-          td Suggest
-          td Suggest
-          td Suggest
-          td Suggest
-        tr
-          th Add
-          td Suggest
-          td Suggest
-          td Suggest
-          td Suggest
-          td Suggest
+    h2 Name : #{idea.name}
+    h3 Einstein Points Earned : #{user.einsteinPoints}
+    br
+    table
+      tr
+        th Targets/Tactics
+        th Functions
+        th Parts
+        th Life-Cycle Processes
+        th Materials
+        th People
+      tr
+        th Eliminate
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+      tr
+        th Reduce
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+      tr
+        th Substitute
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+      tr
+        th Separate
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+      tr
+        th Integrate
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+      tr
+        th Re-Use
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+      tr
+        th Standardize
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+      tr
+        th Add
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
+        td 
+          button.btn.btn-primary Suggest
       
   include ../partials/js-includes.jade

@@ -6,6 +6,7 @@ html
   .header
     span.userName Howdy #{user.username}
     |  
+    img(src="./avatar.png" height="75" width="75")
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
 
   form(role='form', id="formPerformability" action="/performability", method="post", style='max-width: 600px;', data-idea-doc=idea)
