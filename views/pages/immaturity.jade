@@ -12,7 +12,7 @@ html
   .container.scoreIdea
     h1 Immaturity
     h4 
-      | Is the techonology of processes in the invention not well understood or not fully proven?
+      | Is the techonology or processes in the invention not well understood or not fully proven?
     br
     form(role='form', id="formImmaturity" action="/immaturity", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
@@ -21,6 +21,9 @@ html
           span.yes-way Yes Way
         #immaturityLabelOne.sliderLabel
         #immaturitySliderOne
+      br
+      h4 Why can't your idea be accessible to a more wide-ranging audience?
+      textarea.form-control(rows='6', cols="75", name="immatureProblem", placeholder='Describe the problem...')
       br
       button.btn.btn-success Continue >
       br

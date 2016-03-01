@@ -12,7 +12,7 @@ html
   .container.scoreIdea
     h1 Useability
     h4 
-      | How easily and.or quickly can our customers learn to use the product?
+      | How easily and/or quickly can our customers learn to use the product?
     br
     form(role='form', id="formUseability" action="/useability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
@@ -21,6 +21,9 @@ html
           span.yes-way Yes Way
         #useabilityLabelOne.sliderLabel
         #useabilitySliderOne
+      br
+      h4 Why is your idea difficult to learn how to use?
+      textarea.form-control(rows='6', cols="75", name="useabilityProblem", placeholder='Describe the problem...')
       br
       button.btn.btn-success Continue >
       br

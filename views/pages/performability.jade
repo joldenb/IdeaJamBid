@@ -22,27 +22,8 @@ html
       #perfLabelOne.sliderLabel
       #perfSliderOne(name="perfSliderOne")
     br
-    h4 
-      | What is the level of utility to the customer we are trying to reach?
-    br
-    .slider-container
-    .slider-container
-      .slider-end-labels
-        span.no-way No Way
-        span.yes-way Yes Way
-      #perfLabelTwo.sliderLabel
-      #perfSliderTwo(name="perfSliderTwo")
-    br
-    h4 
-      | Will your idea enable a user to effectively all aspects of the user's problem?
-    br
-    .slider-container
-      .slider-end-labels
-        span.no-way No Way
-        span.yes-way Yes Way
-    .slider-container
-      #perfLabelThree.sliderLabel
-      #perfSliderThree(name="perfSliderThree")
+    h4 Why can't your idea always perform the way you wish?
+    textarea.form-control(rows='6', cols="75", name="performProblem", placeholder='Describe the problem...')
     br
     button.btn.btn-success Continue >
     br
@@ -74,55 +55,11 @@ html
     $("#perfLabelOne" ).css("margin-left", (initialValue -1)/(max-min)*100+"%");
     $("#perfLabelOne").css("left", "-50px");
 
-    ////////////////////////////////////////////
-    // SET UP SLIDER TWO
-    ////////////////////////////////////////////
-    $("#perfSliderTwo").slider({
-      value:initialValue,
-      min: min,
-      max: max,
-      step: 1,
-      slide: function( event, ui ) {
-          $("#perfLabelTwo").text(labelArr[ui.value]);
-          $("#perfLabelTwo").css("margin-left", (ui.value-min)/(max-min)*100+"%");
-          $("#perfLabelTwo").css("left", "-50px");
-      }
-    });
-    $("#perfLabelTwo").text(labelArr[initialValue]);
-    $("#perfLabelTwo" ).css("margin-left", (initialValue -1)/(max-min)*100+"%");
-    $("#perfLabelTwo").css("left", "-50px");
-
-    ////////////////////////////////////////////
-    // SET UP SLIDER THREE
-    ////////////////////////////////////////////
-    $("#perfSliderThree").slider({
-      value:initialValue,
-      min: min,
-      max: max,
-      step: 1,
-      slide: function( event, ui ) {
-          $("#perfLabelThree").text(labelArr[ui.value]);
-          $("#perfLabelThree").css("margin-left", (ui.value-min)/(max-min)*100+"%");
-          $("#perfLabelThree").css("left", "-50px");
-      }
-    });
-    $("#perfLabelThree").text(labelArr[initialValue]);
-    $("#perfLabelThree" ).css("margin-left", (initialValue -1)/(max-min)*100+"%");
-    $("#perfLabelThree").css("left", "-50px");
-
     $("button.btn-success").click(function(event){
       var sliderOneValue = $("#perfSliderOne").slider("value");
       var inputOne = $("<input>")
                .attr("type", "hidden")
                .attr("name", "perfSliderOneValue").val(sliderOneValue);
-      var sliderTwoValue = $("#perfSliderTwo").slider("value");
-      var inputTwo = $("<input>")
-               .attr("type", "hidden")
-               .attr("name", "perfSliderTwoValue").val(sliderTwoValue);
-      var sliderThreeValue = $("#perfSliderThree").slider("value");
-      var inputThree = $("<input>")
-               .attr("type", "hidden")
-               .attr("name", "perfSliderThreeValue").val(sliderThreeValue);
       $('#formPerformability').append($(inputOne))
         .append($(inputTwo))
         .append($(inputThree))
