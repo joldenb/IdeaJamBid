@@ -4,7 +4,14 @@ var mongoose = require('mongoose');
 var IdeaSeed = require('../models/ideaSeed');
 var Account = require('../models/account');
 var router = express.Router();
+var multer = require('multer');
 
+
+var storage = multer.memoryStorage();
+var uploading = multer({
+  storage: storage,
+  dest: '../uploads/'
+});
 
 router.get('/', function (req, res) {
     if(req.user){
@@ -50,25 +57,44 @@ router.get('/begin', function(req, res) {
     }
 });
 
-router.get('/idea-name', function(req, res) {
+router.get('/introduce-idea', function(req, res) {
     if(req.user){
       var newIdea = new IdeaSeed({});
       newIdea.save(function (err) {
         var stop;
       });
       req.session.idea = newIdea._doc._id.toHexString();
-      res.render('pages/idea-name', { user : req.user, idea : req.session.idea });
+      res.render('pages/introduce-idea', { user : req.user, idea : req.session.idea });
     } else {
       res.redirect('/');
     }
 });
 
-router.post('/idea-name', function(req, res) {
-  IdeaSeed.update({_id : req.session.idea}, {name : req.body.title, description : req.body.description},
+router.post('/introduce-idea', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {purposeFor : req.body.purposeFor, purposeHow : req.body.purposeHow},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/title-your-invention');
+});
+
+router.get('/title-your-invention', function(req, res) {
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/title-your-invention', { user : req.user, idea : currentIdea });
+  });
+});
+
+router.post('/title-your-invention', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {name : req.body.inventionName},
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
   });
   res.redirect('/problem-solver');
+});
+
+router.get('/problem-solver', function(req, res){
+  res.render('pages/problem-solver', { user : req.user, idea : req.session.idea });
 });
 
 router.post('/problem-solver', function(req, res) {
@@ -76,7 +102,20 @@ router.post('/problem-solver', function(req, res) {
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
   });
-  res.redirect('/key-features');
+  res.redirect('/image-upload');
+});
+
+router.get('/image-upload', function(req, res){
+  res.render('pages/image-upload', { user : req.user, idea : req.session.idea });
+});
+
+router.post('/image-upload', uploading.single('picture'), function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {image : req.file.buffer,
+    imageMimetype : req.file.mimetype},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/idea-seed-summary');
 });
 
 ////////////////////////////////////////////////
@@ -475,10 +514,12 @@ router.post('/login', passport.authenticate('local'), function(req,res){
 });
 
 router.get('/idea-seed-summary', function(req, res){
-  var currentIdea;
+  var currentIdea, imageURL;
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    res.render('pages/idea-seed-summary', { user : req.user, idea : currentIdea });
+    imageURL = "data:"+currentIdea.imageMimetype+";base64,"+ currentIdea.image.toString('base64');
+    res.render('pages/idea-seed-summary', { user : req.user, idea : currentIdea,
+      imgURL : imageURL });
   });
 });
 

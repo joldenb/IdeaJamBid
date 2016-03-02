@@ -1,0 +1,26 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body
+  .header
+    span.userName Howdy #{user.username}
+    |  
+    img(src="./avatar.png" height="75" width="75")
+    a.home-logout.btn.btn-default( href="/logout" ) Log Out
+
+  .container
+    h1 Title Your Invention
+    h3 For:
+    h4
+      | #{idea.purposeFor}
+    h3 How:
+    h4
+      | #{idea.purposeHow}
+
+    form(role='form', id="formTitleYourInvention" action="/title-your-invention", method="post", style='max-width: 300px;', data-idea-doc=idea)
+      h3 Using only words from your answers, what is the title of your invention?
+      textarea.form-control(rows='6', cols="75", name="inventionName", placeholder='What is your idea for...')
+      button.btn.btn-success(type='submit') Continue >
+
+  include ../partials/js-includes.jade

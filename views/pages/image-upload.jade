@@ -1,0 +1,24 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body
+  .header
+    span.userName Howdy #{user.username}
+    |  
+    img(src="./avatar.png" height="75" width="75")
+    a.home-logout.btn.btn-default( href="/logout" ) Log Out
+
+  .container
+    h1 Upload an Image
+    form(role='form', id="formImageUpload" action="/image-upload", method="post", style='max-width: 300px;', data-idea-doc=idea, enctype="multipart/form-data")
+      .form-group
+        h3 Upload an Image of your Invention
+        |  
+        input(type="file", name="picture")
+        br
+        button.btn.btn-success(type='submit') Upload >
+      |  
+
+
+  include ../partials/js-includes.jade

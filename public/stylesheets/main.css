@@ -127,3 +127,8 @@ td {
 .suggestion-summary > table {
   border:1px solid gray;
 }
+
+img.summary-image {
+  width:100%;
+  height:auto;
+}

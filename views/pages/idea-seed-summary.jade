@@ -14,14 +14,8 @@ html
       h3 Name : #{idea.name}
       h3 Description : #{idea.description}
       h3 Problem it will address : #{idea.problem}
-      h3 Features :
-      ul
-        li
-          h4 #{idea.firstFeature}
-        li
-          h4 #{idea.secondFeature}
-        li
-          h4 #{idea.thirdFeature}
+      h3 Image :
+      img.summary-image(src=imgURL)
       
       a.home-login.btn.btn-success( href="/begin-scoring" ) Score Your Idea >
 

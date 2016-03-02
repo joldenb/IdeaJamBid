@@ -4,8 +4,12 @@ var passportLocalMongoose = require('passport-local-mongoose');
 
 var IdeaSeed = new Schema({
 	name			: String,
+	purposeFor		: String,
+	purposeHow		: String,
 	description		: String,
 	problem			: String,
+	image			: Buffer,
+	imageMimetype	: String,
 	firstFeature	: String,
 	secondFeature	: String,
 	thirdFeature	: String,
