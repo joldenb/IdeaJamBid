@@ -1,6 +1,7 @@
 var express = require('express');
 var passport = require('passport');
 var mongoose = require('mongoose');
+var _ = require('underscore');
 var IdeaSeed = require('../models/ideaSeed');
 var Account = require('../models/account');
 var router = express.Router();
@@ -27,7 +28,7 @@ router.get('/register', function(req, res) {
 
 router.post('/register', function(req, res) {
     Account.register(new Account({ username : req.body.username,
-      einsteinPoints: 0, rupees: 0 }), req.body.password, function(err, account) {
+      einsteinPoints: 0, rupees: 0, ideaSeeds: [] }), req.body.password, function(err, account) {
         if (err) {
             return res.render('pages/register', { account : account });
         }
@@ -51,7 +52,40 @@ router.get('/begin-scoring', function(req, res) {
 
 router.get('/begin', function(req, res) {
     if(req.user){
-      res.render('pages/begin', { user : req.user });
+      if(req.user.ideaSeeds && req.user.ideaSeeds.length > 0){
+        var ideaNames = [];
+        _.each(req.user.ideaSeeds, function(element, index, list){
+
+          IdeaSeed.findById(element._id, function(error, document){
+            ideaNames.push(document.name);
+            if(ideaNames.length == req.user.ideaSeeds.length){
+              res.render('pages/begin', {
+                user : req.user,
+                accountIdeaSeeds : ideaNames
+              });
+            }
+          });
+
+        });
+
+      }
+/*      if(req.user.ideaSeeds && req.user.ideaSeeds.length > 0){
+        Account.findById(req.user.id)
+          .populate('ideaSeeds')
+          .exec(function(err, account){
+            var ideaNames = _.map(account.ideaSeeds, function(idea){return idea.name;});
+            res.render('pages/begin', {
+              user : req.user,
+              accountIdeaSeeds : ideaNames
+            });
+          }); 
+      } */
+      else {
+        res.render('pages/begin', {
+          user : req.user
+        });
+      }
+
     } else {
       res.redirect('/');
     }
@@ -60,11 +94,27 @@ router.get('/begin', function(req, res) {
 router.get('/introduce-idea', function(req, res) {
     if(req.user){
       var newIdea = new IdeaSeed({});
-      newIdea.save(function (err) {
-        var stop;
-      });
+      newIdea.save();
+      Account.update(
+        { _id : req.user.id },
+        { $push : { ideaSeeds : newIdea }},
+        function(err, raw){
+          console.log('The raw response from Mongo was ', raw);
+        }
+      );
       req.session.idea = newIdea._doc._id.toHexString();
       res.render('pages/introduce-idea', { user : req.user, idea : req.session.idea });
+
+/*
+        Account.update( {_id: req.user.id} ,
+          {$push : {"ideaSeeds" : newIdea}},
+          function (err, raw) {
+            console.log('The raw response from Mongo was ', raw);
+            req.session.idea = newIdea._doc._id.toHexString();
+            res.render('pages/introduce-idea', { user : req.user, idea : req.session.idea });
+          }
+        );*/
+      //});
     } else {
       res.redirect('/');
     }
@@ -110,11 +160,13 @@ router.get('/image-upload', function(req, res){
 });
 
 router.post('/image-upload', uploading.single('picture'), function(req, res) {
-  IdeaSeed.update({_id : req.session.idea}, {image : req.file.buffer,
-    imageMimetype : req.file.mimetype},
-    { multi: false }, function (err, raw) {
-      console.log('The raw response from Mongo was ', raw);
-  });
+  if( req.file){
+    IdeaSeed.update({_id : req.session.idea}, {image : req.file.buffer,
+      imageMimetype : req.file.mimetype},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  }
   res.redirect('/idea-seed-summary');
 });
 
@@ -514,10 +566,13 @@ router.post('/login', passport.authenticate('local'), function(req,res){
 });
 
 router.get('/idea-seed-summary', function(req, res){
-  var currentIdea, imageURL;
+  var currentIdea, 
+    imageURL = "";
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    imageURL = "data:"+currentIdea.imageMimetype+";base64,"+ currentIdea.image.toString('base64');
+    if(currentIdea.image){
+      imageURL = "data:"+currentIdea.imageMimetype+";base64,"+ currentIdea.image.toString('base64');
+    }
     res.render('pages/idea-seed-summary', { user : req.user, idea : currentIdea,
       imgURL : imageURL });
   });

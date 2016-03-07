@@ -70,8 +70,34 @@ h1, h2, h3, h4, p {
 }
 
 .container {
-  margin-top:5em;
+  margin-top:3em;
   width: 50%;
+}
+
+.container.profile {
+  text-align:center;
+}
+
+.container.profile ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.profile-info {
+  background-color: #EDBC64;
+  text-align:left;
+  padding:3em;
+}
+
+div#begin-info {
+  width:50%;
+  display:inline-block;
+}
+
+div#begin-info-right {
+  width:50%;
+  text-align:left;
+  display:inline-block;
 }
 
 .container.idea-summary, .container.scoreIdea {

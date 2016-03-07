@@ -3,12 +3,29 @@ html
   head
     include ../partials/head.jade
   body
-  .container
-    h1 Welcome #{user.username}
-    h2 Einstein Points: #{user.einsteinPoints}
-    h2 Rupees Remaining: #{user.rupees}
-    a.home-login.btn.btn-default( href="/logout" ) Log Out
+  .header
+    span.userName Howdy #{user.username}
     |  
+    img(src="./avatar.png" height="75" width="75")
+    a.home-logout.btn.btn-default( href="/logout" ) Log Out
+
+  div.profile-info
+    div#begin-info
+      h1 Welcome #{user.username}
+      h2 Einstein Points: #{user.einsteinPoints}
+      h2 Rupees Remaining: #{user.rupees}
+    div#begin-info-right
+      h2 Company : Albatross Air
+      h2 Role : Inventor
+
+  .container.profile
+    h2 Existing Ideas:
+    if accountIdeaSeeds
+      ul
+        each val, index in accountIdeaSeeds
+          li
+            a()
+              h4= val
     a.home-login.btn.btn-success( href="/introduce-idea" ) Begin a New Idea > 
 
   include ../partials/js-includes.jade
