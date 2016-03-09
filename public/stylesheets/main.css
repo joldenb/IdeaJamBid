@@ -157,7 +157,7 @@ td {
 table.idea-summary {
   max-width : 50%;
   margin: 0 auto;
-  padding-bottom: 3em;
+  margin-bottom: 3em;
 }
 
 img.summary-image {

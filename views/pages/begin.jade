@@ -26,7 +26,7 @@ html
       ul
         each val, index in accountIdeaSeeds
           li
-            a()
+            a(href="/idea-summary/" + val)
               h4= val
     else
       h4 None so far.

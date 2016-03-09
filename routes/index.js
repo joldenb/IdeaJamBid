@@ -695,6 +695,13 @@ router.get('/key-features', function(req, res){
   res.render('pages/key-features', { user : req.user, idea : req.session.idea });
 });
 
+router.get('/idea-summary/:ideaName', function(req, res){
+  IdeaSeed.findOne({ "name" : req.params.ideaName },function(err, idea){
+    req.session.idea = idea._doc._id.toHexString();
+    res.redirect('/idea-summary');
+  });
+});
+
 router.get('/idea-summary', function(req, res){
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
