@@ -181,11 +181,18 @@ router.get('/performability', function(req, res) {
 });
 
 router.post('/performability', function(req, res) {
-  IdeaSeed.update({_id : req.session.idea}, {performOne : req.body.perfSliderOneValue,
-    performProblem : req.body.performProblem},
-    { multi: false }, function (err, raw) {
-      console.log('The raw response from Mongo was ', raw);
-  });
+  if(req.body.perfSliderOneValue){
+    IdeaSeed.update({_id : req.session.idea}, {performOne : req.body.perfSliderOneValue,
+      performProblem : req.body.performProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  } else {
+    IdeaSeed.update({_id : req.session.idea}, {performProblem : req.body.performProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  }
   Account.findById( req.user.id,
     function (err, account) {
       account.einsteinPoints = account.einsteinPoints + 5;
@@ -206,11 +213,18 @@ router.get('/affordability', function(req, res) {
 });
 
 router.post('/affordability', function(req, res) {
-  IdeaSeed.update({_id : req.session.idea}, {affordOne : req.body.affordSliderOneValue,
-    affordProblem : req.body.affordProblem},
-    { multi: false }, function (err, raw) {
-      console.log('The raw response from Mongo was ', raw);
-  });
+  if(req.body.affordSliderOneValue){
+    IdeaSeed.update({_id : req.session.idea}, {affordOne : req.body.affordSliderOneValue,
+      affordProblem : req.body.affordProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  } else {
+    IdeaSeed.update({_id : req.session.idea}, {affordProblem : req.body.affordProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  }
   Account.findById( req.user.id,
     function (err, account) {
       account.einsteinPoints = account.einsteinPoints + 5;
@@ -232,11 +246,18 @@ router.get('/featurability', function(req, res) {
 });
 
 router.post('/featurability', function(req, res) {
-  IdeaSeed.update({_id : req.session.idea}, {featureOne : req.body.featureSliderOneValue,
-    featureProblem : req.body.featureProblem},
-    { multi: false }, function (err, raw) {
-      console.log('The raw response from Mongo was ', raw);
-  });
+  if(req.body.featureSliderOneValue){
+    IdeaSeed.update({_id : req.session.idea}, {featureOne : req.body.featureSliderOneValue,
+      featureProblem : req.body.featureProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  } else {
+    IdeaSeed.update({_id : req.session.idea}, {featureProblem : req.body.featureProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  }
   Account.findById( req.user.id,
     function (err, account) {
       account.einsteinPoints = account.einsteinPoints + 5;
@@ -257,11 +278,18 @@ router.get('/deliverability', function(req, res) {
 });
 
 router.post('/deliverability', function(req, res) {
-  IdeaSeed.update({_id : req.session.idea}, {deliverOne : req.body.deliverSliderOneValue,
-    deliverProblem : req.body.deliverProblem},
-    { multi: false }, function (err, raw) {
-      console.log('The raw response from Mongo was ', raw);
-  });
+  if(req.body.deliverSliderOneValue){
+    IdeaSeed.update({_id : req.session.idea}, {deliverOne : req.body.deliverSliderOneValue,
+      deliverProblem : req.body.deliverProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  } else {
+    IdeaSeed.update({_id : req.session.idea}, {deliverProblem : req.body.deliverProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  }
   Account.findById( req.user.id,
     function (err, account) {
       account.einsteinPoints = account.einsteinPoints + 5;
@@ -282,11 +310,18 @@ router.get('/useability', function(req, res) {
 });
 
 router.post('/useability', function(req, res) {
-  IdeaSeed.update({_id : req.session.idea}, {useabilityOne : req.body.useabilitySliderOneValue,
-    useabilityProblem : req.body.useabilityProblem},
-    { multi: false }, function (err, raw) {
-      console.log('The raw response from Mongo was ', raw);
-  });
+  if(req.body.useabilitySliderOneValue){
+    IdeaSeed.update({_id : req.session.idea}, {useabilityOne : req.body.useabilitySliderOneValue,
+      useabilityProblem : req.body.useabilityProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  } else {
+    IdeaSeed.update({_id : req.session.idea}, {useabilityProblem : req.body.useabilityProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  }
   Account.findById( req.user.id,
     function (err, account) {
       account.einsteinPoints = account.einsteinPoints + 5;
@@ -307,11 +342,18 @@ router.get('/maintainability', function(req, res) {
 });
 
 router.post('/maintainability', function(req, res) {
-  IdeaSeed.update({_id : req.session.idea}, {maintainOne : req.body.maintainSliderOneValue,
-    maintainProblem : req.body.maintainProblem},
-    { multi: false }, function (err, raw) {
-      console.log('The raw response from Mongo was ', raw);
-  });
+  if (req.body.maintainSliderOneValue){
+    IdeaSeed.update({_id : req.session.idea}, {maintainOne : req.body.maintainSliderOneValue,
+      maintainProblem : req.body.maintainProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  } else {
+    IdeaSeed.update({_id : req.session.idea}, {maintainProblem : req.body.maintainProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  }
   Account.findById( req.user.id,
     function (err, account) {
       account.einsteinPoints = account.einsteinPoints + 5;
@@ -332,11 +374,18 @@ router.get('/durability', function(req, res) {
 });
 
 router.post('/durability', function(req, res) {
-  IdeaSeed.update({_id : req.session.idea}, {durabilityOne : req.body.durabilitySliderOneValue,
-    durabilityProblem : req.body.durabilityProblem},
-    { multi: false }, function (err, raw) {
-      console.log('The raw response from Mongo was ', raw);
-  });
+  if(req.body.durabilitySliderOneValue){
+    IdeaSeed.update({_id : req.session.idea}, {durabilityOne : req.body.durabilitySliderOneValue,
+      durabilityProblem : req.body.durabilityProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  } else {
+    IdeaSeed.update({_id : req.session.idea}, {durabilityProblem : req.body.durabilityProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  }
   Account.findById( req.user.id,
     function (err, account) {
       account.einsteinPoints = account.einsteinPoints + 5;
@@ -357,11 +406,18 @@ router.get('/imageability', function(req, res) {
 });
 
 router.post('/imageability', function(req, res) {
-  IdeaSeed.update({_id : req.session.idea}, {imageOne : req.body.imageSliderOneValue,
-    iamgeProblem : req.body.imageProblem},
-    { multi: false }, function (err, raw) {
-      console.log('The raw response from Mongo was ', raw);
-  });
+  if(req.body.imageSliderOneValue){
+    IdeaSeed.update({_id : req.session.idea}, {imageOne : req.body.imageSliderOneValue,
+      imageProblem : req.body.imageProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  } else {
+    IdeaSeed.update({_id : req.session.idea}, {imageProblem : req.body.imageProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  }
   Account.findById( req.user.id,
     function (err, account) {
       account.einsteinPoints = account.einsteinPoints + 5;
@@ -382,11 +438,18 @@ router.get('/complexity', function(req, res) {
 });
 
 router.post('/complexity', function(req, res) {
-  IdeaSeed.update({_id : req.session.idea}, {complexOne : req.body.complexSliderOneValue,
-    complexProblem : req.body.complexProblem},
-    { multi: false }, function (err, raw) {
-      console.log('The raw response from Mongo was ', raw);
-  });
+  if(req.body.complexSliderOneValue){
+    IdeaSeed.update({_id : req.session.idea}, {complexOne : req.body.complexSliderOneValue,
+      complexProblem : req.body.complexProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  } else {
+    IdeaSeed.update({_id : req.session.idea}, {complexProblem : req.body.complexProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  }
   Account.findById( req.user.id,
     function (err, account) {
       account.einsteinPoints = account.einsteinPoints + 5;
@@ -407,11 +470,18 @@ router.get('/precision', function(req, res) {
 });
 
 router.post('/precision', function(req, res) {
-  IdeaSeed.update({_id : req.session.idea}, {precisionOne : req.body.precisionSliderOneValue,
-    precisionProblem : req.body.precisionProblem},
-    { multi: false }, function (err, raw) {
-      console.log('The raw response from Mongo was ', raw);
-  });
+  if(req.body.precisionSliderOneValue){
+    IdeaSeed.update({_id : req.session.idea}, {precisionOne : req.body.precisionSliderOneValue,
+      precisionProblem : req.body.precisionProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  } else {
+    IdeaSeed.update({_id : req.session.idea}, {precisionProblem : req.body.precisionProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  }
   Account.findById( req.user.id,
     function (err, account) {
       account.einsteinPoints = account.einsteinPoints + 5;
@@ -431,11 +501,18 @@ router.get('/variability', function(req, res) {
 });
 
 router.post('/variability', function(req, res) {
-  IdeaSeed.update({_id : req.session.idea}, {variabilityOne : req.body.variabilitySliderOneValue,
-    variabilityProblem : req.body.variabilityProblem},
-    { multi: false }, function (err, raw) {
-      console.log('The raw response from Mongo was ', raw);
-  });
+  if(req.body.variabilitySliderOneValue){
+    IdeaSeed.update({_id : req.session.idea}, {variabilityOne : req.body.variabilitySliderOneValue,
+      variabilityProblem : req.body.variabilityProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  } else {
+    IdeaSeed.update({_id : req.session.idea}, {variabilityProblem : req.body.variabilityProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  }
   Account.findById( req.user.id,
     function (err, account) {
       account.einsteinPoints = account.einsteinPoints + 5;
@@ -455,11 +532,18 @@ router.get('/sensitivity', function(req, res) {
 });
 
 router.post('/sensitivity', function(req, res) {
-  IdeaSeed.update({_id : req.session.idea}, {sensitivityOne : req.body.sensitivitySliderOneValue,
-    sensitivityProblem : req.body.sensitivityProblem},
-    { multi: false }, function (err, raw) {
-      console.log('The raw response from Mongo was ', raw);
-  });
+  if(req.body.sensitivitySliderOneValue){
+    IdeaSeed.update({_id : req.session.idea}, {sensitivityOne : req.body.sensitivitySliderOneValue,
+      sensitivityProblem : req.body.sensitivityProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  } else {
+    IdeaSeed.update({_id : req.session.idea}, {sensitivityProblem : req.body.sensitivityProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  }
   Account.findById( req.user.id,
     function (err, account) {
       account.einsteinPoints = account.einsteinPoints + 5;
@@ -479,11 +563,18 @@ router.get('/immaturity', function(req, res) {
 });
 
 router.post('/immaturity', function(req, res) {
-  IdeaSeed.update({_id : req.session.idea}, {immatureOne : req.body.immatureSliderOneValue,
-    immatureProblem : req.body.immatureProblem},
-    { multi: false }, function (err, raw) {
-      console.log('The raw response from Mongo was ', raw);
-  });
+  if(req.body.immatureSliderOneValue){
+    IdeaSeed.update({_id : req.session.idea}, {immatureOne : req.body.immatureSliderOneValue,
+      immatureProblem : req.body.immatureProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  } else {
+    IdeaSeed.update({_id : req.session.idea}, {immatureProblem : req.body.immatureProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  }
   Account.findById( req.user.id,
     function (err, account) {
       account.einsteinPoints = account.einsteinPoints + 5;
@@ -503,11 +594,18 @@ router.get('/dangerous', function(req, res) {
 });
 
 router.post('/dangerous', function(req, res) {
-  IdeaSeed.update({_id : req.session.idea}, {dangerOne : req.body.dangerSliderOneValue,
-    dangerProblem : req.body.dangerProblem},
-    { multi: false }, function (err, raw) {
-      console.log('The raw response from Mongo was ', raw);
-  });
+  if(req.body.dangerSliderOneValue){
+    IdeaSeed.update({_id : req.session.idea}, {dangerOne : req.body.dangerSliderOneValue,
+      dangerProblem : req.body.dangerProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  } else {
+    IdeaSeed.update({_id : req.session.idea}, {dangerProblem : req.body.dangerProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  }
   Account.findById( req.user.id,
     function (err, account) {
       account.einsteinPoints = account.einsteinPoints + 5;
@@ -527,11 +625,18 @@ router.get('/skills', function(req, res) {
 });
 
 router.post('/skills', function(req, res) {
-  IdeaSeed.update({_id : req.session.idea}, {skillsOne : req.body.skillsSliderOneValue,
-    skillsProblem : req.body.skillsProblem},
-    { multi: false }, function (err, raw) {
-      console.log('The raw response from Mongo was ', raw);
-  });
+  if(req.body.skillsSliderOneValue){
+    IdeaSeed.update({_id : req.session.idea}, {skillsOne : req.body.skillsSliderOneValue,
+      skillsProblem : req.body.skillsProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  } else {
+    IdeaSeed.update({_id : req.session.idea}, {skillsProblem : req.body.skillsProblem},
+      { multi: false }, function (err, raw) {
+        console.log('The raw response from Mongo was ', raw);
+    });
+  }
   Account.findById( req.user.id,
     function (err, account) {
       account.einsteinPoints = account.einsteinPoints + 5;
@@ -566,7 +671,7 @@ router.post('/login', passport.authenticate('local'), function(req,res){
 });
 
 router.get('/idea-seed-summary', function(req, res){
-  var currentIdea, 
+  var currentIdea,
     imageURL = "";
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
@@ -590,6 +695,13 @@ router.get('/key-features', function(req, res){
   res.render('pages/key-features', { user : req.user, idea : req.session.idea });
 });
 
+router.get('/idea-summary', function(req, res){
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/idea-summary', { user : req.user, idea : currentIdea });
+  });
+});
+
 router.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/');
@@ -603,7 +715,7 @@ router.get('/logout', function(req, res) {
 // email gets their emails
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-router.get('/auth/google/callback', 
+router.get('/auth/google/callback',
   passport.authenticate('google',{
     successRedirect: '/begin',
     failureRedirect: '/'

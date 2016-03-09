@@ -1,0 +1,235 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body
+  .header
+    span.userName Howdy #{user.username}
+    |  
+    img(src="./avatar.png" height="75" width="75")
+    a.home-logout.btn.btn-default( href="/begin" ) My Profile
+    | 
+    a.home-logout.btn.btn-default( href="/logout" ) Log Out
+
+  .idea-summary
+    h3 Summary of #{idea.name}
+        h2 Name : #{idea.name}
+    h3 Einstein Points Earned : #{user.einsteinPoints}
+    br
+    table.idea-summary
+      tr
+        th Value/Waste
+        th Rating
+        th Problem Statement
+      tr
+        th         
+          a(href="/performability") 
+            h4 Performance
+        td 
+          if idea.performOne
+            h5 #{idea.performOne}
+          else
+            h5 No Value Yet
+        td 
+          if idea.performProblem
+            p #{idea.performProblem}
+          else 
+            p No Value Yet
+      tr
+        th 
+          a(href="/affordability")
+            h4 Affordability
+        td 
+          if idea.affordOne
+            h5 #{idea.affordOne}
+          else
+            h5 No Value Yet
+        td 
+          if idea.affordProblem 
+            p #{idea.affordProblem}
+          else
+            p No Value Yet
+      tr
+        th 
+          a(href="/featurability")
+            h4 Featurability
+        td 
+          if idea.featureOne
+            h5 #{idea.featureOne}
+          else 
+            h5 No Value Yet
+        td 
+          if idea.featureProblem
+            p #{idea.featureProblem}
+          else 
+            p No Value Yet
+      tr
+        th 
+          a(href="/deliverability")
+            h4 Deliverability
+        td 
+          if idea.deliverOne
+            h5 #{idea.deliverOne}
+          else
+            h5 No Value Yet
+        td 
+          if idea.deliverProblem
+            p #{idea.deliverProblem}
+          else
+            p No Value Yet
+      tr
+        th 
+          a(href="/useability")
+            h4 Useability        
+        td 
+          if idea.useabilityOne
+            h5 #{idea.useabilityOne}
+          else 
+            h5 No Value Yet
+        td 
+          if idea.useabilityProblem
+            p #{idea.useabilityProblem}
+          else
+            p No Value Yet
+      tr
+        th 
+          a(href="/maintainability")
+            h4 Maintainability        
+        td 
+          if idea.maintainOne
+            h5 #{idea.maintainOne}
+          else
+            h5 No Value Yet
+        td 
+          if idea.maintainProblem
+            p #{idea.maintainProblem}
+          else
+            p No Value Yet
+      tr
+        th 
+          a(href="/durability")
+            h4 Durability
+        td 
+          if idea.durabilityOne
+            h5 #{idea.durabilityOne}
+          else
+            h5 No Value Yet
+        td 
+          if idea.durabilityProblem
+            p #{idea.durabilityProblem}
+          else
+            p No Value Yet
+      tr
+        th 
+          a(href="/imageability")
+            h4 Imageability
+        td 
+          if idea.imageOne
+            h5 #{idea.imageOne}
+          else 
+            h5 No Value Yet
+        td 
+          if idea.imageProblem
+            p #{idea.imageProblem}
+          else
+            p No Value Yet
+      tr
+        th 
+          a(href="/complexity")
+            h4 Complexity
+        td 
+          if idea.complexOne
+            h5 #{idea.complexOne}
+          else
+            h5 No Value Yet
+        td 
+          if idea.complexProblem
+            p #{idea.complexProblem}
+          else
+            p No Value Yet
+      tr
+        th 
+          a(href="/precision")
+            h4 Precision
+        td 
+          if idea.precisionOne
+            h5 #{idea.precisionOne}
+          else
+            h5 No Value Yet
+        td 
+          if idea.precisionProblem
+            p #{idea.precisionProblem}
+          else
+            p No Value Yet
+      tr
+        th 
+          a(href="/variability")
+            h4 Variability
+        td 
+          if idea.variabilityOne
+            h5 #{idea.variabilityOne}
+          else
+            h5 No Value Yet
+        td 
+          if idea.variabilityProblem
+            p #{idea.variabilityProblem}
+          else
+            p No Value Yet
+      tr
+        th 
+          a(href="/sensitivity")
+            h4 Sensitivity
+        td 
+          if idea.sensitivityOne
+            h5 #{idea.sensitivityOne}
+          else
+            h5 No Value Yet
+        td 
+          if idea.sensitivityProblem
+            p #{idea.sensitivityProblem}
+          else
+            p No Value Yet
+      tr
+        th 
+          a(href="/immaturity")
+            h4 Immaturity
+        td 
+          if idea.immatureOne
+            h5 #{idea.immatureOne}
+          else 
+            h5 No Value Yet
+        td 
+          if idea.immatureProblem
+            p #{idea.immatureProblem}
+          else 
+            p No Value Yet
+      tr
+        th 
+          a(href="/dangerous")
+            h4 Dangerous
+        td 
+          if idea.dangerOne
+            h5 #{idea.dangerOne}
+          else
+            h5 No Value Yet
+        td 
+          if idea.dangerProblem
+            p #{idea.dangerProblem}
+          else
+            p No Value Yet
+      tr
+        th 
+          a(href="/skills")
+            h4 Skills
+        td 
+          if idea.skillsOne
+            h5 #{idea.skillsOne}
+          else
+            h5 No Value Yet
+        td 
+          if idea.skillsProblem
+            p #{idea.skillsProblem}
+          else
+            p No Value Yet
+
+  include ../partials/js-includes.jade

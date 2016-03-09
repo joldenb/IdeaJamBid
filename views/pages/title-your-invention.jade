@@ -7,6 +7,8 @@ html
     span.userName Howdy #{user.username}
     |  
     img(src="./avatar.png" height="75" width="75")
+    a.home-logout.btn.btn-default( href="/begin" ) My Profile
+    | 
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
 
   .container
@@ -21,6 +23,7 @@ html
     form(role='form', id="formTitleYourInvention" action="/title-your-invention", method="post", style='max-width: 300px;', data-idea-doc=idea)
       h3 Using only words from your answers, what is the title of your invention?
       textarea.form-control(rows='6', cols="75", name="inventionName", placeholder='What is your idea for...')
+      br
       button.btn.btn-success(type='submit') Continue >
 
   include ../partials/js-includes.jade

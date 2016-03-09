@@ -7,6 +7,8 @@ html
     span.userName Howdy #{user.username}
     |  
     img(src="./avatar.png" height="75" width="75")
+    a.home-logout.btn.btn-default( href="/begin" ) My Profile
+    | 
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
 
   .container.scoreIdea
@@ -24,7 +26,11 @@ html
       br
       h4 Why is your idea difficult to learn how to use?
       textarea.form-control(rows='6', cols="75", name="useabilityProblem", placeholder='Describe the problem...')
+        if idea.useabilityProblem
+          | #{idea.useabilityProblem}
       br
+      a(href="/idea-summary").btn.btn-info View All
+      |  
       button.btn.btn-success Continue >
       br
       br
@@ -35,7 +41,8 @@ html
     var labelArr = _.range(101).map(function(number){
       return number.toString();
     });
-    var initialValue=50, min=1, max=100;
+    var initialValue, min=1, max=100, valueEntered=false;
+    initialValue = "#{idea.useabilityOne}" || 50;
 
     ////////////////////////////////////////////
     // SET UP SLIDER ONE
@@ -46,6 +53,7 @@ html
       max: max,
       step: 1,
       slide: function( event, ui ) {
+          valueEntered = true;
           $("#useabilityLabelOne").text(labelArr[ui.value]);
           $("#useabilityLabelOne").css("margin-left", (ui.value-min)/(max-min)*100+"%");
           $("#useabilityLabelOne").css("left", "-50px");
@@ -56,9 +64,13 @@ html
     $("#useabilityLabelOne").css("left", "-50px");
 
     $("button.btn-success").click(function(event){
-      var sliderOneValue = $("#useabilitySliderOne").slider("value");
-      var inputOne = $("<input>")
-               .attr("type", "hidden")
-               .attr("name", "useabilitySliderOneValue").val(sliderOneValue);
-      $('#formUseability').append($(inputOne)).submit();
+      if(valueEntered){
+        var sliderOneValue = $("#useabilitySliderOne").slider("value");
+        var inputOne = $("<input>")
+                 .attr("type", "hidden")
+                 .attr("name", "useabilitySliderOneValue").val(sliderOneValue);
+        $('#formUseability').append($(inputOne)).submit();
+      } else {
+        $('#formUseability').submit();
+      }
     });

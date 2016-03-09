@@ -154,6 +154,12 @@ td {
   border:1px solid gray;
 }
 
+table.idea-summary {
+  max-width : 50%;
+  margin: 0 auto;
+  padding-bottom: 3em;
+}
+
 img.summary-image {
   width:100%;
   height:auto;

@@ -7,6 +7,8 @@ html
     span.userName Howdy #{user.username}
     |  
     img(src="./avatar.png" height="75" width="75")
+    a.home-logout.btn.btn-default( href="/begin" ) My Profile
+    | 
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
 
   .container.scoreIdea
@@ -24,7 +26,11 @@ html
       br
       h4 What kinds of issues prevent having a clear image of the idea?
       textarea.form-control(rows='6', cols="75", name="imageProblem", placeholder='Describe the problem...')
+        if idea.imageProblem
+          | #{idea.imageProblem}
       br
+      a(href="/idea-summary").btn.btn-info View All
+      |  
       button.btn.btn-success Continue >
       br
       br
@@ -35,7 +41,8 @@ html
     var labelArr = _.range(101).map(function(number){
       return number.toString();
     });
-    var initialValue=50, min=1, max=100;
+    var initialValue, min=1, max=100, valueEntered = false;
+    initialValue = '#{idea.imageOne}' || 50;
 
     ////////////////////////////////////////////
     // SET UP SLIDER ONE
@@ -46,6 +53,7 @@ html
       max: max,
       step: 1,
       slide: function( event, ui ) {
+          valueEntered = true;
           $("#imageabilityLabelOne").text(labelArr[ui.value]);
           $("#imageabilityLabelOne").css("margin-left", (ui.value-min)/(max-min)*100+"%");
           $("#imageabilityLabelOne").css("left", "-50px");
@@ -56,9 +64,13 @@ html
     $("#imageabilityLabelOne").css("left", "-50px");
 
     $("button.btn-success").click(function(event){
-      var sliderOneValue = $("#imageabilitySliderOne").slider("value");
-      var inputOne = $("<input>")
-               .attr("type", "hidden")
-               .attr("name", "imageSliderOneValue").val(sliderOneValue);
-      $('#formImageability').append($(inputOne)).submit();
+      if(valueEntered){
+        var sliderOneValue = $("#imageabilitySliderOne").slider("value");
+        var inputOne = $("<input>")
+                 .attr("type", "hidden")
+                 .attr("name", "imageSliderOneValue").val(sliderOneValue);
+        $('#formImageability').append($(inputOne)).submit();
+      } else {
+        $('#formImageability').submit();
+      }    
     });

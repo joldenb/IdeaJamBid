@@ -7,6 +7,8 @@ html
     span.userName Howdy #{user.username}
     |  
     img(src="./avatar.png" height="75" width="75")
+    a.home-logout.btn.btn-default( href="/begin" ) My Profile
+    | 
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
 
   div.profile-info
@@ -26,6 +28,8 @@ html
           li
             a()
               h4= val
+    else
+      h4 None so far.
     a.home-login.btn.btn-success( href="/introduce-idea" ) Begin a New Idea > 
 
   include ../partials/js-includes.jade

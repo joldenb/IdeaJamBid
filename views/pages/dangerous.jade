@@ -7,6 +7,8 @@ html
     span.userName Howdy #{user.username}
     |  
     img(src="./avatar.png" height="75" width="75")
+    a.home-logout.btn.btn-default( href="/begin" ) My Profile
+    | 
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
 
   .container.scoreIdea
@@ -24,7 +26,11 @@ html
       br
       h4 Why can't your idea be made any safer?
       textarea.form-control(rows='6', cols="75", name="dangerProblem", placeholder='Describe the problem...')
+        if idea.dangerProblem
+          | #{idea.dangerProblem}
       br
+      a(href="/idea-summary").btn.btn-info View All
+      |  
       button.btn.btn-success Continue >
       br
       br
@@ -35,7 +41,8 @@ html
     var labelArr = _.range(101).map(function(number){
       return number.toString();
     });
-    var initialValue=50, min=1, max=100;
+    var initialValue, min=1, max=100, valueEntered=false;
+    initialValue = '#{idea.complexOne}' || 50;
 
     ////////////////////////////////////////////
     // SET UP SLIDER ONE
@@ -46,6 +53,7 @@ html
       max: max,
       step: 1,
       slide: function( event, ui ) {
+          valueEntered = true;
           $("#dangerousLabelOne").text(labelArr[ui.value]);
           $("#dangerousLabelOne").css("margin-left", (ui.value-min)/(max-min)*100+"%");
           $("#dangerousLabelOne").css("left", "-50px");
@@ -56,9 +64,13 @@ html
     $("#dangerousLabelOne").css("left", "-50px");
 
     $("button.btn-success").click(function(event){
-      var sliderOneValue = $("#dangerousSliderOne").slider("value");
-      var inputOne = $("<input>")
-               .attr("type", "hidden")
-               .attr("name", "dangerSliderOneValue").val(sliderOneValue);
-      $('#formDangerous').append($(inputOne)).submit();
+      if(valueEntered){
+        var sliderOneValue = $("#dangerousSliderOne").slider("value");
+        var inputOne = $("<input>")
+                 .attr("type", "hidden")
+                 .attr("name", "dangerSliderOneValue").val(sliderOneValue);
+        $('#formDangerous').append($(inputOne)).submit();
+      } else {
+        $('#formDangerous').submit();
+      }
     });
