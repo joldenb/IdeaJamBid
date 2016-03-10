@@ -140,7 +140,7 @@ router.post('/title-your-invention', function(req, res) {
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
   });
-  res.redirect('/problem-solver');
+  res.redirect('/image-upload');
 });
 
 router.get('/problem-solver', function(req, res){
