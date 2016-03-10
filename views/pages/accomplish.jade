@@ -13,13 +13,13 @@ html
 
   .container
     h1 What's your Idea?
-    form(role='form', id="formIntroduceIdea" action="/introduce-idea", method="post", style='max-width: 300px;', data-idea-doc=idea)
+    form(role='form', id="formAccomplish" action="/accomplish", method="post", style='max-width: 300px;', data-idea-doc=idea)
       .form-group
-        h3 What challenge does your idea solve? 
+        h3 How does your idea solve the challenge of #{idea.problem}?
         |  
-        textarea.form-control(rows='6', cols="75", name="purposeFor", placeholder='The challenge of...')
+        textarea.form-control(rows='6', cols="75", name="purposeHow", placeholder='How will it...')
         br
-        h4 Ex. Snow melting when it’s not cold enough outside  
+        h4 Ex. A chemical composition that resists melting but preserves the other qualities of snow.
       button.btn.btn-success(type='submit') Continue >
       |  
 

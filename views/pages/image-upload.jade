@@ -13,14 +13,16 @@ html
 
   .container
     h1 Upload an Image
-    form(role='form', id="formImageUpload" action="/image-upload", method="post", style='max-width: 300px;', data-idea-doc=idea, enctype="multipart/form-data")
+    form(role='form', id="formImageUpload" action="/image-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
       .form-group
-        h3 Upload an Image of your Invention
+        h3 If you have a napkin sketch, finger paint, watercolor, engineering sketch, or anything in between, any graphical representation of the concept can help you and others define and improve your #{idea.name}. If you can quickly sketch something out on printer paper and take a photo of it, or have another graphic, upload it here (and begin to earn Einstein points!)
         |  
         input(type="file", name="picture")
         br
-        button.btn.btn-success(type='submit') Upload >
-      |  
+        button.btn.btn-success(type='submit') Upload (+10) >
+        |  
+        a.btn.btn-default( href="/idea-seed-summary" ) Skip > 
+
 
 
   include ../partials/js-includes.jade

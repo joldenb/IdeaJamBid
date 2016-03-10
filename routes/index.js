@@ -121,7 +121,22 @@ router.get('/introduce-idea', function(req, res) {
 });
 
 router.post('/introduce-idea', function(req, res) {
-  IdeaSeed.update({_id : req.session.idea}, {purposeFor : req.body.purposeFor, purposeHow : req.body.purposeHow},
+  IdeaSeed.update({_id : req.session.idea}, {problem : req.body.purposeFor},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/accomplish');
+});
+
+router.get('/accomplish', function(req, res) {
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/accomplish', { user : req.user, idea : currentIdea });
+  });
+});
+
+router.post('/accomplish', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {description : req.body.purposeHow},
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
   });
@@ -156,7 +171,10 @@ router.post('/problem-solver', function(req, res) {
 });
 
 router.get('/image-upload', function(req, res){
-  res.render('pages/image-upload', { user : req.user, idea : req.session.idea });
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    res.render('pages/image-upload', { user : req.user, idea : currentIdea });
+  });
 });
 
 router.post('/image-upload', uploading.single('picture'), function(req, res) {
@@ -195,7 +213,12 @@ router.post('/performability', function(req, res) {
   }
   Account.findById( req.user.id,
     function (err, account) {
-      account.einsteinPoints = account.einsteinPoints + 5;
+      if(req.body.perfSliderOneValue){
+        account.einsteinPoints = account.einsteinPoints + 5;
+      }
+      if(req.body.performProblem){
+        account.einsteinPoints = account.einsteinPoints + 10;
+      }
       account.save(function (err) {
       });
   });
@@ -227,7 +250,12 @@ router.post('/affordability', function(req, res) {
   }
   Account.findById( req.user.id,
     function (err, account) {
-      account.einsteinPoints = account.einsteinPoints + 5;
+      if(req.body.affordSliderOneValue){
+        account.einsteinPoints = account.einsteinPoints + 5;
+      }
+      if(req.body.affordProblem){
+        account.einsteinPoints = account.einsteinPoints + 10;
+      }
       account.save(function (err) {
       });
   });
@@ -260,7 +288,12 @@ router.post('/featurability', function(req, res) {
   }
   Account.findById( req.user.id,
     function (err, account) {
-      account.einsteinPoints = account.einsteinPoints + 5;
+      if(req.body.featureSliderOneValue){
+        account.einsteinPoints = account.einsteinPoints + 5;
+      }
+      if(req.body.featureProblem){
+        account.einsteinPoints = account.einsteinPoints + 10;
+      }
       account.save(function (err) {
       });
   });
@@ -292,7 +325,12 @@ router.post('/deliverability', function(req, res) {
   }
   Account.findById( req.user.id,
     function (err, account) {
-      account.einsteinPoints = account.einsteinPoints + 5;
+      if(req.body.deliverSliderOneValue){
+        account.einsteinPoints = account.einsteinPoints + 5;
+      }
+      if(req.body.deliverProblem){
+        account.einsteinPoints = account.einsteinPoints + 10;
+      }
       account.save(function (err) {
       });
   });
@@ -324,7 +362,12 @@ router.post('/useability', function(req, res) {
   }
   Account.findById( req.user.id,
     function (err, account) {
-      account.einsteinPoints = account.einsteinPoints + 5;
+      if(req.body.useabilitySliderOneValue){
+        account.einsteinPoints = account.einsteinPoints + 5;
+      }
+      if(req.body.useabilityProblem){
+        account.einsteinPoints = account.einsteinPoints + 10;
+      }
       account.save(function (err) {
       });
   });
@@ -356,7 +399,12 @@ router.post('/maintainability', function(req, res) {
   }
   Account.findById( req.user.id,
     function (err, account) {
-      account.einsteinPoints = account.einsteinPoints + 5;
+      if(req.body.maintainSliderOneValue){
+        account.einsteinPoints = account.einsteinPoints + 5;
+      }
+      if(req.body.maintainProblem){
+        account.einsteinPoints = account.einsteinPoints + 10;
+      }
       account.save(function (err) {
       });
   });
@@ -388,7 +436,12 @@ router.post('/durability', function(req, res) {
   }
   Account.findById( req.user.id,
     function (err, account) {
-      account.einsteinPoints = account.einsteinPoints + 5;
+      if(req.body.durabilitySliderOneValue){
+        account.einsteinPoints = account.einsteinPoints + 5;
+      }
+      if(req.body.durabilityProblem){
+        account.einsteinPoints = account.einsteinPoints + 10;
+      }
       account.save(function (err) {
       });
   });
@@ -420,7 +473,12 @@ router.post('/imageability', function(req, res) {
   }
   Account.findById( req.user.id,
     function (err, account) {
-      account.einsteinPoints = account.einsteinPoints + 5;
+      if(req.body.imageSliderOneValue){
+        account.einsteinPoints = account.einsteinPoints + 5;
+      }
+      if(req.body.imageProblem){
+        account.einsteinPoints = account.einsteinPoints + 10;
+      }
       account.save(function (err) {
       });
   });
@@ -452,7 +510,12 @@ router.post('/complexity', function(req, res) {
   }
   Account.findById( req.user.id,
     function (err, account) {
-      account.einsteinPoints = account.einsteinPoints + 5;
+      if(req.body.complexSliderOneValue){
+        account.einsteinPoints = account.einsteinPoints + 5;
+      }
+      if(req.body.complexProblem){
+        account.einsteinPoints = account.einsteinPoints + 10;
+      }
       account.save(function (err) {
       });
   });
@@ -484,7 +547,12 @@ router.post('/precision', function(req, res) {
   }
   Account.findById( req.user.id,
     function (err, account) {
-      account.einsteinPoints = account.einsteinPoints + 5;
+      if(req.body.precisionSliderOneValue){
+        account.einsteinPoints = account.einsteinPoints + 5;
+      }
+      if(req.body.precisionProblem){
+        account.einsteinPoints = account.einsteinPoints + 10;
+      }
       account.save(function (err) {
       });
   });
@@ -515,7 +583,12 @@ router.post('/variability', function(req, res) {
   }
   Account.findById( req.user.id,
     function (err, account) {
-      account.einsteinPoints = account.einsteinPoints + 5;
+      if(req.body.variabilitySliderOneValue){
+        account.einsteinPoints = account.einsteinPoints + 5;
+      }
+      if(req.body.variabilityProblem){
+        account.einsteinPoints = account.einsteinPoints + 10;
+      }
       account.save(function (err) {
       });
   });
@@ -546,7 +619,12 @@ router.post('/sensitivity', function(req, res) {
   }
   Account.findById( req.user.id,
     function (err, account) {
-      account.einsteinPoints = account.einsteinPoints + 5;
+      if(req.body.sensitivitySliderOneValue){
+        account.einsteinPoints = account.einsteinPoints + 5;
+      }
+      if(req.body.sensitivityProblem){
+        account.einsteinPoints = account.einsteinPoints + 10;
+      }
       account.save(function (err) {
       });
   });
@@ -577,7 +655,12 @@ router.post('/immaturity', function(req, res) {
   }
   Account.findById( req.user.id,
     function (err, account) {
-      account.einsteinPoints = account.einsteinPoints + 5;
+      if(req.body.immatureSliderOneValue){
+        account.einsteinPoints = account.einsteinPoints + 5;
+      }
+      if(req.body.immatureProblem){
+        account.einsteinPoints = account.einsteinPoints + 10;
+      }
       account.save(function (err) {
       });
   });
@@ -608,7 +691,12 @@ router.post('/dangerous', function(req, res) {
   }
   Account.findById( req.user.id,
     function (err, account) {
-      account.einsteinPoints = account.einsteinPoints + 5;
+      if(req.body.dangerSliderOneValue){
+        account.einsteinPoints = account.einsteinPoints + 5;
+      }
+      if(req.body.dangerProblem){
+        account.einsteinPoints = account.einsteinPoints + 10;
+      }
       account.save(function (err) {
       });
   });
@@ -639,7 +727,12 @@ router.post('/skills', function(req, res) {
   }
   Account.findById( req.user.id,
     function (err, account) {
-      account.einsteinPoints = account.einsteinPoints + 5;
+      if(req.body.skillsSliderOneValue){
+        account.einsteinPoints = account.einsteinPoints + 5;
+      }
+      if(req.body.skillsProblem){
+        account.einsteinPoints = account.einsteinPoints + 10;
+      }
       account.save(function (err) {
       });
   });
