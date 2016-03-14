@@ -80,6 +80,9 @@ IdeaSeed.statics.createApplication = function(idea, account, res){
 
 		var pObj = docx.createP ({ align: 'center' });
 		pObj.addText ( 'Preliminary Application for', { font_size: 30 } );
+		pObj = docx.createP ({ align: 'center' });
+		pObj.addText( '', { font_size : 25 } );
+		pObj = docx.createP ({ align: 'center' });
 		pObj.addText ( idea.name, { font_size: 30 } );
 		pObj = docx.createP ({ align: 'center' });
 		pObj.addText( '', { font_size : 25 } );

@@ -736,7 +736,7 @@ router.post('/skills', function(req, res) {
       account.save(function (err) {
       });
   });
-  res.redirect('/suggestion-summary');
+  res.redirect('/idea-summary');
 });
 
 router.get('/suggestion-summary', function(req, res){
