@@ -62,29 +62,117 @@ var IdeaSeed = new Schema({
 	skillsProblem		: String
 });
 
-IdeaSeed.statics.createApplication = function(idea, res){
-	var docx = officegen ( 'docx' );
+IdeaSeed.statics.createApplication = function(idea, account, res){
+		res.writeHead ( 200, {
+			"Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+			'Content-disposition': 'attachment; filename=PreliminaryApplication.docx'
+		});
 
-	var pObj = docx.createP ();
-    pObj.addText ( 'Simple' );
-    var out = fs.createWriteStream ( './public/output.docx' );
+		var docx = officegen ( 'docx' );
 
-	docx.generate ( out, {
-		'finalize': function ( written ) {
+		docx.on ( 'finalize', function ( written ) {
 			console.log ( 'Finish to create a Word file.\nTotal bytes created: ' + written + '\n' );
-			res.download(__dirname + '/../public/output.docx', 'outputOne.docx', function(err){
-				if (err) {
-					console.log('my error is' + err);
-				} else {
-					console.log('yay');
-				}
-			});
-		},
-		'error': function ( err ) {
-			console.log ( err );
-		}
-	});
-	return '/public/output.docx';
+		});
+
+		docx.on ( 'error', function ( err ) {
+			console.log ( 'Errors: ' + err + '\n' );
+		});
+
+		var pObj = docx.createP ({ align: 'center' });
+		pObj.addText ( 'Preliminary Application for', { font_size: 30 } );
+		pObj.addText ( idea.name, { font_size: 30 } );
+		pObj = docx.createP ({ align: 'center' });
+		pObj.addText( '', { font_size : 25 } );
+		pObj = docx.createP ({ align: 'center' });
+		pObj.addText( 'By : ', { font_size : 25 } );
+		pObj = docx.createP ({ align: 'center' });
+		pObj.addText( account.username, { font_size : 25 } );
+
+		docx.putPageBreak ();
+
+		pObj = docx.createP ();
+		pObj.addText( 'Idea Description', { font_size : 25 } );
+		pObj = docx.createP ();
+		pObj.addText( idea.description, {font_size : 14});
+		pObj = docx.createP ();
+		pObj.addText( '', { font_size : 25 } );
+		pObj = docx.createP ();
+		pObj.addText( 'Problem It Will Solve', { font_size : 25 } );
+		pObj = docx.createP ();
+		pObj.addText( idea.problem, {font_size : 14});
+
+		docx.putPageBreak ();
+
+		pObj = docx.createP ();
+		pObj.addText( 'Value Scores and Problems', { font_size : 25 } );
+		pObj = docx.createP ();
+		pObj.addText( "Performability: " + idea.performOne, {font_size : 18});
+		pObj = docx.createP ();
+		pObj.addText( idea.performProblem, { font_size : 14 } );
+		pObj = docx.createP ();
+		pObj.addText( "Affordability: " + idea.affordOne, {font_size : 18});
+		pObj = docx.createP ();
+		pObj.addText( idea.affordProblem, { font_size : 14 } );
+		pObj = docx.createP ();
+		pObj.addText( "Featurability: " + idea.featureOne, {font_size : 18});
+		pObj = docx.createP ();
+		pObj.addText( idea.featureProblem, { font_size : 14 } );
+		pObj = docx.createP ();
+		pObj.addText( "Deliverability: " + idea.deliverOne, {font_size : 18});
+		pObj = docx.createP ();
+		pObj.addText( idea.deliverProblem, { font_size : 14 } );
+		pObj = docx.createP ();
+		pObj.addText( "Useability: " + idea.useabilityOne, {font_size : 18});
+		pObj = docx.createP ();
+		pObj.addText( idea.useabilityProblem, { font_size : 14 } );
+		pObj = docx.createP ();
+		pObj.addText( "Maintainability: " + idea.maintainOne, {font_size : 18});
+		pObj = docx.createP ();
+		pObj.addText( idea.maintainProblem, { font_size : 14 } );
+		pObj = docx.createP ();
+		pObj.addText( "Durability: " + idea.durabilityOne, {font_size : 18});
+		pObj = docx.createP ();
+		pObj.addText( idea.durabilityProblem, { font_size : 14 } );
+		pObj = docx.createP ();
+		pObj.addText( "Imageability: " + idea.imageOne, {font_size : 18});
+		pObj = docx.createP ();
+		pObj.addText( idea.imageProblem, { font_size : 14 } );
+
+		docx.putPageBreak ();
+
+		pObj = docx.createP ();
+		pObj.addText( 'Waste Scores and Problems', { font_size : 25 } );
+		pObj = docx.createP ();
+		pObj.addText( "Complexity: " + idea.complexOne, {font_size : 18});
+		pObj = docx.createP ();
+		pObj.addText( idea.complexProblem, { font_size : 14 } );
+		pObj = docx.createP ();
+		pObj.addText( "Precision: " + idea.precisionOne, {font_size : 18});
+		pObj = docx.createP ();
+		pObj.addText( idea.precisionProblem, { font_size : 14 } );
+		pObj = docx.createP ();
+		pObj.addText( "Variability: " + idea.variabilityOne, {font_size : 18});
+		pObj = docx.createP ();
+		pObj.addText( idea.variabilityProblem, { font_size : 14 } );
+		pObj = docx.createP ();
+		pObj.addText( "Sensitivity: " + idea.sensitivityOne, {font_size : 18});
+		pObj = docx.createP ();
+		pObj.addText( idea.sensitivityProblem, { font_size : 14 } );
+		pObj = docx.createP ();
+		pObj.addText( "Immaturity: " + idea.immatureOne, {font_size : 18});
+		pObj = docx.createP ();
+		pObj.addText( idea.immatureProblem, { font_size : 14 } );
+		pObj = docx.createP ();
+		pObj.addText( "Danger: " + idea.dangerOne, {font_size : 18});
+		pObj = docx.createP ();
+		pObj.addText( idea.dangerProblem, { font_size : 14 } );
+		pObj = docx.createP ();
+		pObj.addText( "Skills Required: " + idea.skillsOne, {font_size : 18});
+		pObj = docx.createP ();
+		pObj.addText( idea.skillsProblem, { font_size : 14 } );
+
+		docx.generate ( res );
+
 };
 
 module.exports = mongoose.model('IdeaSeed', IdeaSeed);

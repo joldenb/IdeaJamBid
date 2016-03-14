@@ -803,7 +803,16 @@ router.get('/idea-summary', function(req, res){
 });
 
 router.get('/create-application', function(req, res){
-  IdeaSeed.createApplication(req.session.idea, res);
+  var currentAccount;
+  Account.findById( req.user.id,
+    function (err, account) {
+      currentAccount = account._doc;
+  });
+
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    IdeaSeed.createApplication(currentIdea, currentAccount, res);
+  });
 });
 
 router.get('/logout', function(req, res) {
