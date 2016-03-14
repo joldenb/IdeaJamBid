@@ -78,6 +78,7 @@ IdeaSeed.statics.createApplication = function(idea, account, res){
 			console.log ( 'Errors: ' + err + '\n' );
 		});
 
+
 		var pObj = docx.createP ({ align: 'center' });
 		pObj.addText ( 'Preliminary Application for', { font_size: 30 } );
 		pObj = docx.createP ({ align: 'center' });
