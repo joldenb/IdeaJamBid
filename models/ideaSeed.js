@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
+var officegen = require('officegen');
+var fs = require('fs');
 
 var IdeaSeed = new Schema({
 	name			: String,
@@ -60,5 +62,29 @@ var IdeaSeed = new Schema({
 	skillsProblem		: String
 });
 
+IdeaSeed.statics.createApplication = function(idea, res){
+	var docx = officegen ( 'docx' );
+
+	var pObj = docx.createP ();
+    pObj.addText ( 'Simple' );
+    var out = fs.createWriteStream ( './public/output.docx' );
+
+	docx.generate ( out, {
+		'finalize': function ( written ) {
+			console.log ( 'Finish to create a Word file.\nTotal bytes created: ' + written + '\n' );
+			res.download(__dirname + '/../public/output.docx', 'outputOne.docx', function(err){
+				if (err) {
+					console.log('my error is' + err);
+				} else {
+					console.log('yay');
+				}
+			});
+		},
+		'error': function ( err ) {
+			console.log ( err );
+		}
+	});
+	return '/public/output.docx';
+};
 
 module.exports = mongoose.model('IdeaSeed', IdeaSeed);

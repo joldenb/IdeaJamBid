@@ -802,6 +802,10 @@ router.get('/idea-summary', function(req, res){
   });
 });
 
+router.get('/create-application', function(req, res){
+  IdeaSeed.createApplication(req.session.idea, res);
+});
+
 router.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/');
