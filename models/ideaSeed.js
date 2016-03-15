@@ -97,83 +97,121 @@ IdeaSeed.statics.createApplication = function(idea, account, res){
 		pObj = docx.createP ();
 		pObj.addText( 'Idea Description', { font_size : 25 } );
 		pObj = docx.createP ();
-		pObj.addText( idea.description, {font_size : 14});
+		if(idea.description){
+			pObj.addText( idea.description, {font_size : 14});
+		} else {
+			pObj.addText( "No idea description entered yet.", {font_size : 14});
+		}
 		pObj = docx.createP ();
 		pObj.addText( '', { font_size : 25 } );
 		pObj = docx.createP ();
 		pObj.addText( 'Problem It Will Solve', { font_size : 25 } );
 		pObj = docx.createP ();
-		pObj.addText( idea.problem, {font_size : 14});
+		if(idea.problem){
+			pObj.addText( idea.problem, {font_size : 14});
+		} else {
+			pObj.addText( "No idea problem entered yet.", {font_size : 14});
+		}
 
 		docx.putPageBreak ();
 
 		pObj = docx.createP ();
 		pObj.addText( 'Value Scores and Problems', { font_size : 25 } );
+		
 		pObj = docx.createP ();
-		pObj.addText( "Performability: " + idea.performOne, {font_size : 18});
+		var performance = idea.performOne || "No value yet entered";
+		pObj.addText( "Performability Rating: " + performance, {font_size : 18});
 		pObj = docx.createP ();
-		pObj.addText( idea.performProblem, { font_size : 14 } );
+		pObj.addText( "Performability Problem: " + idea.performProblem, { font_size : 14 } );
+		
 		pObj = docx.createP ();
-		pObj.addText( "Affordability: " + idea.affordOne, {font_size : 18});
+		var afford = idea.affordOne || "No value yet entered";
+		pObj.addText( "Affordability Rating: " + afford, {font_size : 18});
 		pObj = docx.createP ();
-		pObj.addText( idea.affordProblem, { font_size : 14 } );
+		pObj.addText( "Affordability Problem: " + idea.affordProblem, { font_size : 14 } );
+		
 		pObj = docx.createP ();
-		pObj.addText( "Featurability: " + idea.featureOne, {font_size : 18});
+		var feature = idea.featureOne || "No value yet entered";
+		pObj.addText( "Featurability Rating: " + feature, {font_size : 18});
 		pObj = docx.createP ();
-		pObj.addText( idea.featureProblem, { font_size : 14 } );
+		pObj.addText( "Featurability Problem: " + idea.featureProblem, { font_size : 14 } );
+		
 		pObj = docx.createP ();
-		pObj.addText( "Deliverability: " + idea.deliverOne, {font_size : 18});
+		var deliver = idea.deliverOne || "No value yet entered";
+		pObj.addText( "Deliverability Rating: " + deliver, {font_size : 18});
 		pObj = docx.createP ();
-		pObj.addText( idea.deliverProblem, { font_size : 14 } );
+		pObj.addText( "Deliverability Problem: " + idea.deliverProblem, { font_size : 14 } );
+		
 		pObj = docx.createP ();
-		pObj.addText( "Useability: " + idea.useabilityOne, {font_size : 18});
+		var useability = idea.useabilityOne || "No value yet entered";
+		pObj.addText( "Useability Rating: " + useability, {font_size : 18});
 		pObj = docx.createP ();
-		pObj.addText( idea.useabilityProblem, { font_size : 14 } );
+		pObj.addText( "Useability Problem: " + idea.useabilityProblem, { font_size : 14 } );
+		
 		pObj = docx.createP ();
-		pObj.addText( "Maintainability: " + idea.maintainOne, {font_size : 18});
+		var maintain = idea.maintainOne || "No value yet entered";
+		pObj.addText( "Maintainability Rating: " + maintain, {font_size : 18});
 		pObj = docx.createP ();
-		pObj.addText( idea.maintainProblem, { font_size : 14 } );
+		pObj.addText( "Maintainability Problem: " + idea.maintainProblem, { font_size : 14 } );
+		
 		pObj = docx.createP ();
-		pObj.addText( "Durability: " + idea.durabilityOne, {font_size : 18});
+		var durable = idea.durabilityOne || "No value yet entered";
+		pObj.addText( "Durability Rating: " + durable, {font_size : 18});
 		pObj = docx.createP ();
-		pObj.addText( idea.durabilityProblem, { font_size : 14 } );
+		pObj.addText( "Durability Problem: " + idea.durabilityProblem, { font_size : 14 } );
+		
 		pObj = docx.createP ();
-		pObj.addText( "Imageability: " + idea.imageOne, {font_size : 18});
+		var image = idea.imageOne || "No value yet entered";
+		pObj.addText( "Imageability Rating: " + image, {font_size : 18});
 		pObj = docx.createP ();
-		pObj.addText( idea.imageProblem, { font_size : 14 } );
+		pObj.addText( "Imageability Problem: " + idea.imageProblem, { font_size : 14 } );
 
 		docx.putPageBreak ();
 
 		pObj = docx.createP ();
 		pObj.addText( 'Waste Scores and Problems', { font_size : 25 } );
+		
 		pObj = docx.createP ();
-		pObj.addText( "Complexity: " + idea.complexOne, {font_size : 18});
+		var complex = idea.complexOne || "No value yet entered";
+		pObj.addText( "Complexity Rating: " + complex, {font_size : 18});
 		pObj = docx.createP ();
-		pObj.addText( idea.complexProblem, { font_size : 14 } );
+		pObj.addText( "Complexity Problem: " + idea.complexProblem, { font_size : 14 } );
+
 		pObj = docx.createP ();
-		pObj.addText( "Precision: " + idea.precisionOne, {font_size : 18});
+		var precise = idea.precisionOne || "No value yet entered";
+		pObj.addText( "Precision Rating: " + precise, {font_size : 18});
 		pObj = docx.createP ();
-		pObj.addText( idea.precisionProblem, { font_size : 14 } );
+		pObj.addText( "Precision Problem: " + idea.precisionProblem, { font_size : 14 } );
+
 		pObj = docx.createP ();
-		pObj.addText( "Variability: " + idea.variabilityOne, {font_size : 18});
+		var variable = idea.variabilityOne || "No value yet entered";
+		pObj.addText( "Variability Rating: " + variable, {font_size : 18});
 		pObj = docx.createP ();
-		pObj.addText( idea.variabilityProblem, { font_size : 14 } );
+		pObj.addText( "Variability Problem: " + idea.variabilityProblem, { font_size : 14 } );
+		
 		pObj = docx.createP ();
-		pObj.addText( "Sensitivity: " + idea.sensitivityOne, {font_size : 18});
+		var sensitive = idea.sensitivityOne || "No value yet entered";
+		pObj.addText( "Sensitivity Rating: " + sensitive, {font_size : 18});
 		pObj = docx.createP ();
-		pObj.addText( idea.sensitivityProblem, { font_size : 14 } );
+		pObj.addText( "Sensitivity Problem: " + idea.sensitivityProblem, { font_size : 14 } );
+
 		pObj = docx.createP ();
-		pObj.addText( "Immaturity: " + idea.immatureOne, {font_size : 18});
+		var immature = idea.immatureOne || "No value yet entered";
+		pObj.addText( "Immaturity Rating: " + immature, {font_size : 18});
 		pObj = docx.createP ();
-		pObj.addText( idea.immatureProblem, { font_size : 14 } );
+		pObj.addText( "Immaturity Problem: " + idea.immatureProblem, { font_size : 14 } );
+
 		pObj = docx.createP ();
-		pObj.addText( "Danger: " + idea.dangerOne, {font_size : 18});
+		var danger = idea.dangerOne || "No value yet entered";
+		pObj.addText( "Danger Rating: " + danger, {font_size : 18});
 		pObj = docx.createP ();
-		pObj.addText( idea.dangerProblem, { font_size : 14 } );
+		pObj.addText( "Danger Problem: " + idea.dangerProblem, { font_size : 14 } );
+
 		pObj = docx.createP ();
-		pObj.addText( "Skills Required: " + idea.skillsOne, {font_size : 18});
+		var skills = idea.skillsOne || "No value yet entered";
+		pObj.addText( "Skills Required Rating: " + skills, {font_size : 18});
 		pObj = docx.createP ();
-		pObj.addText( idea.skillsProblem, { font_size : 14 } );
+		pObj.addText( "Skills Required Problem: " + idea.skillsProblem, { font_size : 14 } );
 
 		docx.generate ( res );
 

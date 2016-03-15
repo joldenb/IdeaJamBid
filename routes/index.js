@@ -807,11 +807,10 @@ router.get('/create-application', function(req, res){
   Account.findById( req.user.id,
     function (err, account) {
       currentAccount = account._doc;
-  });
-
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    IdeaSeed.createApplication(currentIdea, currentAccount, res);
+      IdeaSeed.findById(req.session.idea,function(err, idea){
+        currentIdea = idea._doc;
+        IdeaSeed.createApplication(currentIdea, currentAccount, res);
+      });
   });
 });
 
