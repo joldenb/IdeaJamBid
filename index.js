@@ -13,6 +13,8 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 var LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
 var configAuth = require('./config/auth');
 var routes = require('./routes/index');
+var socialRoutes = require('./routes/social-routes');
+var valueWasteRoutes = require('./routes/value-waste-routes');
 var Account = require('./models/account');
 
 require('./config/passport')(passport);
@@ -45,6 +47,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/', routes);
+app.use('/', socialRoutes);
+app.use('/', valueWasteRoutes);
 
 // passport config
 passport.use(new LocalStrategy(Account.authenticate()));
