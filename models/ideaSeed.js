@@ -16,6 +16,11 @@ var IdeaSeed = new Schema({
 	secondFeature	: String,
 	thirdFeature	: String,
 
+	suggestion		: String,
+	hindsight		: String,
+	outsight		: String,
+	foresight		: String,
+
 	performOne		: Number,
 	performProblem		: String,
 

@@ -143,6 +143,16 @@ router.post('/accomplish', function(req, res) {
   res.redirect('/title-your-invention');
 });
 
+router.post('/suggestion-submit', function(req, res) {
+  IdeaSeed.update({_id : req.session.idea}, {suggestion : req.body.suggestion,
+    hindsight : req.body.hindsight, foresight : req.body.foresight,
+    outsight : req.body.outsight},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/title-your-invention');
+});
+
 router.get('/title-your-invention', function(req, res) {
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;

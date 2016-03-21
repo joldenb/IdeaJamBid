@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    include ../partials/head.jade
+    include ../../partials/head.jade
   body
   .header
     span.userName Howdy #{user.username}
@@ -37,7 +37,7 @@ html
       h3 Einstein Points: #{user.einsteinPoints}
 
 
-  include ../partials/js-includes.jade
+  include ../../partials/js-includes.jade
   script(type="text/javascript").
     var labelArr = _.range(101).map(function(number){
       return number.toString();

@@ -15,6 +15,32 @@ html
     h2 Name : #{idea.name}
     h3 Einstein Points Earned : #{user.einsteinPoints}
     br
+    br
+
+    #myModal.modal.fade(role="dialog")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button(type="button", class="close" data-dismiss="modal") &times;
+            .modal-title Modal Header
+          .modal-body
+            form(role='form', id="formSuggestion" action="/suggestion-submit", method="post", style='max-width: 300px;', data-idea-doc=idea)
+              .form-group
+                h3 Make a Suggestion
+                |  
+                input.form-control(type='text', name="suggestion", placeholder='An idea to consider...')
+                h3 Hindsight : Looking Back
+                |  
+                textarea.form-control(rows='3', cols="75", name="hindsight", placeholder='An idea to consider...')
+                h3 Foresight : Looking Ahead
+                |  
+                textarea.form-control(rows='3', cols="75", name="foresight", placeholder='An idea to consider...')
+                h3 Outsight : Looking Outward
+                |  
+                textarea.form-control(rows='3', cols="75", name="outsight", placeholder='An idea to consider...')
+          .modal-footer
+            button.btn.btn-success(type='submit', data-dismiss="modal") Continue >
+
     table
       tr
         th Targets/Tactics
@@ -26,98 +52,99 @@ html
       tr
         th Eliminate
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
       tr
         th Reduce
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
       tr
         th Substitute
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
       tr
         th Separate
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
       tr
         th Integrate
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
       tr
         th Re-Use
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
       tr
         th Standardize
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
       tr
         th Add
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button.btn.btn-primary Suggest
-      
+          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+    br
+    br
   include ../partials/js-includes.jade

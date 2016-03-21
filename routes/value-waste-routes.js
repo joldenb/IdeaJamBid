@@ -20,7 +20,7 @@ var uploading = multer({
 router.get('/performability', function(req, res) {
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    res.render('pages/performability', { user : req.user, idea : currentIdea });
+    res.render('pages/values-wastes/performability', { user : req.user, idea : currentIdea });
   });
 });
 
@@ -57,7 +57,7 @@ router.post('/performability', function(req, res) {
 router.get('/affordability', function(req, res) {
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    res.render('pages/affordability', { user : req.user, idea : currentIdea });
+    res.render('pages/values-wastes/affordability', { user : req.user, idea : currentIdea });
   });
 });
 
@@ -95,7 +95,7 @@ router.post('/affordability', function(req, res) {
 router.get('/featurability', function(req, res) {
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    res.render('pages/featurability', { user : req.user, idea : currentIdea });
+    res.render('pages/values-wastes/featurability', { user : req.user, idea : currentIdea });
   });
 });
 
@@ -132,7 +132,7 @@ router.post('/featurability', function(req, res) {
 router.get('/deliverability', function(req, res) {
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    res.render('pages/deliverability', { user : req.user, idea : currentIdea });
+    res.render('pages/values-wastes/deliverability', { user : req.user, idea : currentIdea });
   });
 });
 
@@ -169,7 +169,7 @@ router.post('/deliverability', function(req, res) {
 router.get('/useability', function(req, res) {
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    res.render('pages/useability', { user : req.user, idea : currentIdea });
+    res.render('pages/values-wastes/useability', { user : req.user, idea : currentIdea });
   });
 });
 
@@ -206,7 +206,7 @@ router.post('/useability', function(req, res) {
 router.get('/maintainability', function(req, res) {
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    res.render('pages/maintainability', { user : req.user, idea : currentIdea });
+    res.render('pages/values-wastes/maintainability', { user : req.user, idea : currentIdea });
   });
 });
 
@@ -243,7 +243,7 @@ router.post('/maintainability', function(req, res) {
 router.get('/durability', function(req, res) {
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    res.render('pages/durability', { user : req.user, idea : currentIdea });
+    res.render('pages/values-wastes/durability', { user : req.user, idea : currentIdea });
   });
 });
 
@@ -280,7 +280,7 @@ router.post('/durability', function(req, res) {
 router.get('/imageability', function(req, res) {
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    res.render('pages/imageability', { user : req.user, idea : currentIdea });
+    res.render('pages/values-wastes/imageability', { user : req.user, idea : currentIdea });
   });
 });
 
@@ -317,7 +317,7 @@ router.post('/imageability', function(req, res) {
 router.get('/complexity', function(req, res) {
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    res.render('pages/complexity', { user : req.user, idea : currentIdea });
+    res.render('pages/values-wastes/complexity', { user : req.user, idea : currentIdea });
   });
 });
 
@@ -354,7 +354,7 @@ router.post('/complexity', function(req, res) {
 router.get('/precision', function(req, res) {
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    res.render('pages/precision', { user : req.user, idea : currentIdea });
+    res.render('pages/values-wastes/precision', { user : req.user, idea : currentIdea });
   });
 });
 
@@ -390,7 +390,7 @@ router.post('/precision', function(req, res) {
 router.get('/variability', function(req, res) {
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    res.render('pages/variability', { user : req.user, idea : currentIdea });
+    res.render('pages/values-wastes/variability', { user : req.user, idea : currentIdea });
   });
 });
 
@@ -426,7 +426,7 @@ router.post('/variability', function(req, res) {
 router.get('/sensitivity', function(req, res) {
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    res.render('pages/sensitivity', { user : req.user, idea : currentIdea });
+    res.render('pages/values-wastes/sensitivity', { user : req.user, idea : currentIdea });
   });
 });
 
@@ -462,7 +462,7 @@ router.post('/sensitivity', function(req, res) {
 router.get('/immaturity', function(req, res) {
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    res.render('pages/immaturity', { user : req.user, idea : currentIdea });
+    res.render('pages/values-wastes/immaturity', { user : req.user, idea : currentIdea });
   });
 });
 
@@ -498,7 +498,7 @@ router.post('/immaturity', function(req, res) {
 router.get('/dangerous', function(req, res) {
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    res.render('pages/dangerous', { user : req.user, idea : currentIdea });
+    res.render('pages/values-wastes/dangerous', { user : req.user, idea : currentIdea });
   });
 });
 
@@ -534,7 +534,7 @@ router.post('/dangerous', function(req, res) {
 router.get('/skills', function(req, res) {
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    res.render('pages/skills', { user : req.user, idea : currentIdea });
+    res.render('pages/values-wastes/skills', { user : req.user, idea : currentIdea });
   });
 });
 
