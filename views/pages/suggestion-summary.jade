@@ -15,6 +15,13 @@ html
     h2 Name : #{idea.name}
     h3 Einstein Points Earned : #{user.einsteinPoints}
     br
+
+    .form-group
+      label(for="selectProblem") Select list:
+        select.form-control#selectProblem
+          each val in problems
+            option #{val[0]} problem : #{val[1]}
+
     br
 
     #myModal.modal.fade(role="dialog")

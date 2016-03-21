@@ -212,7 +212,9 @@ router.post('/image-upload', uploading.single('picture'), function(req, res) {
 router.get('/suggestion-summary', function(req, res){
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    res.render('pages/suggestion-summary', { user : req.user, idea : currentIdea });
+    var listOfProblems = IdeaSeed.getListOfProblems(currentIdea);
+    res.render('pages/suggestion-summary', { user : req.user, idea : currentIdea,
+      problems : listOfProblems });
   });
 });
 

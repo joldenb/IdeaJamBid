@@ -228,4 +228,54 @@ IdeaSeed.statics.createApplication = function(idea, account, res){
 
 };
 
+IdeaSeed.statics.getListOfProblems = function(idea) {
+	var problems = [];
+	if(idea["performProblem"]){
+		problems.push(["Performance", idea["performProblem"] ]);
+	}
+	if(idea["affordProblem"]){
+		problems.push(["Affordability", idea["affordProblem"] ]);	
+	}
+	if(idea["featureProblem"]){
+		problems.push(["Featurability", idea["featureProblem"] ]);
+	}
+	if(idea["deliverProblem"]){
+		problems.push(["Deliverability", idea["deliverProblem"] ]);
+	}
+	if(idea["useabilityProblem"]){
+		problems.push(["Useability", idea["useabilityProblem"] ]);
+	}
+	if(idea["maintainProblem"]){
+		problems.push(["Maintainability", idea["maintainProblem"] ]);
+	}
+	if(idea["durabilityProblem"]){
+		problems.push(["Durability", idea["durabilityProblem"] ]);
+	}
+	if(idea["imageProblem"]){
+		problems.push(["Imageability", idea["imageProblem"] ]);
+	}
+	if(idea["complexProblem"]){
+		problems.push(["Complexity", idea["complexProblem"] ]);
+	}
+	if(idea["precisionProblem"]){
+		problems.push(["Precision", idea["precisionProblem"] ]);
+	}
+	if(idea["variabilityProblem"]){
+		problems.push(["Variability", idea["variabilityProblem"] ]);
+	}
+	if(idea["sensitivityProblem"]){
+		problems.push(["Sensitivity", idea["sensitivityProblem"] ]);
+	}
+	if(idea["immatureProblem"]){
+		problems.push(["Immaturity", idea["immatureProblem"] ]);
+	}
+	if(idea["dangerProblem"]){
+		problems.push(["Danger", idea["dangerProblem"] ]);
+	}
+	if(idea["skillsProblem"]){
+		problems.push(["Skills", idea["skillsProblem"] ]);
+	}
+	return problems;
+};
+
 module.exports = mongoose.model('IdeaSeed', IdeaSeed);
