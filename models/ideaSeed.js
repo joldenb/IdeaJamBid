@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 var officegen = require('officegen');
 var fs = require('fs');
+var ObjectId = mongoose.Schema.Types.ObjectId;
 
 var IdeaSeed = new Schema({
 	name			: String,
@@ -16,10 +17,15 @@ var IdeaSeed = new Schema({
 	secondFeature	: String,
 	thirdFeature	: String,
 
-	suggestion		: String,
-	hindsight		: String,
-	outsight		: String,
-	foresight		: String,
+	suggestions		: [{
+		category		: String,
+		contributor		: ObjectId,
+		problemType		: String,
+		suggestion		: String,
+		hindsight		: String,
+		outsight		: String,
+		foresight		: String,
+	}],
 
 	performOne		: Number,
 	performProblem		: String,

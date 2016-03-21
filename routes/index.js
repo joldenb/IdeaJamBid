@@ -144,13 +144,24 @@ router.post('/accomplish', function(req, res) {
 });
 
 router.post('/suggestion-submit', function(req, res) {
-  IdeaSeed.update({_id : req.session.idea}, {suggestion : req.body.suggestion,
-    hindsight : req.body.hindsight, foresight : req.body.foresight,
-    outsight : req.body.outsight},
-    { multi: false }, function (err, raw) {
-      console.log('The raw response from Mongo was ', raw);
-  });
-  res.redirect('/title-your-invention');
+    var newSuggestion = {
+      suggestion : req.body.suggestion,
+      hindsight : req.body.hindsight,
+      foresight : req.body.foresight,
+      outsight : req.body.outsight,
+      category : req.body.suggestionCategory,
+      contributor : req.user.id
+    };
+    IdeaSeed.update(
+      { _id : req.session.idea },
+      { $push : { suggestions : newSuggestion }},
+      function(err, raw){
+        console.log('The raw response from Mongo was ', raw);
+        res.redirect('/suggestion-summary');
+      }
+    );
+
+
 });
 
 router.get('/title-your-invention', function(req, res) {

@@ -22,7 +22,8 @@ html
         .modal-content
           .modal-header
             button(type="button", class="close" data-dismiss="modal") &times;
-            .modal-title Modal Header
+            .modal-title 
+              h2 Contribute an Idea
           .modal-body
             form(role='form', id="formSuggestion" action="/suggestion-submit", method="post", style='max-width: 300px;', data-idea-doc=idea)
               .form-group
@@ -38,8 +39,10 @@ html
                 h3 Outsight : Looking Outward
                 |  
                 textarea.form-control(rows='3', cols="75", name="outsight", placeholder='An idea to consider...')
+                input(type="hidden" id="suggestion-category" name="suggestionCategory")
           .modal-footer
-            button.btn.btn-success(type='submit', data-dismiss="modal") Continue >
+            button.btn.btn-info(data-dismiss="modal") Cancel
+            button.btn.btn-success#submit(type='submit') Submit >
 
     table
       tr
@@ -52,99 +55,109 @@ html
       tr
         th Eliminate
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="elim-func" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="elim-parts" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="elim-life" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="elim-mat" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="elim-people" data-toggle="modal" data-target="#myModal") Suggest
       tr
         th Reduce
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="reduce-func" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="reduce-parts" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="reduce-life" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="reduce-mat" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="reduce-people" data-toggle="modal" data-target="#myModal") Suggest
       tr
         th Substitute
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="sub-func" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="sub-parts" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="sub-life" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="sub-mat" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="sub-people" data-toggle="modal" data-target="#myModal") Suggest
       tr
         th Separate
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="sep-func" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="sep-parts" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="sep-life" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
-        td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="sep-mat" data-toggle="modal" data-target="#myModal") Suggest
+        td
+          button(type="button" class="btn btn-primary suggest" id="sep-people" data-toggle="modal" data-target="#myModal") Suggest
       tr
         th Integrate
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="int-func" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="int-parts" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="int-life" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="int-mat" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="int-people" data-toggle="modal" data-target="#myModal") Suggest
       tr
         th Re-Use
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="reuse-func" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="reuse-parts" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="reuse-life" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="reuse-mat" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="reuse-people" data-toggle="modal" data-target="#myModal") Suggest
       tr
         th Standardize
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="stand-func" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="stand-parts" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="stand-life" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="stand-mat" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="stand-people" data-toggle="modal" data-target="#myModal") Suggest
       tr
         th Add
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="add-func" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="add-parts" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="add-life" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="add-mat" data-toggle="modal" data-target="#myModal") Suggest
         td 
-          button(type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Suggest
+          button(type="button" class="btn btn-primary suggest" id="add-people" data-toggle="modal" data-target="#myModal") Suggest
     br
     br
   include ../partials/js-includes.jade
+  script(type="text/javascript").  
+    $(".btn.suggest").click(function(){
+      $("#suggestion-category").val($(this).attr("id"));
+    });
+
+    $("#submit").click(function(){
+      $("#formSuggestion").submit();
+      $("#myModal").modal('hide');
+    });
+
