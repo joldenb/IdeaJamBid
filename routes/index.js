@@ -165,6 +165,7 @@ router.post('/suggestion-submit', function(req, res) {
       { $push : { suggestions : newSuggestion }},
       function(err, raw){
         console.log('The raw response from Mongo was ', raw);
+        req.session.problemType = req.body.problemType;
         res.redirect('/suggestion-summary');
       }
     );
@@ -230,11 +231,17 @@ router.get('/suggestion-summary', function(req, res){
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     var listOfProblems = IdeaSeed.getListOfProblems(currentIdea);
-    var categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea, listOfProblems[0][0]);
+    var categorizedSuggestions;
+    if(req.session.problemType){
+      categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea, req.session.problemType);
+    } else {
+      categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea, listOfProblems[0][0]);
+    }
     var categoryPointValues = IdeaSeed.getCategoryPointValues(categorizedSuggestions);
 
     res.render('pages/suggestion-summary', { user : req.user, idea : currentIdea,
-      problems : listOfProblems, categoryPoints : categoryPointValues });
+      problems : listOfProblems, categoryPoints : categoryPointValues,
+      problemType : req.session.problemType });
   });
 });
 

@@ -20,7 +20,10 @@ html
       label(for="selectProblem") Select list:
         select.form-control#selectProblem
           each val in problems
-            option(id=val[0]) #{val[0]} problem : #{val[1]}
+            if problemType == val[0]
+              option(id=val[0] selected) #{val[0]} problem : #{val[1]}
+            else 
+              option(id=val[0]) #{val[0]} problem : #{val[1]}
     br
 
     #myModal.modal.fade(role="dialog")
