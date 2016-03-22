@@ -150,8 +150,16 @@ router.post('/suggestion-submit', function(req, res) {
       foresight : req.body.foresight,
       outsight : req.body.outsight,
       category : req.body.suggestionCategory,
-      contributor : req.user.id
+      contributor : req.user.id,
+      problemType : req.body.problemType
     };
+    Account.findById( req.user.id,
+      function (err, account) {
+        var points = parseInt(req.body.pointValue.slice(1));
+        account.einsteinPoints = account.einsteinPoints + points;
+        account.save(function (err) {});
+    });
+
     IdeaSeed.update(
       { _id : req.session.idea },
       { $push : { suggestions : newSuggestion }},
@@ -160,8 +168,17 @@ router.post('/suggestion-submit', function(req, res) {
         res.redirect('/suggestion-summary');
       }
     );
+});
 
+router.get('/update-suggestion-points/:problem', function(req, res){
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    var listOfProblems = IdeaSeed.getListOfProblems(currentIdea);
+    var categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea, req.params.problem);
+    var categoryPointValues = IdeaSeed.getCategoryPointValues(categorizedSuggestions);
 
+    res.json(categoryPointValues);
+  });
 });
 
 router.get('/title-your-invention', function(req, res) {
@@ -213,8 +230,11 @@ router.get('/suggestion-summary', function(req, res){
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     var listOfProblems = IdeaSeed.getListOfProblems(currentIdea);
+    var categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea, listOfProblems[0][0]);
+    var categoryPointValues = IdeaSeed.getCategoryPointValues(categorizedSuggestions);
+
     res.render('pages/suggestion-summary', { user : req.user, idea : currentIdea,
-      problems : listOfProblems });
+      problems : listOfProblems, categoryPoints : categoryPointValues });
   });
 });
 

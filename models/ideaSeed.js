@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var _ = require('underscore');
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 var officegen = require('officegen');
@@ -276,6 +277,99 @@ IdeaSeed.statics.getListOfProblems = function(idea) {
 		problems.push(["Skills", idea["skillsProblem"] ]);
 	}
 	return problems;
+};
+
+
+/*
+	This method will take an idea and a problem and return an 
+	object with keys that are suggestion types (e.g. reduce-parts)
+	and values which are arrays of suggestions for that idea with that
+	particular suggestion type.
+*/
+IdeaSeed.statics.getCategorizedSuggestions = function(idea, problem){
+	var suggestionList = {},
+		problemSuggestions = [];
+
+	_.each(idea["suggestions"], function(element, index, list){
+		if(element._doc["problemType"] == problem){
+			problemSuggestions.push(element);
+		}
+	});
+
+	_.each(problemSuggestions, function(element, index, list){
+		if(suggestionList.hasOwnProperty(element["category"])){
+			suggestionList[element["category"]].push(element._doc);
+		} else {
+			suggestionList[element["category"]] = [element._doc];
+		}
+	});
+
+	return suggestionList;
+};
+
+/*
+	This function is designed to take as an argument the output of the 
+	method getCategorizedSuggestions. It's a pretty particular structure.
+*/
+
+IdeaSeed.statics.getCategoryPointValues = function(categorizedObject){
+	var catPoints = {
+		"elim-func" : "+50",
+		"elim-parts" : "+50",
+		"elim-life" : "+50",
+		"elim-mat" : "+50",
+		"elim-people" : "+50",
+
+		"reduce-func" : "+50",
+		"reduce-parts" : "+50",
+		"reduce-life" : "+50",
+		"reduce-mat" : "+50",
+		"reduce-people" : "+50",
+
+		"sub-func" : "+50",
+		"sub-parts" : "+50",
+		"sub-life" : "+50",
+		"sub-mat" : "+50",
+		"sub-people" : "+50",
+
+		"sep-func" : "+50",
+		"sep-parts" : "+50",
+		"sep-life" : "+50",
+		"sep-mat" : "+50",
+		"sep-people" : "+50",
+
+		"int-func" : "+50",
+		"int-parts" : "+50",
+		"int-life" : "+50",
+		"int-mat" : "+50",
+		"int-people" : "+50",
+
+		"reuse-func" : "+50",
+		"reuse-parts" : "+50",
+		"reuse-life" : "+50",
+		"reuse-mat" : "+50",
+		"reuse-people" : "+50",
+
+		"stand-func" : "+50",
+		"stand-parts" : "+50",
+		"stand-life" : "+50",
+		"stand-mat" : "+50",
+		"stand-people" : "+50",
+
+		"add-func" : "+50",
+		"add-parts" : "+50",
+		"add-life" : "+50",
+		"add-mat" : "+50",
+		"add-people" : "+50"
+	};
+
+	for(var category in categorizedObject){
+		var points = 50/(Math.pow(2, categorizedObject[category].length));
+		points = Math.round(points);
+		catPoints[category] = "+" + points;
+	}
+
+	return catPoints;
 };
 
 module.exports = mongoose.model('IdeaSeed', IdeaSeed);
