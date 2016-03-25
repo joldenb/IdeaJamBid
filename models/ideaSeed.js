@@ -372,4 +372,143 @@ IdeaSeed.statics.getCategoryPointValues = function(categorizedObject){
 	return catPoints;
 };
 
+IdeaSeed.statics.getCategoryDisplayNames = function(categorizedObject){
+	var returnCategories = {};
+	for(var cat in categorizedObject){
+		switch ( cat ) {
+			case "elim-func" :
+				returnCategories["Eliminate Functions"] = categorizedObject["elim-func"];
+				break;
+			case "elim-parts" :
+				returnCategories["Eliminate Parts"] = categorizedObject["elim-parts"];
+				break;
+			case "elim-life" :
+				returnCategories["Eliminate Life-Cycle Processes"] = categorizedObject["elim-life"];
+				break;
+			case "elim-mat" :
+				returnCategories["Eliminate Materials"] = categorizedObject["elim-mat"];
+				break;
+			case "elim-people" :
+				returnCategories["Eliminate People"] = categorizedObject["elim-people"];
+				break;
+
+			case "reduce-func" :
+				returnCategories["Reduce Functions"] = categorizedObject["reduce-func"];
+				break;
+			case "reduce-parts" :
+				returnCategories["Reduce Parts"] = categorizedObject["reduce-parts"];
+				break;
+			case "reduce-life" :
+				returnCategories["Reduce Life-Cycle Processes"] = categorizedObject["reduce-life"];
+				break;
+			case "reduce-mat" :
+				returnCategories["Reduce Materials"] = categorizedObject["reduce-mat"];
+				break;
+			case "reduce-people" :
+				returnCategories["Reduce People"] = categorizedObject["reduce-people"];
+				break;
+
+			case "sub-func" :
+				returnCategories["Substitute Functions"] = categorizedObject["sub-func"];
+				break;
+			case "sub-parts" :
+				returnCategories["Substitute Parts"] = categorizedObject["sub-parts"];
+				break;
+			case "sub-life" :
+				returnCategories["Substitute Life-Cycle Processes"] = categorizedObject["sub-life"];
+				break;
+			case "sub-mat" :
+				returnCategories["Substitute Materials"] = categorizedObject["sub-mat"];
+				break;
+			case "sub-people" :
+				returnCategories["Substitute People"] = categorizedObject["sub-people"];
+				break;
+
+
+			case "sep-func" :
+				returnCategories["Separate Functions"] = categorizedObject["sep-func"];
+				break;
+			case "sep-parts" :
+				returnCategories["Separate Parts"] = categorizedObject["sep-parts"];
+				break;
+			case "sep-life" :
+				returnCategories["Separate Life-Cycle Processes"] = categorizedObject["sep-life"];
+				break;
+			case "sep-mat" :
+				returnCategories["Separate Materials"] = categorizedObject["sep-mat"];
+				break;
+			case "sep-people" :
+				returnCategories["Separate People"] = categorizedObject["sep-people"];
+				break;
+
+
+			case "int-func" :
+				returnCategories["Integrate Functions"] = categorizedObject["int-func"];
+				break;
+			case "int-parts" :
+				returnCategories["Integrate Parts"] = categorizedObject["int-parts"];
+				break;
+			case "int-life" :
+				returnCategories["Integrate Life-Cycle Processes"] = categorizedObject["int-life"];
+				break;
+			case "int-mat" :
+				returnCategories["Integrate Materials"] = categorizedObject["int-mat"];
+				break;
+			case "int-people" :
+				returnCategories["Integrate People"] = categorizedObject["int-people"];
+				break;
+
+			case "reuse-func" :
+				returnCategories["Re-Use Functions"] = categorizedObject["reuse-func"];
+				break;
+			case "reuse-parts" :
+				returnCategories["Re-Use Parts"] = categorizedObject["reuse-parts"];
+				break;
+			case "reuse-life" :
+				returnCategories["Re-Use Life-Cycle Processes"] = categorizedObject["reuse-life"];
+				break;
+			case "reuse-mat" :
+				returnCategories["Re-Use Materials"] = categorizedObject["reuse-mat"];
+				break;
+			case "reuse-people" :
+				returnCategories["Re-Use People"] = categorizedObject["reuse-people"];
+				break;
+
+
+			case "stand-func" :
+				returnCategories["Standardize Functions"] = categorizedObject["stand-func"];
+				break;
+			case "stand-parts" :
+				returnCategories["Standardize Parts"] = categorizedObject["stand-parts"];
+				break;
+			case "stand-life" :
+				returnCategories["Standardize Life-Cycle Processes"] = categorizedObject["stand-life"];
+				break;
+			case "stand-mat" :
+				returnCategories["Standardize Materials"] = categorizedObject["stand-mat"];
+				break;
+			case "stand-people" :
+				returnCategories["Standardize People"] = categorizedObject["stand-people"];
+				break;
+
+			case "add-func" :
+				returnCategories["Add Functions"] = categorizedObject["add-func"];
+				break;
+			case "add-parts" :
+				returnCategories["Add Parts"] = categorizedObject["add-parts"];
+				break;
+			case "add-life" :
+				returnCategories["Add Life-Cycle Processes"] = categorizedObject["add-life"];
+				break;
+			case "add-mat" :
+				returnCategories["Add Materials"] = categorizedObject["add-mat"];
+				break;
+			case "add-people" :
+				returnCategories["Add People"] = categorizedObject["add-people"];
+				break;
+		}
+	}
+	return returnCategories;
+};
+
 module.exports = mongoose.model('IdeaSeed', IdeaSeed);

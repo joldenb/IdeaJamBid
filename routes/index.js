@@ -182,6 +182,13 @@ router.get('/update-suggestion-points/:problem', function(req, res){
   });
 });
 
+router.get('/update-suggestion-list/:problem', function(req, res){
+  req.session.problemType = req.params.problem;
+  res.sendStatus(200);
+});
+
+
+
 router.get('/title-your-invention', function(req, res) {
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
@@ -241,6 +248,25 @@ router.get('/suggestion-summary', function(req, res){
 
     res.render('pages/suggestion-summary', { user : req.user, idea : currentIdea,
       problems : listOfProblems, categoryPoints : categoryPointValues,
+      problemType : req.session.problemType });
+  });
+});
+
+router.get('/view-idea-suggestions', function(req, res){
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    var listOfProblems = IdeaSeed.getListOfProblems(currentIdea);
+    var categorizedSuggestions;
+    if(req.session.problemType){
+      categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea, req.session.problemType);
+    } else {
+      categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea, listOfProblems[0][0]);
+    }
+
+    categorizedSuggestions = IdeaSeed.getCategoryDisplayNames(categorizedSuggestions);
+    
+    res.render('pages/view-idea-suggestions', { user : req.user, idea : currentIdea,
+      problems : listOfProblems, categorizedSuggestions : categorizedSuggestions,
       problemType : req.session.problemType });
   });
 });

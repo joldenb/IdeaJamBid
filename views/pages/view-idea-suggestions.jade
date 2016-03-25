@@ -1,0 +1,79 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body
+  .header
+    span.userName Howdy #{user.username}
+    |  
+    img(src="./avatar.png" height="75" width="75")
+    a.home-logout.btn.btn-default( href="/begin" ) My Profile
+    | 
+    a.home-logout.btn.btn-default( href="/logout" ) Log Out
+
+  .container.suggestion-summary
+    h2 Name : #{idea.name}
+    h3 Einstein Points Earned : #{user.einsteinPoints}
+    br
+    .form-group
+      label(for="selectProblem") Select list:
+        select.form-control#selectProblem
+          each val in problems
+            if problemType == val[0]
+              option(id=val[0] selected) #{val[0]} problem : #{val[1]}
+            else 
+              option(id=val[0]) #{val[0]} problem : #{val[1]}
+    br
+
+    form(role='form', id="incorporateSuggestion" action="/incorporate-suggestions", method="post")
+    table
+      tr
+        th Suggestion Type
+        th Suggestion
+        th Hindsight
+        th Foresight
+        th Outsight
+        th Incorporate
+      each suggestions, category in categorizedSuggestions
+        each suggestion in suggestions
+          tr
+            td #{category}
+            td #{suggestion["suggestion"]}
+            td #{suggestion["hindsight"]}
+            td #{suggestion["foresight"]}
+            td #{suggestion["outsight"]}
+            td 
+              input(type='checkbox', name='agreement')
+    br
+    //
+      button.btn.btn-success#submit(type='submit') Submit >
+    br
+    br
+    a.home-logout.btn.btn-default( href="/idea-summary" ) < Back to Idea Summary
+    br
+    br
+    br
+
+  include ../partials/js-includes.jade
+  script(type="text/javascript").  
+    $(".btn.suggest").click(function(){
+      $("#suggestion-category").val($(this).attr("id"));
+      $("#point-value").val($(this).text());
+      $("#problem-type").val($("#selectProblem option:selected").attr("id"));
+    });
+
+    $("#submit").click(function(){
+      $("#formSuggestion").submit();
+      $("#myModal").modal('hide');
+    });
+
+    $("#selectProblem").change(function(){
+      var problem = $("#selectProblem option:selected").attr("id");
+      $.get("/update-suggestion-list/"+problem, function(data){
+        document.location.href = "/view-idea-suggestions";
+      });
+    });
+
+
+
+
