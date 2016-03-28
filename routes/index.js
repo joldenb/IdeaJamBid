@@ -231,7 +231,18 @@ router.post('/image-upload', uploading.single('picture'), function(req, res) {
         console.log('The raw response from Mongo was ', raw);
     });
   }
-  res.redirect('/idea-seed-summary');
+  res.redirect('/annotate-image');
+});
+
+router.get('/annotate-image', function(req, res){
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    if(currentIdea.image){
+      imageURL = "data:"+currentIdea.imageMimetype+";base64,"+ currentIdea.image.toString('base64');
+    }
+    res.render('pages/annotate-image', { user : req.user, idea : currentIdea,
+      imgURL : imageURL });
+  });
 });
 
 router.get('/suggestion-summary', function(req, res){
@@ -255,11 +266,11 @@ router.get('/suggestion-summary', function(req, res){
 router.get('/view-idea-suggestions', function(req, res){
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    var listOfProblems = IdeaSeed.getListOfProblems(currentIdea);
-    var categorizedSuggestions;
+    var listOfProblems = IdeaSeed.getListOfProblems(currentIdea) || [];
+    var categorizedSuggestions = {};
     if(req.session.problemType){
       categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea, req.session.problemType);
-    } else {
+    } else if (listOfProblems.length > 0 ) {
       categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea, listOfProblems[0][0]);
     }
 

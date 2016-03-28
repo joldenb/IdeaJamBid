@@ -235,7 +235,7 @@ IdeaSeed.statics.getListOfProblems = function(idea) {
 		problems.push(["Performance", idea["performProblem"] ]);
 	}
 	if(idea["affordProblem"]){
-		problems.push(["Affordability", idea["affordProblem"] ]);	
+		problems.push(["Affordability", idea["affordProblem"] ]);
 	}
 	if(idea["featureProblem"]){
 		problems.push(["Featurability", idea["featureProblem"] ]);

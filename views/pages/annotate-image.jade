@@ -12,15 +12,13 @@ html
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
 
   .container.idea-summary
-    h1 In Summary
+    h1 Image Annotation
       h3 Name : #{idea.name}
-      h3 Description : #{idea.description}
-      h3 Problem it will address : #{idea.problem}
       if (imgURL)
         h3 Image :
-        img.summary-image(src=imgURL)
+        img.summary-image.annotatable(src=imgURL)
       
-      a.home-login.btn.btn-success( href="/begin-scoring" ) Score Your Idea >
+      a.home-login.btn.btn-success( href="/idea-seed-summary" ) View Summary >
 
   include ../partials/js-includes.jade
   script(type="text/javascript").
