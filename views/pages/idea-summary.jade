@@ -6,7 +6,7 @@ html
   .header
     span.userName Howdy #{user.username}
     |  
-    img(src="./avatar.png" height="75" width="75")
+    img(src="/avatar.png" height="75" width="75")
     a.home-logout.btn.btn-default( href="/begin" ) My Profile
     | 
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
@@ -18,10 +18,21 @@ html
     br
     a.btn.btn-default( href="/create-application" ) Download Application
     |  
+    a.btn.btn-default( href="/image-upload" ) View Uploaded Images
+    |  
     a.btn.btn-default( href="/suggestion-summary" ) Make Suggestions
     |  
     a.btn.btn-default( href="/view-idea-suggestions" ) View All Suggestions
     br
+    H4 Problem #{idea.name} will Solve:  
+      p #{idea.problem}
+      a.btn.btn-default( href="/introduce-idea" ) Edit > 
+    br
+    H4 How it will Help:
+      p #{idea.description}
+      a.btn.btn-default( href="/accomplish" ) Edit >
+    br
+
     table.idea-summary
       tr
         th Value/Waste

@@ -6,7 +6,7 @@ html
   .header
     span.userName Howdy #{user.username}
     |  
-    img(src="./avatar.png" height="75" width="75")
+    img(src="/avatar.png" height="75" width="75")
     a.home-logout.btn.btn-default( href="/begin" ) My Profile
     | 
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
@@ -16,6 +16,9 @@ html
     form(role='form', id="formProblemSolver" action="/problem-solver", method="post", style='max-width: 300px;', data-idea-doc=idea)
       .form-group
         textarea.form-control(rows='6', cols="75", name="problemToSolve", placeholder='Describe the problem here...')
+          if idea.problem
+            | #{idea.problem}
+
       button.btn.btn-success(type='submit') Continue >
       |  
 

@@ -168,3 +168,9 @@ img.summary-image {
 #formImageUpload input {
   margin: 2em;
 }
+
+.imageListItems {
+    height: 20%;
+    width: 20%;
+    margin: 1em;
+}

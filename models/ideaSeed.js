@@ -8,12 +8,9 @@ var ObjectId = mongoose.Schema.Types.ObjectId;
 
 var IdeaSeed = new Schema({
 	name			: String,
-	purposeFor		: String,
-	purposeHow		: String,
 	description		: String,
 	problem			: String,
-	image			: Buffer,
-	imageMimetype	: String,
+	images			: [ObjectId],
 	firstFeature	: String,
 	secondFeature	: String,
 	thirdFeature	: String,
