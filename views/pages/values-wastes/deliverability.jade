@@ -14,17 +14,17 @@ html
   .container.scoreIdea
     h1 Deliverability
     h4 
-      | Will the product be ready when the customer wants it?
+      | Can #{idea.name} arrive for use at the right time and place to solve [user-entered challenge]?
     br
     form(role='form', id="formDeliverability" action="/deliverability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
         .slider-end-labels
-          span.no-way No Way
-          span.yes-way Yes Way
+          span.no-way Diffucult to Deliver
+          span.yes-way Highly Deliverable 
         #deliverLabelOne.sliderLabel
         #deliverSliderOne
       br
-      h4 Why is your idea so difficult to deliver?
+      h4 What prevents #{idea.name} from arriving when and where it needs to be used?
       textarea.form-control(rows='6', cols="75", name="deliverProblem", placeholder='Describe the problem...')
         if idea.deliverProblem
           | #{idea.deliverProblem}

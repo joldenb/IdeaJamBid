@@ -14,17 +14,17 @@ html
   .container.scoreIdea
     h1 Durability
     h4 
-      | What is the durability of our product?
+      | How well will #{idea.name} withstand abuse and changes in the enviornment? How long will it last? 
     br
     form(role='form', id="formDurability" action="/durability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
         .slider-end-labels
-          span.no-way Not at all
-          span.yes-way Super Durable
+          span.no-way Fragile
+          span.yes-way Highly Durable
         #durabilityLabelOne.sliderLabel
         #durabilitySliderOne
       br
-      h4 Why can't your idea be made more durable?
+      h4 What weaknesses cause #{idea.name} to not hold up to repeated use or enviornmental ware?
       textarea.form-control(rows='6', cols="75", name="durabilityProblem", placeholder='Describe the problem...')
         if idea.durabilityProblem
           | #{idea.durabilityProblem}

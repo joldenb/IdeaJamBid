@@ -14,17 +14,17 @@ html
   .container.scoreIdea
     h1 Maintainability
     h4 
-      | How  can we reduce the need for, or eliminate maintenance entirely?
+      | How easy is #{idea.name} to keep and maintain?
     br
     form(role='form', id="formMaintainability" action="/maintainability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
         .slider-end-labels
-          span.no-way No Way
-          span.yes-way Yes Way
+          span.no-way Difficult to Maintain
+          span.yes-way Easy to Maintain
         #maintainabilityLabelOne.sliderLabel
         #maintainabilitySliderOne
       br
-      h4 Why can't your idea be made more maintainable?
+      h4 Why is #{idea.name} not perfectly maintainable?
       textarea.form-control(rows='6', cols="75", name="maintainProblem", placeholder='Describe the problem...')
         if idea.maintainProblem
           | #{idea.maintainProblem}

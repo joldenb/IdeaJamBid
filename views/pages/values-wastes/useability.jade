@@ -14,17 +14,17 @@ html
   .container.scoreIdea
     h1 Useability
     h4 
-      | How easily and/or quickly can our customers learn to use the product?
+      | How easy is #{idea.name} to use?
     br
     form(role='form', id="formUseability" action="/useability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
         .slider-end-labels
-          span.no-way No Way
-          span.yes-way Yes Way
+          span.no-way Difficult to Use
+          span.yes-way Easy to Use
         #useabilityLabelOne.sliderLabel
         #useabilitySliderOne
       br
-      h4 Why is your idea difficult to learn how to use?
+      h4 What makes #{idea.name} more difficult to use than necessary?
       textarea.form-control(rows='6', cols="75", name="useabilityProblem", placeholder='Describe the problem...')
         if idea.useabilityProblem
           | #{idea.useabilityProblem}

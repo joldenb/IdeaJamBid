@@ -14,17 +14,17 @@ html
   .container.scoreIdea
     h1 Featurability
     h4 
-      | Will features of the product directly help solve the customer's problems?
+      | Does #{idea.name} incorporate enough features to effectively solve the challenge of [user-entered challenge]?
     br
     form(role='form', id="formFeaturability" action="/featurability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
         .slider-end-labels
-          span.no-way No Way
-          span.yes-way Yes Way
+          span.no-way Not Enough Features
+          span.yes-way Sufficient Number of Features
         #featureLabelOne.sliderLabel
         #featureSliderOne
       br
-      h4 Why are the features of your idea potentially inadequate?
+      h4 What features does #{idea.name} lack that would otherwise help it solve the challenge of [user-entered challenge]?
       textarea.form-control(rows='6', cols="75", name="featureProblem", placeholder='Describe the problem...')
         if idea.featureProblem
           | #{idea.featureProblem}

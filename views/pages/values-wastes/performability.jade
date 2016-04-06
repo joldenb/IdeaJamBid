@@ -11,7 +11,7 @@ html
     | 
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
 
-  form(role='form', id="formPerformability" action="/performability", method="post", style='max-width: 600px;', data-idea-doc=idea)
+  form(role='form', id="formPerformability" action="/performability", method="post", style='max-width: 700px;', data-idea-doc=idea)
     .container.scoreIdea
     h1 Performability
     h4
@@ -19,12 +19,12 @@ html
     br
     .slider-container
       .slider-end-labels
-        span.no-way No Way
-        span.yes-way Yes Way
+        span.no-way Low Performability
+        span.yes-way High Performability
       #perfLabelOne.sliderLabel
       #perfSliderOne(name="perfSliderOne")
     br
-    h4 Why can't your idea always perform the way you wish?
+    h4 What limits #{idea.name} from performing optimally?
     textarea.form-control(rows='6', cols="75", name="performProblem", placeholder='Describe the problem...')
         if idea.performProblem
           | #{idea.performProblem}

@@ -14,17 +14,17 @@ html
   .container.scoreIdea
     h1 Imageability
     h4 
-      | What is the fundamental image that the invention conveys?
+      | Will #{idea.name} present an appealing image, style, look and feel?
     br
     form(role='form', id="formImageability" action="/imageability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
         .slider-end-labels
-          span.no-way No Way
-          span.yes-way Yes Way
+          span.no-way Undesirable, Ugly
+          span.yes-way Appealing
         #imageabilityLabelOne.sliderLabel
         #imageabilitySliderOne
       br
-      h4 What kinds of issues prevent having a clear image of the idea?
+      h4 What reduces the broader look and appeal of #{idea.name}?
       textarea.form-control(rows='6', cols="75", name="imageProblem", placeholder='Describe the problem...')
         if idea.imageProblem
           | #{idea.imageProblem}

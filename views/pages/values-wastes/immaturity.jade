@@ -14,17 +14,17 @@ html
   .container.scoreIdea
     h1 Immaturity
     h4 
-      | Is the techonology or processes in the invention not well understood or not fully proven?
+      | Will the design, manufacture, or production of #{idea.name} involve new or unproven technology, processes or materials?
     br
     form(role='form', id="formImmaturity" action="/immaturity", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
         .slider-end-labels
-          span.no-way No Way
-          span.yes-way Yes Way
+          span.no-way New, Unproven Design Materials and Processes
+          span.yes-way Proven, Established Design Materials and Processes
         #immaturityLabelOne.sliderLabel
         #immaturitySliderOne
       br
-      h4 Why can't your idea be accessible to a more wide-ranging audience?
+      h4 What about the #{idea.name} is unproven, untested and not well established?
       textarea.form-control(rows='6', cols="75", name="immatureProblem", placeholder='Describe the problem...')
         if idea.immatureProblem
           | #{idea.immatureProblem}

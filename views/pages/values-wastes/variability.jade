@@ -14,17 +14,17 @@ html
   .container.scoreIdea
     h1 Variability
     h4 
-      | Will a user need to change how [user-entered] idea is used each time it is used to solve the [user-entered] problem?
+      | Will the use or production of #{idea.name} change based upon specific scenarios or circumstances?
     br
     form(role='form', id="formVariability" action="/variability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
         .slider-end-labels
-          span.no-way No Way
-          span.yes-way Yes Way
+          span.no-way Constant Method of Use and Production
+          span.yes-way High Degree of Variability 
         #variabilityLabelOne.sliderLabel
         #variabilitySliderOne
       br
-      h4 Why can't your idea work the same way each time?
+      h4 What will prevent #{idea.name} from being used or produced the same way every time?
       textarea.form-control(rows='6', cols="75", name="variabilityProblem", placeholder='Describe the problem...')
         if idea.variabilityProblem
           | #{idea.variabilityProblem}

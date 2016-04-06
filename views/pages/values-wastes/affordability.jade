@@ -14,17 +14,17 @@ html
   .container.scoreIdea
     h1 Affordability
     h4 
-      | Will it be within my cost expectation?
+      | Can users afford to buy and can you afford to produce [user-entered product]?
     br
     form(role='form', id="formAffordability" action="/affordability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
         .slider-end-labels
-          span.no-way No Way
-          span.yes-way Yes Way
+          span.no-way Expensive
+          span.yes-way Affordable 
         #affordLabelOne.sliderLabel
         #affordSliderOne
       br
-      h4 What specific reason is keeping you from lowering the cost?
+      h4 What keeps the cost of [user-entered product] above what it could be?
       textarea.form-control(rows='6', cols="75", name="affordProblem", placeholder='Describe the problem...')
         if idea.affordProblem
           | #{idea.affordProblem}

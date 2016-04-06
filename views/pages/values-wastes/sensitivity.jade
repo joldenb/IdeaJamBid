@@ -14,17 +14,17 @@ html
   .container.scoreIdea
     h1 Sensitivity
     h4 
-      | How sensitive is it to pieces being easily disturbed or damaged?
+      | Will usage or the enviornment easily disturb or damage #{idea.name}?
     br
     form(role='form', id="formSensitivity" action="/sensitivity", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
         .slider-end-labels
-          span.no-way No Way
-          span.yes-way Yes Way
+          span.no-way Resistant to Damage
+          span.yes-way Highly Sensitive 
         #sensitivityLabelOne.sliderLabel
         #sensitivitySliderOne
       br
-      h4 What makes your idea so sensitive?
+      h4 What prevents #{idea.name} from being resistant to damage or disturbance?
       textarea.form-control(rows='6', cols="75", name="sensitivityProblem", placeholder='Describe the problem...')
         if idea.sensitivityProblem
           | #{idea.sensitivityProblem}

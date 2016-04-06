@@ -14,17 +14,17 @@ html
   .container.scoreIdea
     h1 Dangerous
     h4 
-      | Are there processes or part function requiring human or environmental protections either in manufacture or in the field?
+      | Will #{idea.name} require human or enviornmental protections to reduce potential harm?
     br
     form(role='form', id="formDangerous" action="/dangerous", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
         .slider-end-labels
-          span.no-way No Way
-          span.yes-way Yes Way
+          span.no-way Harmless
+          span.yes-way Highly Dangerous to humans or the enviornment
         #dangerousLabelOne.sliderLabel
         #dangerousSliderOne
       br
-      h4 Why can't your idea be made any safer?
+      h4 What prevents #{idea.name} from being safer?
       textarea.form-control(rows='6', cols="75", name="dangerProblem", placeholder='Describe the problem...')
         if idea.dangerProblem
           | #{idea.dangerProblem}

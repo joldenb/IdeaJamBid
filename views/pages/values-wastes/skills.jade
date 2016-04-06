@@ -12,19 +12,19 @@ html
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
 
   .container.scoreIdea
-    h1 Skills Intensive
+    h1 Skill Intensive
     h4 
-      | Where can we eliminate or reduce the skill needed in production and use of the invention?
+      | Will #{idea.name} require many specfic skills to solve [user-entered challenge]?
     br
     form(role='form', id="formSkills" action="/skills", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
         .slider-end-labels
-          span.no-way No Way
-          span.yes-way Yes Way
+          span.no-way Easy to Make and Use
+          span.yes-way Many Specific Skills Needed
         #skillsLabelOne.sliderLabel
         #skillsSliderOne
       br
-      h4 Why does your idea require specific skills to operate?
+      h4 What prevents #{idea.name} from eliminating or reducing the skill needed to solve [user-entered challenge]?
       textarea.form-control(rows='6', cols="75", name="skillsProblem", placeholder='Describe the problem...')
         if idea.skillsProblem
           | #{idea.skillsProblem}

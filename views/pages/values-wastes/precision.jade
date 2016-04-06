@@ -14,17 +14,17 @@ html
   .container.scoreIdea
     h1 Precision
     h4 
-      | Does the invention require high or low precision?
+      | Will #{idea.name} require specific timing, precise sequence or much practice to effectively solve [user-entered challenge]?
     br
     form(role='form', id="formPrecision" action="/precision", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
         .slider-end-labels
-          span.no-way No Way
-          span.yes-way Yes Way
+          span.no-way Minimal Exactness Necessary
+          span.yes-way Definite, Meticulous Precision Required 
         #precisionLabelOne.sliderLabel
         #precisionSliderOne
       br
-      h4 Why can't your idea be made more precise?
+      h4 What prevents #{idea.name} from reducing the precision necessary to solve [user-entered challenege]?
       textarea.form-control(rows='6', cols="75", name="precisionProblem", placeholder='Describe the problem...')
         if idea.precisionProblem
           | #{idea.precisionProblem}
