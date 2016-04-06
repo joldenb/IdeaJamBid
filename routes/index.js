@@ -2,6 +2,7 @@ var express = require('express');
 var passport = require('passport');
 var mongoose = require('mongoose');
 var _ = require('underscore');
+var IdeaImage = require('../models/ideaImage');
 var IdeaSeed = require('../models/ideaSeed');
 var Account = require('../models/account');
 var router = express.Router();
@@ -53,19 +54,29 @@ router.get('/begin-scoring', function(req, res) {
 router.get('/begin', function(req, res) {
     if(req.user){
       if(req.user.ideaSeeds && req.user.ideaSeeds.length > 0){
-        var ideaNames = [];
+        var ideaNames = [],
+            j = 0;
         _.each(req.user.ideaSeeds, function(element, index, list){
+            IdeaSeed.findById(element._id, function(error, document){
+              j++;
+              if(document){
+                ideaNames.push(document.name);
+                if(j == req.user.ideaSeeds.length){
+                  return res.render('pages/begin', {
+                    user : req.user,
+                    accountIdeaSeeds : ideaNames
+                  });
+                }
+              } else {
+                if(j == req.user.ideaSeeds.length){
+                  return res.render('pages/begin', {
+                    user : req.user,
+                    accountIdeaSeeds : ideaNames
+                  });
+                }
 
-          IdeaSeed.findById(element._id, function(error, document){
-            ideaNames.push(document.name);
-            if(ideaNames.length == req.user.ideaSeeds.length){
-              res.render('pages/begin', {
-                user : req.user,
-                accountIdeaSeeds : ideaNames
-              });
-            }
-          });
-
+              }
+            });
         });
 
       }
@@ -81,8 +92,9 @@ router.get('/begin', function(req, res) {
           }); 
       } */
       else {
-        res.render('pages/begin', {
-          user : req.user
+        return res.render('pages/begin', {
+          user : req.user,
+          accountIdeaSeeds : []
         });
       }
 
@@ -93,28 +105,35 @@ router.get('/begin', function(req, res) {
 
 router.get('/introduce-idea', function(req, res) {
     if(req.user){
-      var newIdea = new IdeaSeed({});
-      newIdea.save();
-      Account.update(
-        { _id : req.user.id },
-        { $push : { ideaSeeds : newIdea }},
-        function(err, raw){
-          console.log('The raw response from Mongo was ', raw);
-        }
-      );
-      req.session.idea = newIdea._doc._id.toHexString();
-      res.render('pages/introduce-idea', { user : req.user, idea : req.session.idea });
-
-/*
-        Account.update( {_id: req.user.id} ,
-          {$push : {"ideaSeeds" : newIdea}},
-          function (err, raw) {
+      if(!req.session.idea) {
+        var newIdea = new IdeaSeed({});
+        newIdea.save();
+        Account.update(
+          { _id : req.user.id },
+          { $push : { ideaSeeds : newIdea }},
+          function(err, raw){
             console.log('The raw response from Mongo was ', raw);
-            req.session.idea = newIdea._doc._id.toHexString();
-            res.render('pages/introduce-idea', { user : req.user, idea : req.session.idea });
           }
-        );*/
-      //});
+        );
+        req.session.idea = newIdea._doc._id.toHexString();
+        res.render('pages/introduce-idea', { user : req.user, idea : req.session.idea });
+
+  /*
+          Account.update( {_id: req.user.id} ,
+            {$push : {"ideaSeeds" : newIdea}},
+            function (err, raw) {
+              console.log('The raw response from Mongo was ', raw);
+              req.session.idea = newIdea._doc._id.toHexString();
+              res.render('pages/introduce-idea', { user : req.user, idea : req.session.idea });
+            }
+          );*/
+        //});
+      } else {
+        IdeaSeed.findById(req.session.idea,function(err, idea){
+          currentIdea = idea._doc;
+          res.render('pages/introduce-idea', { user : req.user, idea : currentIdea });
+        });
+      }
     } else {
       res.redirect('/');
     }
@@ -218,41 +237,117 @@ router.post('/problem-solver', function(req, res) {
 
 router.get('/image-upload', function(req, res){
   IdeaSeed.findById(req.session.idea,function(err, idea){
+    var imageURLs = [];
     currentIdea = idea._doc;
-    res.render('pages/image-upload', { user : req.user, idea : currentIdea });
+    if (idea._doc.images.length != 0){
+      for (var i =0; i < idea._doc.images.length; i++){
+        var j = 0;
+        IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
+          j++;
+          if(image && image._doc && image._doc.image){
+            var filename = image._doc["filename"];
+            imageURLs.push([
+              filename,
+              "data:"+image._doc["imageMimetype"]+";base64,"+ image._doc["image"].toString('base64')
+            ]);
+          }
+          if (j == idea._doc.images.length){
+            res.render('pages/image-upload', { user : req.user, idea : currentIdea, imageURLs : imageURLs });
+          }
+        });
+      }
+    } else {
+      res.render('pages/image-upload', { user : req.user, idea : currentIdea, imageURLs : [] });
+    }
   });
 });
 
 router.post('/image-upload', uploading.single('picture'), function(req, res) {
-  if( req.file){
-    IdeaSeed.update({_id : req.session.idea}, {image : req.file.buffer,
-      imageMimetype : req.file.mimetype},
-      { multi: false }, function (err, raw) {
-        console.log('The raw response from Mongo was ', raw);
+    var image = new IdeaImage({ image : req.file.buffer, imageMimetype : req.file.mimetype, 
+      filename : req.file.originalname });
+    image.save(function(err, newImage){
+      if (err) {
+        console.log(err);
+      } else {
+        IdeaSeed.update(
+            { _id : req.session.idea },
+            { $push : { images : newImage.id }},
+            function(err, raw){
+              console.log('The raw response from Mongo was ', raw);
+              res.redirect('/image-upload');
+            }
+        );
+      }
     });
-  }
-  res.redirect('/annotate-image');
+
 });
 
-router.get('/annotate-image', function(req, res){
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    if(currentIdea.image){
-      imageURL = "data:"+currentIdea.imageMimetype+";base64,"+ currentIdea.image.toString('base64');
+router.get('/annotate-image/:image', function(req, res){
+  IdeaImage.findOne({"filename": req.params.image} ,function(err, image){
+    currentImage = image._doc;
+    var annotations = [];
+    if(currentImage.image){
+      imageURL = "data:"+currentImage.imageMimetype+";base64," + currentImage.image.toString('base64');
+      for(var i=0; i < currentImage.annotations.length; i++){
+        annotations.push( {
+            src : imageURL,
+            text : currentImage.annotations[i].text,
+            shapes : [{
+                type : 'rect',
+                geometry : { 
+                  x : currentImage.annotations[i].xCoord,
+                  y: currentImage.annotations[i].yCoord,
+                  width : currentImage.annotations[i].width,
+                  height: currentImage.annotations[i].height }
+            }]
+        });
+      }
+      res.render('pages/annotate-image', { 
+        user : req.user,
+        imgURL : imageURL,
+        imageName : currentImage.filename,
+        annotations : JSON.stringify(annotations)
+      });
+    } else {
+      res.redirect('/idea-seed-summary');
     }
-    res.render('pages/annotate-image', { user : req.user, idea : currentIdea,
-      imgURL : imageURL });
   });
+});
+
+router.post('/save-annotations', function(req, res){
+  var newAnno = {},
+      i = 0;
+
+  var annotations = req.body;
+
+  IdeaImage.update({"filename" : req.body.imageName}, { $set : { annotations : [] }} , {multi:true});
+  
+  while ( annotations["annotations[" + i + "][src]"] ) {
+    newAnno["text"] = annotations["annotations[" + i + "][text]"];
+    newAnno["xCoord"] = annotations["annotations[" + i + "][shapes][0][geometry][x]"];
+    newAnno["yCoord"] = annotations["annotations[" + i + "][shapes][0][geometry][y]"];
+    newAnno["width"] = annotations["annotations[" + i + "][shapes][0][geometry][width]"];
+    newAnno["height"] = annotations["annotations[" + i + "][shapes][0][geometry][height]"];
+    IdeaImage.update(
+        { "filename" : req.body.imageName },
+        { $push : { annotations : newAnno }},
+        function(err, raw){
+          console.log('The raw response from Mongo was ', raw);
+        }
+    );
+    i++;
+  }
+
 });
 
 router.get('/suggestion-summary', function(req, res){
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     var listOfProblems = IdeaSeed.getListOfProblems(currentIdea);
-    var categorizedSuggestions;
+    var categorizedSuggestions = {};
     if(req.session.problemType){
       categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea, req.session.problemType);
-    } else {
+    } else if ( listOfProblems.length > 0 ){
       categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea, listOfProblems[0][0]);
     }
     var categoryPointValues = IdeaSeed.getCategoryPointValues(categorizedSuggestions);
@@ -268,12 +363,7 @@ router.get('/view-idea-suggestions', function(req, res){
     currentIdea = idea._doc;
     var listOfProblems = IdeaSeed.getListOfProblems(currentIdea) || [];
     var categorizedSuggestions = {};
-    if(req.session.problemType){
-      categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea, req.session.problemType);
-    } else if (listOfProblems.length > 0 ) {
-      categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea, listOfProblems[0][0]);
-    }
-
+    categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea);
     categorizedSuggestions = IdeaSeed.getCategoryDisplayNames(categorizedSuggestions);
     
     res.render('pages/view-idea-suggestions', { user : req.user, idea : currentIdea,

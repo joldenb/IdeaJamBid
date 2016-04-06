@@ -6,7 +6,7 @@ html
   .header
     span.userName Howdy #{user.username}
     |  
-    img(src="./avatar.png" height="75" width="75")
+    img(src="/avatar.png" height="75" width="75")
     a.home-logout.btn.btn-default( href="/begin" ) My Profile
     | 
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
@@ -17,148 +17,151 @@ html
     br
 
     .form-group
-      label(for="selectProblem") Select list:
-        select.form-control#selectProblem
-          each val in problems
-            if problemType == val[0]
-              option(id=val[0] selected) #{val[0]} problem : #{val[1]}
-            else 
-              option(id=val[0]) #{val[0]} problem : #{val[1]}
-    br
+      if (problems.length )
+        label(for="selectProblem") Select list:
+          select.form-control#selectProblem
+              each val in problems
+                if problemType == val[0]
+                  option(id=val[0] selected) #{val[0]} problem : #{val[1]}
+                else 
+                  option(id=val[0]) #{val[0]} problem : #{val[1]}
+        br
 
-    #myModal.modal.fade(role="dialog")
-      .modal-dialog
-        .modal-content
-          .modal-header
-            button(type="button", class="close" data-dismiss="modal") &times;
-            .modal-title 
-              h2 Contribute an Idea
-          .modal-body
-            form(role='form', id="formSuggestion" action="/suggestion-submit", method="post", style='max-width: 300px;', data-idea-doc=idea)
-              .form-group
-                h3 Make a Suggestion
-                |  
-                input.form-control(type='text', name="suggestion", placeholder='An idea to consider...')
-                h3 Hindsight : Looking Back
-                |  
-                textarea.form-control(rows='3', cols="75", name="hindsight", placeholder='An idea to consider...')
-                h3 Foresight : Looking Ahead
-                |  
-                textarea.form-control(rows='3', cols="75", name="foresight", placeholder='An idea to consider...')
-                h3 Outsight : Looking Outward
-                |  
-                textarea.form-control(rows='3', cols="75", name="outsight", placeholder='An idea to consider...')
-                input(type="hidden" id="suggestion-category" name="suggestionCategory")
-                input(type="hidden" id="point-value" name="pointValue")
-                input(type="hidden" id="problem-type" name="problemType")
-          .modal-footer
-            button.btn.btn-info(data-dismiss="modal") Cancel
-            button.btn.btn-success#submit(type='submit') Submit >
+        #myModal.modal.fade(role="dialog")
+          .modal-dialog
+            .modal-content
+              .modal-header
+                button(type="button", class="close" data-dismiss="modal") &times;
+                .modal-title 
+                  h2 Contribute an Idea
+              .modal-body
+                form(role='form', id="formSuggestion" action="/suggestion-submit", method="post", style='max-width: 300px;', data-idea-doc=idea)
+                  .form-group
+                    h3 Make a Suggestion
+                    |  
+                    input.form-control(type='text', name="suggestion", placeholder='An idea to consider...')
+                    h3 Hindsight : Looking Back
+                    |  
+                    textarea.form-control(rows='3', cols="75", name="hindsight", placeholder='An idea to consider...')
+                    h3 Foresight : Looking Ahead
+                    |  
+                    textarea.form-control(rows='3', cols="75", name="foresight", placeholder='An idea to consider...')
+                    h3 Outsight : Looking Outward
+                    |  
+                    textarea.form-control(rows='3', cols="75", name="outsight", placeholder='An idea to consider...')
+                    input(type="hidden" id="suggestion-category" name="suggestionCategory")
+                    input(type="hidden" id="point-value" name="pointValue")
+                    input(type="hidden" id="problem-type" name="problemType")
+              .modal-footer
+                button.btn.btn-info(data-dismiss="modal") Cancel
+                button.btn.btn-success#submit(type='submit') Submit >
 
-    table
-      tr
-        th Targets/Tactics
-        th Functions
-        th Parts
-        th Life-Cycle Processes
-        th Materials
-        th People
-      tr
-        th Eliminate
-        td 
-          button(type="button" class="btn btn-primary suggest" id="elim-func" data-toggle="modal" data-target="#myModal") #{categoryPoints["elim-func"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="elim-parts" data-toggle="modal" data-target="#myModal")  #{categoryPoints["elim-parts"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="elim-life" data-toggle="modal" data-target="#myModal")  #{categoryPoints["elim-life"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="elim-mat" data-toggle="modal" data-target="#myModal")  #{categoryPoints["elim-mat"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="elim-people" data-toggle="modal" data-target="#myModal")  #{categoryPoints["elim-people"]}
-      tr
-        th Reduce
-        td 
-          button(type="button" class="btn btn-primary suggest" id="reduce-func" data-toggle="modal" data-target="#myModal")  #{categoryPoints["reduce-func"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="reduce-parts" data-toggle="modal" data-target="#myModal")  #{categoryPoints["reduce-parts"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="reduce-life" data-toggle="modal" data-target="#myModal") #{categoryPoints["reduce-life"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="reduce-mat" data-toggle="modal" data-target="#myModal") #{categoryPoints["reduce-mat"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="reduce-people" data-toggle="modal" data-target="#myModal") #{categoryPoints["reduce-people"]}
-      tr
-        th Substitute
-        td 
-          button(type="button" class="btn btn-primary suggest" id="sub-func" data-toggle="modal" data-target="#myModal") #{categoryPoints["sub-func"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="sub-parts" data-toggle="modal" data-target="#myModal") #{categoryPoints["sub-parts"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="sub-life" data-toggle="modal" data-target="#myModal") #{categoryPoints["sub-life"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="sub-mat" data-toggle="modal" data-target="#myModal") #{categoryPoints["sub-mat"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="sub-people" data-toggle="modal" data-target="#myModal") #{categoryPoints["sub-people"]}
-      tr
-        th Separate
-        td 
-          button(type="button" class="btn btn-primary suggest" id="sep-func" data-toggle="modal" data-target="#myModal") #{categoryPoints["sep-func"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="sep-parts" data-toggle="modal" data-target="#myModal") #{categoryPoints["sep-parts"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="sep-life" data-toggle="modal" data-target="#myModal") #{categoryPoints["sep-life"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="sep-mat" data-toggle="modal" data-target="#myModal") #{categoryPoints["sep-mat"]}
-        td
-          button(type="button" class="btn btn-primary suggest" id="sep-people" data-toggle="modal" data-target="#myModal") #{categoryPoints["sep-people"]}
-      tr
-        th Integrate
-        td 
-          button(type="button" class="btn btn-primary suggest" id="int-func" data-toggle="modal" data-target="#myModal") #{categoryPoints["int-func"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="int-parts" data-toggle="modal" data-target="#myModal") #{categoryPoints["int-parts"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="int-life" data-toggle="modal" data-target="#myModal") #{categoryPoints["int-life"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="int-mat" data-toggle="modal" data-target="#myModal") #{categoryPoints["int-mat"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="int-people" data-toggle="modal" data-target="#myModal") #{categoryPoints["int-people"]}
-      tr
-        th Re-Use
-        td 
-          button(type="button" class="btn btn-primary suggest" id="reuse-func" data-toggle="modal" data-target="#myModal") #{categoryPoints["reuse-func"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="reuse-parts" data-toggle="modal" data-target="#myModal") #{categoryPoints["reuse-parts"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="reuse-life" data-toggle="modal" data-target="#myModal") #{categoryPoints["reuse-life"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="reuse-mat" data-toggle="modal" data-target="#myModal") #{categoryPoints["reuse-mat"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="reuse-people" data-toggle="modal" data-target="#myModal") #{categoryPoints["reuse-people"]}
-      tr
-        th Standardize
-        td 
-          button(type="button" class="btn btn-primary suggest" id="stand-func" data-toggle="modal" data-target="#myModal") #{categoryPoints["stand-func"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="stand-parts" data-toggle="modal" data-target="#myModal") #{categoryPoints["stand-parts"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="stand-life" data-toggle="modal" data-target="#myModal") #{categoryPoints["stand-life"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="stand-mat" data-toggle="modal" data-target="#myModal") #{categoryPoints["stand-mat"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="stand-people" data-toggle="modal" data-target="#myModal") #{categoryPoints["stand-people"]}
-      tr
-        th Add
-        td 
-          button(type="button" class="btn btn-primary suggest" id="add-func" data-toggle="modal" data-target="#myModal") #{categoryPoints["add-func"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="add-parts" data-toggle="modal" data-target="#myModal") #{categoryPoints["add-parts"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="add-life" data-toggle="modal" data-target="#myModal") #{categoryPoints["add-life"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="add-mat" data-toggle="modal" data-target="#myModal") #{categoryPoints["add-mat"]}
-        td 
-          button(type="button" class="btn btn-primary suggest" id="add-people" data-toggle="modal" data-target="#myModal") #{categoryPoints["add-people"]}
+        table
+          tr
+            th Targets/Tactics
+            th Functions
+            th Parts
+            th Life-Cycle Processes
+            th Materials
+            th People
+          tr
+            th Eliminate
+            td 
+              button(type="button" class="btn btn-primary suggest" id="elim-func" data-toggle="modal" data-target="#myModal") #{categoryPoints["elim-func"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="elim-parts" data-toggle="modal" data-target="#myModal")  #{categoryPoints["elim-parts"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="elim-life" data-toggle="modal" data-target="#myModal")  #{categoryPoints["elim-life"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="elim-mat" data-toggle="modal" data-target="#myModal")  #{categoryPoints["elim-mat"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="elim-people" data-toggle="modal" data-target="#myModal")  #{categoryPoints["elim-people"]}
+          tr
+            th Reduce
+            td 
+              button(type="button" class="btn btn-primary suggest" id="reduce-func" data-toggle="modal" data-target="#myModal")  #{categoryPoints["reduce-func"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="reduce-parts" data-toggle="modal" data-target="#myModal")  #{categoryPoints["reduce-parts"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="reduce-life" data-toggle="modal" data-target="#myModal") #{categoryPoints["reduce-life"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="reduce-mat" data-toggle="modal" data-target="#myModal") #{categoryPoints["reduce-mat"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="reduce-people" data-toggle="modal" data-target="#myModal") #{categoryPoints["reduce-people"]}
+          tr
+            th Substitute
+            td 
+              button(type="button" class="btn btn-primary suggest" id="sub-func" data-toggle="modal" data-target="#myModal") #{categoryPoints["sub-func"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="sub-parts" data-toggle="modal" data-target="#myModal") #{categoryPoints["sub-parts"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="sub-life" data-toggle="modal" data-target="#myModal") #{categoryPoints["sub-life"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="sub-mat" data-toggle="modal" data-target="#myModal") #{categoryPoints["sub-mat"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="sub-people" data-toggle="modal" data-target="#myModal") #{categoryPoints["sub-people"]}
+          tr
+            th Separate
+            td 
+              button(type="button" class="btn btn-primary suggest" id="sep-func" data-toggle="modal" data-target="#myModal") #{categoryPoints["sep-func"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="sep-parts" data-toggle="modal" data-target="#myModal") #{categoryPoints["sep-parts"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="sep-life" data-toggle="modal" data-target="#myModal") #{categoryPoints["sep-life"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="sep-mat" data-toggle="modal" data-target="#myModal") #{categoryPoints["sep-mat"]}
+            td
+              button(type="button" class="btn btn-primary suggest" id="sep-people" data-toggle="modal" data-target="#myModal") #{categoryPoints["sep-people"]}
+          tr
+            th Integrate
+            td 
+              button(type="button" class="btn btn-primary suggest" id="int-func" data-toggle="modal" data-target="#myModal") #{categoryPoints["int-func"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="int-parts" data-toggle="modal" data-target="#myModal") #{categoryPoints["int-parts"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="int-life" data-toggle="modal" data-target="#myModal") #{categoryPoints["int-life"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="int-mat" data-toggle="modal" data-target="#myModal") #{categoryPoints["int-mat"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="int-people" data-toggle="modal" data-target="#myModal") #{categoryPoints["int-people"]}
+          tr
+            th Re-Use
+            td 
+              button(type="button" class="btn btn-primary suggest" id="reuse-func" data-toggle="modal" data-target="#myModal") #{categoryPoints["reuse-func"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="reuse-parts" data-toggle="modal" data-target="#myModal") #{categoryPoints["reuse-parts"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="reuse-life" data-toggle="modal" data-target="#myModal") #{categoryPoints["reuse-life"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="reuse-mat" data-toggle="modal" data-target="#myModal") #{categoryPoints["reuse-mat"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="reuse-people" data-toggle="modal" data-target="#myModal") #{categoryPoints["reuse-people"]}
+          tr
+            th Standardize
+            td 
+              button(type="button" class="btn btn-primary suggest" id="stand-func" data-toggle="modal" data-target="#myModal") #{categoryPoints["stand-func"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="stand-parts" data-toggle="modal" data-target="#myModal") #{categoryPoints["stand-parts"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="stand-life" data-toggle="modal" data-target="#myModal") #{categoryPoints["stand-life"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="stand-mat" data-toggle="modal" data-target="#myModal") #{categoryPoints["stand-mat"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="stand-people" data-toggle="modal" data-target="#myModal") #{categoryPoints["stand-people"]}
+          tr
+            th Add
+            td 
+              button(type="button" class="btn btn-primary suggest" id="add-func" data-toggle="modal" data-target="#myModal") #{categoryPoints["add-func"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="add-parts" data-toggle="modal" data-target="#myModal") #{categoryPoints["add-parts"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="add-life" data-toggle="modal" data-target="#myModal") #{categoryPoints["add-life"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="add-mat" data-toggle="modal" data-target="#myModal") #{categoryPoints["add-mat"]}
+            td 
+              button(type="button" class="btn btn-primary suggest" id="add-people" data-toggle="modal" data-target="#myModal") #{categoryPoints["add-people"]}
+      else
+        h4 No recorded problems yet for this idea.
     br
     br
     a.home-logout.btn.btn-default( href="/idea-summary" ) < Back to Idea Summary

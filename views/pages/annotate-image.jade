@@ -6,25 +6,52 @@ html
   .header
     span.userName Howdy #{user.username}
     |  
-    img(src="./avatar.png" height="75" width="75")
+    img(src="/avatar.png" height="75" width="75")
     a.home-logout.btn.btn-default( href="/begin" ) My Profile
     | 
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
 
   .container.idea-summary
     h1 Image Annotation
-      h3 Name : #{idea.name}
       if (imgURL)
         h3 Image :
-        img.summary-image.annotatable(src=imgURL)
+        img.summary-image.annotatable(src=imgURL, data-original="http://www.example.com/my-dummy-image-path")
       
-      a.home-login.btn.btn-success( href="/idea-seed-summary" ) View Summary >
+  br
+  br
+  a#save-annotations.btn.btn-success( href="/image-upload" ) Save Annotations >
 
   include ../partials/js-includes.jade
   script(type="text/javascript").
-    function init() {
-      
+
+    var init = function init() {
+      var imageSource = jQuery(".annotatable")[0].src;
+      var annoString = "#{annotations}";
+      annoString = annoString.replace(/&quot;/g,'"');
+      var annotationList = JSON.parse(annoString);
+
+      for(var i = 0; i < annotationList.length; i++){
+        //if(!annotationList[i]["src"]){
+          annotationList[i]["src"] = "http://www.example.com/my-dummy-image-path";
+        //}
+        annotationList[i]["shapes"][0]["geometry"]["height"] = parseFloat(annotationList[i]["shapes"][0]["geometry"]["height"]);
+        annotationList[i]["shapes"][0]["geometry"]["width"] = parseFloat(annotationList[i]["shapes"][0]["geometry"]["width"]);
+        annotationList[i]["shapes"][0]["geometry"]["y"] = parseFloat(annotationList[i]["shapes"][0]["geometry"]["y"]);
+        annotationList[i]["shapes"][0]["geometry"]["x"] = parseFloat(annotationList[i]["shapes"][0]["geometry"]["x"]);
+
+        anno.addAnnotation(annotationList[i]);
+      }
+      anno.showAnnotations(imageSource);
     }  
     anno.addHandler('onAnnotationCreated', function(annotation) {
       console.log(annotation.text);
     });
+
+    $("#save-annotations").click(function(event){
+      var allAnnotations = anno.getAnnotations("http://www.example.com/my-dummy-image-path"),
+          i=0,
+          annoList = [];
+
+      $.post("/save-annotations", { "annotations" : allAnnotations, "imageName" : "#{imageName}" });
+    });
+

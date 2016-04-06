@@ -8,12 +8,9 @@ var ObjectId = mongoose.Schema.Types.ObjectId;
 
 var IdeaSeed = new Schema({
 	name			: String,
-	purposeFor		: String,
-	purposeHow		: String,
 	description		: String,
 	problem			: String,
-	image			: Buffer,
-	imageMimetype	: String,
+	images			: [ObjectId],
 	firstFeature	: String,
 	secondFeature	: String,
 	thirdFeature	: String,
@@ -291,7 +288,11 @@ IdeaSeed.statics.getCategorizedSuggestions = function(idea, problem){
 		problemSuggestions = [];
 
 	_.each(idea["suggestions"], function(element, index, list){
-		if(element._doc["problemType"] == problem){
+		if(problem){
+			if(element._doc["problemType"] == problem){
+				problemSuggestions.push(element);
+			}
+		} else {
 			problemSuggestions.push(element);
 		}
 	});

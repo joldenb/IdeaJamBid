@@ -6,7 +6,7 @@ html
   .header
     span.userName Howdy #{user.username}
     |  
-    img(src="./avatar.png" height="75" width="75")
+    img(src="/avatar.png" height="75" width="75")
     a.home-logout.btn.btn-default( href="/begin" ) My Profile
     | 
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
@@ -22,6 +22,14 @@ html
         button.btn.btn-success(type='submit') Upload (+10) >
         |  
         a.btn.btn-default( href="/idea-seed-summary" ) Skip > 
+
+  .imagesList
+    if(imageURLs)
+      h3 Uploaded Images
+      h5 Click to Annotate
+      each imageURL in imageURLs
+        a(href="/annotate-image/"+imageURL[0])
+          img.imageListItems(src=imageURL[1])
 
 
 

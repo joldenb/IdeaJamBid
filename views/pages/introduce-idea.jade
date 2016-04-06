@@ -6,7 +6,7 @@ html
   .header
     span.userName Howdy #{user.username}
     |  
-    img(src="./avatar.png" height="75" width="75")
+    img(src="/avatar.png" height="75" width="75")
     a.home-logout.btn.btn-default( href="/begin" ) My Profile
     | 
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
@@ -18,6 +18,8 @@ html
         h3 What challenge does your idea solve? 
         |  
         textarea.form-control(rows='6', cols="75", name="purposeFor", placeholder='The challenge of...')
+          if idea.problem
+            | #{idea.problem}
         br
         h4 Ex. Snow melting when it’s not cold enough outside  
       button.btn.btn-success(type='submit') Continue >

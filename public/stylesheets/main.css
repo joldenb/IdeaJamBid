@@ -136,17 +136,62 @@ form {
   margin: 0 auto;
 }
 
+.view-idea-suggestions {
+  margin: 0 auto;
+  max-width: 80%;
+}
+
+.suggestion-element {
+  height: 5.5em;
+  border:1px solid white;
+  border-radius: 5px;
+}
+
+.suggestion {
+  width: 70%;
+  float:left;
+  height:100%;
+}
+
+.suggestion-maker {
+  width:30%;
+  float:right;
+  background-color: #c0ff3e;
+  height:100%;
+}
+
+.suggestion-maker img {
+}
+
+.suggestion-maker span {
+  vertical-align: middle;
+}
+
+
+.suggestion p {
+  padding:.5em;
+  margin: 0;
+}
+
+.suggestion-text {
+  background-color: #ccf2ff;
+}
+
+.suggestion {
+  background-color: #00bfff;
+}
+
 .suggestion-summary h1, .suggestion-summary h3 {
   text-align: center;
 }
 
-td, th {
+.suggestion-summary td, th {
   padding: .5em;
   text-align: center;
   width: 5%;
 }
 
-td {
+.suggestion-summary td {
   border: 1px solid gray;
 }
 
@@ -160,11 +205,29 @@ table.idea-summary {
   margin-bottom: 3em;
 }
 
+table.idea-summary th,  table.idea-summary td { 
+  border: 1px solid gray;
+}
+
 img.summary-image {
   width:100%;
   height:auto;
 }
 
+.suggestion-table {
+  height:;
+}
+
+.suggestion-table .left-column {
+  width: 20%;
+}
+
 #formImageUpload input {
   margin: 2em;
+}
+
+.imageListItems {
+    height: 20%;
+    width: 20%;
+    margin: 1em;
 }
