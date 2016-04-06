@@ -11,40 +11,34 @@ html
     | 
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
 
-  .container.suggestion-summary
+  .view-idea-suggestions
     h2 Name : #{idea.name}
     h3 Einstein Points Earned : #{user.einsteinPoints}
     br
+    
     if problems
-      .form-group
-        label(for="selectProblem") Select list:
-          select.form-control#selectProblem
-            each val in problems
-              if problemType == val[0]
-                option(id=val[0] selected) #{val[0]} problem : #{val[1]}
-              else 
-                option(id=val[0]) #{val[0]} problem : #{val[1]}
-      br
 
       form(role='form', id="incorporateSuggestion" action="/incorporate-suggestions", method="post")
-      table
+      table.suggestion-table
         tr
-          th Suggestion Type
-          th Suggestion
-          th Hindsight
-          th Foresight
-          th Outsight
+          th.left-column Suggestion Type
           th Incorporate
         each suggestions, category in categorizedSuggestions
           each suggestion in suggestions
             tr
-              td #{category}
-              td #{suggestion["suggestion"]}
-              td #{suggestion["hindsight"]}
-              td #{suggestion["foresight"]}
-              td #{suggestion["outsight"]}
+            tr
+              td.left-column 
+                - var suggestionText = suggestion['suggestion']
+                - var problemCategory = category
+                - var suggestionProblem = suggestion['problemType']
+                include ../partials/suggestion-element.jade
               td 
-                input(type='checkbox', name='agreement')
+                .radio
+                  input(type='radio', name='agreement') 
+                  |  Incorporate
+                .radio
+                  input(type='radio', name='agreement') 
+                  |  Don't Incorporate
       br
       //
         button.btn.btn-success#submit(type='submit') Submit >

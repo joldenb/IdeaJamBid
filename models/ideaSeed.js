@@ -288,7 +288,11 @@ IdeaSeed.statics.getCategorizedSuggestions = function(idea, problem){
 		problemSuggestions = [];
 
 	_.each(idea["suggestions"], function(element, index, list){
-		if(element._doc["problemType"] == problem){
+		if(problem){
+			if(element._doc["problemType"] == problem){
+				problemSuggestions.push(element);
+			}
+		} else {
 			problemSuggestions.push(element);
 		}
 	});

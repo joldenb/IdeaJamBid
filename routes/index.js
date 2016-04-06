@@ -363,12 +363,7 @@ router.get('/view-idea-suggestions', function(req, res){
     currentIdea = idea._doc;
     var listOfProblems = IdeaSeed.getListOfProblems(currentIdea) || [];
     var categorizedSuggestions = {};
-    if(req.session.problemType){
-      categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea, req.session.problemType);
-    } else if (listOfProblems.length > 0 ) {
-      categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea, listOfProblems[0][0]);
-    }
-
+    categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea);
     categorizedSuggestions = IdeaSeed.getCategoryDisplayNames(categorizedSuggestions);
     
     res.render('pages/view-idea-suggestions', { user : req.user, idea : currentIdea,
