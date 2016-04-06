@@ -53,6 +53,9 @@ router.get('/begin-scoring', function(req, res) {
 
 router.get('/begin', function(req, res) {
     if(req.user){
+      if (req.session.idea){
+        req.session.idea = null;
+      }
       if(req.user.ideaSeeds && req.user.ideaSeeds.length > 0){
         var ideaNames = [],
             j = 0;
@@ -441,8 +444,16 @@ router.get('/create-application', function(req, res){
 });
 
 router.get('/logout', function(req, res) {
+    req.session.idea = null;
     req.logout();
     res.redirect('/');
+});
+
+router.get('/clear-session-idea', function(req, res){
+  if(req.session.idea){
+    req.session.idea = null;
+    req.session.save();
+  }
 });
 
 module.exports = router;

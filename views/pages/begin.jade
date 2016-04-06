@@ -33,3 +33,9 @@ html
     a.home-login.btn.btn-success( href="/introduce-idea" ) Begin a New Idea > 
 
   include ../partials/js-includes.jade
+  script(type="text/javascript").
+    $( document ).ready(function() {
+      jQuery.get("/clear-session-idea", function(data){
+        var stop;
+      });
+    });
