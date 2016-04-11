@@ -166,7 +166,9 @@ router.post('/accomplish', function(req, res) {
 });
 
 router.post('/suggestion-submit', function(req, res) {
+    var newSuggId = IdeaSeed.generateSuggID(req.body.suggestion);
     var newSuggestion = {
+      suggestionID : newSuggId,
       suggestion : req.body.suggestion,
       hindsight : req.body.hindsight,
       foresight : req.body.foresight,
@@ -382,6 +384,31 @@ router.post('/key-features', function(req, res) {
       console.log('The raw response from Mongo was ', raw);
   });
   res.redirect('/idea-seed-summary');
+});
+
+router.post('/incorporate-suggestions', function(req, res) {
+  IdeaSeed.findById(req.session.idea, function(err, idea){
+    currentIdea = idea._doc;
+    var newVariantName = "",
+        incorporatedSuggestions = [],
+        newVariant = {};
+
+    newVariantName = IdeaSeed.generateVariantName(currentIdea.name);
+    newVariant["name"] = newVariantName;
+
+    for(var suggestion in req.body){
+      if(req.body[suggestion] == "incorporate"){
+        incorporatedSuggestions.push(suggestion);
+      }
+    }
+    newVariant["suggestions"] = incorporatedSuggestions;
+
+    currentIdea.variants.push(newVariant);
+    idea.save(function(data){
+      res.redirect('/idea-summary');
+    });
+
+  });
 });
 
 router.post('/napkin-sketch', function(req, res) {

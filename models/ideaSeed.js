@@ -16,6 +16,7 @@ var IdeaSeed = new Schema({
 	thirdFeature	: String,
 
 	suggestions		: [{
+		suggestionID	: String, /* used in creating a variant */
 		category		: String,
 		contributor		: ObjectId,
 		problemType		: String,
@@ -24,6 +25,14 @@ var IdeaSeed = new Schema({
 		outsight		: String,
 		foresight		: String,
 	}],
+
+	variants			: [{
+		name				: String, /* should be a unique identifier */
+		suggestions : [ String	], /* should match a suggestionID */
+		images			: [ ObjectId ]
+	}],
+
+	ideaReviews		: [ObjectId],
 
 	performOne		: Number,
 	performProblem		: String,
@@ -510,6 +519,18 @@ IdeaSeed.statics.getCategoryDisplayNames = function(categorizedObject){
 		}
 	}
 	return returnCategories;
+};
+
+IdeaSeed.statics.generateSuggID = function(suggestionText){
+	var newID = suggestionText.substr(0, suggestionText.indexOf(" "));
+	newID = newID + Date.now().toString();
+	return newID;
+};
+
+IdeaSeed.statics.generateVariantName = function(ideaName){
+	var newName = ideaName.replace(/\s/g, '');
+	newName = newName + Date.now().toString();
+	return newName;
 };
 
 module.exports = mongoose.model('IdeaSeed', IdeaSeed);
