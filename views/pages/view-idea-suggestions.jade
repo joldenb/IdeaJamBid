@@ -16,7 +16,7 @@ html
     h3 Einstein Points Earned : #{user.einsteinPoints}
     br
     
-    if problems
+    if (Object.keys(categorizedSuggestions).length != 0 )
 
       form(role='form', id="incorporateSuggestion" action="/incorporate-suggestions", method="post")
         table.suggestion-table
