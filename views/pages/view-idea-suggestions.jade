@@ -21,16 +21,25 @@ html
       form(role='form', id="incorporateSuggestion" action="/incorporate-suggestions", method="post")
         table.suggestion-table
           tr
-            th 
+            th.left-column Suggestion Type
+            th Incorporate
           each suggestions, category in categorizedSuggestions
             each suggestion, i in suggestions
               if(suggestion['suggestionID'])
                 tr
-                  td
+                tr
+                  td.left-column 
                     - var suggestionText = suggestion['suggestion']
                     - var problemCategory = category
                     - var suggestionProblem = suggestion['problemType']
                     include ../partials/suggestion-element.jade
+                  td 
+                    .radio
+                      input(type='radio', name=suggestion['suggestionID'], value="incorporate") 
+                      |  Incorporate
+                    .radio
+                      input(type='radio', name=suggestion['suggestionID'], value="notIncorporate") 
+                      |  Don't Incorporate
         br
         button.btn.btn-success#submit(type='submit') Create Variant >
 
