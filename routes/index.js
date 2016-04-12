@@ -45,6 +45,10 @@ router.get('/login', function(req, res) {
 });
 
 router.get('/begin-scoring', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     res.render('pages/begin-scoring', { user : req.user, idea : currentIdea });
@@ -143,6 +147,10 @@ router.get('/introduce-idea', function(req, res) {
 });
 
 router.post('/introduce-idea', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.update({_id : req.session.idea}, {problem : req.body.purposeFor},
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
@@ -151,6 +159,10 @@ router.post('/introduce-idea', function(req, res) {
 });
 
 router.get('/accomplish', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     res.render('pages/accomplish', { user : req.user, idea : currentIdea });
@@ -158,6 +170,9 @@ router.get('/accomplish', function(req, res) {
 });
 
 router.post('/accomplish', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+  }
   IdeaSeed.update({_id : req.session.idea}, {description : req.body.purposeHow},
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
@@ -196,6 +211,10 @@ router.post('/suggestion-submit', function(req, res) {
 });
 
 router.get('/update-suggestion-points/:problem', function(req, res){
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     var listOfProblems = IdeaSeed.getListOfProblems(currentIdea);
@@ -207,6 +226,10 @@ router.get('/update-suggestion-points/:problem', function(req, res){
 });
 
 router.get('/update-suggestion-list/:problem', function(req, res){
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   req.session.problemType = req.params.problem;
   res.sendStatus(200);
 });
@@ -214,6 +237,10 @@ router.get('/update-suggestion-list/:problem', function(req, res){
 
 
 router.get('/title-your-invention', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     res.render('pages/title-your-invention', { user : req.user, idea : currentIdea });
@@ -221,6 +248,10 @@ router.get('/title-your-invention', function(req, res) {
 });
 
 router.post('/title-your-invention', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.update({_id : req.session.idea}, {name : req.body.inventionName},
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
@@ -229,10 +260,18 @@ router.post('/title-your-invention', function(req, res) {
 });
 
 router.get('/problem-solver', function(req, res){
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   res.render('pages/problem-solver', { user : req.user, idea : req.session.idea });
 });
 
 router.post('/problem-solver', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.update({_id : req.session.idea}, {problem : req.body.problemToSolve},
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
@@ -241,6 +280,10 @@ router.post('/problem-solver', function(req, res) {
 });
 
 router.get('/image-upload', function(req, res){
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     var imageURLs = [];
     currentIdea = idea._doc;
@@ -268,7 +311,7 @@ router.get('/image-upload', function(req, res){
 });
 
 router.post('/image-upload', uploading.single('picture'), function(req, res) {
-    var image = new IdeaImage({ image : req.file.buffer, imageMimetype : req.file.mimetype, 
+    var image = new IdeaImage({ image : req.file.buffer, imageMimetype : req.file.mimetype,
       filename : req.file.originalname });
     image.save(function(err, newImage){
       if (err) {
@@ -288,6 +331,10 @@ router.post('/image-upload', uploading.single('picture'), function(req, res) {
 });
 
 router.get('/annotate-image/:image', function(req, res){
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaImage.findOne({"filename": req.params.image} ,function(err, image){
     currentImage = image._doc;
     var annotations = [];
@@ -346,6 +393,10 @@ router.post('/save-annotations', function(req, res){
 });
 
 router.get('/suggestion-summary', function(req, res){
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     var listOfProblems = IdeaSeed.getListOfProblems(currentIdea);
@@ -364,6 +415,10 @@ router.get('/suggestion-summary', function(req, res){
 });
 
 router.get('/view-idea-suggestions', function(req, res){
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     var listOfProblems = IdeaSeed.getListOfProblems(currentIdea) || [];
@@ -378,6 +433,10 @@ router.get('/view-idea-suggestions', function(req, res){
 });
 
 router.post('/key-features', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.update({_id : req.session.idea}, {firstFeature : req.body.firstFeature,
     secondFeature : req.body.secondFeature, thirdFeature : req.body.thirdFeature},
     { multi: false }, function (err, raw) {
@@ -387,6 +446,10 @@ router.post('/key-features', function(req, res) {
 });
 
 router.post('/incorporate-suggestions', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea, function(err, idea){
     currentIdea = idea._doc;
     var newVariantName = "",
@@ -420,6 +483,10 @@ router.post('/login', passport.authenticate('local'), function(req,res){
 });
 
 router.get('/idea-seed-summary', function(req, res){
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   var currentIdea,
     imageURL = "";
   IdeaSeed.findById(req.session.idea,function(err, idea){
@@ -452,9 +519,22 @@ router.get('/idea-summary/:ideaName', function(req, res){
 });
 
 router.get('/idea-summary', function(req, res){
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
+    var variantDates = [];
     currentIdea = idea._doc;
-    res.render('pages/idea-summary', { user : req.user, idea : currentIdea });
+    if(currentIdea.variants.length > 0){
+      for(var i = 0; i < currentIdea.variants.length -1; i++){
+        variantDates.push([
+          new Date(parseInt(currentIdea.variants[i].name.substr(-13))).toString(),
+          currentIdea.variants[i].name
+        ]);
+      }
+    }
+    res.render('pages/idea-summary', { user : req.user, idea : currentIdea, variantDates : variantDates });
   });
 });
 
@@ -467,6 +547,45 @@ router.get('/create-application', function(req, res){
         currentIdea = idea._doc;
         IdeaSeed.createApplication(currentIdea, currentAccount, res);
       });
+  });
+});
+
+router.get('/variant/:variantname', function(req, res){
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    var currentVariant;
+    var listOfProblems = IdeaSeed.getListOfProblems(currentIdea) || [];
+    var categorizedSuggestions = {};
+    categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea);
+    categorizedSuggestions = IdeaSeed.getCategoryDisplayNames(categorizedSuggestions);
+    
+    for (var i = 0; i < currentIdea.variants.length; i++){
+      if(currentIdea.variants[i].name == req.params.variantname){
+        currentVariant = currentIdea.variants[i];
+      }
+    }
+
+    if(!currentVariant){
+      res.redirect('/idea-summary');
+      return;
+    }
+    
+    for(var type in categorizedSuggestions){
+      for(var j = 0; j < categorizedSuggestions[type].length; j++){
+        if (currentVariant.suggestions.indexOf(categorizedSuggestions[type][j].suggestionID) == -1){
+          categorizedSuggestions[type].splice(j,1);
+        }
+      }
+    }
+
+    res.render('pages/variant', { user : req.user, idea : currentIdea,
+      problems : listOfProblems, categorizedSuggestions : categorizedSuggestions,
+      problemType : req.session.problemType });
+    
   });
 });
 

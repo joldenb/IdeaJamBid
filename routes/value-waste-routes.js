@@ -18,6 +18,10 @@ var uploading = multer({
 // Performability
 ////////////////////////////////////////////////
 router.get('/performability', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     res.render('pages/values-wastes/performability', { user : req.user, idea : currentIdea });
@@ -55,6 +59,10 @@ router.post('/performability', function(req, res) {
 // Affordability
 ////////////////////////////////////////////////
 router.get('/affordability', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     res.render('pages/values-wastes/affordability', { user : req.user, idea : currentIdea });
@@ -93,6 +101,10 @@ router.post('/affordability', function(req, res) {
 // Featurability
 ////////////////////////////////////////////////
 router.get('/featurability', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     res.render('pages/values-wastes/featurability', { user : req.user, idea : currentIdea });
@@ -130,6 +142,10 @@ router.post('/featurability', function(req, res) {
 // Deliverability
 ////////////////////////////////////////////////
 router.get('/deliverability', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     res.render('pages/values-wastes/deliverability', { user : req.user, idea : currentIdea });
@@ -167,6 +183,10 @@ router.post('/deliverability', function(req, res) {
 // Useability
 ////////////////////////////////////////////////
 router.get('/useability', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     res.render('pages/values-wastes/useability', { user : req.user, idea : currentIdea });
@@ -204,6 +224,10 @@ router.post('/useability', function(req, res) {
 // Maintainability
 ////////////////////////////////////////////////
 router.get('/maintainability', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     res.render('pages/values-wastes/maintainability', { user : req.user, idea : currentIdea });
@@ -241,6 +265,10 @@ router.post('/maintainability', function(req, res) {
 // Durability
 ////////////////////////////////////////////////
 router.get('/durability', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     res.render('pages/values-wastes/durability', { user : req.user, idea : currentIdea });
@@ -278,6 +306,10 @@ router.post('/durability', function(req, res) {
 // Imageability
 ////////////////////////////////////////////////
 router.get('/imageability', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     res.render('pages/values-wastes/imageability', { user : req.user, idea : currentIdea });
@@ -315,6 +347,10 @@ router.post('/imageability', function(req, res) {
 // Complexity
 ////////////////////////////////////////////////
 router.get('/complexity', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     res.render('pages/values-wastes/complexity', { user : req.user, idea : currentIdea });
@@ -352,6 +388,10 @@ router.post('/complexity', function(req, res) {
 // Precision
 ////////////////////////////////////////////////
 router.get('/precision', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     res.render('pages/values-wastes/precision', { user : req.user, idea : currentIdea });
@@ -388,6 +428,10 @@ router.post('/precision', function(req, res) {
 // Variability
 ////////////////////////////////////////////////
 router.get('/variability', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     res.render('pages/values-wastes/variability', { user : req.user, idea : currentIdea });
@@ -424,6 +468,10 @@ router.post('/variability', function(req, res) {
 // Sensitivity
 ////////////////////////////////////////////////
 router.get('/sensitivity', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     res.render('pages/values-wastes/sensitivity', { user : req.user, idea : currentIdea });
@@ -460,6 +508,10 @@ router.post('/sensitivity', function(req, res) {
 // Immaturity
 ////////////////////////////////////////////////
 router.get('/immaturity', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     res.render('pages/values-wastes/immaturity', { user : req.user, idea : currentIdea });
@@ -496,6 +548,14 @@ router.post('/immaturity', function(req, res) {
 // Dangerous
 ////////////////////////////////////////////////
 router.get('/dangerous', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     res.render('pages/values-wastes/dangerous', { user : req.user, idea : currentIdea });
@@ -532,6 +592,10 @@ router.post('/dangerous', function(req, res) {
 // Skill Intensive
 ////////////////////////////////////////////////
 router.get('/skills', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     res.render('pages/values-wastes/skills', { user : req.user, idea : currentIdea });

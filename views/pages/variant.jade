@@ -1,0 +1,67 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body
+  .header
+    span.userName Howdy #{user.username}
+    |  
+    img(src="/avatar.png" height="75" width="75")
+    a.home-logout.btn.btn-default( href="/begin" ) My Profile
+    | 
+    a.home-logout.btn.btn-default( href="/logout" ) Log Out
+
+  .view-idea-suggestions
+    h2 Name : #{idea.name}
+    h3 Einstein Points Earned : #{user.einsteinPoints}
+    br
+    
+    if problems
+
+        table.suggestion-table
+          tr
+            th.left-column Suggestion Type
+          each suggestions, category in categorizedSuggestions
+            each suggestion, i in suggestions
+              if(suggestion['suggestionID'])
+                tr
+                tr
+                  td.left-column 
+                    - var suggestionText = suggestion['suggestion']
+                    - var problemCategory = category
+                    - var suggestionProblem = suggestion['problemType']
+                    include ../partials/suggestion-element.jade
+        br
+
+    else
+      h3 No problems yet for this idea!
+    br
+    br
+    a.home-logout.btn.btn-default( href="/idea-summary" ) < Back to Idea Summary
+    br
+    br
+    br
+
+  include ../partials/js-includes.jade
+  script(type="text/javascript").
+    $(".btn.suggest").click(function(){
+      $("#suggestion-category").val($(this).attr("id"));
+      $("#point-value").val($(this).text());
+      $("#problem-type").val($("#selectProblem option:selected").attr("id"));
+    });
+
+    $("#submit").click(function(){
+      $("#formSuggestion").submit();
+      $("#myModal").modal('hide');
+    });
+
+    $("#selectProblem").change(function(){
+      var problem = $("#selectProblem option:selected").attr("id");
+      $.get("/update-suggestion-list/"+problem, function(data){
+        document.location.href = "/view-idea-suggestions";
+      });
+    });
+
+
+
+
