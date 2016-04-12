@@ -18,32 +18,31 @@ html
     
   #sortableProblemList.list-group
     each problem, index in problems
-      .list-group-item
+      .list-group-item(data-id=problem[2])
         span <b> #{index + 1}.   </b>
-        span  #{problem[0]} : #{problem[1]}
+        span.problemText #{problem[0]} : #{problem[1]}
 
     br
     br
-    a.home-logout.btn.btn-default( href="/idea-summary" ) < Back to Idea Summary
     br
-    br
-    br
+  a#save-order.btn.btn-success( href="/idea-summary" ) Save Order and Return
+  |  
+  a.btn.btn-default( href="/idea-summary" ) Return without Saving
+  br
+  br
 
   include ../partials/js-includes.jade
   script(src="http://rubaxa.github.io/Sortable/Sortable.js")
   script(type="text/javascript").
-    $(".btn.suggest").click(function(){
-      $("#suggestion-category").val($(this).attr("id"));
-      $("#point-value").val($(this).text());
-      $("#problem-type").val($("#selectProblem option:selected").attr("id"));
+    $("#save-order").click(function(){
+      var newOrder = {};
+      
+      $("#sortableProblemList .list-group-item .problemText").each(function(index, item){
+        newOrder[index] = item.textContent;
+      });
+      $.post('/order-problems', newOrder);
     });
 
-    $("#submit").click(function(){
-      $("#formSuggestion").submit();
-      $("#myModal").modal('hide');
-    });
-
-    // List with handle
     Sortable.create(sortableProblemList, {});    
 
 

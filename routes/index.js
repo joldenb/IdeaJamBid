@@ -631,6 +631,57 @@ router.get('/sort-problems', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
+router.post('/order-problems', function(req, res) {
+  var listOfAllPriorities = [
+    "performPriority",
+    "affordPriority",
+    "featurePriority",
+    "deliverPriority",
+    "useabilityPriority",
+    "maintainPriority",
+    "durabilityPriority",
+    "imagePriority",
+    "complexPriority",
+    "precisionPriority",
+    "variabilityPriority",
+    "sensitivityPriority",
+    "immaturePriority",
+    "dangerPriority",
+    "skillsPriority"
+  ]
+  var problemText, problemField;
+  IdeaSeed.findById(req.session.idea, function(err, idea){
+    for(var key in req.body){
+      problemText = req.body[key].split(" : ")[1];
+      problemField = _.invert(currentIdea)[problemText];
+      problemField = problemField.slice(0, -7) + "Priority";
+      listOfAllPriorities.splice(listOfAllPriorities.indexOf(problemField), 1);
+      idea[problemField] = parseInt(key) + 1;
+    }
+
+    var nextPriority = 16 - listOfAllPriorities.length;
+    for(i=0; i < listOfAllPriorities.length; i++){
+      idea[listOfAllPriorities[i]] = nextPriority;
+      nextPriority++;
+    }
+
+    idea.save(function (err, idea, numaffected) {
+        if(err) {
+            console.error('ERROR!' + err);
+        }
+        res.sendStatus(200);
+    });
+  });
+});
+
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for Key
+******************************************************************
+******************************************************************
+*****************************************************************/
 router.post('/key-features', function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
