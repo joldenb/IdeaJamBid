@@ -800,7 +800,7 @@ router.get('/idea-summary', function(req, res){
     listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];})
 
     if(currentIdea.variants.length > 0){
-      for(var i = 0; i < currentIdea.variants.length -1; i++){
+      for(var i = 0; i < currentIdea.variants.length; i++){
         variantDates.push([
           new Date(parseInt(currentIdea.variants[i].name.substr(-13))).toString(),
           currentIdea.variants[i].name
