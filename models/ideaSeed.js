@@ -23,7 +23,7 @@ var IdeaSeed = new Schema({
 		suggestion		: String,
 		hindsight		: String,
 		outsight		: String,
-		foresight		: String,
+		foresight		: String
 	}],
 
 	variants			: [{
@@ -36,48 +36,63 @@ var IdeaSeed = new Schema({
 
 	performOne		: Number,
 	performProblem		: String,
+	performPriority		: { type: Number, default: 1 },
 
 	affordOne		: Number,
 	affordProblem		: String,
+	affordPriority		: { type: Number, default: 2 },
 
 	featureOne		: Number,
 	featureProblem		: String,
+	featurePriority		: { type: Number, default: 3 },
 
 	deliverOne		: Number,
 	deliverProblem		: String,
+	deliverPriority		: { type: Number, default: 4 },
 
 	useabilityOne	: Number,
 	useabilityProblem	: String,
+	useabilityPriority		: { type: Number, default: 5 },
 
 	maintainOne		: Number,
 	maintainProblem		: String,
+	maintainPriority		: { type: Number, default: 6 },
 
 	durabilityOne	: Number,
 	durabilityProblem	: String,
+	durabilityPriority		: { type: Number, default: 7 },
 
 	imageOne		: Number,
 	imageProblem		: String,
+	imagePriority		: { type: Number, default: 8 },
 
 	complexOne		: Number,
 	complexProblem		: String,
+	complexPriority		: { type: Number, default: 9 },
 
 	precisionOne	: Number,
 	precisionProblem	: String,
+	precisionPriority		: { type: Number, default: 10 },
 
 	variabilityOne	: Number,
 	variabilityProblem	: String,
+	variabilityPriority		: { type: Number, default: 11 },
 
 	sensitivityOne	: Number,
 	sensitivityProblem	: String,
+	sensitivityPriority		: { type: Number, default: 12 },
 
 	immatureOne		: Number,
 	immatureProblem		: String,
+	immaturePriority		: { type: Number, default: 13 },
 
 	dangerOne		: Number,
 	dangerProblem		: String,
+	dangerPriority		: { type: Number, default: 14 },
 
 	skillsOne		: Number,
-	skillsProblem		: String
+	skillsProblem		: String,
+	skillsPriority		: { type: Number, default: 15 }
 });
 
 IdeaSeed.statics.createApplication = function(idea, account, res){
@@ -531,6 +546,14 @@ IdeaSeed.statics.generateVariantName = function(ideaName){
 	var newName = ideaName.replace(/\s/g, '');
 	newName = newName + Date.now().toString();
 	return newName;
+};
+
+IdeaSeed.statics.getTopThreeProblems = function(idea){
+	var topProblems = [_.invert(idea)[1], _.invert(idea)[2], _.invert(idea)[3]];
+	topProblems = _.map(topProblems, function(problem){
+		return problem.slice(0, -8) + "Problem";
+	});
+	return _.map(topProblems, function(problem){ return [problem, idea[problem]]; });
 };
 
 module.exports = mongoose.model('IdeaSeed', IdeaSeed);

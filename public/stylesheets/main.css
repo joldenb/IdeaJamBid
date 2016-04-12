@@ -250,3 +250,23 @@ ul.variantDateList {
   margin-top: 1em;
   list-style-type: circle;
 }
+
+#sortableProblemList {
+  max-width: 50%;
+  margin: 0 auto;
+}
+
+.list-group-item {
+  background-color: 1px solid #ccf2ff;
+  border-radius: 5px;
+  margin: 2em;
+  padding: 1em;
+  background-color: #ccf2ff;
+}
+
+ul.problemList{
+    list-style-type: none;
+    max-width: 50%;
+    margin-left: 25%;
+    text-align: left;
+}

@@ -1,0 +1,50 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body
+  .header
+    span.userName Howdy #{user.username}
+    |  
+    img(src="/avatar.png" height="75" width="75")
+    a.home-logout.btn.btn-default( href="/begin" ) My Profile
+    | 
+    a.home-logout.btn.btn-default( href="/logout" ) Log Out
+
+  .view-idea-suggestions
+    h2 Name : #{idea.name}
+    h3 Problem Rankings
+    br
+    
+  #sortableProblemList.list-group
+    each problem, index in problems
+      .list-group-item
+        span <b> #{index + 1}.   </b>
+        span  #{problem[0]} : #{problem[1]}
+
+    br
+    br
+    a.home-logout.btn.btn-default( href="/idea-summary" ) < Back to Idea Summary
+    br
+    br
+    br
+
+  include ../partials/js-includes.jade
+  script(src="http://rubaxa.github.io/Sortable/Sortable.js")
+  script(type="text/javascript").
+    $(".btn.suggest").click(function(){
+      $("#suggestion-category").val($(this).attr("id"));
+      $("#point-value").val($(this).text());
+      $("#problem-type").val($("#selectProblem option:selected").attr("id"));
+    });
+
+    $("#submit").click(function(){
+      $("#formSuggestion").submit();
+      $("#myModal").modal('hide');
+    });
+
+    // List with handle
+    Sortable.create(sortableProblemList, {});    
+
+
+

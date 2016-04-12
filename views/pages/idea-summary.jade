@@ -246,22 +246,29 @@ html
               p No Value Yet
 
     .idea-function-column.half-column
-      h4 Idea Seed Functionality
-      p <b>Application :</b> 
+      h4 Application 
       a.btn.btn-default( href="/create-application" ) Download Application
       br
       br
-      p <b>Suggestions :</b> 
+      h4 Top Priority Problems 
+      ul.problemList
+        each problem, index in listOfProblems
+          li
+            p #{index + 1}. <b>#{problem[0]} : </b> #{problem[1]}
+      a.btn.btn-default( href="/sort-problems" ) Sort All Problems
+
+      br
+      br
+      h4 Suggestions 
       a.btn.btn-default( href="/suggestion-summary" ) Make Suggestions
       br
       br
-      p <b>Variants :</b> 
-      a.btn.btn-default( href="/view-idea-suggestions" ) Create Variant
-      br
+      h4 Variants 
       each variantDate in variantDates
         ul.variantDateList
           li
             a(href="/variant/"+variantDate[1]) #{variantDate[0]}
+      a.btn.btn-default( href="/view-idea-suggestions" ) Create a New Variant
 
 
 
