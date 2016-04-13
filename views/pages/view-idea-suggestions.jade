@@ -60,10 +60,6 @@ html
       $("#problem-type").val($("#selectProblem option:selected").attr("id"));
     });
 
-    $("#submit").click(function(){
-      $("#formSuggestion").submit();
-      $("#myModal").modal('hide');
-    });
 
     $("#selectProblem").change(function(){
       var problem = $("#selectProblem option:selected").attr("id");

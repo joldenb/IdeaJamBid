@@ -554,17 +554,27 @@ router.get('/suggestion-summary', function(req, res){
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     var listOfProblems = IdeaSeed.getListOfProblems(currentIdea);
+    var problemTypes = _.map(listOfProblems, function(item){ return item[0];});
+    var problemType = "";
     var categorizedSuggestions = {};
-    if(req.session.problemType){
-      categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea, req.session.problemType);
-    } else if ( listOfProblems.length > 0 ){
+
+    var typeOfProblem, rankingOfProblem;
+    for(var i = 0; i < listOfProblems.length; i++){
+      typeOfProblem = _.invert(currentIdea)[listOfProblems[i][1]];
+      rankingOfProblem = idea[typeOfProblem.slice(0, -7) + "Priority"];
+      listOfProblems[i].push(rankingOfProblem);
+    }
+    listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
+
+    if ( listOfProblems.length > 0 ){
+      problemType = listOfProblems[0][0];
       categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea, listOfProblems[0][0]);
     }
     var categoryPointValues = IdeaSeed.getCategoryPointValues(categorizedSuggestions);
 
     res.render('pages/suggestion-summary', { user : req.user, idea : currentIdea,
       problems : listOfProblems, categoryPoints : categoryPointValues,
-      problemType : req.session.problemType });
+      problemType : problemType });
   });
 });
 
@@ -905,9 +915,13 @@ router.get('/variant/:variantname', function(req, res){
     currentIdea = idea._doc;
     var currentVariant;
     var listOfProblems = IdeaSeed.getListOfProblems(currentIdea) || [];
-    var categorizedSuggestions = {};
-    categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea);
-    categorizedSuggestions = IdeaSeed.getCategoryDisplayNames(categorizedSuggestions);
+    var allCategorizedSuggestions = {};
+    allCategorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea);
+    allCategorizedSuggestions = IdeaSeed.getCategoryDisplayNames(allCategorizedSuggestions);
+    var variantCategorizedSuggestions = {};
+    variantCategorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea);
+    variantCategorizedSuggestions = IdeaSeed.getCategoryDisplayNames(variantCategorizedSuggestions);
+
     
     for (var i = 0; i < currentIdea.variants.length; i++){
       if(currentIdea.variants[i].name == req.params.variantname){
@@ -920,16 +934,21 @@ router.get('/variant/:variantname', function(req, res){
       return;
     }
     
-    for(var type in categorizedSuggestions){
-      for(var j = 0; j < categorizedSuggestions[type].length; j++){
-        if (currentVariant.suggestions.indexOf(categorizedSuggestions[type][j].suggestionID) == -1){
-          categorizedSuggestions[type].splice(j,1);
+    var typeLength = 0;
+    for(var type in allCategorizedSuggestions){
+      for(var j = 0; j < allCategorizedSuggestions[type].length; j++){
+        if (currentVariant.suggestions.indexOf(allCategorizedSuggestions[type][j].suggestionID) == -1){
+          for(var k = 0; k < variantCategorizedSuggestions[type].length; k++){
+            if(variantCategorizedSuggestions[type][k].suggestionID == allCategorizedSuggestions[type][j].suggestionID){
+              variantCategorizedSuggestions[type].splice(k,1);
+            }
+          }
         }
       }
     }
 
     res.render('pages/variant', { user : req.user, idea : currentIdea,
-      problems : listOfProblems, categorizedSuggestions : categorizedSuggestions,
+      problems : listOfProblems, categorizedSuggestions : variantCategorizedSuggestions,
       problemType : req.session.problemType });
     
   });

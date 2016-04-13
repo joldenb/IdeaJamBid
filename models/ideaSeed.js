@@ -551,7 +551,7 @@ IdeaSeed.statics.generateVariantName = function(ideaName){
 IdeaSeed.statics.getTopThreeProblems = function(idea){
 	var topProblems = [_.invert(idea)[1], _.invert(idea)[2], _.invert(idea)[3]];
 	topProblems = _.map(topProblems, function(problem){
-		return problem.slice(0, -8) + "Problem";
+		return [problem.slice(0, -8) + "Problem"];
 	});
 	return _.map(topProblems, function(problem){ return [problem, idea[problem]]; });
 };

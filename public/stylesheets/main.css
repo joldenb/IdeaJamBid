@@ -181,6 +181,10 @@ form {
   background-color: #00bfff;
 }
 
+.container.suggestion-summary {
+  width:80%;
+}
+
 .suggestion-summary h1, .suggestion-summary h3 {
   text-align: center;
 }
@@ -269,4 +273,42 @@ ul.problemList{
     max-width: 50%;
     margin-left: 25%;
     text-align: left;
+}
+
+.problemOption {
+  width: 100%;
+  padding: 1em;
+  margin: .5em;
+  border:1px solid gray;
+  border-radius: 5px;
+}
+
+.selectedProblem {
+  background-color: #ccf2ff;
+}
+
+#suggestionList {
+  width:50%;
+  float: left;
+}
+
+table#suggestionPointTable {
+  width:50%;
+  float:right;
+}
+
+.oneSugg {
+  background-color: #66ccff;
+}
+
+.twoSugg {
+  background-color: #FFC024;
+}
+
+.threeSugg {
+  background-color: #ff99cc;
+}
+
+.fourSugg {
+  background-color: #87F528;
 }

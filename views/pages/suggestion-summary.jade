@@ -17,15 +17,16 @@ html
     br
 
     .form-group
-      if (problems.length )
-        label(for="selectProblem") Select list:
-          select.form-control#selectProblem
+      if (problemType )
+        #suggestionList 
+          label(for="selectProblem") Select list:
+            #selectProblem
               each val in problems
                 if problemType == val[0]
-                  option(id=val[0] selected) #{val[0]} problem : #{val[1]}
+                  .problemOption.selectedProblem(id=val[0]) #{val[0]} problem : #{val[1]}
                 else 
-                  option(id=val[0]) #{val[0]} problem : #{val[1]}
-        br
+                  .problemOption(id=val[0]) #{val[0]} problem : #{val[1]}
+          br
 
         #myModal.modal.fade(role="dialog")
           .modal-dialog
@@ -56,7 +57,7 @@ html
                 button.btn.btn-info(data-dismiss="modal") Cancel
                 button.btn.btn-success#submit(type='submit') Submit >
 
-        table
+        table#suggestionPointTable
           tr
             th Targets/Tactics
             th Functions
@@ -174,7 +175,7 @@ html
     $(".btn.suggest").click(function(){
       $("#suggestion-category").val($(this).attr("id"));
       $("#point-value").val($(this).text());
-      $("#problem-type").val($("#selectProblem option:selected").attr("id"));
+      $("#problem-type").val($(".selectedProblem").attr("id"));
     });
 
     $("#submit").click(function(){
@@ -182,15 +183,47 @@ html
       $("#myModal").modal('hide');
     });
 
-    $("#selectProblem").change(function(){
-      var problem = $("#selectProblem option:selected").attr("id");
+    $(".problemOption").click(function(event){
+      var problem = $(this).attr("id");
       $.get("/update-suggestion-points/"+problem, function(data){
         for(var key in data){
           $( "#" + key ).text(data[key]);
         }
+        $(".btn-primary").each(function(index){
+          var value = parseInt($(this).text().slice(1));
+        
+          if( value == 50){
+            $(this).attr("class", "btn btn-primary suggest");
+          } else if(value < 50 && value > 20){
+            $(this).attr("class", "btn btn-primary suggest oneSugg");
+          } else if (value < 25 && value > 10) {
+            $(this).attr("class", "btn btn-primary suggest twoSugg");
+          } else if (value < 10 && value > 5) {
+            $(this).attr("class", "btn btn-primary suggest threeSugg");
+          } else if (value < 5 ){
+            $(this).attr("class", "btn btn-primary suggest fourSugg");
+          }
+        });
       });
+
+      $(".selectedProblem").removeClass("selectedProblem");
+      $(this).addClass("selectedProblem");
     });
 
+    $(".btn-primary").each(function(index){
+      var value = parseInt($(this).text().slice(1));
+      if( value == 50){
+        $(this).attr("class", "btn btn-primary suggest");
+      } else if(value < 50 && value > 20){
+        $(this).attr("class", "btn btn-primary suggest oneSugg");
+      } else if (value < 25 && value > 10) {
+        $(this).attr("class", "btn btn-primary suggest twoSugg");
+      } else if (value < 10 && value > 5) {
+        $(this).attr("class", "btn btn-primary suggest threeSugg");
+      } else if (value < 5 ){
+        $(this).attr("class", "btn btn-primary suggest fourSugg");
+      }
+    });
 
 
 
