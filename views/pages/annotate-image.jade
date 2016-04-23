@@ -11,47 +11,182 @@ html
     | 
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
 
-  .container.idea-summary
-    h1 Image Annotation
+  
+    #myModal.modal.fade.annotate-modal(role="dialog")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button(type="button", class="close" data-dismiss="modal") &times;
+            .modal-title 
+              h2 Contribute an Idea
+          .modal-body
+            form(role='form', id="saveComponent" action="/save-component", method="post", style='max-width: 300px;', data-idea-doc=idea)
+              .form-group
+                h3 Select Existing:
+                select.form-control#existingComponents
+                    option(value="None Selected") None Selected
+                    each value in masterComponentList
+                      option(value=value['number']) #{value['number']}. #{value['text']}
+
+                h3 New Component:
+                |  
+                input.form-control(type='text', name="component", id="componentName", placeholder='This is called...')
+          .modal-footer
+            // button.btn.btn-info(data-dismiss="modal") Cancel
+            button.btn.btn-success#submit(type='submit') Save
+
+  button(type="button" id="modalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Go Win Fight
+
+  .container.annotate-image-container
       if (imgURL)
-        h3 Image :
-        img.summary-image.annotatable(src=imgURL, data-original="http://www.example.com/my-dummy-image-path")
+        canvas(id="myCanvas", width="1000", height="700", style="border:1px solid #d3d3d3;")
+        img.summary-image(id="scream", src=imgURL, data-original="http://www.example.com/my-dummy-image-path", style="display:none;")
+      each value in comps
+        canvas(id="component-#{value['number']}", width="1000", height="700", style="border:1px solid #d3d3d3;")
+    #componentList
+      each value in comps
+        .individual-component
+          h4 #{value.number}. #{value.text}
+      br
+      br
+      a#save-annotations.btn.btn-success( href="/image-upload" ) Save Annotations >
+
       
-  br
-  br
-  a#save-annotations.btn.btn-success( href="/image-upload" ) Save Annotations >
 
   include ../partials/js-includes.jade
   script(type="text/javascript").
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+    var firstClickX, secondClickX;
+    var firstClickY, secondClickY;
+    var componentNumber = parseInt("!{nextNumber}");
 
-    var init = function init() {
-      var imageSource = jQuery(".annotatable")[0].src;
-      var annoString = "#{annotations}";
-      annoString = annoString.replace(/&quot;/g,'"');
-      var annotationList = JSON.parse(annoString);
+    window.onload = function() {
+        var img = document.getElementById("scream");
+        ctx.drawImage(img, 200, 150, 600, 400);
+        var textCoordX, textCoordY;
 
-      for(var i = 0; i < annotationList.length; i++){
-        //if(!annotationList[i]["src"]){
-          annotationList[i]["src"] = "http://www.example.com/my-dummy-image-path";
-        //}
-        annotationList[i]["shapes"][0]["geometry"]["height"] = parseFloat(annotationList[i]["shapes"][0]["geometry"]["height"]);
-        annotationList[i]["shapes"][0]["geometry"]["width"] = parseFloat(annotationList[i]["shapes"][0]["geometry"]["width"]);
-        annotationList[i]["shapes"][0]["geometry"]["y"] = parseFloat(annotationList[i]["shapes"][0]["geometry"]["y"]);
-        annotationList[i]["shapes"][0]["geometry"]["x"] = parseFloat(annotationList[i]["shapes"][0]["geometry"]["x"]);
+        var firstX, firstY, secondX, secondY;
+        var comps = JSON.parse('!{compsString}');
+        for (var i=0; i < comps.length; i++){
+          firstX  = comps[i].firstX;
+          firstY  = comps[i].firstY;
+          secondX = comps[i].secondX;
+          secondY  = comps[i].secondY;
 
-        anno.addAnnotation(annotationList[i]);
+          if(comps[i]['number']) {
+            canvas = document.getElementById("component-" + comps[i]['number']);
+            ctx = canvas.getContext("2d");
+            ctx.beginPath();
+            ctx.moveTo(firstX, firstY);
+            ctx.lineTo(secondX, secondY);
+            ctx.stroke(); 
+
+            ctx.font="20px Helvetica";
+            if(secondX > 800){
+              textCoordX = (secondX*1 + 20);
+              textCoordY = secondY;
+            } else if(secondX < 200){
+              textCoordX = secondX - 20;
+              textCoordY = secondY;
+            } else if(secondY > 550){
+              textCoordX = secondX;
+              textCoordY = (secondY*1 + 20);
+            } else if(secondY < 150){
+              textCoordX = secondX;
+              textCoordY = secondY - 20;
+            }
+            ctx.fillText(comps[i]['number']+".",textCoordX,textCoordY);
+
+          }
+        }
+    };
+    
+    $('canvas').click(function(e){
+
+        firstClickX = e.offsetX;
+        firstClickY = e.offsetY;
+
+        if(firstClickY  - .63*firstClickX > 24){
+          if(firstClickY + .63*firstClickX > 654){
+            secondClickX = firstClickX;
+            secondClickY = 580;
+          } else {
+            secondClickX = 170;
+            secondClickY = firstClickY;
+          }
+        } else {
+          if(firstClickY + .63*firstClickX > 654){
+            secondClickX = 830;
+            secondClickY = firstClickY;
+          } else {
+            secondClickX = firstClickX;
+            secondClickY = 120;
+          }
+        }
+
+
+        $("#modalButton").click();
+    });
+
+    $("#submit").click(function(event){
+      event.preventDefault();
+      $("#imageName").val("#{imageName}");
+
+
+      var textCoordX, textCoordY;
+      if($("#componentName").val()){
+        var data = {
+          component : $("#componentName").val(),
+          firstX    : firstClickX,
+          firstY    : firstClickY,
+          secondX   : secondClickX,
+          secondY   : secondClickY,
+          imageName : "#{imageName}",
+          number    : componentNumber
+        };
+      } else {
+        var data = {
+          component : $("#existingComponents option:selected").text().split(". ")[1],
+          firstX    : firstClickX,
+          firstY    : firstClickY,
+          secondX   : secondClickX,
+          secondY   : secondClickY,
+          imageName : "#{imageName}",
+          number    : $("#existingComponents").val()
+        };
       }
-      anno.showAnnotations(imageSource);
-    }  
-    anno.addHandler('onAnnotationCreated', function(annotation) {
-      console.log(annotation.text);
+      
+
+      $.post('/save-component', data, function(resp) {
+        $("#myModal").modal('hide');
+
+        $("<canvas id='component"+data['number']+" width='1000' height='700' style='border:1px solid #d3d3d3;'>").insertAfter("#myCanvas");
+
+        var canvas = document.getElementById("edward");
+        var ctx = canvas.getContext("2d");
+        ctx.beginPath();
+        ctx.moveTo(firstClickX, firstClickY);
+        ctx.lineTo(secondClickX, secondClickY);
+        ctx.stroke(); 
+
+        ctx.font="20px Helvetica";
+        if(secondClickX > 800){
+          textCoordX = (secondClickX*1 + 20);
+          textCoordY = secondClickY;
+        } else if(secondClickX < 200){
+          textCoordX = secondClickX - 20;
+          textCoordY = secondClickY;
+        } else if(secondClickY > 550){
+          textCoordX = secondClickX;
+          textCoordY = (secondClickY*1 + 20);
+        } else if(secondClickY < 150){
+          textCoordX = secondClickX;
+          textCoordY = secondClickY - 20;
+        }
+        ctx.fillText(data['number']+".",textCoordX,textCoordY);
+
+        componentNumber++;
+      });      
     });
-
-    $("#save-annotations").click(function(event){
-      var allAnnotations = anno.getAnnotations("http://www.example.com/my-dummy-image-path"),
-          i=0,
-          annoList = [];
-
-      $.post("/save-annotations", { "annotations" : allAnnotations, "imageName" : "#{imageName}" });
-    });
-
+    

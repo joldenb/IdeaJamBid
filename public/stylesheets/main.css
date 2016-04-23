@@ -312,3 +312,34 @@ table#suggestionPointTable {
 .fourSugg {
   background-color: #87F528;
 }
+
+canvas {
+  vertical-align: top;
+  top: 0;
+  left: 10%;
+  position: absolute;
+  margin-bottom: 5em;
+}
+
+#myCanvas {
+  display: block;
+  margin: 0 auto;
+}
+
+
+
+.annotate-image-container {
+  width: 80%;
+  position:relative;
+}
+
+.annotate-modal h2, .annotate-modal h3 {
+  text-align: initial;
+  color: black;
+}
+
+#componentList {
+  position:absolute;
+  padding-left: 1em;
+  text-align: left;
+}

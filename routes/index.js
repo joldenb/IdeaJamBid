@@ -2,8 +2,10 @@ var express = require('express');
 var passport = require('passport');
 var mongoose = require('mongoose');
 var _ = require('underscore');
+var ObjectId = mongoose.Schema.Types.ObjectId;
 var IdeaImage = require('../models/ideaImage');
 var IdeaSeed = require('../models/ideaSeed');
+var Component = require('../models/component');
 var Account = require('../models/account');
 var router = express.Router();
 var multer = require('multer');
@@ -93,7 +95,7 @@ router.get('/begin-scoring', function(req, res) {
 /*****************************************************************
 ******************************************************************
 ******************************************************************
-* Route for sort problems
+* Route for begin
 ******************************************************************
 ******************************************************************
 *****************************************************************/
@@ -127,19 +129,7 @@ router.get('/begin', function(req, res) {
               }
             });
         });
-
       }
-/*      if(req.user.ideaSeeds && req.user.ideaSeeds.length > 0){
-        Account.findById(req.user.id)
-          .populate('ideaSeeds')
-          .exec(function(err, account){
-            var ideaNames = _.map(account.ideaSeeds, function(idea){return idea.name;});
-            res.render('pages/begin', {
-              user : req.user,
-              accountIdeaSeeds : ideaNames
-            });
-          }); 
-      } */
       else {
         return res.render('pages/begin', {
           user : req.user,
@@ -173,17 +163,6 @@ router.get('/introduce-idea', function(req, res) {
         );
         req.session.idea = newIdea._doc._id.toHexString();
         res.render('pages/introduce-idea', { user : req.user, idea : req.session.idea });
-
-  /*
-          Account.update( {_id: req.user.id} ,
-            {$push : {"ideaSeeds" : newIdea}},
-            function (err, raw) {
-              console.log('The raw response from Mongo was ', raw);
-              req.session.idea = newIdea._doc._id.toHexString();
-              res.render('pages/introduce-idea', { user : req.user, idea : req.session.idea });
-            }
-          );*/
-        //});
       } else {
         IdeaSeed.findById(req.session.idea,function(err, idea){
           currentIdea = idea._doc;
@@ -463,48 +442,6 @@ router.post('/image-upload', uploading.single('picture'), function(req, res) {
 
 });
 
-/*****************************************************************
-******************************************************************
-******************************************************************
-* Route for sort problems
-******************************************************************
-******************************************************************
-*****************************************************************/
-router.get('/annotate-image/:image', function(req, res){
-  if(!req.session.idea){
-    res.redirect('/');
-    return;
-  }
-  IdeaImage.findOne({"filename": req.params.image} ,function(err, image){
-    currentImage = image._doc;
-    var annotations = [];
-    if(currentImage.image){
-      imageURL = "data:"+currentImage.imageMimetype+";base64," + currentImage.image.toString('base64');
-      for(var i=0; i < currentImage.annotations.length; i++){
-        annotations.push( {
-            src : imageURL,
-            text : currentImage.annotations[i].text,
-            shapes : [{
-                type : 'rect',
-                geometry : { 
-                  x : currentImage.annotations[i].xCoord,
-                  y: currentImage.annotations[i].yCoord,
-                  width : currentImage.annotations[i].width,
-                  height: currentImage.annotations[i].height }
-            }]
-        });
-      }
-      res.render('pages/annotate-image', { 
-        user : req.user,
-        imgURL : imageURL,
-        imageName : currentImage.filename,
-        annotations : JSON.stringify(annotations)
-      });
-    } else {
-      res.redirect('/idea-seed-summary');
-    }
-  });
-});
 
 /*****************************************************************
 ******************************************************************
@@ -951,6 +888,119 @@ router.get('/variant/:variantname', function(req, res){
       problems : listOfProblems, categorizedSuggestions : variantCategorizedSuggestions,
       problemType : req.session.problemType });
     
+  });
+});
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for sort problems
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/annotate-image/:image', function(req, res){
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
+  IdeaImage.findOne({"filename": req.params.image} ,function(err, image){
+    currentImage = image._doc;
+    var annotations = [];
+    if(currentImage.image){
+      imageURL = "data:"+currentImage.imageMimetype+";base64," + currentImage.image.toString('base64');
+      Component.find({"images.imageID" : image.id}, function(err, comps){
+        var compArray = [], masterComponentList = [];
+        for(var i = 0; i < comps.length; i++){
+          for(var k = 0; k < comps[i].images.length; k++){
+            if(comps[i].images[k].imageID.toString() == image.id) {
+              compArray[i] = {
+                "text" : comps[i].text,
+                "number"  : comps[i].number,
+                "firstX"  : comps[i].images[k].firstX,
+                "firstY"  : comps[i].images[k].firstY,
+                "secondX" : comps[i].images[k].secondX,
+                "secondY" : comps[i].images[k].secondY
+              };
+            }
+          }
+        }
+
+        var nextNumber = 1;
+          Component.find({ }, function(err, comps){
+            for(var j = 0; j < comps.length; j++){
+              if ( comps[j]['ideaSeed'].toString() ==  req.session.idea ) {
+                masterComponentList.push(comps[j]);
+                nextNumber++;
+              }
+            }
+
+            compArray = _.sortBy(compArray, 'number');
+            masterComponentList = _.sortBy(masterComponentList, 'number');
+            res.render('pages/annotate-image', {
+              user : req.user,
+              imgURL : imageURL,
+              imageName : currentImage.filename,
+              annotations : JSON.stringify(annotations),
+              masterComponentList : masterComponentList,
+              comps : compArray,
+              compsString : JSON.stringify(compArray),
+              nextNumber : nextNumber
+            });
+        });
+
+      });
+    } else {
+      res.redirect('/idea-seed-summary');
+    }
+  });
+});
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for sort problems
+******************************************************************
+******************************************************************
+*****************************************************************/
+
+router.post('/save-component', function(req, res) {
+  IdeaImage.findOne({"filename" : req.body.imageName}, function(err, image){
+
+    Component.findOne({"text" : req.body.component}, function(err, component){
+      if(component){
+        component.images.push(
+          {
+            imageID   : image.id,
+            firstX    : req.body.firstX,
+            firstY    : req.body.firstY,
+            secondX   : req.body.secondX,
+            secondY   : req.body.secondY
+          }
+        );
+        component.save(function(err){
+          var stop;
+        });
+        res.sendStatus(200);
+      } else {
+        var newComp = new Component({
+          text : req.body.component,
+          number : req.body.number,
+          images : [{
+            imageID   : image.id,
+            firstX    : req.body.firstX,
+            firstY    : req.body.firstY,
+            secondX   : req.body.secondX,
+            secondY   : req.body.secondY
+          }],
+
+          ideaSeed    : req.session.idea
+        });
+        newComp.save(function(err){
+          var stop;
+        });
+        res.sendStatus(200);
+      }
+    }); 
   });
 });
 
