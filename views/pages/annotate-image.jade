@@ -159,11 +159,13 @@ html
       
 
       $.post('/save-component', data, function(resp) {
+        $("#componentName").val('');
+        $("#existingComponents option[value='None Selected']").attr('selected', 'selected');
         $("#myModal").modal('hide');
 
-        $("<canvas id='component"+data['number']+" width='1000' height='700' style='border:1px solid #d3d3d3;'>").insertAfter("#myCanvas");
+        $("<canvas id='component-"+data['number']+"' width='1000' height='700' style='border:1px solid #d3d3d3;'>").insertAfter("#myCanvas");
 
-        var canvas = document.getElementById("edward");
+        canvas = document.getElementById("component-"+data['number']);
         var ctx = canvas.getContext("2d");
         ctx.beginPath();
         ctx.moveTo(firstClickX, firstClickY);
@@ -185,6 +187,9 @@ html
           textCoordY = secondClickY - 20;
         }
         ctx.fillText(data['number']+".",textCoordX,textCoordY);
+
+        $("<div class='individual-component'><h4>"+ data['number']+". "+ data['component']+"</h4></div>").
+          insertAfter("#componentList .individual-component:last-of-type");
 
         componentNumber++;
       });      
