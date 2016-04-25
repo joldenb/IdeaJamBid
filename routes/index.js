@@ -966,7 +966,15 @@ router.get('/annotate-image/:image', function(req, res){
 router.post('/save-component', function(req, res) {
   IdeaImage.findOne({"filename" : req.body.imageName}, function(err, image){
 
+    if(err){
+      res.json({error: err});
+    }
+
     Component.findOne({"text" : req.body.component}, function(err, component){
+      if(err){
+        res.json({error: err});
+      }
+
       if(component){
         component.images.push(
           {
