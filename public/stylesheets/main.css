@@ -343,3 +343,16 @@ canvas {
   padding-left: 1em;
   text-align: left;
 }
+
+.individual-component {
+    margin: .5em;
+}
+
+.individual-component h4 {
+  display: inline;
+  padding-left: .5em;
+}
+
+.delete-component {
+  display : inline;
+}

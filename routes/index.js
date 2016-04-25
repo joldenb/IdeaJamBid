@@ -1000,7 +1000,36 @@ router.post('/save-component', function(req, res) {
         });
         res.sendStatus(200);
       }
-    }); 
+    });
+  });
+});
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for deleting image components.
+* Note : this only removes a component from a particular image, not 
+* entirely from the database.  
+
+******************************************************************
+******************************************************************
+*****************************************************************/
+
+router.post('/delete-image-component', function(req, res) {
+  IdeaImage.findOne({"filename" : req.body.imageName}, function(err, image){
+    var imageID = image.id;
+    Component.findOne({"text" : req.body.componentName}, function(err, component){
+      for(var i = 0; i < component.images.length; i++){
+        if(component.images[i].imageID.toString() == imageID.toString()){
+          component.images.splice(i,1);
+          component.save();
+          res.json({
+            deletedComponent : req.body.componentName,
+            deletedCompNumber : component.number
+          });
+        }
+      }
+    });
   });
 });
 

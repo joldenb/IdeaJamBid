@@ -46,6 +46,7 @@ html
     #componentList
       each value in comps
         .individual-component
+          img.delete-component(data-component="#{value.text}" src="/delete.png" height="25" width="25")
           h4 #{value.number}. #{value.text}
       br
       br
@@ -213,15 +214,32 @@ html
         ctx.fillText(data['number']+".",textCoordX,textCoordY);
 
         if($("#componentList .individual-component:last-of-type").length == 0){
-          $("<div class='individual-component'><h4>"+ data['number']+". "+ data['component']+"</h4></div>").
+          $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component']+"' src='/delete.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component']+"</h4></div>").
             prependTo("#componentList");
         } else {
-          $("<div class='individual-component'><h4>"+ data['number']+". "+ data['component']+"</h4></div>").
+          $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component']+"' src='/delete.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component']+"</h4></div>").
             insertAfter("#componentList .individual-component:last-of-type");
         }
 
 
         componentNumber++;
       });      
+    });
+
+    $('body').on('click', 'img.delete-component', function() {
+      var data = {
+        componentName : $(this)[0].dataset.component,
+        imageName : "#{imageName}"
+      }
+
+      $.post("/delete-image-component", data, function(resp){
+        $("img.delete-component[data-component='" + resp.deletedComponent +"']").next().fadeOut(200, function() {
+          $("img.delete-component[data-component='" + resp.deletedComponent +"']").next().remove();
+        });
+        $("img.delete-component[data-component='" + resp.deletedComponent +"']").fadeOut(200, function() {
+          $("img.delete-component[data-component='" + resp.deletedComponent +"']").remove();
+        });
+        $("canvas#component-"+resp.deletedCompNumber).remove();
+      });
     });
     
