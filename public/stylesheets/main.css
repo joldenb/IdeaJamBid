@@ -342,6 +342,7 @@ canvas {
   position:absolute;
   padding-left: 1em;
   text-align: left;
+  width:20%;
 }
 
 .individual-component {
