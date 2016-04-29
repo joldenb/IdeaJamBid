@@ -29,11 +29,11 @@ html
         if reviewing && idea.performProblem
           | #{idea.performProblem}
     br
-      if reviewing
-        a(href="/contributor-idea-summary").btn.btn-info View All
-      else
-        a(href="/idea-summary").btn.btn-info View All
-      |  
+    if reviewing
+      a(href="/contributor-idea-summary").btn.btn-info View All
+    else
+      a(href="/idea-summary").btn.btn-info View All
+    |  
     |  
     button.btn.btn-success Continue >
     br
