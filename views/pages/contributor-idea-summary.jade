@@ -14,9 +14,16 @@ html
   .idea-summary
     h3 Idea Summary for #{idea.name}
     h4 Waste : //waste/value score averages
-    a.home-login.btn.btn-success( href="/view-all-ideas" ) View All Ideas
+    h4 <b>Problem :</b> #{idea.problem}
+    h4 <b>How :</b> #{idea.description}
+
     br
-      
+    if !currentlyReviewing
+      a.btn.btn-default( href="/begin-contributor-review" ) Start Review  
+    br
+    a.home-login.btn.btn-success( href="/view-all-ideas" ) View All Ideas
+
+
     .edit-column.half-column
       if currentlyReviewing
         h3 Waste Value Scores
@@ -415,21 +422,20 @@ html
                   p #{idea.skillsProblem}
                 else
                   p No Value Yet
-      else 
-        a.btn.btn-default( href="/begin-contributor-review" ) Start Review  
-    .idea-function-column.half-column
-      h3 Make a Suggestion
-      a.btn.btn-default( href="/suggestion-summary" ) Make Suggestions
-      br
-      br
+    if currentlyReviewing
+      .idea-function-column.half-column
+        h3 Make a Suggestion
+        a.btn.btn-default( href="/suggestion-summary" ) Make Suggestions
+        br
+        br
 
-    .imagesList
-      if(imageURLs)
-        h3 Uploaded Images
-        h5 Click to Annotate
-        each imageURL in imageURLs
-          a(href="/annotate-image/"+imageURL[0])
-            img.imageListItems(src=imageURL[1])
+      .imagesList
+        if(imageURLs)
+          h3 Uploaded Images
+          h5 Click to Annotate
+          each imageURL in imageURLs
+            a(href="/annotate-image/"+imageURL[0])
+              img.imageListItems(src=imageURL[1])
 
 
 
