@@ -23,9 +23,9 @@ html
             #selectProblem
               each val in problems
                 if problemType == val[0]
-                  .problemOption.selectedProblem(id=val[0]) #{val[0]} problem : #{val[1]}
+                  .problemOption.selectedProblem(id=val[0]+"-"+val[3]) #{val[0]} problem : #{val[1]}
                 else 
-                  .problemOption(id=val[0]) #{val[0]} problem : #{val[1]}
+                  .problemOption(id=val[0]+"-"+val[3]) #{val[0]} problem : #{val[1]}
           br
 
         #myModal.modal.fade(role="dialog")
@@ -165,7 +165,10 @@ html
         h4 No recorded problems yet for this idea.
     br
     br
-    a.home-logout.btn.btn-default( href="/idea-summary" ) < Back to Idea Summary
+    if reviewing
+      a(href="/contributor-idea-summary").btn.btn-info < Back to Idea Summary
+    else
+      a(href="/idea-summary").btn.btn-info < Back to Idea Summary
     br
     br
     br
@@ -184,8 +187,8 @@ html
     });
 
     $(".problemOption").click(function(event){
-      var problem = $(this).attr("id");
-      $.get("/update-suggestion-points/"+problem, function(data){
+      var problemAuthor = $(this).attr("id");
+      $.get("/update-suggestion-points/"+problemAuthor, function(data){
         for(var key in data){
           $( "#" + key ).text(data[key]);
         }

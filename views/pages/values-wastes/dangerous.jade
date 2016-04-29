@@ -26,10 +26,14 @@ html
       br
       h4 What prevents #{idea.name} from being safer?
       textarea.form-control(rows='6', cols="75", name="dangerProblem", placeholder='Describe the problem...')
-        if idea.dangerProblem
+        if reviewing && idea.dangerProblem
           | #{idea.dangerProblem}
       br
-      a(href="/idea-summary").btn.btn-info View All
+      if reviewing
+        a(href="/contributor-idea-summary").btn.btn-info View All
+      else
+        a(href="/idea-summary").btn.btn-info View All
+      |  
       |  
       button.btn.btn-success Continue >
       br

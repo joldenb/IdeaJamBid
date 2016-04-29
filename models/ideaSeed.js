@@ -4,12 +4,16 @@ var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 var officegen = require('officegen');
 var fs = require('fs');
+var IdeaReview = require('./ideaReviews');
 var ObjectId = mongoose.Schema.Types.ObjectId;
 
 var IdeaSeed = new Schema({
 	name			: String,
 	description		: String,
 	problem			: String,
+	characterization : String,
+	inventorName		: String,
+	visibility		: { type: String, default: "private" },
 	images			: [ObjectId],
 	firstFeature	: String,
 	secondFeature	: String,
@@ -18,8 +22,9 @@ var IdeaSeed = new Schema({
 	suggestions		: [{
 		suggestionID	: String, /* used in creating a variant */
 		category		: String,
-		contributor		: ObjectId,
+		contributor		: String,
 		problemType		: String,
+		problemText		: String,
 		suggestion		: String,
 		hindsight		: String,
 		outsight		: String,
@@ -94,6 +99,13 @@ var IdeaSeed = new Schema({
 	skillsProblem		: String,
 	skillsPriority		: { type: Number, default: 15 }
 });
+
+IdeaSeed.statics.getWasteValueScores = function(idea){
+	IdeaReview.find({}, function(err, reviews){
+		// average out all the reviews
+	});
+		return [200, 200];
+};
 
 IdeaSeed.statics.createApplication = function(idea, account, res){
 		res.writeHead ( 200, {
@@ -250,52 +262,52 @@ IdeaSeed.statics.createApplication = function(idea, account, res){
 
 };
 
-IdeaSeed.statics.getListOfProblems = function(idea) {
+IdeaSeed.statics.getListOfInventorProblems = function(idea) {
 	var problems = [];
 	if(idea["performProblem"]){
-		problems.push(["Performance", idea["performProblem"] ]);
+		problems.push(["Performance", idea["performProblem"], idea["performPriority"], idea["inventorName"] ]);
 	}
 	if(idea["affordProblem"]){
-		problems.push(["Affordability", idea["affordProblem"] ]);
+		problems.push(["Affordability", idea["affordProblem"], idea["affordPriority"], idea["inventorName"] ]);
 	}
 	if(idea["featureProblem"]){
-		problems.push(["Featurability", idea["featureProblem"] ]);
+		problems.push(["Featurability", idea["featureProblem"], idea["featurePriority"], idea["inventorName"] ]);
 	}
 	if(idea["deliverProblem"]){
-		problems.push(["Deliverability", idea["deliverProblem"] ]);
+		problems.push(["Deliverability", idea["deliverProblem"], idea["deliverPriority"], idea["inventorName"] ]);
 	}
 	if(idea["useabilityProblem"]){
-		problems.push(["Useability", idea["useabilityProblem"] ]);
+		problems.push(["Useability", idea["useabilityProblem"], idea["useabilityPriority"], idea["inventorName"] ]);
 	}
 	if(idea["maintainProblem"]){
-		problems.push(["Maintainability", idea["maintainProblem"] ]);
+		problems.push(["Maintainability", idea["maintainProblem"], idea["maintainPriority"], idea["inventorName"] ]);
 	}
 	if(idea["durabilityProblem"]){
-		problems.push(["Durability", idea["durabilityProblem"] ]);
+		problems.push(["Durability", idea["durabilityProblem"], idea["durabilityPriority"], idea["inventorName"] ]);
 	}
 	if(idea["imageProblem"]){
-		problems.push(["Imageability", idea["imageProblem"] ]);
+		problems.push(["Imageability", idea["imageProblem"], idea["imagePriority"], idea["inventorName"] ]);
 	}
 	if(idea["complexProblem"]){
-		problems.push(["Complexity", idea["complexProblem"] ]);
+		problems.push(["Complexity", idea["complexProblem"], idea["complexPriority"], idea["inventorName"] ]);
 	}
 	if(idea["precisionProblem"]){
-		problems.push(["Precision", idea["precisionProblem"] ]);
+		problems.push(["Precision", idea["precisionProblem"], idea["precisionPriority"], idea["inventorName"] ]);
 	}
 	if(idea["variabilityProblem"]){
-		problems.push(["Variability", idea["variabilityProblem"] ]);
+		problems.push(["Variability", idea["variabilityProblem"], idea["variabilityPriority"], idea["inventorName"] ]);
 	}
 	if(idea["sensitivityProblem"]){
-		problems.push(["Sensitivity", idea["sensitivityProblem"] ]);
+		problems.push(["Sensitivity", idea["sensitivityProblem"], idea["sensitivityPriority"], idea["inventorName"] ]);
 	}
 	if(idea["immatureProblem"]){
-		problems.push(["Immaturity", idea["immatureProblem"] ]);
+		problems.push(["Immaturity", idea["immatureProblem"], idea["immaturePriority"], idea["inventorName"] ]);
 	}
 	if(idea["dangerProblem"]){
-		problems.push(["Danger", idea["dangerProblem"] ]);
+		problems.push(["Danger", idea["dangerProblem"], idea["dangerPriority"], idea["inventorName"] ]);
 	}
 	if(idea["skillsProblem"]){
-		problems.push(["Skills", idea["skillsProblem"] ]);
+		problems.push(["Skills", idea["skillsProblem"], idea["skillsPriority"], idea["inventorName"] ]);
 	}
 	return problems;
 };
@@ -307,13 +319,13 @@ IdeaSeed.statics.getListOfProblems = function(idea) {
 	and values which are arrays of suggestions for that idea with that
 	particular suggestion type.
 */
-IdeaSeed.statics.getCategorizedSuggestions = function(idea, problem){
+IdeaSeed.statics.getCategorizedSuggestions = function(idea, problem, contributor){
 	var suggestionList = {},
 		problemSuggestions = [];
 
 	_.each(idea["suggestions"], function(element, index, list){
 		if(problem){
-			if(element._doc["problemType"] == problem){
+			if(element._doc["problemType"] == problem && element._doc["contributor"] == contributor){
 				problemSuggestions.push(element);
 			}
 		} else {

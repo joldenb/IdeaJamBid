@@ -26,10 +26,14 @@ html
       br
       h4 Why is #{idea.name} not perfectly maintainable?
       textarea.form-control(rows='6', cols="75", name="maintainProblem", placeholder='Describe the problem...')
-        if idea.maintainProblem
+        if reviewing && idea.maintainProblem
           | #{idea.maintainProblem}
       br
-      a(href="/idea-summary").btn.btn-info View All
+      if reviewing
+        a(href="/contributor-idea-summary").btn.btn-info View All
+      else
+        a(href="/idea-summary").btn.btn-info View All
+      |  
       |  
       button.btn.btn-success Continue >
       br

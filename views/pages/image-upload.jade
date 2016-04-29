@@ -12,16 +12,16 @@ html
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
 
   .container
-    h1 Upload an Image
+    h1 Key Features and Components
     form(role='form', id="formImageUpload" action="/image-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
       .form-group
-        h3 If you have a napkin sketch, finger paint, watercolor, engineering sketch, or anything in between, any graphical representation of the concept can help you and others define and improve your #{idea.name}. If you can quickly sketch something out on printer paper and take a photo of it, or have another graphic, upload it here (and begin to earn Einstein points!)
+        h3 Upload a graphic to annotate features and components, or just list them.  Images are worth more Einstein points though, just saying.
         |  
         input(type="file", name="picture")
         br
-        button.btn.btn-success(type='submit') Upload (+10) >
+        button.btn.btn-success(type='submit') Upload
         |  
-        a.btn.btn-default( href="/idea-seed-summary" ) Skip > 
+        a.btn.btn-default( href="/idea-summary" ) Continue > 
 
   .imagesList
     if(imageURLs)
@@ -30,6 +30,17 @@ html
       each imageURL in imageURLs
         a(href="/annotate-image/"+imageURL[0])
           img.imageListItems(src=imageURL[1])
+
+  h3 What are three key features to your idea?
+  form(role='form', id="formKeyFeatures" action="/key-features", method="post", style='max-width: 300px;', data-idea-doc=idea)
+    .form-group
+      textarea.form-control(type='text', name="firstFeature", placeholder='First feature...')
+      |  
+      textarea.form-control(type='text', name="secondFeature", placeholder='Second feature...')
+      |  
+      textarea.form-control(type='text', name="thirdFeature", placeholder='Third feature...')
+    button.btn.btn-success(type='submit') Continue >
+            
 
 
 

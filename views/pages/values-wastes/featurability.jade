@@ -26,10 +26,14 @@ html
       br
       h4 What features does #{idea.name} lack that would otherwise help it solve the challenge of [user-entered challenge]?
       textarea.form-control(rows='6', cols="75", name="featureProblem", placeholder='Describe the problem...')
-        if idea.featureProblem
+        if reviewing && idea.featureProblem
           | #{idea.featureProblem}
       br
-      a(href="/idea-summary").btn.btn-info View All
+      if reviewing
+        a(href="/contributor-idea-summary").btn.btn-info View All
+      else
+        a(href="/idea-summary").btn.btn-info View All
+      |  
       |  
       button.btn.btn-success Continue >
       br

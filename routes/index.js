@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var _ = require('underscore');
 var ObjectId = mongoose.Schema.Types.ObjectId;
 var IdeaImage = require('../models/ideaImage');
+var IdeaReview = require('../models/ideaReviews');
 var IdeaSeed = require('../models/ideaSeed');
 var Component = require('../models/component');
 var Account = require('../models/account');
@@ -107,28 +108,40 @@ router.get('/begin', function(req, res) {
       if(req.user.ideaSeeds && req.user.ideaSeeds.length > 0){
         var ideaNames = [],
             j = 0;
-        _.each(req.user.ideaSeeds, function(element, index, list){
-            IdeaSeed.findById(element._id, function(error, document){
-              j++;
-              if(document){
-                ideaNames.push(document.name);
-                if(j == req.user.ideaSeeds.length){
-                  return res.render('pages/begin', {
-                    user : req.user,
-                    accountIdeaSeeds : ideaNames
+            IdeaReview.find({"reviewer" : req.user.username}, function(err, reviews){
+              var ideaSeedIDs = _.map(reviews, function(item){return item["ideaSeedId"];});
+              ideaSeedIDs = _.filter(ideaSeedIDs, Boolean);
+              IdeaSeed.find({_id : {$in : ideaSeedIDs}}, function(err, reviewedIdeas){
+                var reviewedIdeaNames = _.map(reviewedIdeas, function(item){return item["name"];});
+                var context = {"reviewedNames" : reviewedIdeaNames};
+                _.each(req.user.ideaSeeds, function(element, index,  list){
+                  reviewNames = this["reviewedNames"];
+                  (function(reviewNames){
+                  IdeaSeed.findById(element._id, function(error, document){
+                    j++;
+                    if(document){
+                      ideaNames.push(document.name);
+                      if(j == req.user.ideaSeeds.length){
+                        return res.render('pages/begin', {
+                          reviewNames : reviewNames,
+                          user : req.user,
+                          accountIdeaSeeds : ideaNames
+                        });
+                      }
+                    } else {
+                      if(j == req.user.ideaSeeds.length){
+                        return res.render('pages/begin', {
+                          reviewNames : reviewNames,
+                          user : req.user,
+                          accountIdeaSeeds : ideaNames
+                        });
+                      }
+                    }
                   });
-                }
-              } else {
-                if(j == req.user.ideaSeeds.length){
-                  return res.render('pages/begin', {
-                    user : req.user,
-                    accountIdeaSeeds : ideaNames
-                  });
-                }
-
-              }
+                  }(reviewNames));
+                }, context); //each
+              });
             });
-        });
       }
       else {
         return res.render('pages/begin', {
@@ -149,10 +162,41 @@ router.get('/begin', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
+router.get('/view-all-ideas', function(req, res){
+  if(req.user){
+//    IdeaSeed.find({"visibility" : "public"}, function(err, ideas){
+    IdeaSeed.find({}, function(err, ideas){
+      var wasteValueScores = [0, 0];
+      var ideaList = _.map(ideas, function(idea){
+        wasteValueScores = IdeaSeed.getWasteValueScores(idea);
+        return [
+          idea['name'], //String
+          idea['description'], //String
+          wasteValueScores, //array of two numbers
+          idea['inventorName']
+        ];
+      });
+      res.render('pages/view-all-ideas', {
+        user : req.user,
+        ideas : ideaList
+      });
+    });
+  } else {
+    res.redirect('/');
+  }
+});
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for sort problems
+******************************************************************
+******************************************************************
+*****************************************************************/
 router.get('/introduce-idea', function(req, res) {
     if(req.user){
       if(!req.session.idea) {
-        var newIdea = new IdeaSeed({});
+        var newIdea = new IdeaSeed({inventorName : req.user.username});
         newIdea.save();
         Account.update(
           { _id : req.user.id },
@@ -186,7 +230,9 @@ router.post('/introduce-idea', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaSeed.update({_id : req.session.idea}, {problem : req.body.purposeFor},
+  IdeaSeed.update({_id : req.session.idea}, {
+    problem : req.body.purposeFor,
+    name : req.body.inventionName},
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
   });
@@ -222,11 +268,13 @@ router.post('/accomplish', function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
   }
-  IdeaSeed.update({_id : req.session.idea}, {description : req.body.purposeHow},
+  IdeaSeed.update({_id : req.session.idea}, {
+    description : req.body.purposeHow,
+    characterization : req.body.characterization },
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
   });
-  res.redirect('/title-your-invention');
+  res.redirect('/image-upload');
 });
 
 /*****************************************************************
@@ -238,6 +286,8 @@ router.post('/accomplish', function(req, res) {
 *****************************************************************/
 router.post('/suggestion-submit', function(req, res) {
     var newSuggId = IdeaSeed.generateSuggID(req.body.suggestion);
+    var problem = req.body.problemType.split("-")[0];
+    var contributor = req.body.problemType.split("-")[1];
     var newSuggestion = {
       suggestionID : newSuggId,
       suggestion : req.body.suggestion,
@@ -245,8 +295,8 @@ router.post('/suggestion-submit', function(req, res) {
       foresight : req.body.foresight,
       outsight : req.body.outsight,
       category : req.body.suggestionCategory,
-      contributor : req.user.id,
-      problemType : req.body.problemType
+      contributor : contributor,
+      problemType : problem
     };
     Account.findById( req.user.id,
       function (err, account) {
@@ -273,18 +323,26 @@ router.post('/suggestion-submit', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/update-suggestion-points/:problem', function(req, res){
+router.get('/update-suggestion-points/:problemAuthor', function(req, res){
   if(!req.session.idea){
     res.redirect('/');
     return;
   }
+
+  var problem = req.params.problemAuthor.split("-")[0];
+  var contributor = req.params.problemAuthor.split("-")[1];
+  
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    var listOfProblems = IdeaSeed.getListOfProblems(currentIdea);
-    var categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea, req.params.problem);
-    var categoryPointValues = IdeaSeed.getCategoryPointValues(categorizedSuggestions);
+    var listOfInventorProblems = IdeaSeed.getListOfInventorProblems(currentIdea);
+    IdeaReview.find({"ideaSeedId" : currentIdea._id}, function(err, reviews){
+      var listOfReviewerProblems = IdeaReview.getListOfReviewerProblems(reviews);
+      listOfProblems = listOfInventorProblems.concat(listOfReviewerProblems);
+      var categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea, problem, contributor);
+      var categoryPointValues = IdeaSeed.getCategoryPointValues(categorizedSuggestions);
+      res.json(categoryPointValues);
+    });
 
-    res.json(categoryPointValues);
   });
 });
 
@@ -431,7 +489,8 @@ router.post('/image-upload', uploading.single('picture'), function(req, res) {
       } else {
         IdeaSeed.update(
             { _id : req.session.idea },
-            { $push : { images : newImage.id }},
+            { $push : { images : newImage.id }, firstFeature : req.body.firstFeature,
+            secondFeature : req.body.secondFeature, thirdFeature : req.body.thirdFeature},
             function(err, raw){
               console.log('The raw response from Mongo was ', raw);
               res.redirect('/image-upload');
@@ -490,28 +549,41 @@ router.get('/suggestion-summary', function(req, res){
   }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    var listOfProblems = IdeaSeed.getListOfProblems(currentIdea);
-    var problemTypes = _.map(listOfProblems, function(item){ return item[0];});
-    var problemType = "";
-    var categorizedSuggestions = {};
+    var listOfProblems = [];
+    var listOfInventorProblems = IdeaSeed.getListOfInventorProblems(currentIdea);
+    IdeaReview.find({"ideaSeedId" : currentIdea._id}, function(err, reviews){
+      var listOfReviewerProblems = IdeaReview.getListOfReviewerProblems(reviews);
+      listOfProblems = listOfInventorProblems.concat(listOfReviewerProblems);
+      var problemTypes = _.map(listOfProblems, function(item){ return item[0];});
+      var problemType = "";
+      var categorizedSuggestions = {};
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
 
-    var typeOfProblem, rankingOfProblem;
-    for(var i = 0; i < listOfProblems.length; i++){
-      typeOfProblem = _.invert(currentIdea)[listOfProblems[i][1]];
-      rankingOfProblem = idea[typeOfProblem.slice(0, -7) + "Priority"];
-      listOfProblems[i].push(rankingOfProblem);
-    }
-    listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
 
-    if ( listOfProblems.length > 0 ){
-      problemType = listOfProblems[0][0];
-      categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea, listOfProblems[0][0]);
-    }
-    var categoryPointValues = IdeaSeed.getCategoryPointValues(categorizedSuggestions);
+      /*var typeOfProblem, rankingOfProblem;
+      for(var i = 0; i < listOfProblems.length; i++){
+        typeOfProblem = _.invert(currentIdea)[listOfProblems[i][1]];
+        rankingOfProblem = idea[typeOfProblem.slice(0, -7) + "Priority"];
+        listOfProblems[i].push(rankingOfProblem);
+      }*/
 
-    res.render('pages/suggestion-summary', { user : req.user, idea : currentIdea,
-      problems : listOfProblems, categoryPoints : categoryPointValues,
-      problemType : problemType });
+      listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
+
+      if ( listOfProblems.length > 0 ){
+        problemType = listOfProblems[0][0];
+        categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(
+          currentIdea,
+          listOfProblems[0][0],
+          listOfProblems[0][3]
+        );
+      }
+      var categoryPointValues = IdeaSeed.getCategoryPointValues(categorizedSuggestions);
+
+      res.render('pages/suggestion-summary', { user : req.user, idea : currentIdea,
+        problems : listOfProblems, categoryPoints : categoryPointValues,
+        problemType : problemType, reviewing : reviewing });
+    });
   });
 });
 
@@ -529,14 +601,16 @@ router.get('/view-idea-suggestions', function(req, res){
   }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    var listOfProblems = IdeaSeed.getListOfProblems(currentIdea) || [];
+    var listOfProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
     var categorizedSuggestions = {};
     categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea);
     categorizedSuggestions = IdeaSeed.getCategoryDisplayNames(categorizedSuggestions);
+    if(req.session.ideaReview){ var reviewing = true; }
+    else { var reviewing = false; }
     
     res.render('pages/view-idea-suggestions', { user : req.user, idea : currentIdea,
       problems : listOfProblems, categorizedSuggestions : categorizedSuggestions,
-      problemType : req.session.problemType });
+      problemType : req.session.problemType, reviewing : reviewing });
   });
 });
 
@@ -557,7 +631,7 @@ router.get('/sort-problems', function(req, res){
       sortedProblems = [];
     currentIdea = idea._doc;
 
-    var listOfProblems = IdeaSeed.getListOfProblems(currentIdea) || [];
+    var listOfProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
     var typeOfProblem, rankingOfProblem;
     for(var i = 0; i < listOfProblems.length; i++){
       typeOfProblem = _.invert(currentIdea)[listOfProblems[i][1]];
@@ -595,7 +669,7 @@ router.post('/order-problems', function(req, res) {
     "immaturePriority",
     "dangerPriority",
     "skillsPriority"
-  ]
+  ];
   var problemText, problemField;
   IdeaSeed.findById(req.session.idea, function(err, idea){
     for(var key in req.body){
@@ -764,9 +838,123 @@ router.get('/key-features', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
+router.get('/contributor-idea-summary/:ideaName', function(req, res){
+  IdeaSeed.findOne({ "name" : req.params.ideaName },function(err, idea){
+    req.session.idea = idea._doc._id.toHexString();
+    if(idea.inventorName == req.user.username){
+      delete req.session.ideaReview;
+      res.redirect('/idea-summary/'+req.params.ideaName);
+    } else {
+      res.redirect('/contributor-idea-summary');
+    }
+  });
+});
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for sort problems
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/contributor-idea-summary', function(req, res){
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
+
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    var imageURLs = [];
+    currentIdea = idea._doc;
+    var currentlyReviewing = false;
+
+    if(idea.ideaReviews.length > 0){
+      var reviewsChecked = 0;
+      for(var k = 0; k < idea.ideaReviews.length; k++) {
+        IdeaReview.findById(idea.ideaReviews[k], function(err, review){
+          if(review && review.reviewer == req.user.username){
+            currentlyReviewing = true;
+            req.session.ideaReview = review.id;
+          }
+          if(reviewsChecked >= (idea.ideaReviews.length - 1) || currentlyReviewing){
+            if (idea._doc.images.length != 0){
+              for (var i =0; i < idea._doc.images.length; i++){
+                var j = 0;
+                IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
+                  j++;
+                  if(image && image._doc && image._doc.image){
+                    var filename = image._doc["filename"];
+                    imageURLs.push([
+                      filename,
+                      "data:"+image._doc["imageMimetype"]+";base64,"+ image._doc["image"].toString('base64')
+                    ]);
+                  }
+                  if (j == idea._doc.images.length){
+                    res.render('pages/contributor-idea-summary', {
+                      user : req.user, idea : currentIdea,
+                      currentReview : review,
+                      imageURLs : imageURLs,
+                      currentlyReviewing : currentlyReviewing
+                    });
+                  }
+                });
+              }
+            } else {
+              res.render('pages/contributor-idea-summary', {
+                user : req.user, idea : currentIdea,
+                currentReview : review,
+                imageURLs : [],
+                currentlyReviewing : currentlyReviewing
+              });
+            }
+          }
+          reviewsChecked++;
+        });
+      }
+    } else {
+            if (idea._doc.images.length != 0){
+              for (var i =0; i < idea._doc.images.length; i++){
+                var j = 0;
+                IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
+                  j++;
+                  if(image && image._doc && image._doc.image){
+                    var filename = image._doc["filename"];
+                    imageURLs.push([
+                      filename,
+                      "data:"+image._doc["imageMimetype"]+";base64,"+ image._doc["image"].toString('base64')
+                    ]);
+                  }
+                  if (j == idea._doc.images.length){
+                    res.render('pages/contributor-idea-summary', {
+                      user : req.user, idea : currentIdea,
+                      imageURLs : imageURLs,
+                      currentlyReviewing : currentlyReviewing
+                    });
+                  }
+                });
+              }
+            } else {
+              res.render('pages/contributor-idea-summary', {
+                user : req.user, idea : currentIdea,
+                imageURLs : [],
+                currentlyReviewing : currentlyReviewing
+              });
+            }
+    }
+  });
+});
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for sort problems
+******************************************************************
+******************************************************************
+*****************************************************************/
 router.get('/idea-summary/:ideaName', function(req, res){
   IdeaSeed.findOne({ "name" : req.params.ideaName },function(err, idea){
     req.session.idea = idea._doc._id.toHexString();
+    delete req.session.ideaReview;
     res.redirect('/idea-summary');
   });
 });
@@ -783,19 +971,27 @@ router.get('/idea-summary', function(req, res){
     res.redirect('/');
     return;
   }
+
+  delete req.session.ideaReview;
+
   IdeaSeed.findById(req.session.idea,function(err, idea){
     var variantDates = [],
       sortedProblems = [];
     currentIdea = idea._doc;
 
-    var listOfProblems = IdeaSeed.getListOfProblems(currentIdea) || [];
+    if(idea.inventorName != req.user.username){
+      res.redirect('/contributor-idea-summary');
+      return;
+    }
+
+    var listOfProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
     var typeOfProblem, rankingOfProblem;
     for(var i = 0; i < listOfProblems.length; i++){
       typeOfProblem = _.invert(currentIdea)[listOfProblems[i][1]];
       rankingOfProblem = idea[typeOfProblem.slice(0, -7) + "Priority"];
       listOfProblems[i].push(rankingOfProblem);
     }
-    listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];})
+    listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
 
     if(currentIdea.variants.length > 0){
       for(var i = 0; i < currentIdea.variants.length; i++){
@@ -851,7 +1047,7 @@ router.get('/variant/:variantname', function(req, res){
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     var currentVariant;
-    var listOfProblems = IdeaSeed.getListOfProblems(currentIdea) || [];
+    var listOfProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
     var allCategorizedSuggestions = {};
     allCategorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea);
     allCategorizedSuggestions = IdeaSeed.getCategoryDisplayNames(allCategorizedSuggestions);
@@ -1065,6 +1261,39 @@ router.get('/clear-session-idea', function(req, res){
   if(req.session.idea){
     req.session.idea = null;
     req.session.save();
+  }
+});
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for begin contributor review
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/begin-contributor-review', function(req, res){
+  if(req.session.idea){
+    var ideaReview = new IdeaReview({
+      reviewer : req.user.username,
+      ideaSeedId : req.session.idea
+    });
+    ideaReview.save(function(err, newReview){
+      if (err) {
+        console.log(err);
+      } else {
+        IdeaSeed.update(
+            { _id : req.session.idea },
+            { $push : { ideaReviews : newReview.id } },
+            function(err, raw){
+              console.log('The raw response from Mongo was ', raw);
+              req.session.ideaReview = newReview.id;
+              res.redirect('/contributor-idea-summary');
+            }
+        );
+      }
+    });
+   
+
+
   }
 });
 

@@ -26,10 +26,14 @@ html
       br
       h4 What prevents #{idea.name} from eliminating or reducing the skill needed to solve [user-entered challenge]?
       textarea.form-control(rows='6', cols="75", name="skillsProblem", placeholder='Describe the problem...')
-        if idea.skillsProblem
+        if reviewing && idea.skillsProblem
           | #{idea.skillsProblem}
       br
-      a(href="/idea-summary").btn.btn-info View All
+      if reviewing
+        a(href="/contributor-idea-summary").btn.btn-info View All
+      else
+        a(href="/idea-summary").btn.btn-info View All
+      |  
       |  
       button.btn.btn-success Continue >
       br

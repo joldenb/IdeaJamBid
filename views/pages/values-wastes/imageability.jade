@@ -26,10 +26,14 @@ html
       br
       h4 What reduces the broader look and appeal of #{idea.name}?
       textarea.form-control(rows='6', cols="75", name="imageProblem", placeholder='Describe the problem...')
-        if idea.imageProblem
+        if reviewing && idea.imageProblem
           | #{idea.imageProblem}
       br
-      a(href="/idea-summary").btn.btn-info View All
+      if reviewing
+        a(href="/contributor-idea-summary").btn.btn-info View All
+      else
+        a(href="/idea-summary").btn.btn-info View All
+      |  
       |  
       button.btn.btn-success Continue >
       br

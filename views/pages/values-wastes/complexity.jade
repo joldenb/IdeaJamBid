@@ -26,10 +26,14 @@ html
       br
       h4 What prevents further simplification of #{idea.name}?
       textarea.form-control(rows='6', cols="75", name="complexProblem", placeholder='Describe the problem...')
-        if idea.complexProblem
+        if reviewing && idea.complexProblem
           | #{idea.complexProblem}
       br
-      a(href="/idea-summary").btn.btn-info View All
+      if reviewing
+        a(href="/contributor-idea-summary").btn.btn-info View All
+      else
+        a(href="/idea-summary").btn.btn-info View All
+      |  
       |  
       button.btn.btn-success Continue >
       br

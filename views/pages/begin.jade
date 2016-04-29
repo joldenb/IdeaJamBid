@@ -13,14 +13,14 @@ html
 
   div.profile-info
     div#begin-info
-      h1 Welcome #{user.username}
-      h2 Einstein Points: #{user.einsteinPoints}
-      h2 Rupees Remaining: #{user.rupees}
+      h3 Welcome #{user.username}
+      h4 Einstein Points: #{user.einsteinPoints}
+      h4 Rupees Remaining: #{user.rupees}
     div#begin-info-right
-      h2 Company : Albatross Air
-      h2 Role : Inventor
+      h4 Company : Albatross Air
+      h4 Role : Inventor
 
-  .container.profile
+  .existingIdeas
     h2 Existing Ideas:
     if accountIdeaSeeds
       ul
@@ -31,6 +31,18 @@ html
     else
       h4 None so far.
     a.home-login.btn.btn-success( href="/introduce-idea" ) Begin a New Idea > 
+
+  .container.contributedIdeas
+    h2 Contributed Ideas
+    if reviewNames
+      ul
+        each val, index in reviewNames
+          li
+            a(href="/contributor-idea-summary/" + val)
+              h4= val
+    else
+      h4 None so far.
+    a.home-login.btn.btn-success( href="/view-all-ideas" ) View All Ideas
 
   include ../partials/js-includes.jade
   script(type="text/javascript").

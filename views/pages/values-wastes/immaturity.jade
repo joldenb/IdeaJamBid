@@ -26,10 +26,14 @@ html
       br
       h4 What about the #{idea.name} is unproven, untested and not well established?
       textarea.form-control(rows='6', cols="75", name="immatureProblem", placeholder='Describe the problem...')
-        if idea.immatureProblem
+        if reviewing && idea.immatureProblem
           | #{idea.immatureProblem}
       br
-      a(href="/idea-summary").btn.btn-info View All
+      if reviewing
+        a(href="/contributor-idea-summary").btn.btn-info View All
+      else
+        a(href="/idea-summary").btn.btn-info View All
+      |  
       |  
       button.btn.btn-success Continue >
       br

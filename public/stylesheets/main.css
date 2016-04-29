@@ -85,17 +85,19 @@ h1, h2, h3, h4, p {
 
 .profile-info {
   background-color: #EDBC64;
-  text-align:left;
-  padding:3em;
+  text-align:center;
+  padding:1em;
+  padding-left: 3em;
 }
 
 div#begin-info {
-  width:50%;
+  width:20%;
   display:inline-block;
+  text-align: center
 }
 
 div#begin-info-right {
-  width:50%;
+  width:20%;
   text-align:left;
   display:inline-block;
 }
@@ -103,6 +105,25 @@ div#begin-info-right {
 .container.idea-summary, .container.scoreIdea {
   text-align: left;
   margin-left: 30%;
+}
+
+.existingIdeas {
+  padding:2em;
+  width:50%;
+  text-align: center;
+  display:inline-block;
+  border-right: 1px solid gray;
+}
+.contributedIdeas {
+  padding:2em;
+  width:50%;
+  text-align: center;
+  display:inline-block;
+}
+
+.existingIdeas ul, .contributedIdeas ul {
+  list-style: none;
+  padding: 0;
 }
 
 .slider-container {width : 80%; margin: 0px auto;}
@@ -126,6 +147,10 @@ span.yes-way {
 
 span.no-way {
   float: left;
+}
+
+#formKeyFeatures {
+  padding-bottom: 2em;
 }
 
 #formKeyFeatures textarea {
