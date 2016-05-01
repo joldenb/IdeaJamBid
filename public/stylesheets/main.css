@@ -107,6 +107,11 @@ div#begin-info-right {
   margin-left: 30%;
 }
 
+.idea-summary ul {
+  list-style-type: none;
+  padding: 0;
+}
+
 .existingIdeas {
   padding:2em;
   width:50%;
@@ -241,6 +246,15 @@ table.idea-summary th,  table.idea-summary td {
 img.summary-image {
   width:100%;
   height:auto;
+}
+
+.imagesList.other-images {
+  background-color: #ffb6c1;
+  padding : 2em;
+}
+
+.imagesList.my-images {
+  padding:2em;
 }
 
 .suggestion-table {

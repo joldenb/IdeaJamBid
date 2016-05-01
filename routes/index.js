@@ -459,16 +459,23 @@ router.get('/image-upload', function(req, res){
             var filename = image._doc["filename"];
             imageURLs.push([
               filename,
-              "data:"+image._doc["imageMimetype"]+";base64,"+ image._doc["image"].toString('base64')
+              "data:"+image._doc["imageMimetype"]+";base64,"+ image._doc["image"].toString('base64'),
+              image._doc["uploader"]
             ]);
           }
           if (j == idea._doc.images.length){
-            res.render('pages/image-upload', { user : req.user, idea : currentIdea, imageURLs : imageURLs });
+            if(req.session.ideaReview){ var reviewing = true; }
+            else { var reviewing = false; }
+            res.render('pages/image-upload', { user : req.user, idea : currentIdea,
+              imageURLs : imageURLs, reviewing: reviewing });
           }
         });
       }
     } else {
-      res.render('pages/image-upload', { user : req.user, idea : currentIdea, imageURLs : [] });
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+
+      res.render('pages/image-upload', { user : req.user, idea : currentIdea, imageURLs : [], reviewing: reviewing });
     }
   });
 });
@@ -482,7 +489,7 @@ router.get('/image-upload', function(req, res){
 *****************************************************************/
 router.post('/image-upload', uploading.single('picture'), function(req, res) {
     var image = new IdeaImage({ image : req.file.buffer, imageMimetype : req.file.mimetype,
-      filename : req.file.originalname });
+      filename : req.file.originalname, uploader : req.user.username });
     image.save(function(err, newImage){
       if (err) {
         console.log(err);
@@ -559,14 +566,6 @@ router.get('/suggestion-summary', function(req, res){
       var categorizedSuggestions = {};
       if(req.session.ideaReview){ var reviewing = true; }
       else { var reviewing = false; }
-
-
-      /*var typeOfProblem, rankingOfProblem;
-      for(var i = 0; i < listOfProblems.length; i++){
-        typeOfProblem = _.invert(currentIdea)[listOfProblems[i][1]];
-        rankingOfProblem = idea[typeOfProblem.slice(0, -7) + "Priority"];
-        listOfProblems[i].push(rankingOfProblem);
-      }*/
 
       listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
 
@@ -868,15 +867,58 @@ router.get('/contributor-idea-summary', function(req, res){
     currentIdea = idea._doc;
     var currentlyReviewing = false;
 
-    if(idea.ideaReviews.length > 0){
-      var reviewsChecked = 0;
-      for(var k = 0; k < idea.ideaReviews.length; k++) {
-        IdeaReview.findById(idea.ideaReviews[k], function(err, review){
-          if(review && review.reviewer == req.user.username){
-            currentlyReviewing = true;
-            req.session.ideaReview = review.id;
-          }
-          if(reviewsChecked >= (idea.ideaReviews.length - 1) || currentlyReviewing){
+
+    Component.find({"ideaSeed" : idea.id}, function(err, components){
+      if(idea.ideaReviews.length > 0){
+        var reviewsChecked = 0;
+        for(var k = 0; k < idea.ideaReviews.length; k++) {
+          
+
+          IdeaReview.findById(idea.ideaReviews[k], function(err, review){
+            if(review && review.reviewer == req.user.username){
+              currentlyReviewing = true;
+              req.session.ideaReview = review.id;
+            }
+            if(reviewsChecked >= (idea.ideaReviews.length - 1) || currentlyReviewing){
+              if (idea._doc.images.length != 0){
+                for (var i =0; i < idea._doc.images.length; i++){
+                  var j = 0;
+                  
+
+                  IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
+                    j++;
+                    if(image && image._doc && image._doc.image){
+                      var filename = image._doc["filename"];
+                      imageURLs.push([
+                        filename,
+                        "data:"+image._doc["imageMimetype"]+";base64,"+ image._doc["image"].toString('base64')
+                      ]);
+                    }
+                    if (j == idea._doc.images.length){
+                      res.render('pages/contributor-idea-summary', {
+                        user : req.user, idea : currentIdea,
+                        currentReview : review,
+                        imageURLs : imageURLs,
+                        components : components,
+                        currentlyReviewing : currentlyReviewing
+                      });
+                    }
+                  });
+                }
+              } else {
+                res.render('pages/contributor-idea-summary', {
+                  user : req.user, idea : currentIdea,
+                  currentReview : review,
+                  imageURLs : [],
+                  components : components,
+                  currentlyReviewing : currentlyReviewing
+                });
+              }
+            }
+            reviewsChecked++;
+          });
+        }
+      } else {
             if (idea._doc.images.length != 0){
               for (var i =0; i < idea._doc.images.length; i++){
                 var j = 0;
@@ -892,8 +934,8 @@ router.get('/contributor-idea-summary', function(req, res){
                   if (j == idea._doc.images.length){
                     res.render('pages/contributor-idea-summary', {
                       user : req.user, idea : currentIdea,
-                      currentReview : review,
                       imageURLs : imageURLs,
+                      components : components,
                       currentlyReviewing : currentlyReviewing
                     });
                   }
@@ -902,45 +944,13 @@ router.get('/contributor-idea-summary', function(req, res){
             } else {
               res.render('pages/contributor-idea-summary', {
                 user : req.user, idea : currentIdea,
-                currentReview : review,
                 imageURLs : [],
+                components : components,
                 currentlyReviewing : currentlyReviewing
               });
             }
-          }
-          reviewsChecked++;
-        });
       }
-    } else {
-            if (idea._doc.images.length != 0){
-              for (var i =0; i < idea._doc.images.length; i++){
-                var j = 0;
-                IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
-                  j++;
-                  if(image && image._doc && image._doc.image){
-                    var filename = image._doc["filename"];
-                    imageURLs.push([
-                      filename,
-                      "data:"+image._doc["imageMimetype"]+";base64,"+ image._doc["image"].toString('base64')
-                    ]);
-                  }
-                  if (j == idea._doc.images.length){
-                    res.render('pages/contributor-idea-summary', {
-                      user : req.user, idea : currentIdea,
-                      imageURLs : imageURLs,
-                      currentlyReviewing : currentlyReviewing
-                    });
-                  }
-                });
-              }
-            } else {
-              res.render('pages/contributor-idea-summary', {
-                user : req.user, idea : currentIdea,
-                imageURLs : [],
-                currentlyReviewing : currentlyReviewing
-              });
-            }
-    }
+    });//end of component query
   });
 });
 

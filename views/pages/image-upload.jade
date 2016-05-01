@@ -21,14 +21,25 @@ html
         br
         button.btn.btn-success(type='submit') Upload
         |  
-        a.btn.btn-default( href="/idea-summary" ) Continue > 
+        if reviewing
+          a.btn.btn-default( href="/contributor-idea-summary" ) Continue > 
+        else
+          a.btn.btn-default( href="/idea-summary" ) Continue > 
 
-  .imagesList
+  .imagesList.my-images
     if(imageURLs)
-      h3 Uploaded Images
-      h5 Click to Annotate
+      h3 Your Images
       each imageURL in imageURLs
-        a(href="/annotate-image/"+imageURL[0])
+        if imageURL[2] == user.username
+          a(href="/annotate-image/"+imageURL[0])
+            img.imageListItems(src=imageURL[1])
+
+  .imagesList.other-images
+    if(imageURLs)
+      h3 All Other Uploaded Images
+      h5 (Cannot Annotate)
+      each imageURL in imageURLs
+        if imageURL[2] != user.username
           img.imageListItems(src=imageURL[1])
 
   h3 What are three key features to your idea?
@@ -45,3 +56,9 @@ html
 
 
   include ../partials/js-includes.jade
+  script(type="text/javascript").
+    if($(".my-images img").length == 0){
+      $(".my-images").append("<h4> No images uploaded yet.</h4>");
+    } else {
+      $(".my-images").append("<h4>Click to Annotate.</h4>");
+    }

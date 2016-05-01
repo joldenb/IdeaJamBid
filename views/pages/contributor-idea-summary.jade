@@ -16,6 +16,11 @@ html
     h4 Waste : //waste/value score averages
     h4 <b>Problem :</b> #{idea.problem}
     h4 <b>How :</b> #{idea.description}
+    h4 <b>Features</b>
+    if components
+      ul
+        each component in components
+          li #{component['number']} : #{component['text']}
 
     br
     if !currentlyReviewing
@@ -432,11 +437,11 @@ html
       .imagesList
         if(imageURLs)
           h3 Uploaded Images
-          h5 Click to Annotate
-          each imageURL in imageURLs
-            a(href="/annotate-image/"+imageURL[0])
+          h4
+            a.btn.btn-default( href="/image-upload" ) View All Images
+          each imageURL, index in imageURLs
+            if index < 3
               img.imageListItems(src=imageURL[1])
-
 
 
 
