@@ -396,3 +396,7 @@ canvas {
 .delete-component {
   display : inline;
 }
+
+.checkbox input[type=checkbox] {
+  margin-left: 0;
+}

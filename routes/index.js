@@ -466,8 +466,12 @@ router.get('/image-upload', function(req, res){
           if (j == idea._doc.images.length){
             if(req.session.ideaReview){ var reviewing = true; }
             else { var reviewing = false; }
-            res.render('pages/image-upload', { user : req.user, idea : currentIdea,
-              imageURLs : imageURLs, reviewing: reviewing });
+            res.render('pages/image-upload', {
+              user : req.user,
+              idea : currentIdea,
+              imageURLs : imageURLs,
+              reviewing: reviewing
+            });
           }
         });
       }

@@ -42,7 +42,7 @@ html
         canvas(id="myCanvas", width="1000", height="700", style="border:1px solid #d3d3d3;")
         img.summary-image(id="scream", src=imgURL, data-original="http://www.example.com/my-dummy-image-path", style="display:none;")
       each value in comps
-        canvas(id="component-#{value['number']}", width="1000", height="700", style="border:1px solid #d3d3d3;")
+        canvas.component(id="component-#{value['number']}", width="1000", height="700", style="border:1px solid #d3d3d3;")
     #componentList
       each value in comps
         .individual-component
@@ -52,6 +52,10 @@ html
       br
       a#save-annotations.btn.btn-success( href="/image-upload" ) Save Annotations >
       h4 Click on the image to add features/components
+      .checkbox
+        input#show-annotations(type="checkbox", href="/image-upload", value="show-annotations", checked, name="show-annotations")
+        label(for="show-annotations") Show Annotations
+
 
       
 
@@ -165,7 +169,7 @@ html
         $("#existingComponents option[value='None Selected']").prop({'selected': true});
         $("#myModal").modal('hide');
 
-        $("<canvas id='component-"+data['number']+"' width='1000' height='700' style='border:1px solid #d3d3d3;'>").insertAfter("#myCanvas").
+        $("<canvas class='component' id='component-"+data['number']+"' width='1000' height='700' style='border:1px solid #d3d3d3;'>").insertAfter("#myCanvas").
         click(function(e){
 
           firstClickX = e.offsetX;
@@ -249,5 +253,13 @@ html
       if (keyCode === 13) { 
         e.preventDefault();
         return false;
+      }
+    });
+
+    $("#show-annotations").change(function(event){
+      if(this.checked){
+        $("canvas.component").show();
+      } else {
+        $("canvas.component").hide();
       }
     });
