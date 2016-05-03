@@ -604,16 +604,57 @@ router.get('/view-idea-suggestions', function(req, res){
   }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    var listOfProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
-    var categorizedSuggestions = {};
-    categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea);
-    categorizedSuggestions = IdeaSeed.getCategoryDisplayNames(categorizedSuggestions);
-    if(req.session.ideaReview){ var reviewing = true; }
-    else { var reviewing = false; }
-    
-    res.render('pages/view-idea-suggestions', { user : req.user, idea : currentIdea,
-      problems : listOfProblems, categorizedSuggestions : categorizedSuggestions,
-      problemType : req.session.problemType, reviewing : reviewing });
+    var listOfInventorProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
+    IdeaReview.find({"ideaSeedId" : currentIdea._id}, function(err, reviews){
+      var listOfReviewerProblems = IdeaReview.getListOfReviewerProblems(reviews);
+      listOfProblems = listOfInventorProblems.concat(listOfReviewerProblems);
+      var problemTypes = _.map(listOfProblems, function(item){ return item[0];});
+      var problemType = "";
+      var categorizedSuggestions = {};
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+      listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
+      if ( listOfProblems.length > 0 ){
+        problemType = listOfProblems[0][0];
+        categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(
+          currentIdea,
+          listOfProblems[0][0],
+          listOfProblems[0][3]
+        );
+      }
+      categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea);
+      categorizedSuggestions = IdeaSeed.getCategoryDisplayNames(categorizedSuggestions);
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+
+      IdeaImage.find({"_id" : {$in : idea.images}}, function(err, images){
+        var imageList = _.map(images, function(image){return [image["filename"], image["uploader"], image["id"], []]});
+
+        Component.find({"ideaSeed" : idea.id}, function(err, components){
+
+          //attach components to images
+          for(var i = 0; i < components.length; i++){
+            for(var j = 0; j < components[i].images.length; j++){
+              for(var k = 0; k < imageList.length; k++){
+                if( components[i].images[j].imageID.toString() == imageList[k][2]){
+                  imageList[k][3].push([components[i]["number"], components[i]["text"]]);
+                }
+              }
+            }
+          }
+
+          res.render('pages/view-idea-suggestions', {
+            user : req.user, //user document
+            idea : currentIdea, //document
+            images : imageList, //[[imagename, uploader, objectid, [componentNumber, componentText  ]]]
+            problems : listOfProblems, //special structure
+            categorizedSuggestions : categorizedSuggestions, //special structure
+            problemType : req.session.problemType, //String maybe
+            reviewing : reviewing
+          });
+        });
+      });
+    });
   });
 });
 
@@ -1164,6 +1205,35 @@ router.get('/annotate-image/:image', function(req, res){
     }
   });
 });
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for image modal
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/image-modal/:image', function(req, res){
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
+  IdeaImage.findOne({"filename": req.params.image} ,function(err, image){
+    currentImage = image._doc;
+    if(currentImage.image){
+      imageURL = "data:"+currentImage.imageMimetype+";base64," + currentImage.image.toString('base64');
+
+      res.json({
+        imgURL : imageURL
+      });
+
+    } else {
+      res.json({});
+    }
+  });
+});
+
+
 
 /*****************************************************************
 ******************************************************************

@@ -1,0 +1,13 @@
+.image-block-element
+	.suggestion
+		.suggestion-text
+			p <b>Image Name: </b><a class="image-modal-link" data-toggle="modal" data-target="#myModal">#{imageName || 'No suggestion text'}</a>
+
+		.suggestion-category
+			ul
+				each component in componentList
+					li 
+						p <b> Component #{component[0]}</b> : #{component[1]}
+	.suggestion-maker
+		img(src="/avatar.png" height="50" width="50")
+		div.userName #{accountName || "Unknown User"}

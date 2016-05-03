@@ -6,14 +6,8 @@ var IdeaImage = new Schema({
 	filename		: String,
 	image			: Buffer,
 	imageMimetype	: String,
-	uploader		: String, //should match the username field of an account
-	annotations		: [{
-		text		: String,
-		xCoord		: String,
-		yCoord		: String,
-		width		: String,
-		height		: String
-	}]
+	uploader		: String //should match the username field of an account
+
 });
 
 IdeaImage.plugin(passportLocalMongoose);

@@ -19,6 +19,7 @@ html
     if (Object.keys(categorizedSuggestions).length != 0 )
 
       form(role='form', id="incorporateSuggestion" action="/incorporate-suggestions", method="post")
+        h2 Contributor Suggestions
         table.suggestion-table
           tr
             th.left-column Suggestion Type
@@ -32,6 +33,7 @@ html
                     - var suggestionText = suggestion['suggestion']
                     - var problemCategory = category
                     - var suggestionProblem = suggestion['problemType']
+                    - var accountName = suggestion['contributor']
                     include ../partials/suggestion-element.jade
                   td 
                     .radio
@@ -40,6 +42,27 @@ html
                     .radio
                       input(type='radio', name=suggestion['suggestionID'], value="notIncorporate") 
                       |  Don't Incorporate
+          
+        h2 Images
+        table.suggestion-table
+          tr
+            th.left-column
+            th
+          each image, index in images
+            tr
+            tr
+              td.left-column 
+                - var imageName = image[0]
+                - var componentList = image[3]
+                - var accountName = image[1]
+                include ../partials/image-block-element.jade
+              td 
+                .radio
+                  input(type='radio', name=idea[1], value="incorporate") 
+                  |  Incorporate
+                .radio
+                  input(type='radio', name=idea[1], value="notIncorporate") 
+                  |  Don't Incorporate
         br
         button.btn.btn-success#submit(type='submit') Create Variant >
 
@@ -51,6 +74,19 @@ html
     br
     br
     br
+
+    #myModal.modal.fade.annotate-modal(role="dialog")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button(type="button", class="close" data-dismiss="modal") &times;
+            .modal-title
+          .modal-body
+
+          .modal-footer
+            button.btn.btn-info(data-dismiss="modal") OK
+
+
 
   include ../partials/js-includes.jade
   script(type="text/javascript").
@@ -68,6 +104,16 @@ html
       });
     });
 
+    $('#myModal').on('show.bs.modal', function (event) {
+      var link = $(event.relatedTarget); // Button that triggered the modal
 
+      var modal = $(this);
+      modal.find('.modal-title').empty();
+      modal.find('.modal-body').empty();
+      modal.find('.modal-title').append("<h2>" + $(link).text());
 
+      $.get("/image-modal/" + $(link).text(), function(data){
+        $(".modal-body").append("<img src="+data.imgURL+" height='300' width='550'>");
+      });
+    });
 

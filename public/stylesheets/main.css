@@ -172,22 +172,28 @@ form {
 }
 
 .suggestion-element {
-  height: 5.5em;
-  border:1px solid white;
+  min-height: 5.5em;
+  border:5px solid white;
+  border-radius: 5px;
+}
+
+.image-block-element {
+  min-height: 5.5em;
+  border:5px solid white;
   border-radius: 5px;
 }
 
 .suggestion {
   width: 70%;
   float:left;
-  height:100%;
+  min-height:5.5em;
 }
 
 .suggestion-maker {
   width:30%;
   float:right;
   background-color: #c0ff3e;
-  height:100%;
+  min-height:5.5em;
 }
 
 .suggestion-maker img {
@@ -257,8 +263,12 @@ img.summary-image {
   padding:2em;
 }
 
-.suggestion-table {
-  height:;
+.suggestion-table tr{
+  margin: .5em 0;
+}
+
+.suggestion-table ul {
+  list-style-type: none;
 }
 
 .suggestion-table .left-column {
