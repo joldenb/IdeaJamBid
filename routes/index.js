@@ -492,24 +492,30 @@ router.get('/image-upload', function(req, res){
 ******************************************************************
 *****************************************************************/
 router.post('/image-upload', uploading.single('picture'), function(req, res) {
-    var image = new IdeaImage({ image : req.file.buffer, imageMimetype : req.file.mimetype,
-      filename : req.file.originalname, uploader : req.user.username });
-    image.save(function(err, newImage){
-      if (err) {
-        console.log(err);
-      } else {
-        IdeaSeed.update(
-            { _id : req.session.idea },
-            { $push : { images : newImage.id }, firstFeature : req.body.firstFeature,
-            secondFeature : req.body.secondFeature, thirdFeature : req.body.thirdFeature},
-            function(err, raw){
-              console.log('The raw response from Mongo was ', raw);
-              res.redirect('/image-upload');
-            }
-        );
-      }
-    });
+    
+    IdeaImage.find({"filename" : {$regex : ".*"+req.file.originalname+".*"}}, function(err, images){
 
+      var newFileName = req.file.originalname + "-" + (images.length + 1).toString();
+
+      var image = new IdeaImage({ image : req.file.buffer, imageMimetype : req.file.mimetype,
+        filename : newFileName, uploader : req.user.username });
+      image.save(function(err, newImage){
+        if (err) {
+          console.log(err);
+        } else {
+          IdeaSeed.update(
+              { _id : req.session.idea },
+              { $push : { images : newImage.id }, firstFeature : req.body.firstFeature,
+              secondFeature : req.body.secondFeature, thirdFeature : req.body.thirdFeature},
+              function(err, raw){
+                console.log('The raw response from Mongo was ', raw);
+                res.redirect('/image-upload');
+              }
+          );
+        }
+      });
+
+    }); //end of idea image query
 });
 
 
@@ -776,6 +782,7 @@ router.post('/incorporate-suggestions', function(req, res) {
     currentIdea = idea._doc;
     var newVariantName = "",
         incorporatedSuggestions = [],
+        incorporatedImages = [],
         newVariant = {};
 
     newVariantName = IdeaSeed.generateVariantName(currentIdea.name);
@@ -783,10 +790,18 @@ router.post('/incorporate-suggestions', function(req, res) {
 
     for(var suggestion in req.body){
       if(req.body[suggestion] == "incorporate"){
-        incorporatedSuggestions.push(suggestion);
+        //all images in the variant form have a name that starts with image-
+        //so we put those in the image list and assume the rest are suggestions
+        if(suggestion.substring(0,6) == "image-"){
+          incorporatedImages.push(suggestion.slice(6));
+        } else {
+          incorporatedSuggestions.push(suggestion);
+        }
       }
+      
     }
     newVariant["suggestions"] = incorporatedSuggestions;
+    newVariant["images"] = incorporatedImages;
 
     currentIdea.variants.push(newVariant);
     idea.save(function(data){
@@ -1135,9 +1150,28 @@ router.get('/variant/:variantname', function(req, res){
       }
     }
 
-    res.render('pages/variant', { user : req.user, idea : currentIdea,
-      problems : listOfProblems, categorizedSuggestions : variantCategorizedSuggestions,
-      problemType : req.session.problemType });
+    IdeaImage.find({"filename" : {$in : currentVariant.images}}, function(err, images){
+      var imageList = _.map(images, function(image){return [image["filename"], image["uploader"], image["id"], []]});
+
+      Component.find({"ideaSeed" : idea.id}, function(err, components){
+
+        //attach components to images
+        for(var i = 0; i < components.length; i++){
+          for(var j = 0; j < components[i].images.length; j++){
+            for(var k = 0; k < imageList.length; k++){
+              if( components[i].images[j].imageID.toString() == imageList[k][2]){
+                imageList[k][3].push([components[i]["number"], components[i]["text"]]);
+              }
+            }
+          }
+        }
+        res.render('pages/variant', { user : req.user, idea : currentIdea,
+          problems : listOfProblems, categorizedSuggestions : variantCategorizedSuggestions,
+          images : imageList,
+          problemType : req.session.problemType });
+      });
+    });
+
     
   });
 });

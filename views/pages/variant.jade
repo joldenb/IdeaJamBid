@@ -32,6 +32,32 @@ html
                     - var suggestionProblem = suggestion['problemType']
                     include ../partials/suggestion-element.jade
         br
+        h2 Images
+        table.suggestion-table
+          tr
+            th.left-column
+          each image, index in images
+            tr
+            tr
+              td.left-column 
+                - var imageName = image[0]
+                - var componentList = image[3]
+                - var accountName = image[1]
+                include ../partials/image-block-element.jade
+
+        #myModal.modal.fade.annotate-modal(role="dialog")
+          .modal-dialog
+            .modal-content
+              .modal-header
+                button(type="button", class="close" data-dismiss="modal") &times;
+                .modal-title
+              .modal-body
+
+              .modal-footer
+                button.btn.btn-info(data-dismiss="modal") OK
+
+
+
 
     else
       h3 No problems yet for this idea!
@@ -63,5 +89,15 @@ html
     });
 
 
+    $('#myModal').on('show.bs.modal', function (event) {
+      var link = $(event.relatedTarget); // Button that triggered the modal
 
+      var modal = $(this);
+      modal.find('.modal-title').empty();
+      modal.find('.modal-body').empty();
+      modal.find('.modal-title').append("<h2>" + $(link).text());
 
+      $.get("/image-modal/" + $(link).text(), function(data){
+        $(".modal-body").append("<img src="+data.imgURL+" height='300' width='550'>");
+      });
+    });

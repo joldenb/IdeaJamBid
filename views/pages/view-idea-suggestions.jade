@@ -58,10 +58,10 @@ html
                 include ../partials/image-block-element.jade
               td 
                 .radio
-                  input(type='radio', name=idea[1], value="incorporate") 
+                  input(type='radio', name='image-'+image[0], value="incorporate")
                   |  Incorporate
                 .radio
-                  input(type='radio', name=idea[1], value="notIncorporate") 
+                  input(type='radio', name='image-'+image[0], value="notIncorporate")
                   |  Don't Incorporate
         br
         button.btn.btn-success#submit(type='submit') Create Variant >
