@@ -16,8 +16,22 @@ html
     form(role='form', id="formAccomplish" action="/accomplish", method="post", style='max-width: 300px;', data-idea-doc=idea)
       .form-group
         h4 The #{idea.name} is a :
-        input.form-control(type="text" name="characterization", placeholder='...')
-        |  
+        .radio
+          label
+            input#optionsRadios1(type="radio", name="characterization", value="device", checked="")
+            | Device
+        .radio
+          label
+            input#optionsRadios2(type="radio", name="characterization", value="method")
+            | Method
+        .radio
+          label
+            input#optionsRadios3(type="radio", name="characterization", value="system")
+            | System
+        .radio
+          label
+            input#optionsRadios3(type="radio", name="characterization", value="software")
+            | Software
         h4 The #{idea.name} can be used to 
         input.form-control(type="text" name="purposeHow", placeholder='...')
         br
