@@ -442,6 +442,26 @@ router.post('/problem-solver', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
+router.post('/save-idea-name', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
+  IdeaSeed.update({_id : req.session.idea}, {
+    name : req.body.inventionName},
+    { multi: false }, function (err, raw) {
+      console.log('The raw response from Mongo was ', raw);
+  });
+  res.redirect('/idea-summary');
+});
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for sort problems
+******************************************************************
+******************************************************************
+*****************************************************************/
 router.get('/image-upload', function(req, res){
   if(!req.session.idea){
     res.redirect('/');

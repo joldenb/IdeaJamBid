@@ -17,14 +17,21 @@ html
       .form-group
         h3 Upload a graphic to annotate features and components, or just list them.  Images are worth more Einstein points though, just saying.
         |  
-        input(type="file", name="picture")
+        input#fileInput(type="file", name="picture")
         br
-        button.btn.btn-success(type='submit') Upload
         |  
         if reviewing
           a.btn.btn-default( href="/contributor-idea-summary" ) Continue >
         else
-          a.btn.btn-default( href="/idea-summary" ) Continue >
+          if(imageURLs.length)
+            a.btn.btn-default( href="/idea-summary" ) Continue >
+          else
+            a.btn.btn-default( href="/idea-summary" ) Skip to Profile
+            |  
+            a.btn.btn-default( href="/idea-summary" disabled) Continue (+20)
+
+
+          
 
   .imagesList.my-images
     if(imageURLs)
@@ -51,3 +58,7 @@ html
     } else {
       $(".my-images").append("<h4>Click to Annotate.</h4>");
     }
+
+    document.getElementById("fileInput").onchange = function() {
+      document.getElementById("formImageUpload").submit();
+    };

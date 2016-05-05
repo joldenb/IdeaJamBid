@@ -272,6 +272,23 @@ html
 
 
 
+  #myModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Name Your Idea
+        .modal-body
+          form(role='form', id="saveIdeaName" action="/save-idea-name", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            .form-group
+              input.form-control(type="text", name="inventionName", placeholder='...')
+              p (ex. "Flux Capacitor", < 30 characters)
+            .modal-footer
+              button.btn.btn-info(data-dismiss="modal") Cancel
+              button.btn.btn-success#submit(type='submit') Save
+
+  button(type="button" id="modalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Go Win Fight
 
 
 
@@ -280,3 +297,9 @@ html
 
 
   include ../partials/js-includes.jade
+  script(type="text/javascript").
+    $(window).load(function(){
+        if("!{idea.name}" == ""){
+          $('#myModal').modal('show');
+        }
+    });
