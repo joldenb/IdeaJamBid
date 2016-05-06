@@ -14,19 +14,27 @@ html
   .idea-summary
     h3 Idea Summary for #{idea.name}
     br
+
     .edit-column.half-column
-      h4 Edit Idea Seed Content
-      p <b>Annotate Images:</b>
-      a.btn.btn-default( href="/image-upload" ) View Uploaded Images
-      br
-      br
-      p <b>Problem :</b> #{idea.problem}
-      a.btn.btn-default( href="/introduce-idea" ) Edit > 
-      br
-      br
-      p <b>How :</b> #{idea.description}
-      a.btn.btn-default( href="/accomplish" ) Edit >
-      br
+      .idea-summary-data#idea-summary-alternatives
+        h4 Alternative Ideas  
+        ul
+          each alternative, index in idea.alternatives
+            li #{index + 1} : #{alternative.name}
+        a.btn.btn-default( href="/alternative-ideas" ) View Alternatives
+      .idea-summary-data#idea-summary-annotate
+        h4 Edit Idea Seed Content
+        p <b>Annotate Images:</b>
+        a.btn.btn-default( href="/image-upload" ) View Uploaded Images
+        br
+      .idea-summary-data#idea-summary-challenge
+        p <b>Challenge :</b> #{idea.problem}
+        a.btn.btn-default( href="/introduce-idea" ) Edit > 
+        br
+      .idea-summary-data#idea-summary-accomplish
+        p <b>How :</b> #{idea.description}
+        a.btn.btn-default( href="/accomplish" ) Edit >
+        br
       br
 
       table.idea-summary
@@ -302,4 +310,29 @@ html
         if("!{idea.name}" == ""){
           $('#myModal').modal('show');
         }
+        if("!{idea.alternatives.length}" == "0"){
+          $("#idea-summary-alternatives")
+            .addClass("incomplete-data");
+          $("#idea-summary-alternatives a")
+            .before("<h4><i>No data entered</i></h4>");
+        }
+        if("!{idea.images.length}" == "0"){
+          $("#idea-summary-annotate")
+            .addClass("incomplete-data");
+          $("#idea-summary-annotate a")
+            .before("<h4><i>No data entered</i></h4>");
+        }
+        if("!{idea.description}" == ""){
+          $("#idea-summary-accomplish")
+            .addClass("incomplete-data");
+          $("#idea-summary-accomplish a")
+            .before("<h4><i>No data entered</i></h4>");
+        }
+        if("!{idea.problem}" == ""){
+          $("#idea-summary-challenge")
+            .addClass("incomplete-data");
+          $("#idea-summary-challenge a")
+            .before("<h4><i>No data entered</i></h4>");
+        }
     });
+

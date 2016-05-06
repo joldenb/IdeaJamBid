@@ -37,6 +37,13 @@ var IdeaSeed = new Schema({
 		images			: [ String ] // filenames of images
 	}],
 
+	alternatives	: [{
+		name					: String,
+		description		: String,
+		failureReason	: String,
+		differsBy			: String
+	}],
+
 	ideaReviews		: [ObjectId],
 
 	performOne		: Number,

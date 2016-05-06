@@ -15,6 +15,7 @@ var configAuth = require('./config/auth');
 var routes = require('./routes/index');
 var socialRoutes = require('./routes/social-routes');
 var valueWasteRoutes = require('./routes/value-waste-routes');
+var ideaDataRoutes = require('./routes/idea-data-routes');
 var Account = require('./models/account');
 
 
@@ -50,6 +51,8 @@ app.use(passport.session());
 app.use('/', routes);
 app.use('/', socialRoutes);
 app.use('/', valueWasteRoutes);
+app.use('/', ideaDataRoutes);
+
 
 // passport config
 passport.use(new LocalStrategy(Account.authenticate()));

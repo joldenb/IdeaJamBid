@@ -9,7 +9,6 @@ var Component = new Schema({
 	creator			: String, //should match the username field of an account
 	number			: Number,
 
-
 	images			: [{
 		imageID		: ObjectId,
 		firstX		: String,

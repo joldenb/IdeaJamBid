@@ -410,3 +410,14 @@ canvas {
 .checkbox input[type=checkbox] {
   margin-left: 0;
 }
+
+.idea-summary-data {
+  margin:1em;
+  padding:1em;
+  border: 1px solid gray;
+  border-radius: 5px;
+}
+.idea-summary-data.incomplete-data {
+  background-color : #870202;
+  color:white;
+}
