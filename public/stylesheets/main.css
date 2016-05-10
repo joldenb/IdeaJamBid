@@ -88,6 +88,7 @@ h1, h2, h3, h4, p {
   text-align:center;
   padding:1em;
   padding-left: 3em;
+  margin-bottom: 2em;
 }
 
 div#begin-info {
@@ -116,14 +117,15 @@ div#begin-info-right {
   padding:2em;
   width:50%;
   text-align: center;
-  display:inline-block;
+  float: left;
   border-right: 1px solid gray;
 }
 .contributedIdeas {
+  margin-top: 0;
   padding:2em;
   width:50%;
   text-align: center;
-  display:inline-block;
+  float:left;
 }
 
 .existingIdeas ul, .contributedIdeas ul {
