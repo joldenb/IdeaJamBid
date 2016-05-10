@@ -287,6 +287,8 @@ img.summary-image {
 
 .half-column {
   width: 50%;
+  float:left;
+  margin-bottom: 2em;
 }
 
 .edit-column {
@@ -420,4 +422,11 @@ canvas {
 .idea-summary-data.incomplete-data {
   background-color : #870202;
   color:white;
+}
+
+.inventor-only-idea-summary {
+  clear: both;
+  border-top:1px solid gray;
+  background-color: #98eccc;
+  height:60%;
 }

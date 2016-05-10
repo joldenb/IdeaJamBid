@@ -7,6 +7,7 @@ var IdeaImage = require('../models/ideaImage');
 var IdeaReview = require('../models/ideaReviews');
 var IdeaSeed = require('../models/ideaSeed');
 var Component = require('../models/component');
+var IdeaProblem = require('../models/ideaProblem');
 var Account = require('../models/account');
 var router = express.Router();
 var multer = require('multer');
@@ -1064,45 +1065,94 @@ router.get('/idea-summary', function(req, res){
 
   delete req.session.ideaReview;
 
+
   IdeaSeed.findById(req.session.idea,function(err, idea){
-    var variantDates = [],
-      sortedProblems = [];
-    currentIdea = idea._doc;
+    Component.find({"ideaSeed" : idea.id}, function(err, components){
+      var variantDates = [],
+          sortedProblems = [];
+      var imageURLs = [];
+      var componentsList = [];
+      currentIdea = idea._doc;
 
-    if(idea.inventorName != req.user.username){
-      res.redirect('/contributor-idea-summary');
-      return;
-    }
+      componentsList = _.map(components, function(item){return "Component : "+item['text'];});
 
-    var listOfProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
-    var typeOfProblem, rankingOfProblem;
-    for(var i = 0; i < listOfProblems.length; i++){
-      typeOfProblem = _.invert(currentIdea)[listOfProblems[i][1]];
-      rankingOfProblem = idea[typeOfProblem.slice(0, -7) + "Priority"];
-      listOfProblems[i].push(rankingOfProblem);
-    }
-    listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
+      var problemAreas = componentsList.concat([
+        "Area : Performabilitiy",
+        "Area : Affordability",
+        "Area : Featurability",
+        "Area : Deliverability",
+        "Area : Useability",
+        "Area : Maintainability",
+        "Area : Durability",
+        "Area : Imageability",
+        "Area : Complexity",
+        "Area : Precision",
+        "Area : Variability",
+        "Area : Sensitivity",
+        "Area : Immaturity",
+        "Area : Danger",
+        "Area : Skills"
+      ]);
 
-    if(currentIdea.variants.length > 0){
-      for(var i = 0; i < currentIdea.variants.length; i++){
-        variantDates.push([
-          new Date(parseInt(currentIdea.variants[i].name.substr(-13))).toString(),
-          currentIdea.variants[i].name
-        ]);
+      if(idea.inventorName != req.user.username){
+        res.redirect('/contributor-idea-summary');
+        return;
       }
-    }
-    res.render('pages/idea-summary', { user : req.user, idea : currentIdea, variantDates : variantDates,
-      listOfProblems : listOfProblems });
+
+      var listOfProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
+      var typeOfProblem, rankingOfProblem;
+      for(var i = 0; i < listOfProblems.length; i++){
+        typeOfProblem = _.invert(currentIdea)[listOfProblems[i][1]];
+        rankingOfProblem = idea[typeOfProblem.slice(0, -7) + "Priority"];
+        listOfProblems[i].push(rankingOfProblem);
+      }
+      listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
+
+      if(currentIdea.variants.length > 0){
+        for(var i = 0; i < currentIdea.variants.length; i++){
+          variantDates.push([
+            new Date(parseInt(currentIdea.variants[i].name.substr(-13))).toString(),
+            currentIdea.variants[i].name
+          ]);
+        }
+      }
+
+        if (idea._doc.images.length !== 0){
+          for (i =0; i < idea._doc.images.length; i++){
+            var j = 0;
+            IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
+              j++;
+              if(image && image._doc && image._doc.image){
+                var filename = image._doc["filename"];
+                imageURLs.push([
+                  filename,
+                  "data:"+image._doc["imageMimetype"]+";base64,"+ image._doc["image"].toString('base64')
+                ]);
+              }
+              if (j == idea._doc.images.length){
+                res.render('pages/idea-summary', { user : req.user, idea : currentIdea,
+                  variantDates : variantDates,
+                  problemAreas  : problemAreas,
+                  imageURLs : imageURLs,
+                  components : components,
+                  listOfProblems : listOfProblems });
+              }
+            });
+          }
+        } else {
+                res.render('pages/idea-summary', { user : req.user, idea : currentIdea,
+                  variantDates : variantDates,
+                  problemAreas  : problemAreas,
+                  imageURLs : [],
+                  components : components,
+                  listOfProblems : listOfProblems });
+        }
+      
+    });
   });
 });
 
-/*****************************************************************
-******************************************************************
-******************************************************************
-* Route for sort problems
-******************************************************************
-******************************************************************
-*****************************************************************/
+
 /*****************************************************************
 ******************************************************************
 ******************************************************************

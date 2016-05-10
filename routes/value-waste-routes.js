@@ -16,6 +16,24 @@ var uploading = multer({
 });
 
 ////////////////////////////////////////////////
+// Waste Value Summary
+////////////////////////////////////////////////
+router.get('/waste-values-summary', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    currentIdea = idea._doc;
+    if(req.session.ideaReview){ var reviewing = true; }
+    else { var reviewing = false; }
+    res.render('pages/waste-values', {
+      user : req.user, idea : currentIdea,
+      reviewing :  reviewing});
+  });
+});
+
+////////////////////////////////////////////////
 // Performability
 ////////////////////////////////////////////////
 router.get('/performability', function(req, res) {
@@ -101,6 +119,8 @@ router.post('/performability', function(req, res) {
 
   res.redirect('/affordability');
 });
+
+
 
 ////////////////////////////////////////////////
 // Affordability

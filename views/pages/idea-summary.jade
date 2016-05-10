@@ -13,274 +13,74 @@ html
 
   .idea-summary
     h3 Idea Summary for #{idea.name}
-    br
 
     .edit-column.half-column
-      .idea-summary-data#idea-summary-alternatives
-        h4 Alternative Ideas  
+      .imagesList
+        if(imageURLs)
+          h4 Uploaded Images
+          each imageURL, index in imageURLs
+            if index == 0
+              .image-summary-image
+                img(src=imageURL[1] height="300" width="400")
+            if index < 3
+              img.imageListItems(src=imageURL[1])
+          a.btn.btn-default( href="/image-upload" ) View All Images
+
+    .idea-function-column.half-column
+      h3 Features
+      if components
         ul
-          each alternative, index in idea.alternatives
-            li #{index + 1} : #{alternative.name}
-        a.btn.btn-default( href="/alternative-ideas" ) View Alternatives
-      .idea-summary-data#idea-summary-annotate
-        h4 Edit Idea Seed Content
-        p <b>Annotate Images:</b>
-        a.btn.btn-default( href="/image-upload" ) View Uploaded Images
+          each component in components
+            li 
+              h4 #{component['number']} : #{component['text']}
+      .idea-summary-data#idea-summary-waste-values
+        h4 Waste Value Scores
+        a.btn.btn-default( href="/waste-values-summary" ) View All
         br
+      .idea-summary-data#idea-summary-problems
+        h4 Idea Problems
+        button(type="button" id="problemModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addProblemModal") Add a Problem
       .idea-summary-data#idea-summary-challenge
-        p <b>Challenge :</b> #{idea.problem}
+        h4 Challenge
+        p <i>#{idea.problem}</i>
         a.btn.btn-default( href="/introduce-idea" ) Edit > 
         br
       .idea-summary-data#idea-summary-accomplish
-        p <b>How :</b> #{idea.description}
+        h4 Description
+        p <i>#{idea.description}</i>
         a.btn.btn-default( href="/accomplish" ) Edit >
         br
-      br
 
-      table.idea-summary
-        tr
-          th Value/Waste
-          th Rating
-          th Problem Statement
-        tr
-          th         
-            a(href="/performability") 
-              h4 Performance
-          td 
-            if idea.performOne
-              h5 #{idea.performOne}
-            else
-              h5 No Value Yet
-          td 
-            if idea.performProblem
-              p #{idea.performProblem}
-            else 
-              p No Value Yet
-        tr
-          th 
-            a(href="/affordability")
-              h4 Affordability
-          td 
-            if idea.affordOne
-              h5 #{idea.affordOne}
-            else
-              h5 No Value Yet
-          td 
-            if idea.affordProblem 
-              p #{idea.affordProblem}
-            else
-              p No Value Yet
-        tr
-          th 
-            a(href="/featurability")
-              h4 Featurability
-          td 
-            if idea.featureOne
-              h5 #{idea.featureOne}
-            else 
-              h5 No Value Yet
-          td 
-            if idea.featureProblem
-              p #{idea.featureProblem}
-            else 
-              p No Value Yet
-        tr
-          th 
-            a(href="/deliverability")
-              h4 Deliverability
-          td 
-            if idea.deliverOne
-              h5 #{idea.deliverOne}
-            else
-              h5 No Value Yet
-          td 
-            if idea.deliverProblem
-              p #{idea.deliverProblem}
-            else
-              p No Value Yet
-        tr
-          th 
-            a(href="/useability")
-              h4 Useability        
-          td 
-            if idea.useabilityOne
-              h5 #{idea.useabilityOne}
-            else 
-              h5 No Value Yet
-          td 
-            if idea.useabilityProblem
-              p #{idea.useabilityProblem}
-            else
-              p No Value Yet
-        tr
-          th 
-            a(href="/maintainability")
-              h4 Maintainability        
-          td 
-            if idea.maintainOne
-              h5 #{idea.maintainOne}
-            else
-              h5 No Value Yet
-          td 
-            if idea.maintainProblem
-              p #{idea.maintainProblem}
-            else
-              p No Value Yet
-        tr
-          th 
-            a(href="/durability")
-              h4 Durability
-          td 
-            if idea.durabilityOne
-              h5 #{idea.durabilityOne}
-            else
-              h5 No Value Yet
-          td 
-            if idea.durabilityProblem
-              p #{idea.durabilityProblem}
-            else
-              p No Value Yet
-        tr
-          th 
-            a(href="/imageability")
-              h4 Imageability
-          td 
-            if idea.imageOne
-              h5 #{idea.imageOne}
-            else 
-              h5 No Value Yet
-          td 
-            if idea.imageProblem
-              p #{idea.imageProblem}
-            else
-              p No Value Yet
-        tr
-          th 
-            a(href="/complexity")
-              h4 Complexity
-          td 
-            if idea.complexOne
-              h5 #{idea.complexOne}
-            else
-              h5 No Value Yet
-          td 
-            if idea.complexProblem
-              p #{idea.complexProblem}
-            else
-              p No Value Yet
-        tr
-          th 
-            a(href="/precision")
-              h4 Precision
-          td 
-            if idea.precisionOne
-              h5 #{idea.precisionOne}
-            else
-              h5 No Value Yet
-          td 
-            if idea.precisionProblem
-              p #{idea.precisionProblem}
-            else
-              p No Value Yet
-        tr
-          th 
-            a(href="/variability")
-              h4 Variability
-          td 
-            if idea.variabilityOne
-              h5 #{idea.variabilityOne}
-            else
-              h5 No Value Yet
-          td 
-            if idea.variabilityProblem
-              p #{idea.variabilityProblem}
-            else
-              p No Value Yet
-        tr
-          th 
-            a(href="/sensitivity")
-              h4 Sensitivity
-          td 
-            if idea.sensitivityOne
-              h5 #{idea.sensitivityOne}
-            else
-              h5 No Value Yet
-          td 
-            if idea.sensitivityProblem
-              p #{idea.sensitivityProblem}
-            else
-              p No Value Yet
-        tr
-          th 
-            a(href="/immaturity")
-              h4 Immaturity
-          td 
-            if idea.immatureOne
-              h5 #{idea.immatureOne}
-            else 
-              h5 No Value Yet
-          td 
-            if idea.immatureProblem
-              p #{idea.immatureProblem}
-            else 
-              p No Value Yet
-        tr
-          th 
-            a(href="/dangerous")
-              h4 Dangerous
-          td 
-            if idea.dangerOne
-              h5 #{idea.dangerOne}
-            else
-              h5 No Value Yet
-          td 
-            if idea.dangerProblem
-              p #{idea.dangerProblem}
-            else
-              p No Value Yet
-        tr
-          th 
-            a(href="/skills")
-              h4 Skills
-          td 
-            if idea.skillsOne
-              h5 #{idea.skillsOne}
-            else
-              h5 No Value Yet
-          td 
-            if idea.skillsProblem
-              p #{idea.skillsProblem}
-            else
-              p No Value Yet
+.inventor-only-idea-summary
+  h1 For the Inventor
+  .half-column
+    h4 Suggestions
+    a.btn.btn-default( href="/suggestion-summary" ) Make Suggestions
+    br
+    br
+    h4 Top Priority Problems 
+    ul.problemList
+      each problem, index in listOfProblems
+        li
+          p #{index + 1}. <b>#{problem[0]} : </b> #{problem[1]}
+    a.btn.btn-default( href="/sort-problems" ) Sort All Problems
+    br
+  .half-column
+    br
+    h4 Application
+    a.btn.btn-default( href="/create-application" ) Download Application
+    br
+    br
+    h4 Variants 
+    each variantDate in variantDates
+      ul.variantDateList
+        li
+          a(href="/variant/"+variantDate[1]) #{variantDate[0]}
+    a.btn.btn-default( href="/view-idea-suggestions" ) Create a New Variant
+    br
+    br
 
-    .idea-function-column.half-column
-      h4 Suggestions 
-      a.btn.btn-default( href="/suggestion-summary" ) Make Suggestions
-      br
-      br
-      h4 Application 
-      a.btn.btn-default( href="/create-application" ) Download Application
-      br
-      br
-      h4 Top Priority Problems 
-      ul.problemList
-        each problem, index in listOfProblems
-          li
-            p #{index + 1}. <b>#{problem[0]} : </b> #{problem[1]}
-      a.btn.btn-default( href="/sort-problems" ) Sort All Problems
-      br
-      br
-      h4 Variants 
-      each variantDate in variantDates
-        ul.variantDateList
-          li
-            a(href="/variant/"+variantDate[1]) #{variantDate[0]}
-      a.btn.btn-default( href="/view-idea-suggestions" ) Create a New Variant
-
-
-
-
-  #myModal.modal.fade.annotate-modal(role="dialog")
+  #titleModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
       .modal-content
         .modal-header
@@ -296,19 +96,36 @@ html
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#submit(type='submit') Save
 
-  button(type="button" id="modalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Go Win Fight
+  #addProblemModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Record a Current Problem
+        .modal-body
+          form(role='form', id="addIdeaProblem" action="/add-idea-problem", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            .form-group
+              input#problemStatement.form-control(type="text", name="problemStatement", placeholder='The problem is...')
+              p (ex. "It draws too much power", < 30 characters)
+              h3 Select Problem Area:
+              select.form-control#problemArea
+                  option(value="None Selected") None Selected
+                  each value in problemAreas
+                    option(value=value) #{value}
 
+            .modal-footer
+              button.btn.btn-info(data-dismiss="modal") Cancel
+              button.btn.btn-success#problemSubmit(type='submit') Save
 
-
-
-
+  button(type="button" id="titleModalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#titleModal") Go Win Fight
 
 
   include ../partials/js-includes.jade
   script(type="text/javascript").
     $(window).load(function(){
         if("!{idea.name}" == ""){
-          $('#myModal').modal('show');
+          $('#titleModal').modal('show');
         }
         if("!{idea.alternatives.length}" == "0"){
           $("#idea-summary-alternatives")
@@ -336,3 +153,15 @@ html
         }
     });
 
+    $("#problemSubmit").click(function(event){
+      event.preventDefault();
+      $.post('/add-idea-problem', 
+        {
+          problemStatement : $("#problemStatement").val(),
+          problemArea : $("#problemArea option:selected").text()
+        },
+        function(resp) {
+          $("#problemStatement").val('');
+          $("#addProblemModal").modal('hide');
+        });      
+    });

@@ -21,10 +21,10 @@ var IdeaSeed = new Schema({
 
 	suggestions		: [{
 		suggestionID	: String, /* used in creating a variant */
-		category		: String,
+		category			: String, // the column and row in the grid of points
 		contributor		: String,
-		problemType		: String,
-		problemText		: String,
+		problemType		: String, // can be a waste value category or component ID (toString)
+
 		suggestion		: String,
 		hindsight		: String,
 		outsight		: String,
@@ -42,6 +42,16 @@ var IdeaSeed = new Schema({
 		description		: String,
 		failureReason	: String,
 		differsBy			: String
+	}],
+
+	industries			:[{
+		name					: String
+	}],
+
+	unmetNeed				: String,
+
+	desireableCharacteristics	: [{
+		characteristic		: String
 	}],
 
 	ideaReviews		: [ObjectId],
