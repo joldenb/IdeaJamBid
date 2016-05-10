@@ -263,6 +263,10 @@ img.summary-image {
   padding:2em;
 }
 
+.imagesList .btn {
+  margin: 1em;
+}
+
 .suggestion-table tr{
   margin: .5em 0;
 }

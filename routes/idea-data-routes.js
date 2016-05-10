@@ -135,7 +135,7 @@ router.post('/add-idea-component', function(req, res) {
         if (err) return handleError(err);
       }
     );
-    res.sendStatus(200);
+    res.json(newComponent);
   });
 });
 

@@ -22,20 +22,20 @@ html
             if index == 0
               .image-summary-image
                 img(src=imageURL[1] height="300" width="400")
-            if index < 3
+            if index < 3 && index > 0
               img.imageListItems(src=imageURL[1])
-          a.btn.btn-default( href="/image-upload" ) View All Images
-      .idea-summary-data#idea-summary-components
-        h4 Add a Component
-        button(type="button" id="componentModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addComponentModal") Add a Component
+          .view-all-images-btn
+            a.btn.btn-default( href="/image-upload" ) View All Images
 
     .idea-function-column.half-column
-      h3 Features
-      if components
-        ul
-          each component in components
-            li 
-              h4 #{component['number']} : #{component['text']}
+      .idea-summary-data#idea-summary-components
+        h4 Components
+        if components
+          ul
+            each component in components
+              li 
+                h4 #{component['number']} : #{component['text']}
+        button(type="button" id="componentModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addComponentModal") Add a Component
       .idea-summary-data#idea-summary-waste-values
         h4 Waste Value Scores
         a.btn.btn-default( href="/waste-values-summary" ) View All
@@ -194,7 +194,9 @@ html
           componentName : $("#componentName").val(),
           componentDescription : $("#componentDescription").val()
         },
-        function(resp) {
+        function(data, respone) {
+          $("#idea-summary-components ul")
+            .append("<li><h4>"+ data['number'] + " : " + data['text'] + "</h4></li>");
           $("#componentName").val('');
           $("#componentDescription").val('');
           $("#addComponentModal").modal('hide');
