@@ -25,6 +25,9 @@ html
             if index < 3
               img.imageListItems(src=imageURL[1])
           a.btn.btn-default( href="/image-upload" ) View All Images
+      .idea-summary-data#idea-summary-components
+        h4 Add a Component
+        button(type="button" id="componentModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addComponentModal") Add a Component
 
     .idea-function-column.half-column
       h3 Features
@@ -117,6 +120,24 @@ html
             .modal-footer
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#problemSubmit(type='submit') Save
+  #addComponentModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Record a New Component
+        .modal-body
+          form(role='form', id="addIdeaComponent" action="/add-idea-component", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            .form-group
+              input#componentName.form-control(type="text", name="componentName", placeholder='The component is called...')
+              p (ex. "The Start Button", < 30 characters)
+              input#componentDescription.form-control(type="text", name="componentDescription", placeholder='The way it works is...')
+              p (ex. "it initiates the sequence automatically", < 120 characters)
+
+            .modal-footer
+              button.btn.btn-info(data-dismiss="modal") Cancel
+              button.btn.btn-success#componentSubmit(type='submit') Save
 
   button(type="button" id="titleModalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#titleModal") Go Win Fight
 
@@ -163,5 +184,19 @@ html
         function(resp) {
           $("#problemStatement").val('');
           $("#addProblemModal").modal('hide');
+        });      
+    });
+
+    $("#componentSubmit").click(function(event){
+      event.preventDefault();
+      $.post('/add-idea-component', 
+        {
+          componentName : $("#componentName").val(),
+          componentDescription : $("#componentDescription").val()
+        },
+        function(resp) {
+          $("#componentName").val('');
+          $("#componentDescription").val('');
+          $("#addComponentModal").modal('hide');
         });      
     });

@@ -3,6 +3,7 @@ var passport = require('passport');
 var mongoose = require('mongoose');
 var _ = require('underscore');
 var IdeaSeed = require('../models/ideaSeed');
+var Component = require('../models/component');
 var IdeaReview = require('../models/ideaReviews');
 var IdeaProblem = require('../models/ideaProblem');
 var Account = require('../models/account');
@@ -111,6 +112,31 @@ router.post('/add-idea-problem', function(req, res) {
     }
   );
   res.sendStatus(200);
+});
+
+////////////////////////////////////////////////
+// Add a component to an idea seed
+////////////////////////////////////////////////
+router.post('/add-idea-component', function(req, res) {
+  
+  Component.count({"ideaSeed" : req.session.idea}, function(err, count){
+
+    var newCompNumber = count + 1;
+    var newComponent = {
+      text          : req.body.componentName,
+      creator       : req.user.username,
+      description   : req.body.componentDescription,
+      ideaSeed      : req.session.idea,
+      number        : newCompNumber
+    };
+      
+    Component.create( newComponent ,
+      function (err) {
+        if (err) return handleError(err);
+      }
+    );
+    res.sendStatus(200);
+  });
 });
 
 
