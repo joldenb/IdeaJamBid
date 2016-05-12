@@ -1074,6 +1074,8 @@ router.get('/idea-summary', function(req, res){
       var componentsList = [];
       currentIdea = idea._doc;
 
+      
+
       componentsList = _.map(components, function(item){return "Component : "+item['text'];});
 
       var problemAreas = componentsList.concat([
@@ -1297,6 +1299,7 @@ router.get('/annotate-image/:image', function(req, res){
               imageName : currentImage.filename,
               annotations : JSON.stringify(annotations),
               masterComponentList : masterComponentList,
+              masterComponentsString : JSON.stringify(masterComponentList),
               comps : compArray,
               compsString : JSON.stringify(compArray),
               nextNumber : nextNumber
@@ -1360,6 +1363,7 @@ router.post('/save-component', function(req, res) {
       }
 
       if(component){
+        component.descriptions.push(req.body.description);
         component.images.push(
           {
             imageID   : image.id,
@@ -1377,6 +1381,7 @@ router.post('/save-component', function(req, res) {
         var newComp = new Component({
           text : req.body.component,
           number : req.body.number,
+          descriptions : [req.body.description],
           images : [{
             imageID   : image.id,
             firstX    : req.body.firstX,

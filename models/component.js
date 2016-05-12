@@ -5,7 +5,7 @@ var ObjectId = mongoose.Schema.Types.ObjectId;
 
 var Component = new Schema({
 	text				: String,
-	description	: String,
+	descriptions : [String],
 	creator			: String, //should match the username field of an account
 	number			: Number,
 

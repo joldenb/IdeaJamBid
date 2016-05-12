@@ -436,3 +436,13 @@ canvas {
   background-color: #98eccc;
   height:100%;
 }
+
+/*for annotate image page */
+.ui-menu .ui-menu-item {
+  text-align: left;
+}
+
+#new-idea-description {
+  color: black;
+  text-align: left;
+}
