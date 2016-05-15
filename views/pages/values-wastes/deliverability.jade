@@ -24,7 +24,13 @@ html
         #deliverLabelOne.sliderLabel
         #deliverSliderOne
       br
-      h4 What prevents #{idea.name} from arriving when and where it needs to be used?
+      h4 Recorded problems for deliverability:
+      ul.waste-value-problem-list
+        each problem, index in problems
+          li
+            h4 #{index + 1} : #{problem.text}
+      br
+      h4 Add a new deliverability problem:
       textarea.form-control(rows='6', cols="75", name="deliverProblem", placeholder='Describe the problem...')
         if reviewing && idea.deliverProblem
           | #{idea.deliverProblem}

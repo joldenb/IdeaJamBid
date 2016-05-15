@@ -24,7 +24,13 @@ html
         #dangerousLabelOne.sliderLabel
         #dangerousSliderOne
       br
-      h4 What prevents #{idea.name} from being safer?
+      h4 Recorded problems for danger:
+      ul.waste-value-problem-list
+        each problem, index in problems
+          li
+            h4 #{index + 1} : #{problem.text}
+      br
+      h4 Add a new danger problem:
       textarea.form-control(rows='6', cols="75", name="dangerProblem", placeholder='Describe the problem...')
         if reviewing && idea.dangerProblem
           | #{idea.dangerProblem}

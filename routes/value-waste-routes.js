@@ -3,6 +3,7 @@ var passport = require('passport');
 var mongoose = require('mongoose');
 var _ = require('underscore');
 var IdeaSeed = require('../models/ideaSeed');
+var IdeaProblem = require('../models/ideaProblem');
 var IdeaReview = require('../models/ideaReviews');
 var Account = require('../models/account');
 var router = express.Router();
@@ -45,9 +46,16 @@ router.get('/performability', function(req, res) {
     currentIdea = idea._doc;
     if(req.session.ideaReview){ var reviewing = true; }
     else { var reviewing = false; }
-    res.render('pages/values-wastes/performability', {
-      user : req.user, idea : currentIdea,
-      reviewing :  reviewing});
+
+    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+      'problemArea' : { 
+        $regex: /.*Performability.*/, $options: 'i' }},
+      function (err, problems){
+      res.render('pages/values-wastes/performability', {
+        user : req.user, idea : currentIdea,
+        problems : problems,
+        reviewing :  reviewing});
+    });
   });
 });
 
@@ -59,13 +67,12 @@ router.post('/performability', function(req, res) {
   // enters info into the ideaSeed model vs the ideaReview model
   if(thisIdea.inventorName == req.user.username){
     if(req.body.perfSliderOneValue){
-      IdeaSeed.update({_id : req.session.idea}, {performOne : req.body.perfSliderOneValue,
-        performProblem : req.body.performProblem},
+      IdeaSeed.update({_id : req.session.idea}, {performOne : req.body.perfSliderOneValue},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
     } else {
-      IdeaSeed.update({_id : req.session.idea}, {performProblem : req.body.performProblem},
+      IdeaSeed.update({_id : req.session.idea}, {},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
@@ -81,6 +88,20 @@ router.post('/performability', function(req, res) {
         account.save(function (err) {
         });
     });
+    if(req.body.performProblem){
+      var newProblem = {
+        text          : req.body.performProblem,
+        creator       : req.user.username,
+        problemArea   : "Area : Performability",
+        ideaSeed      : thisIdea.id
+      };
+
+      IdeaProblem.create( newProblem ,
+        function (err) {
+          if (err) return handleError(err);
+        }
+      );
+    }
   } else {
     if(req.session.ideaReview){
       if(req.body.perfSliderOneValue){
@@ -106,7 +127,21 @@ router.post('/performability', function(req, res) {
           account.save(function (err) {
           });
       });
-    } 
+      if(req.body.performProblem){
+        var newProblem = {
+          text          : req.body.performProblem,
+          creator       : req.user.username,
+          problemArea   : "Area : Performability",
+          ideaSeed      : thisIdea.id
+        };
+
+        IdeaProblem.create( newProblem ,
+          function (err) {
+            if (err) return handleError(err);
+          }
+        );
+      }
+    }
   }
   });
 
@@ -134,8 +169,15 @@ router.get('/affordability', function(req, res) {
     currentIdea = idea._doc;
     if(req.session.ideaReview){ var reviewing = true; }
     else { var reviewing = false; }
-    res.render('pages/values-wastes/affordability', { user : req.user, idea : currentIdea,
-      reviewing : reviewing });
+    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+      'problemArea' : { 
+        $regex: /.*Affordability.*/, $options: 'i' }},
+      function (err, problems){
+      res.render('pages/values-wastes/affordability', { user : req.user,
+        idea : currentIdea,
+        problems : problems,
+        reviewing : reviewing });
+    });
   });
 });
 
@@ -146,13 +188,12 @@ router.post('/affordability', function(req, res) {
   // enters info into the ideaSeed model vs the ideaReview model
   if(thisIdea.inventorName == req.user.username){
     if(req.body.affordSliderOneValue){
-      IdeaSeed.update({_id : req.session.idea}, {affordOne : req.body.affordSliderOneValue,
-        affordProblem : req.body.affordProblem},
+      IdeaSeed.update({_id : req.session.idea}, {affordOne : req.body.affordSliderOneValue},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
     } else {
-      IdeaSeed.update({_id : req.session.idea}, {affordProblem : req.body.affordProblem},
+      IdeaSeed.update({_id : req.session.idea}, {},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
@@ -168,16 +209,29 @@ router.post('/affordability', function(req, res) {
         account.save(function (err) {
         });
     });
+    if(req.body.affordProblem){
+      var newProblem = {
+        text          : req.body.affordProblem,
+        creator       : req.user.username,
+        problemArea   : "Area : Affordability",
+        ideaSeed      : thisIdea.id
+      };
+
+      IdeaProblem.create( newProblem ,
+        function (err) {
+          if (err) return handleError(err);
+        }
+      );
+    }
   } else {
     if(req.session.ideaReview){
       if(req.body.affordSliderOneValue){
-        IdeaReview.update({_id : req.session.ideaReview}, {affordOne : req.body.affordSliderOneValue,
-          affordProblem : req.body.affordProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {affordOne : req.body.affordSliderOneValue},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
       } else {
-        IdeaReview.update({_id : req.session.ideaReview}, {affordProblem : req.body.affordProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
@@ -193,6 +247,21 @@ router.post('/affordability', function(req, res) {
           account.save(function (err) {
           });
       });
+      if(req.body.affordProblem){
+        var newProblem = {
+          text          : req.body.affordProblem,
+          creator       : req.user.username,
+          problemArea   : "Area : Affordability",
+          ideaSeed      : thisIdea.id
+        };
+
+        IdeaProblem.create( newProblem ,
+          function (err) {
+            if (err) return handleError(err);
+          }
+        );
+      }
+
     } 
   }
   });
@@ -214,8 +283,15 @@ router.get('/featurability', function(req, res) {
     currentIdea = idea._doc;
     if(req.session.ideaReview){ var reviewing = true; }
     else { var reviewing = false; }
-    res.render('pages/values-wastes/featurability', { user : req.user, idea : currentIdea,
-      reviewing : reviewing});
+    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+      'problemArea' : { 
+        $regex: /.*Featurability.*/, $options: 'i' }},
+      function (err, problems){
+      res.render('pages/values-wastes/featurability', { user : req.user,
+        idea : currentIdea,
+        problems : problems,
+        reviewing : reviewing });
+    });
   });
 });
 
@@ -226,13 +302,12 @@ router.post('/featurability', function(req, res) {
   // enters info into the ideaSeed model vs the ideaReview model
   if(thisIdea.inventorName == req.user.username){
     if(req.body.featureSliderOneValue){
-      IdeaSeed.update({_id : req.session.idea}, {featureOne : req.body.featureSliderOneValue,
-        featureProblem : req.body.featureProblem},
+      IdeaSeed.update({_id : req.session.idea}, {featureOne : req.body.featureSliderOneValue},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
     } else {
-      IdeaSeed.update({_id : req.session.idea}, {featureProblem : req.body.featureProblem},
+      IdeaSeed.update({_id : req.session.idea}, {},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
@@ -248,16 +323,30 @@ router.post('/featurability', function(req, res) {
         account.save(function (err) {
         });
     });
+    if(req.body.featureProblem){
+      var newProblem = {
+        text          : req.body.featureProblem,
+        creator       : req.user.username,
+        problemArea   : "Area : Featurability",
+        ideaSeed      : thisIdea.id
+      };
+
+      IdeaProblem.create( newProblem ,
+        function (err) {
+          if (err) return handleError(err);
+        }
+      );
+    }
+
   } else {
     if(req.session.ideaReview){
       if(req.body.featureSliderOneValue){
-        IdeaReview.update({_id : req.session.ideaReview}, {featureOne : req.body.featureSliderOneValue,
-          featureProblem : req.body.featureProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {featureOne : req.body.featureSliderOneValue},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
       } else {
-        IdeaReview.update({_id : req.session.ideaReview}, {featureProblem : req.body.featureProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
@@ -273,7 +362,21 @@ router.post('/featurability', function(req, res) {
           account.save(function (err) {
           });
       });
-    } 
+      if(req.body.featureProblem){
+        var newProblem = {
+          text          : req.body.featureProblem,
+          creator       : req.user.username,
+          problemArea   : "Area : Featurability",
+          ideaSeed      : thisIdea.id
+        };
+
+        IdeaProblem.create( newProblem ,
+          function (err) {
+            if (err) return handleError(err);
+          }
+        );
+      }
+    }
   }
   });
 
@@ -294,8 +397,15 @@ router.get('/deliverability', function(req, res) {
     currentIdea = idea._doc;
     if(req.session.ideaReview){ var reviewing = true; }
     else { var reviewing = false; }
-    res.render('pages/values-wastes/deliverability', { user : req.user, idea : currentIdea,
-      reviewing: reviewing});
+    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+      'problemArea' : { 
+        $regex: /.*Deliverability.*/, $options: 'i' }},
+      function (err, problems){
+      res.render('pages/values-wastes/deliverability', { user : req.user,
+        idea : currentIdea,
+        problems : problems,
+        reviewing : reviewing });
+    });
   });
 });
 
@@ -306,13 +416,12 @@ router.post('/deliverability', function(req, res) {
   // enters info into the ideaSeed model vs the ideaReview model
   if(thisIdea.inventorName == req.user.username){
     if(req.body.deliverSliderOneValue){
-      IdeaSeed.update({_id : req.session.idea}, {deliverOne : req.body.deliverSliderOneValue,
-        deliverProblem : req.body.deliverProblem},
+      IdeaSeed.update({_id : req.session.idea}, {deliverOne : req.body.deliverSliderOneValue},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
     } else {
-      IdeaSeed.update({_id : req.session.idea}, {deliverProblem : req.body.deliverProblem},
+      IdeaSeed.update({_id : req.session.idea}, {},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
@@ -328,16 +437,30 @@ router.post('/deliverability', function(req, res) {
         account.save(function (err) {
         });
     });
+    if(req.body.deliverProblem){
+      var newProblem = {
+        text          : req.body.deliverProblem,
+        creator       : req.user.username,
+        problemArea   : "Area : Deliverability",
+        ideaSeed      : thisIdea.id
+      };
+
+      IdeaProblem.create( newProblem ,
+        function (err) {
+          if (err) return handleError(err);
+        }
+      );
+    }
+
   } else {
     if(req.session.ideaReview){
       if(req.body.deliverSliderOneValue){
-        IdeaReview.update({_id : req.session.ideaReview}, {deliverOne : req.body.deliverSliderOneValue,
-          deliverProblem : req.body.deliverProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {deliverOne : req.body.deliverSliderOneValue},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
       } else {
-        IdeaReview.update({_id : req.session.ideaReview}, {deliverProblem : req.body.deliverProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
@@ -353,6 +476,21 @@ router.post('/deliverability', function(req, res) {
           account.save(function (err) {
           });
       });
+      if(req.body.deliverProblem){
+        var newProblem = {
+          text          : req.body.deliverProblem,
+          creator       : req.user.username,
+          problemArea   : "Area : Deliverability",
+          ideaSeed      : thisIdea.id
+        };
+
+        IdeaProblem.create( newProblem ,
+          function (err) {
+            if (err) return handleError(err);
+          }
+        );
+      }
+
     } 
   }
   });
@@ -374,8 +512,15 @@ router.get('/useability', function(req, res) {
     currentIdea = idea._doc;
     if(req.session.ideaReview){ var reviewing = true; }
     else { var reviewing = false; }
-    res.render('pages/values-wastes/useability', { user : req.user, idea : currentIdea,
-      reviewing : reviewing });
+    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+      'problemArea' : { 
+        $regex: /.*Useability.*/, $options: 'i' }},
+      function (err, problems){
+      res.render('pages/values-wastes/useability', { user : req.user,
+        idea : currentIdea,
+        problems : problems,
+        reviewing : reviewing });
+    });
   });
 });
 
@@ -387,13 +532,12 @@ router.post('/useability', function(req, res) {
   // enters info into the ideaSeed model vs the ideaReview model
   if(thisIdea.inventorName == req.user.username){
     if(req.body.useabilitySliderOneValue){
-      IdeaSeed.update({_id : req.session.idea}, {useabilityOne : req.body.useabilitySliderOneValue,
-        useabilityProblem : req.body.useabilityProblem},
+      IdeaSeed.update({_id : req.session.idea}, {useabilityOne : req.body.useabilitySliderOneValue},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
     } else {
-      IdeaSeed.update({_id : req.session.idea}, {useabilityProblem : req.body.useabilityProblem},
+      IdeaSeed.update({_id : req.session.idea}, {},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
@@ -408,17 +552,31 @@ router.post('/useability', function(req, res) {
         }
         account.save(function (err) {
         });
-    });
+      });
+      if(req.body.useabilityProblem){
+        var newProblem = {
+          text          : req.body.useabilityProblem,
+          creator       : req.user.username,
+          problemArea   : "Area : Useability",
+          ideaSeed      : thisIdea.id
+        };
+
+        IdeaProblem.create( newProblem ,
+          function (err) {
+            if (err) return handleError(err);
+          }
+        );
+      }
+
       } else {
     if(req.session.ideaReview){
       if(req.body.useabilitySliderOneValue){
-        IdeaReview.update({_id : req.session.ideaReview}, {useabilityOne : req.body.useabilitySliderOneValue,
-          useabilityProblem : req.body.useabilityProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {useabilityOne : req.body.useabilitySliderOneValue},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
       } else {
-        IdeaReview.update({_id : req.session.ideaReview}, {useabilityProblem : req.body.useabilityProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
@@ -434,6 +592,21 @@ router.post('/useability', function(req, res) {
           account.save(function (err) {
           });
       });
+      if(req.body.useabilityProblem){
+        var newProblem = {
+          text          : req.body.useabilityProblem,
+          creator       : req.user.username,
+          problemArea   : "Area : Useability",
+          ideaSeed      : thisIdea.id
+        };
+
+        IdeaProblem.create( newProblem ,
+          function (err) {
+            if (err) return handleError(err);
+          }
+        );
+      }
+
     } 
   }
   });
@@ -455,8 +628,15 @@ router.get('/maintainability', function(req, res) {
     currentIdea = idea._doc;
     if(req.session.ideaReview){ var reviewing = true; }
     else { var reviewing = false; }
-    res.render('pages/values-wastes/maintainability', { user : req.user, idea : currentIdea,
-      reviewing: reviewing});
+    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+      'problemArea' : { 
+        $regex: /.*Maintainability.*/, $options: 'i' }},
+      function (err, problems){
+      res.render('pages/values-wastes/maintainability', { user : req.user,
+        idea : currentIdea,
+        problems : problems,
+        reviewing : reviewing });
+    });
   });
 });
 
@@ -468,13 +648,12 @@ router.post('/maintainability', function(req, res) {
   // enters info into the ideaSeed model vs the ideaReview model
   if(thisIdea.inventorName == req.user.username){
     if (req.body.maintainSliderOneValue){
-      IdeaSeed.update({_id : req.session.idea}, {maintainOne : req.body.maintainSliderOneValue,
-        maintainProblem : req.body.maintainProblem},
+      IdeaSeed.update({_id : req.session.idea}, {maintainOne : req.body.maintainSliderOneValue},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
     } else {
-      IdeaSeed.update({_id : req.session.idea}, {maintainProblem : req.body.maintainProblem},
+      IdeaSeed.update({_id : req.session.idea}, {},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
@@ -490,16 +669,30 @@ router.post('/maintainability', function(req, res) {
         account.save(function (err) {
         });
     });
+    if(req.body.maintainProblem){
+      var newProblem = {
+        text          : req.body.maintainProblem,
+        creator       : req.user.username,
+        problemArea   : "Area : Maintainability",
+        ideaSeed      : thisIdea.id
+      };
+
+      IdeaProblem.create( newProblem ,
+        function (err) {
+          if (err) return handleError(err);
+        }
+      );
+    }
+
   } else {
     if(req.session.ideaReview){
       if(req.body.maintainSliderOneValue){
-        IdeaReview.update({_id : req.session.ideaReview}, {maintainOne : req.body.maintainSliderOneValue,
-          maintainProblem : req.body.maintainProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {maintainOne : req.body.maintainSliderOneValue},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
       } else {
-        IdeaReview.update({_id : req.session.ideaReview}, {maintainProblem : req.body.maintainProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
@@ -515,6 +708,21 @@ router.post('/maintainability', function(req, res) {
           account.save(function (err) {
           });
       });
+      if(req.body.maintainProblem){
+        var newProblem = {
+          text          : req.body.maintainProblem,
+          creator       : req.user.username,
+          problemArea   : "Area : Maintainability",
+          ideaSeed      : thisIdea.id
+        };
+
+        IdeaProblem.create( newProblem ,
+          function (err) {
+            if (err) return handleError(err);
+          }
+        );
+      }
+
     } 
   }
   });
@@ -536,8 +744,15 @@ router.get('/durability', function(req, res) {
     currentIdea = idea._doc;
     if(req.session.ideaReview){ var reviewing = true; }
     else { var reviewing = false; }
-    res.render('pages/values-wastes/durability', { user : req.user, idea : currentIdea,
-      reviewing : reviewing});
+    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+      'problemArea' : { 
+        $regex: /.*Durability.*/, $options: 'i' }},
+      function (err, problems){
+      res.render('pages/values-wastes/durability', { user : req.user,
+        idea : currentIdea,
+        problems : problems,
+        reviewing : reviewing });
+    });
   });
 });
 
@@ -549,13 +764,12 @@ router.post('/durability', function(req, res) {
   // enters info into the ideaSeed model vs the ideaReview model
   if(thisIdea.inventorName == req.user.username){
     if(req.body.durabilitySliderOneValue){
-      IdeaSeed.update({_id : req.session.idea}, {durabilityOne : req.body.durabilitySliderOneValue,
-        durabilityProblem : req.body.durabilityProblem},
+      IdeaSeed.update({_id : req.session.idea}, {durabilityOne : req.body.durabilitySliderOneValue},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
     } else {
-      IdeaSeed.update({_id : req.session.idea}, {durabilityProblem : req.body.durabilityProblem},
+      IdeaSeed.update({_id : req.session.idea}, {},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
@@ -571,16 +785,31 @@ router.post('/durability', function(req, res) {
         account.save(function (err) {
         });
     });
+    if(req.body.durabilityProblem){
+      var newProblem = {
+        text          : req.body.durabilityProblem,
+        creator       : req.user.username,
+        problemArea   : "Area : Durability",
+        ideaSeed      : thisIdea.id
+      };
+
+      IdeaProblem.create( newProblem ,
+        function (err) {
+          if (err) return handleError(err);
+        }
+      );
+    }
+
+
   } else {
     if(req.session.ideaReview){
       if(req.body.durabilitySliderOneValue){
-        IdeaReview.update({_id : req.session.ideaReview}, {durabilityOne : req.body.durabilitySliderOneValue,
-          durabilityProblem : req.body.durabilityProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {durabilityOne : req.body.durabilitySliderOneValue},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
       } else {
-        IdeaReview.update({_id : req.session.ideaReview}, {durabilityProblem : req.body.durabilityProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
@@ -596,6 +825,21 @@ router.post('/durability', function(req, res) {
           account.save(function (err) {
           });
       });
+      if(req.body.durabilityProblem){
+        var newProblem = {
+          text          : req.body.durabilityProblem,
+          creator       : req.user.username,
+          problemArea   : "Area : Durability",
+          ideaSeed      : thisIdea.id
+        };
+
+        IdeaProblem.create( newProblem ,
+          function (err) {
+            if (err) return handleError(err);
+          }
+        );
+      }
+
     } 
   }
   });
@@ -617,8 +861,15 @@ router.get('/imageability', function(req, res) {
     currentIdea = idea._doc;
     if(req.session.ideaReview){ var reviewing = true; }
     else { var reviewing = false; }
-    res.render('pages/values-wastes/imageability', { user : req.user, idea : currentIdea,
-      reviewing : reviewing});
+    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+      'problemArea' : { 
+        $regex: /.*Imageability.*/, $options: 'i' }},
+      function (err, problems){
+      res.render('pages/values-wastes/imageability', { user : req.user,
+        idea : currentIdea,
+        problems : problems,
+        reviewing : reviewing });
+    });
   });
 });
 
@@ -630,13 +881,12 @@ router.post('/imageability', function(req, res) {
   // enters info into the ideaSeed model vs the ideaReview model
   if(thisIdea.inventorName == req.user.username){
     if(req.body.imageSliderOneValue){
-      IdeaSeed.update({_id : req.session.idea}, {imageOne : req.body.imageSliderOneValue,
-        imageProblem : req.body.imageProblem},
+      IdeaSeed.update({_id : req.session.idea}, {imageOne : req.body.imageSliderOneValue},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
     } else {
-      IdeaSeed.update({_id : req.session.idea}, {imageProblem : req.body.imageProblem},
+      IdeaSeed.update({_id : req.session.idea}, {},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
@@ -652,16 +902,30 @@ router.post('/imageability', function(req, res) {
         account.save(function (err) {
         });
     });
+    if(req.body.imageProblem){
+      var newProblem = {
+        text          : req.body.imageProblem,
+        creator       : req.user.username,
+        problemArea   : "Area : Imageability",
+        ideaSeed      : thisIdea.id
+      };
+
+      IdeaProblem.create( newProblem ,
+        function (err) {
+          if (err) return handleError(err);
+        }
+      );
+    }
+
   } else {
     if(req.session.ideaReview){
       if(req.body.imageSliderOneValue){
-        IdeaReview.update({_id : req.session.ideaReview}, {imageOne : req.body.imageSliderOneValue,
-          imageProblem : req.body.imageProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {imageOne : req.body.imageSliderOneValue},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
       } else {
-        IdeaReview.update({_id : req.session.ideaReview}, {imageProblem : req.body.imageProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
@@ -677,6 +941,21 @@ router.post('/imageability', function(req, res) {
           account.save(function (err) {
           });
       });
+      if(req.body.imageProblem){
+        var newProblem = {
+          text          : req.body.imageProblem,
+          creator       : req.user.username,
+          problemArea   : "Area : Imageability",
+          ideaSeed      : thisIdea.id
+        };
+
+        IdeaProblem.create( newProblem ,
+          function (err) {
+            if (err) return handleError(err);
+          }
+        );
+      }
+
     } 
   }
   });
@@ -698,8 +977,15 @@ router.get('/complexity', function(req, res) {
     currentIdea = idea._doc;
     if(req.session.ideaReview){ var reviewing = true; }
     else { var reviewing = false; }
-    res.render('pages/values-wastes/complexity', { user : req.user, idea : currentIdea,
-      reviewing : reviewing});
+    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+      'problemArea' : { 
+        $regex: /.*Complexity.*/, $options: 'i' }},
+      function (err, problems){
+      res.render('pages/values-wastes/complexity', { user : req.user,
+        idea : currentIdea,
+        problems : problems,
+        reviewing : reviewing });
+    });
   });
 });
 
@@ -711,13 +997,12 @@ router.post('/complexity', function(req, res) {
   // enters info into the ideaSeed model vs the ideaReview model
   if(thisIdea.inventorName == req.user.username){
     if(req.body.complexSliderOneValue){
-      IdeaSeed.update({_id : req.session.idea}, {complexOne : req.body.complexSliderOneValue,
-        complexProblem : req.body.complexProblem},
+      IdeaSeed.update({_id : req.session.idea}, {complexOne : req.body.complexSliderOneValue},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
     } else {
-      IdeaSeed.update({_id : req.session.idea}, {complexProblem : req.body.complexProblem},
+      IdeaSeed.update({_id : req.session.idea}, {},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
@@ -733,16 +1018,30 @@ router.post('/complexity', function(req, res) {
         account.save(function (err) {
         });
     });
+    if(req.body.complexProblem){
+      var newProblem = {
+        text          : req.body.complexProblem,
+        creator       : req.user.username,
+        problemArea   : "Area : Complexity",
+        ideaSeed      : thisIdea.id
+      };
+
+      IdeaProblem.create( newProblem ,
+        function (err) {
+          if (err) return handleError(err);
+        }
+      );
+    }
+
   } else {
     if(req.session.ideaReview){
       if(req.body.complexSliderOneValue){
-        IdeaReview.update({_id : req.session.ideaReview}, {complexOne : req.body.complexSliderOneValue,
-          complexProblem : req.body.complexProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {complexOne : req.body.complexSliderOneValue},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
       } else {
-        IdeaReview.update({_id : req.session.ideaReview}, {complexProblem : req.body.complexProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
@@ -758,6 +1057,21 @@ router.post('/complexity', function(req, res) {
           account.save(function (err) {
           });
       });
+      if(req.body.complexProblem){
+        var newProblem = {
+          text          : req.body.complexProblem,
+          creator       : req.user.username,
+          problemArea   : "Area : Complexity",
+          ideaSeed      : thisIdea.id
+        };
+
+        IdeaProblem.create( newProblem ,
+          function (err) {
+            if (err) return handleError(err);
+          }
+        );
+      }
+
     } 
   }
   });
@@ -779,8 +1093,15 @@ router.get('/precision', function(req, res) {
     currentIdea = idea._doc;
     if(req.session.ideaReview){ var reviewing = true; }
     else { var reviewing = false; }
-    res.render('pages/values-wastes/precision', { user : req.user, idea : currentIdea,
-      reviewing: reviewing});
+    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+      'problemArea' : { 
+        $regex: /.*Precision.*/, $options: 'i' }},
+      function (err, problems){
+      res.render('pages/values-wastes/precision', { user : req.user,
+        idea : currentIdea,
+        problems : problems,
+        reviewing : reviewing });
+    });
   });
 });
 
@@ -792,13 +1113,12 @@ router.post('/precision', function(req, res) {
   // enters info into the ideaSeed model vs the ideaReview model
   if(thisIdea.inventorName == req.user.username){
     if(req.body.precisionSliderOneValue){
-      IdeaSeed.update({_id : req.session.idea}, {precisionOne : req.body.precisionSliderOneValue,
-        precisionProblem : req.body.precisionProblem},
+      IdeaSeed.update({_id : req.session.idea}, {precisionOne : req.body.precisionSliderOneValue},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
     } else {
-      IdeaSeed.update({_id : req.session.idea}, {precisionProblem : req.body.precisionProblem},
+      IdeaSeed.update({_id : req.session.idea}, {},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
@@ -814,16 +1134,30 @@ router.post('/precision', function(req, res) {
         account.save(function (err) {
         });
     });
+    if(req.body.precisionProblem){
+      var newProblem = {
+        text          : req.body.precisionProblem,
+        creator       : req.user.username,
+        problemArea   : "Area : Precision",
+        ideaSeed      : thisIdea.id
+      };
+
+      IdeaProblem.create( newProblem ,
+        function (err) {
+          if (err) return handleError(err);
+        }
+      );
+    }
+
   } else {
     if(req.session.ideaReview){
       if(req.body.precisionSliderOneValue){
-        IdeaReview.update({_id : req.session.ideaReview}, {precisionOne : req.body.precisionSliderOneValue,
-          precisionProblem : req.body.precisionProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {precisionOne : req.body.precisionSliderOneValue},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
       } else {
-        IdeaReview.update({_id : req.session.ideaReview}, {precisionProblem : req.body.precisionProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
@@ -839,6 +1173,21 @@ router.post('/precision', function(req, res) {
           account.save(function (err) {
           });
       });
+      if(req.body.precisionProblem){
+        var newProblem = {
+          text          : req.body.precisionProblem,
+          creator       : req.user.username,
+          problemArea   : "Area : Precision",
+          ideaSeed      : thisIdea.id
+        };
+
+        IdeaProblem.create( newProblem ,
+          function (err) {
+            if (err) return handleError(err);
+          }
+        );
+      }
+
     } 
   }
   });
@@ -859,8 +1208,15 @@ router.get('/variability', function(req, res) {
     currentIdea = idea._doc;
     if(req.session.ideaReview){ var reviewing = true; }
     else { var reviewing = false; }
-    res.render('pages/values-wastes/variability', { user : req.user, idea : currentIdea,
-      reviewing : reviewing});
+    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+      'problemArea' : { 
+        $regex: /.*Variability.*/, $options: 'i' }},
+      function (err, problems){
+      res.render('pages/values-wastes/variability', { user : req.user,
+        idea : currentIdea,
+        problems : problems,
+        reviewing : reviewing });
+    });
   });
 });
 
@@ -872,13 +1228,12 @@ router.post('/variability', function(req, res) {
   // enters info into the ideaSeed model vs the ideaReview model
   if(thisIdea.inventorName == req.user.username){
     if(req.body.variabilitySliderOneValue){
-      IdeaSeed.update({_id : req.session.idea}, {variabilityOne : req.body.variabilitySliderOneValue,
-        variabilityProblem : req.body.variabilityProblem},
+      IdeaSeed.update({_id : req.session.idea}, {variabilityOne : req.body.variabilitySliderOneValue},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
     } else {
-      IdeaSeed.update({_id : req.session.idea}, {variabilityProblem : req.body.variabilityProblem},
+      IdeaSeed.update({_id : req.session.idea}, {},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
@@ -894,16 +1249,30 @@ router.post('/variability', function(req, res) {
         account.save(function (err) {
         });
     });
+    if(req.body.variabilityProblem){
+      var newProblem = {
+        text          : req.body.variabilityProblem,
+        creator       : req.user.username,
+        problemArea   : "Area : Variability",
+        ideaSeed      : thisIdea.id
+      };
+
+      IdeaProblem.create( newProblem ,
+        function (err) {
+          if (err) return handleError(err);
+        }
+      );
+    }
+
   } else {
     if(req.session.ideaReview){
       if(req.body.variabilitySliderOneValue){
-        IdeaReview.update({_id : req.session.ideaReview}, {variabilityOne : req.body.variabilitySliderOneValue,
-          variabilityProblem : req.body.variabilityProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {variabilityOne : req.body.variabilitySliderOneValue},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
       } else {
-        IdeaReview.update({_id : req.session.ideaReview}, {variabilityProblem : req.body.variabilityProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
@@ -919,6 +1288,21 @@ router.post('/variability', function(req, res) {
           account.save(function (err) {
           });
       });
+      if(req.body.variabilityProblem){
+        var newProblem = {
+          text          : req.body.variabilityProblem,
+          creator       : req.user.username,
+          problemArea   : "Area : Variability",
+          ideaSeed      : thisIdea.id
+        };
+
+        IdeaProblem.create( newProblem ,
+          function (err) {
+            if (err) return handleError(err);
+          }
+        );
+      }
+
     } 
   }
   });
@@ -939,8 +1323,15 @@ router.get('/sensitivity', function(req, res) {
     currentIdea = idea._doc;
     if(req.session.ideaReview){ var reviewing = true; }
     else { var reviewing = false; }
-    res.render('pages/values-wastes/sensitivity', { user : req.user, idea : currentIdea,
-      reviewing : reviewing});
+    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+      'problemArea' : { 
+        $regex: /.*Sensitivity.*/, $options: 'i' }},
+      function (err, problems){
+      res.render('pages/values-wastes/sensitivity', { user : req.user,
+        idea : currentIdea,
+        problems : problems,
+        reviewing : reviewing });
+    });
   });
 });
 
@@ -952,13 +1343,12 @@ router.post('/sensitivity', function(req, res) {
   // enters info into the ideaSeed model vs the ideaReview model
   if(thisIdea.inventorName == req.user.username){
     if(req.body.sensitivitySliderOneValue){
-      IdeaSeed.update({_id : req.session.idea}, {sensitivityOne : req.body.sensitivitySliderOneValue,
-        sensitivityProblem : req.body.sensitivityProblem},
+      IdeaSeed.update({_id : req.session.idea}, {sensitivityOne : req.body.sensitivitySliderOneValue},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
     } else {
-      IdeaSeed.update({_id : req.session.idea}, {sensitivityProblem : req.body.sensitivityProblem},
+      IdeaSeed.update({_id : req.session.idea}, {},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
@@ -974,16 +1364,30 @@ router.post('/sensitivity', function(req, res) {
         account.save(function (err) {
         });
     });
+    if(req.body.sensitivityProblem){
+      var newProblem = {
+        text          : req.body.sensitivityProblem,
+        creator       : req.user.username,
+        problemArea   : "Area : Sensitivity",
+        ideaSeed      : thisIdea.id
+      };
+
+      IdeaProblem.create( newProblem ,
+        function (err) {
+          if (err) return handleError(err);
+        }
+      );
+    }
+
   } else {
     if(req.session.ideaReview){
       if(req.body.sensitivitySliderOneValue){
-        IdeaReview.update({_id : req.session.ideaReview}, {sensitivityOne : req.body.sensitivitySliderOneValue,
-          sensitivityProblem : req.body.sensitivityProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {sensitivityOne : req.body.sensitivitySliderOneValue},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
       } else {
-        IdeaReview.update({_id : req.session.ideaReview}, {sensitivityProblem : req.body.sensitivityProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
@@ -999,6 +1403,21 @@ router.post('/sensitivity', function(req, res) {
           account.save(function (err) {
           });
       });
+      if(req.body.sensitivityProblem){
+        var newProblem = {
+          text          : req.body.sensitivityProblem,
+          creator       : req.user.username,
+          problemArea   : "Area : Sensitivity",
+          ideaSeed      : thisIdea.id
+        };
+
+        IdeaProblem.create( newProblem ,
+          function (err) {
+            if (err) return handleError(err);
+          }
+        );
+      }
+
     } 
   }
   });
@@ -1019,8 +1438,15 @@ router.get('/immaturity', function(req, res) {
     currentIdea = idea._doc;
     if(req.session.ideaReview){ var reviewing = true; }
     else { var reviewing = false; }
-    res.render('pages/values-wastes/immaturity', { user : req.user, idea : currentIdea,
-      reviewing : reviewing});
+    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+      'problemArea' : { 
+        $regex: /.*Immaturity.*/, $options: 'i' }},
+      function (err, problems){
+      res.render('pages/values-wastes/immaturity', { user : req.user,
+        idea : currentIdea,
+        problems : problems,
+        reviewing : reviewing });
+    });
   });
 });
 
@@ -1032,13 +1458,12 @@ router.post('/immaturity', function(req, res) {
   // enters info into the ideaSeed model vs the ideaReview model
   if(thisIdea.inventorName == req.user.username){
     if(req.body.immatureSliderOneValue){
-      IdeaSeed.update({_id : req.session.idea}, {immatureOne : req.body.immatureSliderOneValue,
-        immatureProblem : req.body.immatureProblem},
+      IdeaSeed.update({_id : req.session.idea}, {immatureOne : req.body.immatureSliderOneValue},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
     } else {
-      IdeaSeed.update({_id : req.session.idea}, {immatureProblem : req.body.immatureProblem},
+      IdeaSeed.update({_id : req.session.idea}, {},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
@@ -1054,16 +1479,30 @@ router.post('/immaturity', function(req, res) {
         account.save(function (err) {
         });
     });
+    if(req.body.immatureProblem){
+      var newProblem = {
+        text          : req.body.immatureProblem,
+        creator       : req.user.username,
+        problemArea   : "Area : Immaturity",
+        ideaSeed      : thisIdea.id
+      };
+
+      IdeaProblem.create( newProblem ,
+        function (err) {
+          if (err) return handleError(err);
+        }
+      );
+    }
+
   } else {
     if(req.session.ideaReview){
       if(req.body.immatureSliderOneValue){
-        IdeaReview.update({_id : req.session.ideaReview}, {immatureOne : req.body.immatureSliderOneValue,
-          immatureProblem : req.body.immatureProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {immatureOne : req.body.immatureSliderOneValue},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
       } else {
-        IdeaReview.update({_id : req.session.ideaReview}, {immatureProblem : req.body.immatureProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
@@ -1079,6 +1518,21 @@ router.post('/immaturity', function(req, res) {
           account.save(function (err) {
           });
       });
+      if(req.body.immatureProblem){
+        var newProblem = {
+          text          : req.body.immatureProblem,
+          creator       : req.user.username,
+          problemArea   : "Area : Immaturity",
+          ideaSeed      : thisIdea.id
+        };
+
+        IdeaProblem.create( newProblem ,
+          function (err) {
+            if (err) return handleError(err);
+          }
+        );
+      }
+
     } 
   }
   });
@@ -1095,16 +1549,19 @@ router.get('/dangerous', function(req, res) {
     res.redirect('/');
     return;
   }
-  if(!req.session.idea){
-    res.redirect('/');
-    return;
-  }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     if(req.session.ideaReview){ var reviewing = true; }
     else { var reviewing = false; }
-    res.render('pages/values-wastes/dangerous', { user : req.user, idea : currentIdea,
-      reviewing : reviewing});
+    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+      'problemArea' : { 
+        $regex: /.*Danger.*/, $options: 'i' }},
+      function (err, problems){
+      res.render('pages/values-wastes/dangerous', { user : req.user,
+        idea : currentIdea,
+        problems : problems,
+        reviewing : reviewing });
+    });
   });
 });
 
@@ -1116,13 +1573,12 @@ router.post('/dangerous', function(req, res) {
   // enters info into the ideaSeed model vs the ideaReview model
   if(thisIdea.inventorName == req.user.username){
     if(req.body.dangerSliderOneValue){
-      IdeaSeed.update({_id : req.session.idea}, {dangerOne : req.body.dangerSliderOneValue,
-        dangerProblem : req.body.dangerProblem},
+      IdeaSeed.update({_id : req.session.idea}, {dangerOne : req.body.dangerSliderOneValue},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
     } else {
-      IdeaSeed.update({_id : req.session.idea}, {dangerProblem : req.body.dangerProblem},
+      IdeaSeed.update({_id : req.session.idea}, {},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
@@ -1138,16 +1594,30 @@ router.post('/dangerous', function(req, res) {
         account.save(function (err) {
         });
     });
+    if(req.body.dangerProblem){
+      var newProblem = {
+        text          : req.body.dangerProblem,
+        creator       : req.user.username,
+        problemArea   : "Area : Danger",
+        ideaSeed      : thisIdea.id
+      };
+
+      IdeaProblem.create( newProblem ,
+        function (err) {
+          if (err) return handleError(err);
+        }
+      );
+    }
+
   } else {
     if(req.session.ideaReview){
       if(req.body.dangerSliderOneValue){
-        IdeaReview.update({_id : req.session.ideaReview}, {dangerOne : req.body.dangerSliderOneValue,
-          dangerProblem : req.body.dangerProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {dangerOne : req.body.dangerSliderOneValue},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
       } else {
-        IdeaReview.update({_id : req.session.ideaReview}, {dangerProblem : req.body.dangerProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
@@ -1163,6 +1633,21 @@ router.post('/dangerous', function(req, res) {
           account.save(function (err) {
           });
       });
+      if(req.body.dangerProblem){
+        var newProblem = {
+          text          : req.body.dangerProblem,
+          creator       : req.user.username,
+          problemArea   : "Area : Danger",
+          ideaSeed      : thisIdea.id
+        };
+
+        IdeaProblem.create( newProblem ,
+          function (err) {
+            if (err) return handleError(err);
+          }
+        );
+      }
+
     } 
   }
 });
@@ -1183,8 +1668,15 @@ router.get('/skills', function(req, res) {
     currentIdea = idea._doc;
     if(req.session.ideaReview){ var reviewing = true; }
     else { var reviewing = false; }
-    res.render('pages/values-wastes/skills', { user : req.user, idea : currentIdea,
-      reviewing : reviewing});
+    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+      'problemArea' : { 
+        $regex: /.*Skills.*/, $options: 'i' }},
+      function (err, problems){
+      res.render('pages/values-wastes/skills', { user : req.user,
+        idea : currentIdea,
+        problems : problems,
+        reviewing : reviewing });
+    });
   });
 });
 
@@ -1196,13 +1688,12 @@ router.post('/skills', function(req, res) {
   // enters info into the ideaSeed model vs the ideaReview model
   if(thisIdea.inventorName == req.user.username){
     if(req.body.skillsSliderOneValue){
-      IdeaSeed.update({_id : req.session.idea}, {skillsOne : req.body.skillsSliderOneValue,
-        skillsProblem : req.body.skillsProblem},
+      IdeaSeed.update({_id : req.session.idea}, {skillsOne : req.body.skillsSliderOneValue},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
     } else {
-      IdeaSeed.update({_id : req.session.idea}, {skillsProblem : req.body.skillsProblem},
+      IdeaSeed.update({_id : req.session.idea}, {},
         { multi: false }, function (err, raw) {
           console.log('The raw response from Mongo was ', raw);
       });
@@ -1218,16 +1709,30 @@ router.post('/skills', function(req, res) {
         account.save(function (err) {
         });
     });
+    if(req.body.skillsProblem){
+      var newProblem = {
+        text          : req.body.skillsProblem,
+        creator       : req.user.username,
+        problemArea   : "Area : Skills",
+        ideaSeed      : thisIdea.id
+      };
+
+      IdeaProblem.create( newProblem ,
+        function (err) {
+          if (err) return handleError(err);
+        }
+      );
+    }
+
   } else {
     if(req.session.ideaReview){
       if(req.body.skillsSliderOneValue){
-        IdeaReview.update({_id : req.session.ideaReview}, {skillsOne : req.body.skillsSliderOneValue,
-          skillsProblem : req.body.skillsProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {skillsOne : req.body.skillsSliderOneValue},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
       } else {
-        IdeaReview.update({_id : req.session.ideaReview}, {skillsProblem : req.body.skillsProblem},
+        IdeaReview.update({_id : req.session.ideaReview}, {},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
@@ -1243,6 +1748,21 @@ router.post('/skills', function(req, res) {
           account.save(function (err) {
           });
       });
+      if(req.body.skillsProblem){
+        var newProblem = {
+          text          : req.body.skillsProblem,
+          creator       : req.user.username,
+          problemArea   : "Area : Skills",
+          ideaSeed      : thisIdea.id
+        };
+
+        IdeaProblem.create( newProblem ,
+          function (err) {
+            if (err) return handleError(err);
+          }
+        );
+      }
+
     }
   }
   });

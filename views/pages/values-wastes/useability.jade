@@ -24,7 +24,13 @@ html
         #useabilityLabelOne.sliderLabel
         #useabilitySliderOne
       br
-      h4 What makes #{idea.name} more difficult to use than necessary?
+      h4 Recorded problems for useability:
+      ul.waste-value-problem-list
+        each problem, index in problems
+          li
+            h4 #{index + 1} : #{problem.text}
+      br
+      h4 Add a new useability problem:
       textarea.form-control(rows='6', cols="75", name="useabilityProblem", placeholder='Describe the problem...')
         if reviewing && idea.useabilityProblem
           | #{idea.useabilityProblem}

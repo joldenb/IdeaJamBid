@@ -24,7 +24,13 @@ html
         #affordLabelOne.sliderLabel
         #affordSliderOne
       br
-      h4 What keeps the cost of [user-entered product] above what it could be?
+      h4 Recorded problems for Affordability:
+      ul.waste-value-problem-list
+        each problem, index in problems
+          li
+            h4 #{index + 1} : #{problem.text}
+      br
+      h4 Add a new affordability problem:
       textarea.form-control(rows='6', cols="75", name="affordProblem", placeholder='Describe the problem...')
         if reviewing && idea.affordProblem
           | #{idea.affordProblem}

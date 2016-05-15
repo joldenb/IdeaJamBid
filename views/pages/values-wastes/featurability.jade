@@ -24,7 +24,13 @@ html
         #featureLabelOne.sliderLabel
         #featureSliderOne
       br
-      h4 What features does #{idea.name} lack that would otherwise help it solve the challenge of [user-entered challenge]?
+      h4 Recorded problems for featurability:
+      ul.waste-value-problem-list
+        each problem, index in problems
+          li
+            h4 #{index + 1} : #{problem.text}
+      br
+      h4 Add a new featurability problem:
       textarea.form-control(rows='6', cols="75", name="featureProblem", placeholder='Describe the problem...')
         if reviewing && idea.featureProblem
           | #{idea.featureProblem}

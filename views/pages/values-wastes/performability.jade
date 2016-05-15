@@ -24,10 +24,14 @@ html
       #perfLabelOne.sliderLabel
       #perfSliderOne(name="perfSliderOne")
     br
-    h4 What limits #{idea.name} from performing optimally?
+    h4 Recorded problems for Performability:
+    ul.waste-value-problem-list
+      each problem, index in problems
+        li
+          h4 #{index + 1} : #{problem.text}
+    br
+    h4 Add a new performability problem:
     textarea.form-control(rows='6', cols="75", name="performProblem", placeholder='Describe the problem...')
-        if reviewing && idea.performProblem
-          | #{idea.performProblem}
     br
     if reviewing
       a(href="/contributor-idea-summary").btn.btn-info View All

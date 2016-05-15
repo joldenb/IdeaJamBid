@@ -56,6 +56,8 @@ var IdeaSeed = new Schema({
 
 	ideaReviews		: [ObjectId],
 
+	problemPriorities : [ ObjectId ], //order of this array is priority of problem
+
 	performOne		: Number,
 	performProblem		: String,
 	performPriority		: { type: Number, default: 1 },
@@ -122,6 +124,10 @@ IdeaSeed.statics.getWasteValueScores = function(idea){
 		// average out all the reviews
 	});
 		return [200, 200];
+};
+
+IdeaSeed.statics.getWasteValueCompletion = function(idea){
+	
 };
 
 IdeaSeed.statics.createApplication = function(idea, account, res){

@@ -1074,12 +1074,10 @@ router.get('/idea-summary', function(req, res){
       var componentsList = [];
       currentIdea = idea._doc;
 
-      
-
       componentsList = _.map(components, function(item){return "Component : "+item['text'];});
 
       var problemAreas = componentsList.concat([
-        "Area : Performabilitiy",
+        "Area : Performability",
         "Area : Affordability",
         "Area : Featurability",
         "Area : Deliverability",
@@ -1108,6 +1106,8 @@ router.get('/idea-summary', function(req, res){
         rankingOfProblem = idea[typeOfProblem.slice(0, -7) + "Priority"];
         listOfProblems[i].push(rankingOfProblem);
       }
+
+
       listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
 
       if(currentIdea.variants.length > 0){

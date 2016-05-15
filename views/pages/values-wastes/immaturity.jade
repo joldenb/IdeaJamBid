@@ -24,7 +24,13 @@ html
         #immaturityLabelOne.sliderLabel
         #immaturitySliderOne
       br
-      h4 What about the #{idea.name} is unproven, untested and not well established?
+      h4 Recorded problems for immaturity:
+      ul.waste-value-problem-list
+        each problem, index in problems
+          li
+            h4 #{index + 1} : #{problem.text}
+      br
+      h4 Add a new immaturity problem:
       textarea.form-control(rows='6', cols="75", name="immatureProblem", placeholder='Describe the problem...')
         if reviewing && idea.immatureProblem
           | #{idea.immatureProblem}

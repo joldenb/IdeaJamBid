@@ -24,7 +24,13 @@ html
         #imageabilityLabelOne.sliderLabel
         #imageabilitySliderOne
       br
-      h4 What reduces the broader look and appeal of #{idea.name}?
+      h4 Recorded problems for imageability:
+      ul.waste-value-problem-list
+        each problem, index in problems
+          li
+            h4 #{index + 1} : #{problem.text}
+      br
+      h4 Add a new imageability problem:
       textarea.form-control(rows='6', cols="75", name="imageProblem", placeholder='Describe the problem...')
         if reviewing && idea.imageProblem
           | #{idea.imageProblem}

@@ -24,7 +24,13 @@ html
         #durabilityLabelOne.sliderLabel
         #durabilitySliderOne
       br
-      h4 What weaknesses cause #{idea.name} to not hold up to repeated use or enviornmental ware?
+      h4 Recorded problems for durability:
+      ul.waste-value-problem-list
+        each problem, index in problems
+          li
+            h4 #{index + 1} : #{problem.text}
+      br
+      h4 Add a new durability problem:
       textarea.form-control(rows='6', cols="75", name="durabilityProblem", placeholder='Describe the problem...')
         if reviewing && idea.durabilityProblem
           | #{idea.durabilityProblem}

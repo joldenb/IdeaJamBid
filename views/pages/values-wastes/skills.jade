@@ -24,7 +24,13 @@ html
         #skillsLabelOne.sliderLabel
         #skillsSliderOne
       br
-      h4 What prevents #{idea.name} from eliminating or reducing the skill needed to solve [user-entered challenge]?
+      h4 Recorded problems for skills:
+      ul.waste-value-problem-list
+        each problem, index in problems
+          li
+            h4 #{index + 1} : #{problem.text}
+      br
+      h4 Add a new skills problem:
       textarea.form-control(rows='6', cols="75", name="skillsProblem", placeholder='Describe the problem...')
         if reviewing && idea.skillsProblem
           | #{idea.skillsProblem}
