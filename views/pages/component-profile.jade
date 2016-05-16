@@ -1,0 +1,55 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body
+  .header
+    span.userName Howdy #{user.username}
+    |  
+    img(src="/avatar.png" height="75" width="75")
+    a.home-logout.btn.btn-default( href="/begin" ) My Profile
+    | 
+    a.home-logout.btn.btn-default( href="/logout" ) Log Out
+
+  .idea-summary
+    h3 Component Summary for #{component.name}
+
+    .edit-column.half-column
+      .imagesList
+        if(imageURLs)
+          h4 Uploaded Images
+          each imageURL, index in imageURLs
+            if index == 0
+              .image-summary-image
+                img(src=imageURL[1] height="300" width="400")
+            if index < 3 && index > 0
+              img.imageListItems(src=imageURL[1])
+          .view-all-images-btn
+            a.btn.btn-default( href="/image-upload" ) View All Images
+
+    .idea-function-column.half-column
+      .idea-summary-data#idea-summary-components
+        h4 Components
+        if components
+          ul
+            each component in components
+              if component['text']            
+                li 
+                  h4 #{component['number']} : #{component['text']}
+
+    h4 Related Variants
+    each variantDate in variantDates
+      ul.variantDateList
+        li
+          a(href="/variant/"+variantDate[1]) #{variantDate[0]}
+    a.btn.btn-default( href="/view-idea-suggestions" ) Create a New Variant
+    br
+    br
+
+
+
+  include ../partials/js-includes.jade
+  script(type="text/javascript").
+    $(window).load(function(){
+    });
+

@@ -24,24 +24,22 @@ html
           tr
             th.left-column Suggestion Type
             th Incorporate
-          each suggestions, category in categorizedSuggestions
-            each suggestion, i in suggestions
-              if(suggestion['suggestionID'])
-                tr
-                tr
-                  td.left-column 
-                    - var suggestionText = suggestion['suggestion']
-                    - var problemCategory = category
-                    - var suggestionProblem = suggestion['problemType']
-                    - var accountName = suggestion['contributor']
-                    include ../partials/suggestion-element.jade
-                  td 
-                    .radio
-                      input(type='radio', name=suggestion['suggestionID'], value="incorporate") 
-                      |  Incorporate
-                    .radio
-                      input(type='radio', name=suggestion['suggestionID'], value="notIncorporate") 
-                      |  Don't Incorporate
+          each components, category in categorizedSuggestions
+            each component, i in components
+              tr
+              tr
+                td.left-column 
+                  - var suggestionText = component['descriptions'][0]
+                  - var problemCategory = category
+                  - var accountName = component['creator']
+                  include ../partials/suggestion-element.jade
+                td 
+                  .radio
+                    input(type='radio', name=component['id'], value="incorporate") 
+                    |  Incorporate
+                  .radio
+                    input(type='radio', name=component['id'], value="notIncorporate") 
+                    |  Don't Incorporate
           
         h2 Images
         table.suggestion-table
@@ -58,10 +56,10 @@ html
                 include ../partials/image-block-element.jade
               td 
                 .radio
-                  input(type='radio', name='image-'+image[0], value="incorporate")
+                  input(type='radio', name='image-'+image[2], value="incorporate")
                   |  Incorporate
                 .radio
-                  input(type='radio', name='image-'+image[0], value="notIncorporate")
+                  input(type='radio', name='image-'+image[2], value="notIncorporate")
                   |  Don't Incorporate
         br
         button.btn.btn-success#submit(type='submit') Create Variant >

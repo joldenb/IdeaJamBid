@@ -302,7 +302,7 @@ router.post('/suggestion-submit', function(req, res) {
         foresight : req.body.foresight,
         outsight : req.body.outsight,
         category : req.body.suggestionCategory,
-        creator : contributor,
+        creator : req.user.username,
         ideaSeed : req.session.idea,
         problemID : problem.id
       };
@@ -667,58 +667,59 @@ router.get('/view-idea-suggestions', function(req, res){
     return;
   }
   IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    var listOfInventorProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
-    IdeaReview.find({"ideaSeedId" : currentIdea._id}, function(err, reviews){
-      var listOfReviewerProblems = IdeaReview.getListOfReviewerProblems(reviews);
-      listOfProblems = listOfInventorProblems.concat(listOfReviewerProblems);
-      var problemTypes = _.map(listOfProblems, function(item){ return item[0];});
-      var problemType = "";
-      var categorizedSuggestions = {};
-      if(req.session.ideaReview){ var reviewing = true; }
-      else { var reviewing = false; }
-      listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
-      if ( listOfProblems.length > 0 ){
-        problemType = listOfProblems[0][0];
-        categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(
-          currentIdea,
-          listOfProblems[0][0],
-          listOfProblems[0][3]
-        );
-      }
-      categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea);
-      categorizedSuggestions = IdeaSeed.getCategoryDisplayNames(categorizedSuggestions);
-      if(req.session.ideaReview){ var reviewing = true; }
-      else { var reviewing = false; }
+    
+    Component.find({"ideaSeed" : idea.id}, function(err, components){
 
-      IdeaImage.find({"_id" : {$in : idea.images}}, function(err, images){
-        var imageList = _.map(images, function(image){return [image["filename"], image["uploader"], image["id"], []]});
+      var categorizedSuggestions = {}; //build components by category
+      var imagesAndComponents = {}; //build list of components within each imageID key
+      //not sure about components with no image or category yet
 
-        Component.find({"ideaSeed" : idea.id}, function(err, components){
-
-          //attach components to images
-          for(var i = 0; i < components.length; i++){
-            for(var j = 0; j < components[i].images.length; j++){
-              for(var k = 0; k < imageList.length; k++){
-                if( components[i].images[j].imageID.toString() == imageList[k][2]){
-                  imageList[k][3].push([components[i]["number"], components[i]["text"]]);
-                }
-              }
+      for(var i = 0; i < components.length; i++){
+        //break into two lists, one for components with no images, and on for those with
+        if(components[i].images.length == 0){
+          if(components[i].category && categorizedSuggestions[components[i].category]){
+            categorizedSuggestions[components[i].category].push(components[i]);
+          } else if (components[i].category && !categorizedSuggestions[components[i].category]){
+            categorizedSuggestions[components[i].category] = [components[i]];
+          }
+        } else {
+          for(var k=0; k < components[i].images.length; k++){
+            if(imagesAndComponents[components[i].images[k]['imageID'].toString()]){
+              imagesAndComponents[components[i].images[k]['imageID'].toString()].push(components[i]);
+            } else {
+              imagesAndComponents[components[i].images[k]['imageID'].toString()] = [components[i]];
             }
           }
+        }
+      }
 
+      // after categorizedSuggestions is completed, replace the abbreviated 
+      // categories with the full names
+      categorizedSuggestions = IdeaSeed.getCategoryDisplayNames(categorizedSuggestions);
+
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+
+      IdeaImage.find({"_id" : {$in : Object.keys(imagesAndComponents)}}, function(err, images){
+        var imageList = _.map(images, function(image){return [image["filename"], image["uploader"], image["id"], []]});
+
+          for(var i = 0; i < imageList.length; i++){
+            imageList[i][3] = _.map(imagesAndComponents[imageList[i][2]], function(component){
+              return [component['number'], component['text']];
+            });
+          }
+          currentIdea = idea._doc;
           res.render('pages/view-idea-suggestions', {
             user : req.user, //user document
             idea : currentIdea, //document
             images : imageList, //[[imagename, uploader, objectid, [componentNumber, componentText  ]]]
-            problems : listOfProblems, //special structure
             categorizedSuggestions : categorizedSuggestions, //special structure
-            problemType : req.session.problemType, //String maybe
+            imagesAndComponents : imagesAndComponents,
             reviewing : reviewing
           });
-        });
+
       });
-    });
+    }); //end of component query
   });
 });
 
@@ -848,16 +849,24 @@ router.post('/incorporate-suggestions', function(req, res) {
           incorporatedSuggestions.push(suggestion);
         }
       }
-      
     }
-    newVariant["suggestions"] = incorporatedSuggestions;
-    newVariant["images"] = incorporatedImages;
 
-    currentIdea.variants.push(newVariant);
-    idea.save(function(data){
-      res.redirect('/idea-summary');
+    Component.find({"images.imageID" : {$in : incorporatedImages}}, function(err, components){
+
+      for(var k = 0; k < components.length; k++){
+        if(incorporatedSuggestions.indexOf(components[k]['id']) == -1){
+          incorporatedSuggestions.push(components[k]['id']);
+        }
+      }
+
+      newVariant["components"] = incorporatedSuggestions;
+      newVariant["images"] = incorporatedImages;
+
+      currentIdea.variants.push(newVariant);
+      idea.save(function(data){
+        res.redirect('/idea-summary');
+      });
     });
-
   });
 });
 
@@ -1221,28 +1230,80 @@ router.get('/variant/:variantname', function(req, res){
     return;
   }
   IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
+    
+    var currentIdea = idea._doc;
     var currentVariant;
-    var listOfProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
-    var allCategorizedSuggestions = {};
-    allCategorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea);
-    allCategorizedSuggestions = IdeaSeed.getCategoryDisplayNames(allCategorizedSuggestions);
-    var variantCategorizedSuggestions = {};
-    variantCategorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea);
-    variantCategorizedSuggestions = IdeaSeed.getCategoryDisplayNames(variantCategorizedSuggestions);
 
-    
-    for (var i = 0; i < currentIdea.variants.length; i++){
-      if(currentIdea.variants[i].name == req.params.variantname){
-        currentVariant = currentIdea.variants[i];
+    Component.find({"ideaSeed" : idea.id}, function(err, components){
+
+      for (var i = 0; i < currentIdea.variants.length; i++){
+        if(currentIdea.variants[i].name == req.params.variantname){
+          currentVariant = currentIdea.variants[i];
+        }
       }
-    }
 
-    if(!currentVariant){
-      res.redirect('/idea-summary');
-      return;
-    }
-    
+      if(!currentVariant){
+        res.redirect('/idea-summary');
+        return;
+      }
+
+      var categorizedSuggestions = {}; //build components by category
+      var imagesAndComponents = {}; //build list of components within each imageID key
+      //not sure about components with no image or category yet
+      var currentImageID;
+
+      for(var i = 0; i < components.length; i++){
+        //break into two lists, one for components with no images, and on for those with
+        if(components[i].images.length == 0){
+          if(currentVariant.components.indexOf(components[i]['id'].toString()) > -1){
+            if(components[i].category && categorizedSuggestions[components[i].category]){
+              categorizedSuggestions[components[i].category].push(components[i]);
+            } else if (components[i].category && !categorizedSuggestions[components[i].category]){
+              categorizedSuggestions[components[i].category] = [components[i]];
+            }
+          }
+        } else {
+          for(var k=0; k < components[i].images.length; k++){
+            currentImageID = components[i].images[k]['imageID'].toString();
+            if(currentVariant.images.indexOf(currentImageID) > -1){
+              if(imagesAndComponents[components[i].images[k]['imageID'].toString()]){
+                imagesAndComponents[components[i].images[k]['imageID'].toString()].push(components[i]);
+              } else {
+                imagesAndComponents[components[i].images[k]['imageID'].toString()] = [components[i]];
+              }
+            }
+          }
+        }
+      }
+
+      // after categorizedSuggestions is completed, replace the abbreviated 
+      // categories with the full names
+      categorizedSuggestions = IdeaSeed.getCategoryDisplayNames(categorizedSuggestions);
+
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+
+      IdeaImage.find({"_id" : {$in : Object.keys(imagesAndComponents)}}, function(err, images){
+        var imageList = _.map(images, function(image){return [image["filename"], image["uploader"], image["id"], []]});
+
+          for(var i = 0; i < imageList.length; i++){
+            imageList[i][3] = _.map(imagesAndComponents[imageList[i][2]], function(component){
+              return [component['number'], component['text']];
+            });
+          }
+          currentIdea = idea._doc;
+
+          res.render('pages/variant', { user : req.user, idea : currentIdea,
+            categorizedSuggestions : categorizedSuggestions,
+            images : imageList,
+            imagesAndComponents : imagesAndComponents,
+            problemType : req.session.problemType });
+      });
+    }); //end of component query
+  });
+
+
+/*    
     var typeLength = 0;
     for(var type in allCategorizedSuggestions){
       for(var j = 0; j < allCategorizedSuggestions[type].length; j++){
@@ -1255,31 +1316,11 @@ router.get('/variant/:variantname', function(req, res){
         }
       }
     }
-
-    IdeaImage.find({"filename" : {$in : currentVariant.images}}, function(err, images){
-      var imageList = _.map(images, function(image){return [image["filename"], image["uploader"], image["id"], []]});
-
-      Component.find({"ideaSeed" : idea.id}, function(err, components){
-
-        //attach components to images
-        for(var i = 0; i < components.length; i++){
-          for(var j = 0; j < components[i].images.length; j++){
-            for(var k = 0; k < imageList.length; k++){
-              if( components[i].images[j].imageID.toString() == imageList[k][2]){
-                imageList[k][3].push([components[i]["number"], components[i]["text"]]);
-              }
-            }
-          }
-        }
         res.render('pages/variant', { user : req.user, idea : currentIdea,
           problems : listOfProblems, categorizedSuggestions : variantCategorizedSuggestions,
           images : imageList,
           problemType : req.session.problemType });
-      });
-    });
-
-    
-  });
+*/
 });
 
 /*****************************************************************

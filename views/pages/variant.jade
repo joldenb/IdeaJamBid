@@ -16,51 +16,46 @@ html
     h3 Einstein Points Earned : #{user.einsteinPoints}
     br
     
-    if problems
 
-        table.suggestion-table
+    table.suggestion-table
+      tr
+        th.left-column Suggestion Type
+      each components, category in categorizedSuggestions
+        each component, i in components
           tr
-            th.left-column Suggestion Type
-          each suggestions, category in categorizedSuggestions
-            each suggestion, i in suggestions
-              if(suggestion['suggestionID'])
-                tr
-                tr
-                  td.left-column 
-                    - var suggestionText = suggestion['suggestion']
-                    - var problemCategory = category
-                    - var suggestionProblem = suggestion['problemType']
-                    include ../partials/suggestion-element.jade
-        br
-        h2 Images
-        table.suggestion-table
           tr
-            th.left-column
-          each image, index in images
-            tr
-            tr
-              td.left-column 
-                - var imageName = image[0]
-                - var componentList = image[3]
-                - var accountName = image[1]
-                include ../partials/image-block-element.jade
+            td.left-column 
+              - var suggestionText = component['descriptions'][0]
+              - var problemCategory = category
+              include ../partials/suggestion-element.jade
+    br
+    h2 Images
+    table.suggestion-table
+      tr
+        th.left-column
+      each image, index in images
+        tr
+        tr
+          td.left-column 
+            - var imageName = image[0]
+            - var componentList = image[3]
+            - var accountName = image[1]
+            include ../partials/image-block-element.jade
 
-        #myModal.modal.fade.annotate-modal(role="dialog")
-          .modal-dialog
-            .modal-content
-              .modal-header
-                button(type="button", class="close" data-dismiss="modal") &times;
-                .modal-title
-              .modal-body
+    #myModal.modal.fade.annotate-modal(role="dialog")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button(type="button", class="close" data-dismiss="modal") &times;
+            .modal-title
+          .modal-body
 
-              .modal-footer
-                button.btn.btn-info(data-dismiss="modal") OK
-
-
+          .modal-footer
+            button.btn.btn-info(data-dismiss="modal") OK
 
 
-    else
-      h3 No problems yet for this idea!
+
+
     br
     br
     a.home-logout.btn.btn-default( href="/idea-summary" ) < Back to Idea Summary

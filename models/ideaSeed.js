@@ -33,7 +33,7 @@ var IdeaSeed = new Schema({
 
 	variants			: [{
 		name				: String, /* should be a unique identifier */
-		suggestions : [ String	], /* should match a suggestionID */
+		components : [ String	], /* should match a suggestionID */
 		images			: [ String ] // filenames of images
 	}],
 
