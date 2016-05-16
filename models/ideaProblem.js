@@ -6,6 +6,7 @@ var IdeaProblem = new Schema({
 	text				: String,
 	creator			: String, //should match the username field of an account
 	priority		: Number,
+	date				: Date,
 	problemArea	: String,
 
 	ideaSeed		: ObjectId

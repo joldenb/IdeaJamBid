@@ -1098,7 +1098,7 @@ router.get('/idea-summary', function(req, res){
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
 
-    IdeaProblem.find({"ideaSeed" : currentIdea._id}, null, {sort: '-date'}, function(err, problems){
+    IdeaProblem.find({"ideaSeed" : currentIdea._id, date : {$exists : true}}, null, {sort: '-date'}, function(err, problems){
       Component.find({"ideaSeed" : idea.id}, function(err, components){
         var variantDates = [],
             sortedProblems = [];
