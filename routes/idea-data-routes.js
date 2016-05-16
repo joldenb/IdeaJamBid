@@ -101,14 +101,22 @@ router.post('/alternative-ideas', function(req, res) {
 router.post('/add-idea-problem', function(req, res) {
   var newProblem = {
     text          : req.body.problemStatement,
+    date          : new Date(),
     creator       : req.user.username,
     problemArea   : req.body.problemArea,
     ideaSeed      : req.session.idea
   };
 
-  IdeaProblem.create( newProblem ,
-    function (err) {
+  IdeaProblem.create( newProblem,
+    function (err, problem) {
       if (err) return handleError(err);
+      IdeaSeed.update(
+        { _id : req.session.idea },
+        { $push : { problemPriorities : {$each : [problem.id], $position : 0} }},
+        function(err, raw){
+          console.log('The raw response from Mongo was ', raw);
+        }
+      );
     }
   );
   res.sendStatus(200);

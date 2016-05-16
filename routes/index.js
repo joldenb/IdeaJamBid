@@ -587,32 +587,41 @@ router.get('/suggestion-summary', function(req, res){
   }
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
-    var listOfProblems = [];
-    var listOfInventorProblems = IdeaSeed.getListOfInventorProblems(currentIdea);
-    IdeaReview.find({"ideaSeedId" : currentIdea._id}, function(err, reviews){
-      var listOfReviewerProblems = IdeaReview.getListOfReviewerProblems(reviews);
-      listOfProblems = listOfInventorProblems.concat(listOfReviewerProblems);
-      var problemTypes = _.map(listOfProblems, function(item){ return item[0];});
-      var problemType = "";
-      var categorizedSuggestions = {};
-      if(req.session.ideaReview){ var reviewing = true; }
-      else { var reviewing = false; }
+    
+    IdeaProblem.find({"ideaSeed" : currentIdea._id}, function(err, problems){
 
-      listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
+      
+      
+      var listOfProblems = [];
+      var listOfInventorProblems = IdeaSeed.getListOfInventorProblems(currentIdea);
+      IdeaReview.find({"ideaSeedId" : currentIdea._id}, function(err, reviews){
+        var listOfReviewerProblems = IdeaReview.getListOfReviewerProblems(reviews);
+        listOfProblems = listOfInventorProblems.concat(listOfReviewerProblems);
+        var problemTypes = _.map(listOfProblems, function(item){ return item[0];});
+        var problemType = "";
+        var categorizedSuggestions = {};
+        if(req.session.ideaReview){ var reviewing = true; }
+        else { var reviewing = false; }
 
-      if ( listOfProblems.length > 0 ){
-        problemType = listOfProblems[0][0];
-        categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(
-          currentIdea,
-          listOfProblems[0][0],
-          listOfProblems[0][3]
-        );
-      }
-      var categoryPointValues = IdeaSeed.getCategoryPointValues(categorizedSuggestions);
+        listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
 
-      res.render('pages/suggestion-summary', { user : req.user, idea : currentIdea,
-        problems : listOfProblems, categoryPoints : categoryPointValues,
-        problemType : problemType, reviewing : reviewing });
+        if ( listOfProblems.length > 0 ){
+          problemType = listOfProblems[0][0];
+          categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(
+            currentIdea,
+            listOfProblems[0][0],
+            listOfProblems[0][3]
+          );
+        }
+        var categoryPointValues = IdeaSeed.getCategoryPointValues(categorizedSuggestions);
+
+        res.render('pages/suggestion-summary', { user : req.user, idea : currentIdea,
+          problems : listOfProblems, categoryPoints : categoryPointValues,
+          problemType : problemType, reviewing : reviewing });
+      });
+
+
+
     });
   });
 });
@@ -1067,90 +1076,95 @@ router.get('/idea-summary', function(req, res){
 
 
   IdeaSeed.findById(req.session.idea,function(err, idea){
-    Component.find({"ideaSeed" : idea.id}, function(err, components){
-      var variantDates = [],
-          sortedProblems = [];
-      var imageURLs = [];
-      var componentsList = [];
-      currentIdea = idea._doc;
+    currentIdea = idea._doc;
 
-      componentsList = _.map(components, function(item){return "Component : "+item['text'];});
+    IdeaProblem.find({"ideaSeed" : currentIdea._id}, null, {sort: '-date'}, function(err, problems){
+      Component.find({"ideaSeed" : idea.id}, function(err, components){
+        var variantDates = [],
+            sortedProblems = [];
+        var imageURLs = [];
+        var componentsList = [];
 
-      var problemAreas = componentsList.concat([
-        "Area : Performability",
-        "Area : Affordability",
-        "Area : Featurability",
-        "Area : Deliverability",
-        "Area : Useability",
-        "Area : Maintainability",
-        "Area : Durability",
-        "Area : Imageability",
-        "Area : Complexity",
-        "Area : Precision",
-        "Area : Variability",
-        "Area : Sensitivity",
-        "Area : Immaturity",
-        "Area : Danger",
-        "Area : Skills"
-      ]);
+        componentsList = _.map(components, function(item){return "Component : "+item['text'];});
 
-      if(idea.inventorName != req.user.username){
-        res.redirect('/contributor-idea-summary');
-        return;
-      }
+        var problemAreas = componentsList.concat([
+          "Area : Performability",
+          "Area : Affordability",
+          "Area : Featurability",
+          "Area : Deliverability",
+          "Area : Useability",
+          "Area : Maintainability",
+          "Area : Durability",
+          "Area : Imageability",
+          "Area : Complexity",
+          "Area : Precision",
+          "Area : Variability",
+          "Area : Sensitivity",
+          "Area : Immaturity",
+          "Area : Danger",
+          "Area : Skills"
+        ]);
 
-      var listOfProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
-      var typeOfProblem, rankingOfProblem;
-      for(var i = 0; i < listOfProblems.length; i++){
-        typeOfProblem = _.invert(currentIdea)[listOfProblems[i][1]];
-        rankingOfProblem = idea[typeOfProblem.slice(0, -7) + "Priority"];
-        listOfProblems[i].push(rankingOfProblem);
-      }
-
-
-      listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
-
-      if(currentIdea.variants.length > 0){
-        for(var i = 0; i < currentIdea.variants.length; i++){
-          variantDates.push([
-            new Date(parseInt(currentIdea.variants[i].name.substr(-13))).toString(),
-            currentIdea.variants[i].name
-          ]);
+        if(idea.inventorName != req.user.username){
+          res.redirect('/contributor-idea-summary');
+          return;
         }
-      }
 
-        if (idea._doc.images.length !== 0){
-          for (i =0; i < idea._doc.images.length; i++){
-            var j = 0;
-            IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
-              j++;
-              if(image && image._doc && image._doc.image){
-                var filename = image._doc["filename"];
-                imageURLs.push([
-                  filename,
-                  "data:"+image._doc["imageMimetype"]+";base64,"+ image._doc["image"].toString('base64')
-                ]);
-              }
-              if (j == idea._doc.images.length){
-                res.render('pages/idea-summary', { user : req.user, idea : currentIdea,
-                  variantDates : variantDates,
-                  problemAreas  : problemAreas,
-                  imageURLs : imageURLs,
-                  components : components,
-                  listOfProblems : listOfProblems });
-              }
-            });
+        var listOfProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
+        var typeOfProblem, rankingOfProblem;
+        for(var i = 0; i < listOfProblems.length; i++){
+          typeOfProblem = _.invert(currentIdea)[listOfProblems[i][1]];
+          rankingOfProblem = idea[typeOfProblem.slice(0, -7) + "Priority"];
+          listOfProblems[i].push(rankingOfProblem);
+        }
+
+
+        listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
+
+        if(currentIdea.variants.length > 0){
+          for(var i = 0; i < currentIdea.variants.length; i++){
+            variantDates.push([
+              new Date(parseInt(currentIdea.variants[i].name.substr(-13))).toString(),
+              currentIdea.variants[i].name
+            ]);
           }
-        } else {
-                res.render('pages/idea-summary', { user : req.user, idea : currentIdea,
-                  variantDates : variantDates,
-                  problemAreas  : problemAreas,
-                  imageURLs : [],
-                  components : components,
-                  listOfProblems : listOfProblems });
         }
-      
-    });
+
+          if (idea._doc.images.length !== 0){
+            for (i =0; i < idea._doc.images.length; i++){
+              var j = 0;
+              IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
+                j++;
+                if(image && image._doc && image._doc.image){
+                  var filename = image._doc["filename"];
+                  imageURLs.push([
+                    filename,
+                    "data:"+image._doc["imageMimetype"]+";base64,"+ image._doc["image"].toString('base64')
+                  ]);
+                }
+                if (j == idea._doc.images.length){
+                  res.render('pages/idea-summary', { user : req.user, idea : currentIdea,
+                    variantDates : variantDates,
+                    problemAreas  : problemAreas,
+                    imageURLs : imageURLs,
+                    problems : problems,
+                    components : components,
+                    listOfProblems : listOfProblems });
+                }
+              });
+            }
+          } else {
+                  res.render('pages/idea-summary', { user : req.user, idea : currentIdea,
+                    variantDates : variantDates,
+                    problemAreas  : problemAreas,
+                    imageURLs : [],
+                    problems : problems,
+                    components : components,
+                    listOfProblems : listOfProblems });
+          }
+        
+      }); //end of components query
+    }); // end of idea problems query
   });
 });
 
