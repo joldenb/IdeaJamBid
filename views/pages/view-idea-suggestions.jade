@@ -16,56 +16,53 @@ html
     h3 Einstein Points Earned : #{user.einsteinPoints}
     br
     
-    if (Object.keys(categorizedSuggestions).length != 0 )
 
-      form(role='form', id="incorporateSuggestion" action="/incorporate-suggestions", method="post")
-        h2 Contributor Suggestions
-        table.suggestion-table
-          tr
-            th.left-column Suggestion Type
-            th Incorporate
-          each components, category in categorizedSuggestions
-            each component, i in components
-              tr
-              tr
-                td.left-column 
-                  - var suggestionText = component['descriptions'][0]
-                  - var problemCategory = category
-                  - var accountName = component['creator']
-                  include ../partials/suggestion-element.jade
-                td 
-                  .radio
-                    input(type='radio', name=component['id'], value="incorporate") 
-                    |  Incorporate
-                  .radio
-                    input(type='radio', name=component['id'], value="notIncorporate") 
-                    |  Don't Incorporate
-          
-        h2 Images
-        table.suggestion-table
-          tr
-            th.left-column
-            th
-          each image, index in images
+    form(role='form', id="incorporateSuggestion" action="/incorporate-suggestions", method="post")
+      h2 Contributor Suggestions
+      table.suggestion-table
+        tr
+          th.left-column Suggestion Type
+          th Incorporate
+        each components, category in categorizedSuggestions
+          each component, i in components
             tr
             tr
               td.left-column 
-                - var imageName = image[0]
-                - var componentList = image[3]
-                - var accountName = image[1]
-                include ../partials/image-block-element.jade
+                - var suggestionText = component['descriptions'][0]
+                - var problemCategory = category
+                - var accountName = component['creator']
+                include ../partials/suggestion-element.jade
               td 
                 .radio
-                  input(type='radio', name='image-'+image[2], value="incorporate")
+                  input(type='radio', name=component['id'], value="incorporate") 
                   |  Incorporate
                 .radio
-                  input(type='radio', name='image-'+image[2], value="notIncorporate")
+                  input(type='radio', name=component['id'], value="notIncorporate") 
                   |  Don't Incorporate
-        br
-        button.btn.btn-success#submit(type='submit') Create Variant >
+        
+      h2 Images
+      table.suggestion-table
+        tr
+          th.left-column
+          th
+        each image, index in images
+          tr
+          tr
+            td.left-column 
+              - var imageName = image[0]
+              - var componentList = image[3]
+              - var accountName = image[1]
+              include ../partials/image-block-element.jade
+            td 
+              .radio
+                input(type='radio', name='image-'+image[2], value="incorporate")
+                |  Incorporate
+              .radio
+                input(type='radio', name='image-'+image[2], value="notIncorporate")
+                |  Don't Incorporate
+      br
+      button.btn.btn-success#submit(type='submit') Create Variant >
 
-    else
-      h3 No suggestions yet for this idea!
     br
     br
     a.home-logout.btn.btn-default( href="/idea-summary" ) < Back to Idea Summary
