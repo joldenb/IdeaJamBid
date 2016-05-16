@@ -33,8 +33,9 @@ html
         if components
           ul
             each component in components
-              li 
-                h4 #{component['number']} : #{component['text']}
+              if component['text']            
+                li 
+                  h4 #{component['number']} : #{component['text']}
         button(type="button" id="componentModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addComponentModal") Add a Component
       .idea-summary-data#idea-summary-waste-values
         h4 Waste Value Scores

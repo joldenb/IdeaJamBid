@@ -23,7 +23,7 @@ var IdeaSeed = new Schema({
 		suggestionID	: String, /* used in creating a variant */
 		category			: String, // the column and row in the grid of points
 		contributor		: String,
-		problemType		: String, // can be a waste value category or component ID (toString)
+		problemType		: String, // can be a waste value category or component ID (toString) ** outdated
 
 		suggestion		: String,
 		hindsight		: String,

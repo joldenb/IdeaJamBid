@@ -286,35 +286,42 @@ router.post('/accomplish', function(req, res) {
 ******************************************************************
 *****************************************************************/
 router.post('/suggestion-submit', function(req, res) {
-    var newSuggId = IdeaSeed.generateSuggID(req.body.suggestion);
-    var problem = req.body.problemType.split("-")[0];
+    var problemArea = req.body.problemType.split("-")[0];
     var contributor = req.body.problemType.split("-")[1];
-    var newSuggestion = {
-      suggestionID : newSuggId,
-      suggestion : req.body.suggestion,
-      hindsight : req.body.hindsight,
-      foresight : req.body.foresight,
-      outsight : req.body.outsight,
-      category : req.body.suggestionCategory,
-      contributor : contributor,
-      problemType : problem
-    };
-    Account.findById( req.user.id,
-      function (err, account) {
-        var points = parseInt(req.body.pointValue.slice(1));
-        account.einsteinPoints = account.einsteinPoints + points;
-        account.save(function (err) {});
-    });
+    var problemText = req.body.problemType.split("-")[2];
 
-    IdeaSeed.update(
-      { _id : req.session.idea },
-      { $push : { suggestions : newSuggestion }},
-      function(err, raw){
-        console.log('The raw response from Mongo was ', raw);
-        req.session.problemType = req.body.problemType;
-        res.redirect('/suggestion-summary');
-      }
-    );
+    IdeaProblem.findOne({
+      "problemArea" : problemArea,
+      "creator"     : contributor,
+      "text"        : problemText
+    }, function(err, problem){
+
+      var newSuggestion = {
+        descriptions : [req.body.suggestion],
+        hindsight : req.body.hindsight,
+        foresight : req.body.foresight,
+        outsight : req.body.outsight,
+        category : req.body.suggestionCategory,
+        creator : contributor,
+        ideaSeed : req.session.idea,
+        problemID : problem.id
+      };
+      
+      Account.findById( req.user.id,
+        function (err, account) {
+          var points = parseInt(req.body.pointValue.slice(1));
+          account.einsteinPoints = account.einsteinPoints + points;
+          account.save(function (err) {});
+      });
+
+      Component.create(newSuggestion,
+        function(err, raw){
+          console.log('The raw response from Mongo was ', raw);
+          res.redirect('/suggestion-summary');
+        }
+      );
+
+    });
 });
 
 /*****************************************************************
@@ -330,21 +337,40 @@ router.get('/update-suggestion-points/:problemAuthor', function(req, res){
     return;
   }
 
-  var problem = req.params.problemAuthor.split("-")[0];
+  var problemArea = req.params.problemAuthor.split("-")[0];
   var contributor = req.params.problemAuthor.split("-")[1];
+  var problemText = req.params.problemAuthor.split("-")[2];
   
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    var listOfInventorProblems = IdeaSeed.getListOfInventorProblems(currentIdea);
-    IdeaReview.find({"ideaSeedId" : currentIdea._id}, function(err, reviews){
-      var listOfReviewerProblems = IdeaReview.getListOfReviewerProblems(reviews);
-      listOfProblems = listOfInventorProblems.concat(listOfReviewerProblems);
-      var categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(currentIdea, problem, contributor);
-      var categoryPointValues = IdeaSeed.getCategoryPointValues(categorizedSuggestions);
+  IdeaProblem.findOne({
+    "problemArea" : problemArea,
+    "creator"     : contributor,
+    "text"        : problemText
+  }, function(err, problem){
+    
+    Component.find({
+      "ideaSeed" : req.session.idea,
+      "problemID" :  problem.id
+    }, function(err, components){
+
+      var categorizedSuggestions = {};
+      for(var i = 0; i < components.length; i++){
+        if(components[i].category && categorizedSuggestions[components[i].category]){
+          categorizedSuggestions[components[i].category].push(components[i]);
+        } else if (components[i].category && !categorizedSuggestions[components[i].category]){
+          categorizedSuggestions[components[i].category] = [components[i]];
+        }
+      }
+      var categoryPointValues = Component.getCategoryPointValues(categorizedSuggestions);
+
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+
       res.json(categoryPointValues);
+
     });
 
   });
+
 });
 
 /*****************************************************************
@@ -588,40 +614,42 @@ router.get('/suggestion-summary', function(req, res){
   IdeaSeed.findById(req.session.idea,function(err, idea){
     currentIdea = idea._doc;
     
-    IdeaProblem.find({"ideaSeed" : currentIdea._id}, function(err, problems){
+    IdeaProblem.find({"_id" : { $in : idea.problemPriorities}}, function(err, problems){
 
-      
-      
-      var listOfProblems = [];
-      var listOfInventorProblems = IdeaSeed.getListOfInventorProblems(currentIdea);
-      IdeaReview.find({"ideaSeedId" : currentIdea._id}, function(err, reviews){
-        var listOfReviewerProblems = IdeaReview.getListOfReviewerProblems(reviews);
-        listOfProblems = listOfInventorProblems.concat(listOfReviewerProblems);
-        var problemTypes = _.map(listOfProblems, function(item){ return item[0];});
-        var problemType = "";
+      var problemIds = _.map(problems, function(item){ return item.id;});
+      var sortedProblems = [];
+      for(var k = 0; k < problemIds.length; k++){
+        //get the priority for each ID
+        sortedProblems[idea.problemPriorities.indexOf(problemIds[k])] = problems[k];
+      }
+
+      var firstProblemIndex = problemIds.indexOf(idea.problemPriorities[0].toString());
+      var firstProblemText = problems[firstProblemIndex]['text'];
+
+      Component.find({
+        'ideaSeed' : idea.id,
+        'problemID' : problems[firstProblemIndex]['id']
+      }, function(err, components){
+
         var categorizedSuggestions = {};
+        for(var i = 0; i < components.length; i++){
+          if(components[i].category && categorizedSuggestions[components[i].category]){
+            categorizedSuggestions[components[i].category].push(components[i]);
+          } else if (components[i].category && !categorizedSuggestions[components[i].category]){
+            categorizedSuggestions[components[i].category] = [components[i]];
+          }
+        }
+        var categoryPointValues = Component.getCategoryPointValues(categorizedSuggestions);
+
         if(req.session.ideaReview){ var reviewing = true; }
         else { var reviewing = false; }
 
-        listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
-
-        if ( listOfProblems.length > 0 ){
-          problemType = listOfProblems[0][0];
-          categorizedSuggestions = IdeaSeed.getCategorizedSuggestions(
-            currentIdea,
-            listOfProblems[0][0],
-            listOfProblems[0][3]
-          );
-        }
-        var categoryPointValues = IdeaSeed.getCategoryPointValues(categorizedSuggestions);
 
         res.render('pages/suggestion-summary', { user : req.user, idea : currentIdea,
-          problems : listOfProblems, categoryPoints : categoryPointValues,
-          problemType : problemType, reviewing : reviewing });
+          problems : sortedProblems, categoryPoints : categoryPointValues,
+          firstProblemText : firstProblemText, reviewing : reviewing
+        });
       });
-
-
-
     });
   });
 });

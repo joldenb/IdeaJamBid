@@ -17,15 +17,15 @@ html
     br
 
     .form-group
-      if (problemType )
+      if problems
         #suggestionList 
           label(for="selectProblem") Select list:
             #selectProblem
               each val in problems
-                if problemType == val[0]
-                  .problemOption.selectedProblem(id=val[0]+"-"+val[3]) #{val[0]} problem : #{val[1]}
+                if firstProblemText == val['text']
+                  .problemOption.selectedProblem(id=val['problemArea']+"-"+val['creator']+"-"+val['text']) #{val['problemArea']} problem : #{val['text']}
                 else 
-                  .problemOption(id=val[0]+"-"+val[3]) #{val[0]} problem : #{val[1]}
+                  .problemOption(id=val['problemArea']+"-"+val['creator']+"-"+val['text']) #{val['problemArea']} problem : #{val['text']}
           br
 
         #myModal.modal.fade(role="dialog")
