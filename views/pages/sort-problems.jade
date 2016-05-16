@@ -18,9 +18,9 @@ html
     
   #sortableProblemList.list-group
     each problem, index in problems
-      .list-group-item(data-id=problem[2])
+      .list-group-item(data-id=index)
         span <b> #{index + 1}.   </b>
-        span.problemText #{problem[0]} : #{problem[1]}
+        span.problemText #{problem['problemArea']} : #{problem['text']}
 
     br
     br

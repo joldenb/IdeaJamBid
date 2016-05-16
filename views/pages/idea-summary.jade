@@ -50,6 +50,9 @@ html
               li
                 p #{index + 1} : #{problem.text}
         button(type="button" id="problemModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addProblemModal") Add a Problem
+        |  
+        a.btn.btn-default( href="/sort-problems" ) Sort Existing Problems
+
       .idea-summary-data#idea-summary-challenge
         h4 Challenge
         p <i>#{idea.problem}</i>
@@ -67,13 +70,6 @@ html
     h4 Suggestions
     a.btn.btn-default( href="/suggestion-summary" ) Make Suggestions
     br
-    br
-    h4 Top Priority Problems 
-    ul.problemList
-      each problem, index in listOfProblems
-        li
-          p #{index + 1}. <b>#{problem[0]} : </b> #{problem[1]}
-    a.btn.btn-default( href="/sort-problems" ) Sort All Problems
     br
   .half-column
     br

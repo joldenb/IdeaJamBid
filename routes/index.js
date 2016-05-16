@@ -734,22 +734,24 @@ router.get('/sort-problems', function(req, res){
     res.redirect('/');
     return;
   }
+  
   IdeaSeed.findById(req.session.idea,function(err, idea){
-    var variantDates = [],
-      sortedProblems = [];
-    currentIdea = idea._doc;
+    IdeaProblem.find({"_id" : { $in : idea.problemPriorities}}, function(err, problems){
 
-    var listOfProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
-    var typeOfProblem, rankingOfProblem;
-    for(var i = 0; i < listOfProblems.length; i++){
-      typeOfProblem = _.invert(currentIdea)[listOfProblems[i][1]];
-      rankingOfProblem = idea[typeOfProblem.slice(0, -7) + "Priority"];
-      listOfProblems[i].push(rankingOfProblem);
-    }
-    listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
-    
-    res.render('pages/sort-problems', { user : req.user, idea : currentIdea,
-      problems : listOfProblems });
+      var problemIds = _.map(problems, function(item){ return item.id;});
+      var sortedProblems = [];
+      for(var k = 0; k < problemIds.length; k++){
+        //get the priority for each ID
+        sortedProblems[idea.problemPriorities.indexOf(problemIds[k])] = problems[k];
+      }
+
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+
+
+      res.render('pages/sort-problems', { user : req.user, idea : idea._doc,
+        problems : sortedProblems });
+    });
   });
 });
 
@@ -761,45 +763,35 @@ router.get('/sort-problems', function(req, res){
 ******************************************************************
 *****************************************************************/
 router.post('/order-problems', function(req, res) {
-  var listOfAllPriorities = [
-    "performPriority",
-    "affordPriority",
-    "featurePriority",
-    "deliverPriority",
-    "useabilityPriority",
-    "maintainPriority",
-    "durabilityPriority",
-    "imagePriority",
-    "complexPriority",
-    "precisionPriority",
-    "variabilityPriority",
-    "sensitivityPriority",
-    "immaturePriority",
-    "dangerPriority",
-    "skillsPriority"
-  ];
-  var problemText, problemField;
   IdeaSeed.findById(req.session.idea, function(err, idea){
+    
+    var length = Object.keys(req.body).length;
+    var problemTexts = [];
+    var problemAreas = [];
+
+
     for(var key in req.body){
-      problemText = req.body[key].split(" : ")[1];
-      problemField = _.invert(currentIdea)[problemText];
-      problemField = problemField.slice(0, -7) + "Priority";
-      listOfAllPriorities.splice(listOfAllPriorities.indexOf(problemField), 1);
-      idea[problemField] = parseInt(key) + 1;
+      problemTexts[key] = req.body[key].split(" : ")[2];
+      problemAreas[key] = req.body[key].split(" : ")[0] + " : " + req.body[key].split(" : ")[1];
+
     }
 
-    var nextPriority = 16 - listOfAllPriorities.length;
-    for(i=0; i < listOfAllPriorities.length; i++){
-      idea[listOfAllPriorities[i]] = nextPriority;
-      nextPriority++;
-    }
+      IdeaProblem.find({"ideaSeed" : idea.id},
+        function(err, problems){
+          
+          idea.problemPriorities = [];
 
-    idea.save(function (err, idea, numaffected) {
-        if(err) {
-            console.error('ERROR!' + err);
-        }
-        res.sendStatus(200);
-    });
+          for(var i = 0; i < problems.length; i++){
+            idea.problemPriorities[problemTexts.indexOf(problems[i].text)] = problems[i].id.toString();
+          }
+
+          idea.save(function (err, idea, numaffected) {
+              if(err) {
+                  console.error('ERROR!' + err);
+              }
+              res.sendStatus(200);
+          });
+      });
   });
 });
 
