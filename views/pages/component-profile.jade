@@ -54,15 +54,12 @@ html
 
             .suggestion-category
               ul
-                if component['hindsight']
-                li 
-                  p <b> Hindsight :</b> #{component['hindsight']} 
-                if component['foresight']
-                li 
-                  p <b> Foresight :</b> #{component['foresight']} 
-                if component['outsight']
-                li 
-                  p <b> Outsight :</b> #{component['outsight']} 
+                li
+                  p <b> Hindsight :</b> #{component['hindsight'] || "No value yet"} 
+                li
+                  p <b> Foresight :</b> #{component['foresight'] || "No value yet"} 
+                li
+                  p <b> Outsight :</b> #{component['outsight'] || "No value yet"} 
           .suggestion-maker
             img(src="/avatar.png" height="50" width="50")
             div.userName #{problem['creator'] || "Unknown User"}
@@ -76,7 +73,8 @@ html
                 a(href="/variant/"+variantDate[1]) #{variantDate[0]}
         else 
           p <i>Not currently part of any variants</i>
-    br
+    .return-button
+      a.home-logout.btn.btn-default( href="/idea-summary" ) < Back to Idea Summary
     br
 
 

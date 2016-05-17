@@ -34,8 +34,23 @@ html
           ul
             each component in components
               if component['text']            
-                li 
-                  h4 #{component['number']} : #{component['text']}
+                if component['identifier']
+                  li 
+                    a(href="/component-profile/"+component['identifier'])
+                      h4 #{component['number']} : #{component['text']}
+                else
+                  li 
+                    h4 #{component['number']} : #{component['text']}
+              else if component['descriptions'].length > 0
+                if component['identifier']
+                  li
+                    a(href="/component-profile/"+component['identifier'])
+                      h4 #{component['descriptions'][0]}
+                else
+                  li
+                    h4 #{component['descriptions'][0]}
+
+
         button(type="button" id="componentModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addComponentModal") Add a Component
       .idea-summary-data#idea-summary-waste-values
         h4 Waste Value Scores
