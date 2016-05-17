@@ -1119,6 +1119,13 @@ router.get('/idea-summary', function(req, res){
         var componentsList = [];
 
         componentsList = _.map(components, function(item){return "Component : "+item['text'];});
+        componentsList = componentsList.filter(function(item){
+          if(item == "Component : undefined"){
+            return false;
+          } else {
+            return true;
+          }
+        });
 
         var problemAreas = componentsList.concat([
           "Area : Performability",
@@ -1310,25 +1317,6 @@ router.get('/variant/:variantname', function(req, res){
     }); //end of component query
   });
 
-
-/*    
-    var typeLength = 0;
-    for(var type in allCategorizedSuggestions){
-      for(var j = 0; j < allCategorizedSuggestions[type].length; j++){
-        if (currentVariant.suggestions.indexOf(allCategorizedSuggestions[type][j].suggestionID) == -1){
-          for(var k = 0; k < variantCategorizedSuggestions[type].length; k++){
-            if(variantCategorizedSuggestions[type][k].suggestionID == allCategorizedSuggestions[type][j].suggestionID){
-              variantCategorizedSuggestions[type].splice(k,1);
-            }
-          }
-        }
-      }
-    }
-        res.render('pages/variant', { user : req.user, idea : currentIdea,
-          problems : listOfProblems, categorizedSuggestions : variantCategorizedSuggestions,
-          images : imageList,
-          problemType : req.session.problemType });
-*/
 });
 
 /*****************************************************************
