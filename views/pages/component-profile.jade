@@ -11,8 +11,23 @@ html
     | 
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
 
-  .idea-summary
-    h3 Component Summary for #{component.name}
+  .component-summary
+    h1 Component Summary
+    if component['text']
+      .component-name
+        if component['number']
+          h3 Component # #{component['number']} : #{component['text']}
+        else
+          .component-name
+            h3 Name : #{component['number']}
+    h4 It is a component of the idea seed "#{idea.name}"
+    if( component['descriptions'].length > 0)
+      .component-descriptions
+        h3 Description(s)
+        ul
+          each description in component['descriptions']
+            li #{description}
+            br
 
     .edit-column.half-column
       .imagesList
@@ -28,21 +43,39 @@ html
             a.btn.btn-default( href="/image-upload" ) View All Images
 
     .idea-function-column.half-column
-      .idea-summary-data#idea-summary-components
-        h4 Components
-        if components
-          ul
-            each component in components
-              if component['text']            
-                li 
-                  h4 #{component['number']} : #{component['text']}
+      if(problem != "none")
+        h4 Related Problem
+        .image-block-element
+          .suggestion
+            .suggestion-text
+              p <b>Problem: </b> #{problem['text']}
+              p <b>Problem Area: </b> #{problem['problemArea']}
+              p <b>Suggestion Type: </b> #{component['category']}
 
-    h4 Related Variants
-    each variantDate in variantDates
-      ul.variantDateList
-        li
-          a(href="/variant/"+variantDate[1]) #{variantDate[0]}
-    a.btn.btn-default( href="/view-idea-suggestions" ) Create a New Variant
+            .suggestion-category
+              ul
+                if component['hindsight']
+                li 
+                  p <b> Hindsight :</b> #{component['hindsight']} 
+                if component['foresight']
+                li 
+                  p <b> Foresight :</b> #{component['foresight']} 
+                if component['outsight']
+                li 
+                  p <b> Outsight :</b> #{component['outsight']} 
+          .suggestion-maker
+            img(src="/avatar.png" height="50" width="50")
+            div.userName #{problem['creator'] || "Unknown User"}
+
+      .component-variants
+        h4 Included in Variants
+        if variantDates.length > 0
+          each variantDate in variantDates
+            ul.variantDateList
+              li
+                a(href="/variant/"+variantDate[1]) #{variantDate[0]}
+        else 
+          p <i>Not currently part of any variants</i>
     br
     br
 

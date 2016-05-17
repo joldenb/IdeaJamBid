@@ -304,7 +304,8 @@ router.post('/suggestion-submit', function(req, res) {
         category : req.body.suggestionCategory,
         creator : req.user.username,
         ideaSeed : req.session.idea,
-        problemID : problem.id
+        problemID : problem.id,
+        identifier : "comp-"+Date.now()
       };
       
       Account.findById( req.user.id,
@@ -1356,7 +1357,7 @@ router.get('/annotate-image/:image', function(req, res){
         var nextNumber = 1;
           Component.find({ }, function(err, comps){
             for(var j = 0; j < comps.length; j++){
-              if ( comps[j]['ideaSeed'].toString() ==  req.session.idea ) {
+              if ( comps[j]['ideaSeed'] && comps[j]['ideaSeed'].toString() ==  req.session.idea ) {
                 masterComponentList.push(comps[j]);
                 nextNumber++;
               }
@@ -1461,7 +1462,8 @@ router.post('/save-component', function(req, res) {
             secondY   : req.body.secondY
           }],
 
-          ideaSeed    : req.session.idea
+          ideaSeed    : req.session.idea,
+          identifier  : "comp-"+Date.now()
         });
         newComp.save(function(err){
           var stop;
@@ -1555,10 +1557,132 @@ router.get('/begin-contributor-review', function(req, res){
         );
       }
     });
-   
-
-
   }
+});
+
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for component profile
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/component-profile/:identifier', function(req, res){
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
+
+  Component.findOne({"identifier" : req.params.identifier}, function(err, component){
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+
+      var listOfVariants = [], variantDates = [];
+      if(idea.variants.length > 0){
+        for(var k = 0; k < idea.variants.length; k ++){
+          if(idea.variants[k].components && idea.variants[k].components.indexOf(component['id'].toString()) > -1){
+            listOfVariants.push(idea.variants[k]);
+          }
+        }
+      }
+
+      variantDates = _.map(listOfVariants, function(item){
+        return [new Date(parseInt(item.name.substr(-13))).toString(), item.name]
+      });
+
+
+      if(component['problemID']){
+        IdeaProblem.findOne({"_id" : component['problemID']}, function(err, problem){
+          //first get the images that the component is in
+          if(component.images.length > 0){
+            var imageIDs = _.map(component.images, function(item){ return item['imageID']});
+            IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
+              var imageURLs = [];
+              for(var i = 0; i < images.length; i++){
+                if(images[i] && images[i].image){
+                  var filename = images[i]["filename"];
+                  imageURLs.push([
+                    filename,
+                    "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
+                  ]);
+                }
+                res.render('pages/component-profile', {
+                  user : req.user,
+                  idea : idea._doc,
+                  component : component,
+                  problem : problem,
+                  variantDates : variantDates,
+                  imageURLs : imageURLs
+                  //problems : problems,
+                  //components : components,
+                  //listOfProblems : listOfProblems 
+                });
+              }
+            });//end of image query
+
+          // in case theres no images
+          } else {
+                res.render('pages/component-profile', {
+                  user : req.user,
+                  idea : idea._doc,
+                  component : component,
+                  problem : problem,
+                  variantDates : variantDates,
+                  //problemAreas  : problemAreas,
+                  imageURLs : []
+                  //problems : problems,
+                  //components : components,
+                  //listOfProblems : listOfProblems 
+                });
+          }
+        });// end of problem query
+      } else {
+          //first get the images that the component is in
+          if(component.images.length > 0){
+            var imageIDs = _.map(component.images, function(item){ return item['imageID']});
+            IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
+              var imageURLs = [];
+              for(var i = 0; i < images.length; i++){
+                if(images[i] && images[i].image){
+                  var filename = images[i]["filename"];
+                  imageURLs.push([
+                    filename,
+                    "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
+                  ]);
+                }
+                res.render('pages/component-profile', {
+                  user : req.user,
+                  idea : idea._doc,
+                  component : component,
+                  problem : "none",
+                  variantDates : variantDates,
+                  imageURLs : imageURLs
+                  //problems : problems,
+                  //components : components,
+                  //listOfProblems : listOfProblems 
+                });
+              }
+            });//end of image query
+
+          // in case theres no images
+          } else {
+                res.render('pages/component-profile', {
+                  user : req.user,
+                  idea : idea._doc,
+                  component : component,
+                  variantDates : variantDates,
+                  problem : "none",
+                  //problemAreas  : problemAreas,
+                  imageURLs : []
+                  //problems : problems,
+                  //components : components,
+                  //listOfProblems : listOfProblems 
+                });
+          }
+      }
+    });
+
+  });// end of component query
 });
 
 module.exports = router;

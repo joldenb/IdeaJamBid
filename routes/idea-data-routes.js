@@ -135,7 +135,8 @@ router.post('/add-idea-component', function(req, res) {
       creator       : req.user.username,
       descriptions   : [req.body.componentDescription],
       ideaSeed      : req.session.idea,
-      number        : newCompNumber
+      number        : newCompNumber,
+      identifier    : "comp-"+Date.now()
     };
       
     Component.create( newComponent ,

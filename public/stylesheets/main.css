@@ -446,3 +446,21 @@ canvas {
   color: black;
   text-align: left;
 }
+
+.component-descriptions {
+  max-width: 50%;
+  margin: 0 auto;
+  border: 1px solid gray;
+  border-radius: 8px;
+}
+
+.component-summary .suggestion, .component-summary .suggestion-maker {
+  display: inline-block;
+  float: none;
+  vertical-align: top;
+}
+
+.component-summary ul {
+  list-style-type: none;
+  padding-left: 0;
+}
