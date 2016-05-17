@@ -566,6 +566,10 @@ IdeaSeed.statics.getCategoryDisplayNames = function(categorizedObject){
 			case "add-people" :
 				returnCategories["Add People"] = categorizedObject["add-people"];
 				break;
+			case "other" :
+				returnCategories["Other"] = categorizedObject["other"];
+				break;
+
 		}
 	}
 	return returnCategories;

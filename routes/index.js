@@ -681,6 +681,10 @@ router.get('/view-idea-suggestions', function(req, res){
             categorizedSuggestions[components[i].category].push(components[i]);
           } else if (components[i].category && !categorizedSuggestions[components[i].category]){
             categorizedSuggestions[components[i].category] = [components[i]];
+          } else if (categorizedSuggestions["other"]){
+            categorizedSuggestions["other"].push(components[i]);
+          } else {
+            categorizedSuggestions["other"] = [components[i]];
           }
         } else {
           for(var k=0; k < components[i].images.length; k++){
@@ -1260,6 +1264,10 @@ router.get('/variant/:variantname', function(req, res){
               categorizedSuggestions[components[i].category].push(components[i]);
             } else if (components[i].category && !categorizedSuggestions[components[i].category]){
               categorizedSuggestions[components[i].category] = [components[i]];
+            } else if (categorizedSuggestions["other"]){
+              categorizedSuggestions["other"].push(components[i]);
+            } else {
+              categorizedSuggestions["other"] = [components[i]];
             }
           }
         } else {
