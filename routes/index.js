@@ -617,40 +617,49 @@ router.get('/suggestion-summary', function(req, res){
     
     IdeaProblem.find({"_id" : { $in : idea.problemPriorities}}, function(err, problems){
 
-      var problemIds = _.map(problems, function(item){ return item.id;});
-      var sortedProblems = [];
-      for(var k = 0; k < problemIds.length; k++){
-        //get the priority for each ID
-        sortedProblems[idea.problemPriorities.indexOf(problemIds[k])] = problems[k];
-      }
-
-      var firstProblemIndex = problemIds.indexOf(idea.problemPriorities[0].toString());
-      var firstProblemText = problems[firstProblemIndex]['text'];
-
-      Component.find({
-        'ideaSeed' : idea.id,
-        'problemID' : problems[firstProblemIndex]['id']
-      }, function(err, components){
-
-        var categorizedSuggestions = {};
-        for(var i = 0; i < components.length; i++){
-          if(components[i].category && categorizedSuggestions[components[i].category]){
-            categorizedSuggestions[components[i].category].push(components[i]);
-          } else if (components[i].category && !categorizedSuggestions[components[i].category]){
-            categorizedSuggestions[components[i].category] = [components[i]];
-          }
+      if (problems.length > 0) {
+        var problemIds = _.map(problems, function(item){ return item.id;});
+        var sortedProblems = [];
+        for(var k = 0; k < problemIds.length; k++){
+          //get the priority for each ID
+          sortedProblems[idea.problemPriorities.indexOf(problemIds[k])] = problems[k];
         }
-        var categoryPointValues = Component.getCategoryPointValues(categorizedSuggestions);
 
+        var firstProblemIndex = problemIds.indexOf(idea.problemPriorities[0].toString());
+        var firstProblemText = problems[firstProblemIndex]['text'];
+
+        Component.find({
+          'ideaSeed' : idea.id,
+          'problemID' : problems[firstProblemIndex]['id']
+        }, function(err, components){
+
+          var categorizedSuggestions = {};
+          for(var i = 0; i < components.length; i++){
+            if(components[i].category && categorizedSuggestions[components[i].category]){
+              categorizedSuggestions[components[i].category].push(components[i]);
+            } else if (components[i].category && !categorizedSuggestions[components[i].category]){
+              categorizedSuggestions[components[i].category] = [components[i]];
+            }
+          }
+          var categoryPointValues = Component.getCategoryPointValues(categorizedSuggestions);
+
+          if(req.session.ideaReview){ var reviewing = true; }
+          else { var reviewing = false; }
+
+
+          res.render('pages/suggestion-summary', { user : req.user, idea : currentIdea,
+            problems : sortedProblems, categoryPoints : categoryPointValues,
+            firstProblemText : firstProblemText, reviewing : reviewing
+          });
+        });
+      } else {
         if(req.session.ideaReview){ var reviewing = true; }
         else { var reviewing = false; }
-
-
         res.render('pages/suggestion-summary', { user : req.user, idea : currentIdea,
-          problems : sortedProblems, categoryPoints : categoryPointValues,
-          firstProblemText : firstProblemText, reviewing : reviewing
+          problems : [], categoryPoints : {},
+          firstProblemText : "", reviewing : reviewing
         });
-      });
+      }
     });
   });
 });
