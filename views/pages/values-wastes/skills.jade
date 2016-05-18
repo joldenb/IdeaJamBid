@@ -31,9 +31,8 @@ html
             h4 #{index + 1} : #{problem.text}
       br
       h4 Add a new skills problem:
-      textarea.form-control(rows='6', cols="75", name="skillsProblem", placeholder='Describe the problem...')
-        if reviewing && idea.skillsProblem
-          | #{idea.skillsProblem}
+      textarea.form-control(rows='6', cols="75", name="skillsProblem")
+        | The problem of 
       br
       if reviewing
         a(href="/contributor-idea-summary").btn.btn-info View All
@@ -84,3 +83,26 @@ html
           $('#formSkills').submit();
         }
     });
+
+    var input = document.getElementsByTagName ("textarea");
+
+    // This is for the main solution text input
+    var requiredText = "The problem of "
+    input[0].addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredText) == -1) {
+            $(this).val(requiredText);
+      }
+      if (this.selectionStart < 15) {
+        this.selectionStart = 15;
+      }
+    }, false);
+
+    input[0].addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredText) == -1) {
+            $(this).val(requiredText);
+      }
+      if (this.selectionStart < 15) {
+        this.selectionStart = 15;
+      }
+    }, false);
+    
