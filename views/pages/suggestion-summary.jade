@@ -34,13 +34,13 @@ html
               .modal-header
                 button(type="button", class="close" data-dismiss="modal") &times;
                 .modal-title 
-                  h2 Contribute an Idea
+                  h2 Make a Suggestion
               .modal-body
                 form(role='form', id="formSuggestion" action="/suggestion-submit", method="post", style='max-width: 300px;', data-idea-doc=idea)
                   .form-group
-                    h3 Make a Suggestion
+                    h4#suggestion-header
                     |  
-                    input.form-control(type='text', name="suggestion", placeholder='An idea to consider...')
+                    input.form-control(type='text', name="suggestion", value='The solution of ')
                     h3 Hindsight : Looking Back
                     |  
                     textarea.form-control(rows='3', cols="75", name="hindsight", placeholder='An idea to consider...')
@@ -179,6 +179,146 @@ html
       $("#suggestion-category").val($(this).attr("id"));
       $("#point-value").val($(this).text());
       $("#problem-type").val($(".selectedProblem").attr("id"));
+
+      var headerStatement = "How will you ";
+      switch($(this).attr("id")){
+        case "elim-func" :
+          headerStatement = headerStatement  + "Eliminate Functions ".toLowerCase();
+          break;
+        case "elim-parts" :
+          headerStatement = headerStatement  + "Eliminate Parts ".toLowerCase();
+          break;
+        case "elim-life" :
+          headerStatement = headerStatement  + "Eliminate Life-Cycle Processes ".toLowerCase();
+          break;
+        case "elim-mat" :
+          headerStatement = headerStatement  + "Eliminate Materials ".toLowerCase();
+          break;
+        case "elim-people" :
+          headerStatement = headerStatement  + "Eliminate People ".toLowerCase();
+          break;
+
+        case "reduce-func" :
+          headerStatement = headerStatement  + "Reduce Functions ".toLowerCase();
+          break;
+        case "reduce-parts" :
+          headerStatement = headerStatement  + "Reduce Parts ".toLowerCase();
+          break;
+        case "reduce-life" :
+          headerStatement = headerStatement  + "Reduce Life-Cycle Processes ".toLowerCase();
+          break;
+        case "reduce-mat" :
+          headerStatement = headerStatement  + "Reduce Materials ".toLowerCase();
+          break;
+        case "reduce-people" :
+          headerStatement = headerStatement  + "Reduce People ".toLowerCase();
+          break;
+
+        case "sub-func" :
+          headerStatement = headerStatement  + "Substitute Functions ".toLowerCase();
+          break;
+        case "sub-parts" :
+          headerStatement = headerStatement  + "Substitute Parts ".toLowerCase();
+          break;
+        case "sub-life" :
+          headerStatement = headerStatement  + "Substitute Life-Cycle Processes ".toLowerCase();
+          break;
+        case "sub-mat" :
+          headerStatement = headerStatement  + "Substitute Materials ".toLowerCase();
+          break;
+        case "sub-people" :
+          headerStatement = headerStatement  + "Substitute People ".toLowerCase();
+          break;
+
+
+        case "sep-func" :
+          headerStatement = headerStatement  + "Separate Functions ".toLowerCase();
+          break;
+        case "sep-parts" :
+          headerStatement = headerStatement  + "Separate Parts ".toLowerCase();
+          break;
+        case "sep-life" :
+          headerStatement = headerStatement  + "Separate Life-Cycle Processes ".toLowerCase();
+          break;
+        case "sep-mat" :
+          headerStatement = headerStatement  + "Separate Materials ".toLowerCase();
+          break;
+        case "sep-people" :
+          headerStatement = headerStatement  + "Separate People ".toLowerCase();
+          break;
+
+
+        case "int-func" :
+          headerStatement = headerStatement  + "Integrate Functions ".toLowerCase();
+          break;
+        case "int-parts" :
+          headerStatement = headerStatement  + "Integrate Parts ".toLowerCase();
+          break;
+        case "int-life" :
+          headerStatement = headerStatement  + "Integrate Life-Cycle Processes ".toLowerCase();
+          break;
+        case "int-mat" :
+          headerStatement = headerStatement  + "Integrate Materials ".toLowerCase();
+          break;
+        case "int-people" :
+          headerStatement = headerStatement  + "Integrate People ".toLowerCase();
+          break;
+
+        case "reuse-func" :
+          headerStatement = headerStatement  + "Re-Use Functions ".toLowerCase();
+          break;
+        case "reuse-parts" :
+          headerStatement = headerStatement  + "Re-Use Parts ".toLowerCase();
+          break;
+        case "reuse-life" :
+          headerStatement = headerStatement  + "Re-Use Life-Cycle Processes ".toLowerCase();
+          break;
+        case "reuse-mat" :
+          headerStatement = headerStatement  + "Re-Use Materials ".toLowerCase();
+          break;
+        case "reuse-people" :
+          headerStatement = headerStatement  + "Re-Use People ".toLowerCase();
+          break;
+
+
+        case "stand-func" :
+          headerStatement = headerStatement  + "Standardize Functions ".toLowerCase();
+          break;
+        case "stand-parts" :
+          headerStatement = headerStatement  + "Standardize Parts ".toLowerCase();
+          break;
+        case "stand-life" :
+          headerStatement = headerStatement  + "Standardize Life-Cycle Processes ".toLowerCase();
+          break;
+        case "stand-mat" :
+          headerStatement = headerStatement  + "Standardize Materials ".toLowerCase();
+          break;
+        case "stand-people" :
+          headerStatement = headerStatement  + "Standardize People ".toLowerCase();
+          break;
+
+        case "add-func" :
+          headerStatement = headerStatement  + "Add Functions ".toLowerCase();
+          break;
+        case "add-parts" :
+          headerStatement = headerStatement  + "Add Parts ".toLowerCase();
+          break;
+        case "add-life" :
+          headerStatement = headerStatement  + "Add Life-Cycle Processes ".toLowerCase();
+          break;
+        case "add-mat" :
+          headerStatement = headerStatement  + "Add Materials ".toLowerCase();
+          break;
+        case "add-people" :
+          headerStatement = headerStatement  + "Add People ".toLowerCase();
+          break;
+      }
+      headerStatement = headerStatement +
+        "to solve the problem that " +
+        $(".selectedProblem").attr("id").split("-")[2] +
+        "?";
+      $("h4#suggestion-header").text(headerStatement);
+
     });
 
     $("#submit").click(function(){
@@ -227,6 +367,27 @@ html
         $(this).attr("class", "btn btn-primary suggest fourSugg");
       }
     });
+
+    var input = document.getElementsByTagName ("input");
+
+    var requiredText = "The solution of "
+    input[0].addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredText) == -1) {
+            $(this).val(requiredText);
+      }
+      if (this.selectionStart < 16) {
+        this.selectionStart = 16;
+      }
+    }, false);
+
+    input[0].addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredText) == -1) {
+            $(this).val(requiredText);
+      }
+      if (this.selectionStart < 16) {
+        this.selectionStart = 16;
+      }
+    }, false);
 
 
 
