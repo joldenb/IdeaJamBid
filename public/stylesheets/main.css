@@ -471,3 +471,11 @@ canvas {
   list-style-type: none;
   padding-left: 0;
 }
+
+.related-components li {
+  max-width: 75%;
+  margin: 0.5em auto;
+  padding: .5em;
+  border: 1px solid gray;
+  border-radius: 8px;
+}
