@@ -43,6 +43,33 @@ html
             a.btn.btn-default( href="/image-upload" ) View All Images
       .related-components
         h4 Related Components
+        each component in relatedComponents
+          if component[0]['text']            
+            if component[0]['identifier']
+              li 
+                a(href="/component-profile/"+component[0]['identifier'])
+                  h4 #{component[0]['number']} : #{component[0]['text']}
+                p <b>Relationship</b> 
+                p #{component[1]}
+            else
+              li 
+                h4 #{component[0]['number']} : #{component[0]['text']}
+                p <b>Relationship</b> 
+                p #{component[1]}
+          else if component[0]['descriptions'].length > 0
+            if component[0]['identifier']
+              li
+                a(href="/component-profile/"+component[0]['identifier'])
+                  h4 #{component[0]['descriptions'][0]}
+                p <b>Relationship</b> 
+                p #{component[1]}
+          else
+              li
+                h4 #{component[0]['descriptions'][0]}
+                p <b>Relationship</b> 
+                p #{component[1]}
+        button(type="button" id="modalButton" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Add New Related Component
+
 
     .idea-function-column.half-column
       if(problem != "none")
@@ -79,10 +106,43 @@ html
       a.home-logout.btn.btn-default( href="/idea-summary" ) < Back to Idea Summary
     br
 
+    #myModal.modal.fade.annotate-modal(role="dialog")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button(type="button", class="close" data-dismiss="modal") &times;
+            .modal-title 
+              h2 Add a Related Component:
+          .modal-body
+            form(role='form', id="addRelatedComponent" action="/add-related-component", method="post", style='max-width: 300px;', data-idea-doc=idea)
+              .form-group
+                h3 Select a Component:
+                |  
+                select(name="addRelatedComponent").form-control#relatedComponents
+                  option(value="None Selected") None Selected
+                  each component in components
+                    if component['identifier']                    
+                      if component['text']
+                        option(value=component['identifier']) #{component['number']} : #{component['text']}
+                      else if component['descriptions'].length > 0
+                        if component['identifier']
+                          option(value=component['identifier']) #{component['descriptions'][0]}
+                        
+                h4#new-related-component-description These components are related by:
+                |  
+                textarea.form-control(rows='6', cols="75", name="newRelatedComponentDesc", id="newRelCompDesc",
+                  placeholder='They press against each other to close the panel.')
+                input(type="hidden" id="component-identifier" name="component-identifier")
+
+              .modal-footer
+                button.btn.btn-info(data-dismiss="modal") Cancel
+                button.btn.btn-success#newRelCompSubmit(type='submit') Save
+
 
 
   include ../partials/js-includes.jade
   script(type="text/javascript").
-    $(window).load(function(){
+    $("#modalButton").click(function(){
+      $("#component-identifier").val("!{component['identifier']}");
     });
 

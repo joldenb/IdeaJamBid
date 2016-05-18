@@ -1586,112 +1586,189 @@ router.get('/component-profile/:identifier', function(req, res){
   Component.findOne({"identifier" : req.params.identifier}, function(err, component){
     IdeaSeed.findById(req.session.idea,function(err, idea){
 
-      var listOfVariants = [], variantDates = [];
-      if(idea.variants.length > 0){
-        for(var k = 0; k < idea.variants.length; k ++){
-          if(idea.variants[k].components && idea.variants[k].components.indexOf(component['id'].toString()) > -1){
-            listOfVariants.push(idea.variants[k]);
+      Component.find({
+        "ideaSeed" : req.session.idea
+        }, function(err, components){
+
+        var relatedComponents = [];
+        if(component.relatedComps.length > 0){
+          var compDescription = "";
+          var relatedCompIdStrings = _.map(component.relatedComps, function(item){
+            return item['compID'].toString();
+          });
+
+          for(var j = 0; j < components.length; j++){
+            if(relatedCompIdStrings.indexOf(components[j]['id']) > -1 ){
+              compDescription = component.relatedComps[relatedCompIdStrings.indexOf(components[j]['id'])]['relationship'];
+              relatedComponents.push([components[j], compDescription]);
+            }
           }
         }
-      }
 
-      variantDates = _.map(listOfVariants, function(item){
-        return [new Date(parseInt(item.name.substr(-13))).toString(), item.name]
-      });
-
-
-      if(component['problemID']){
-        IdeaProblem.findOne({"_id" : component['problemID']}, function(err, problem){
-          //first get the images that the component is in
-          if(component.images.length > 0){
-            var imageIDs = _.map(component.images, function(item){ return item['imageID']});
-            IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
-              var imageURLs = [];
-              for(var i = 0; i < images.length; i++){
-                if(images[i] && images[i].image){
-                  var filename = images[i]["filename"];
-                  imageURLs.push([
-                    filename,
-                    "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
-                  ]);
-                }
-                res.render('pages/component-profile', {
-                  user : req.user,
-                  idea : idea._doc,
-                  component : component,
-                  problem : problem,
-                  variantDates : variantDates,
-                  imageURLs : imageURLs
-                  //problems : problems,
-                  //components : components,
-                  //listOfProblems : listOfProblems 
-                });
-              }
-            });//end of image query
-
-          // in case theres no images
-          } else {
-                res.render('pages/component-profile', {
-                  user : req.user,
-                  idea : idea._doc,
-                  component : component,
-                  problem : problem,
-                  variantDates : variantDates,
-                  //problemAreas  : problemAreas,
-                  imageURLs : []
-                  //problems : problems,
-                  //components : components,
-                  //listOfProblems : listOfProblems 
-                });
+        var listOfVariants = [], variantDates = [];
+        if(idea.variants.length > 0){
+          for(var k = 0; k < idea.variants.length; k ++){
+            if(idea.variants[k].components && idea.variants[k].components.indexOf(component['id'].toString()) > -1){
+              listOfVariants.push(idea.variants[k]);
+            }
           }
-        });// end of problem query
-      } else {
-          //first get the images that the component is in
-          if(component.images.length > 0){
-            var imageIDs = _.map(component.images, function(item){ return item['imageID']});
-            IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
-              var imageURLs = [];
-              for(var i = 0; i < images.length; i++){
-                if(images[i] && images[i].image){
-                  var filename = images[i]["filename"];
-                  imageURLs.push([
-                    filename,
-                    "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
-                  ]);
-                }
-                res.render('pages/component-profile', {
-                  user : req.user,
-                  idea : idea._doc,
-                  component : component,
-                  problem : "none",
-                  variantDates : variantDates,
-                  imageURLs : imageURLs
-                  //problems : problems,
-                  //components : components,
-                  //listOfProblems : listOfProblems 
-                });
-              }
-            });//end of image query
+        }
 
-          // in case theres no images
-          } else {
-                res.render('pages/component-profile', {
-                  user : req.user,
-                  idea : idea._doc,
-                  component : component,
-                  variantDates : variantDates,
-                  problem : "none",
-                  //problemAreas  : problemAreas,
-                  imageURLs : []
-                  //problems : problems,
-                  //components : components,
-                  //listOfProblems : listOfProblems 
-                });
-          }
-      }
+        variantDates = _.map(listOfVariants, function(item){
+          return [new Date(parseInt(item.name.substr(-13))).toString(), item.name]
+        });
+
+
+        if(component['problemID']){
+          IdeaProblem.findOne({"_id" : component['problemID']}, function(err, problem){
+            //first get the images that the component is in
+            if(component.images.length > 0){
+              var imageIDs = _.map(component.images, function(item){ return item['imageID']});
+              IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
+                var imageURLs = [];
+                for(var i = 0; i < images.length; i++){
+                  if(images[i] && images[i].image){
+                    var filename = images[i]["filename"];
+                    imageURLs.push([
+                      filename,
+                      "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
+                    ]);
+                  }
+                  res.render('pages/component-profile', {
+                    user : req.user,
+                    idea : idea._doc,
+                    component : component,
+                    problem : problem,
+                    variantDates : variantDates,
+                    imageURLs : imageURLs,
+                    components : components,
+                    relatedComponents : relatedComponents
+                    //components : components,
+                    //listOfProblems : listOfProblems 
+                  });
+                }
+              });//end of image query
+
+            // in case theres no images
+            } else {
+                  res.render('pages/component-profile', {
+                    user : req.user,
+                    idea : idea._doc,
+                    components : components,
+                    component : component,
+                    problem : problem,
+                    variantDates : variantDates,
+                    //problemAreas  : problemAreas,
+                    imageURLs : [],
+                    relatedComponents : relatedComponents
+                    //components : components,
+                    //listOfProblems : listOfProblems 
+                  });
+            }
+          });// end of problem query
+        } else {
+            //first get the images that the component is in
+            if(component.images.length > 0){
+              var imageIDs = _.map(component.images, function(item){ return item['imageID']});
+              IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
+                var imageURLs = [];
+                for(var i = 0; i < images.length; i++){
+                  if(images[i] && images[i].image){
+                    var filename = images[i]["filename"];
+                    imageURLs.push([
+                      filename,
+                      "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
+                    ]);
+                  }
+                  res.render('pages/component-profile', {
+                    user : req.user,
+                    idea : idea._doc,
+                    components : components,
+                    component : component,
+                    problem : "none",
+                    variantDates : variantDates,
+                    imageURLs : imageURLs,
+                    relatedComponents : relatedComponents
+                    //components : components,
+                    //listOfProblems : listOfProblems 
+                  });
+                }
+              });//end of image query
+
+            // in case theres no images
+            } else {
+                  res.render('pages/component-profile', {
+                    user : req.user,
+                    idea : idea._doc,
+                    components : components,
+                    component : component,
+                    variantDates : variantDates,
+                    problem : "none",
+                    relatedComponents : relatedComponents,
+                    imageURLs : []
+                    //problems : problems,
+                    //components : components,
+                    //listOfProblems : listOfProblems 
+                  });
+            }
+        }
+      }); // end of other component query
     });
 
   });// end of component query
 });
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for sort problems
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.post('/add-related-component', function(req, res) {
+    var compIdentifier = req.body['component-identifier'];
+    var relatedCompIdentifier = req.body['addRelatedComponent'];
+    var relatedCompDescription = req.body['newRelatedComponentDesc'];
+
+    Component.findOne({"identifier" : compIdentifier}, function(err, thisComponent){
+      Component.findOne({"identifier" : relatedCompIdentifier}, function(err, otherComponent){
+        
+        // add other component to this component
+        if(thisComponent.relatedComps.length > 0){
+          thisComponent.relatedComps.push({
+            "compID" : otherComponent['id'],
+            "relationship"  : relatedCompDescription
+          });
+        } else {
+          thisComponent.relatedComps = {
+            "compID" : otherComponent['id'],
+            "relationship"  : relatedCompDescription
+          };
+        }
+
+        // add other component to this component
+        if(otherComponent.relatedComps.length > 0){
+          otherComponent.relatedComps.push({
+            "compID" : thisComponent['id'],
+            "relationship"  : relatedCompDescription
+          });
+        } else {
+          otherComponent.relatedComps = {
+            "compID" : thisComponent['id'],
+            "relationship"  : relatedCompDescription
+          };
+        }
+
+        thisComponent.save(function(err){
+          otherComponent.save(function(err){
+            console.log('new related component added');
+            res.redirect('/component-profile/'+compIdentifier);
+          });
+        });
+
+      });
+    });
+});
+
 
 module.exports = router;

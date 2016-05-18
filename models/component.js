@@ -26,6 +26,15 @@ var Component = new Schema({
 		secondY		: String
 	}],
 
+	mainImage		: ObjectId,
+
+	//should get saved in both components,
+	// with each other's object ID's
+	relatedComps : [{
+		compID				: ObjectId,
+		relationship	: String 
+	}],
+
 	ideaSeed		: ObjectId
 });
 
