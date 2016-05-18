@@ -18,13 +18,12 @@ html
           .modal-header
             button(type="button", class="close" data-dismiss="modal") &times;
             .modal-title 
-              h2 Contribute an Idea
+              h2 Create a Component
           .modal-body
             form(role='form', id="saveComponent" action="/save-component", method="post", style='max-width: 300px;', data-idea-doc=idea)
               .form-group
-                h3 New Component:
                 |  
-                input.form-control.ui-front(type='text', name="component", id="componentName", placeholder='This is called...', autocomplete="on")
+                input.form-control.ui-front(type='text', name="component", id="componentName", value='The component is called ', autocomplete="on")
                 h4#new-idea-description Description:
                 |  
                 textarea.form-control(rows='6', cols="75", name="description", id="description",
@@ -153,7 +152,8 @@ html
       
 
       $.post('/save-component', data, function(resp) {
-        $("#componentName").val('');
+        $("#componentName").val('The component is called ');
+        $("#description").val('');
         $("#existingComponents option[value='None Selected']").prop({'selected': true});
         $("#myModal").modal('hide');
 
@@ -260,3 +260,24 @@ html
       });
     });
 
+    var input = document.getElementsByTagName ("input");
+
+    // This is for the main solution text input
+    var requiredText = "The component is called "
+    input[0].addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredText) == -1) {
+            $(this).val(requiredText);
+      }
+      if (this.selectionStart < 24) {
+        this.selectionStart = 24;
+      }
+    }, false);
+
+    input[0].addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredText) == -1) {
+            $(this).val(requiredText);
+      }
+      if (this.selectionStart < 24) {
+        this.selectionStart = 24;
+      }
+    }, false);
