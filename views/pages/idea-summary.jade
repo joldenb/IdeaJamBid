@@ -213,7 +213,7 @@ html
         },
         function(data, respone) {
           $("#idea-summary-components ul")
-            .append("<li><h4>"+ data['number'] + " : " + data['text'] + "</h4></li>");
+            .append("<li><a href='/component-profile/"+ data['identifier'] +"'><h4>"+ data['number'] + " : " + data['text'] + "</h4></a></li>");
           $("#componentName").val('');
           $("#componentDescription").val('');
           $("#addComponentModal").modal('hide');
