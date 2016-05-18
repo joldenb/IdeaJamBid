@@ -41,15 +41,17 @@ html
                     h4#suggestion-header
                     |  
                     input.form-control(type='text', name="suggestion", value='The solution of ')
-                    h3 Hindsight : Looking Back
+                    br
+                    button.btn#show-hindsight-etc Hindsight, Foresight, Outsight
+                    h3.hindsight(style="display:none;") Hindsight : Looking Back
                     |  
-                    textarea.form-control(rows='3', cols="75", name="hindsight", placeholder='An idea to consider...')
-                    h3 Foresight : Looking Ahead
+                    input.form-control.hindsight(style="display:none;", name="hindsight", value='In hindsight, ')
+                    h3.foresight(style="display:none;") Foresight : Looking Ahead
                     |  
-                    textarea.form-control(rows='3', cols="75", name="foresight", placeholder='An idea to consider...')
-                    h3 Outsight : Looking Outward
+                    input.form-control.foresight(style="display:none;", name="foresight", value='In foresight, ')
+                    h3.outsight(style="display:none;") Outsight : Looking Outward
                     |  
-                    textarea.form-control(rows='3', cols="75", name="outsight", placeholder='An idea to consider...')
+                    input.form-control.outsight(style="display:none;", name="outsight", value='In outsight, ')
                     input(type="hidden" id="suggestion-category" name="suggestionCategory")
                     input(type="hidden" id="point-value" name="pointValue")
                     input(type="hidden" id="problem-type" name="problemType")
@@ -370,6 +372,7 @@ html
 
     var input = document.getElementsByTagName ("input");
 
+    // This is for the main solution text input
     var requiredText = "The solution of "
     input[0].addEventListener ("mousedown", function () {
       if (String($(this).val()).indexOf(requiredText) == -1) {
@@ -389,5 +392,72 @@ html
       }
     }, false);
 
+    $("#show-hindsight-etc").click(function(event){
+      event.preventDefault();
+      $("#show-hindsight-etc").hide();
+      $(".hindsight").show();
+      $(".foresight").show();
+      $(".outsight").show();
 
+      
+      //hindsight
+      input[1].addEventListener ("mousedown", function () {
+        if (String($(this).val()).indexOf("In hindsight, ") == -1) {
+              $(this).val("In hindsight, ");
+        }
+        if (this.selectionStart < 14) {
+          this.selectionStart = 14;
+        }
+      }, false);
+
+      input[1].addEventListener ("keydown", function () {
+        if (String($(this).val()).indexOf("In hindsight, ") == -1) {
+              $(this).val("In hindsight, ");
+        }
+        if (this.selectionStart < 14) {
+          this.selectionStart = 14;
+        }
+      }, false);
+
+      
+      //foresight
+      input[2].addEventListener ("mousedown", function () {
+        if (String($(this).val()).indexOf("In foresight, ") == -1) {
+              $(this).val("In foresight, ");
+        }
+        if (this.selectionStart < 14) {
+          this.selectionStart = 14;
+        }
+      }, false);
+
+      input[2].addEventListener ("keydown", function () {
+        if (String($(this).val()).indexOf("In foresight, ") == -1) {
+              $(this).val("In foresight, ");
+        }
+        if (this.selectionStart < 14) {
+          this.selectionStart = 14;
+        }
+      }, false);
+
+      
+      //outsight
+      input[3].addEventListener ("mousedown", function () {
+        if (String($(this).val()).indexOf("In outsight, ") == -1) {
+              $(this).val("In outsight, ");
+        }
+        if (this.selectionStart < 14) {
+          this.selectionStart = 14;
+        }
+      }, false);
+
+      input[3].addEventListener ("keydown", function () {
+        if (String($(this).val()).indexOf("In outsight, ") == -1) {
+              $(this).val("In outsight, ");
+        }
+        if (this.selectionStart < 14) {
+          this.selectionStart = 14;
+        }
+      }, false);
+
+    });
 
