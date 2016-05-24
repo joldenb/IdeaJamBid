@@ -134,73 +134,7 @@ IdeaSeed.statics.getWasteValueCompletion = function(idea){
 
 IdeaSeed.statics.createApplication = function(idea, account, problems, images, comps, res){
 
-		function renderImage(number) {
-			var outStreams = [];
-			var canvasStreams = [];
-
-			canvas = new Canvas(1000, 700);
-			ctx = canvas.getContext('2d');
-
-			ctx.fillStyle="#FFFFFF";
-			ctx.fillRect(0,0,1000,700);
-
-			img = new Image();
-			img.src = "data:" + images[number].imageMimetype + ";base64," + images[number].image.toString('base64');
-			ctx.drawImage(img, 200, 150, 600, 400);
-
-			var componentImageIds = [], imageIndex;
-			for(var j=0; j < comps.length; j++){
-				componentImageIds = _.map(comps[j].images, function(image){
-					return image['imageID'].toString();
-				});
-
-				if(componentImageIds.indexOf(images[number].id) > -1  && 
-						comps[j]['number'] ){
-					
-					imageIndex = componentImageIds.indexOf(images[number].id);
-
-					var firstX = parseInt(comps[j].images[imageIndex].firstX);
-					var firstY = parseInt(comps[j].images[imageIndex].firstY);
-					var secondX = parseInt(comps[j].images[imageIndex].secondX);
-					var secondY = parseInt(comps[j].images[imageIndex].secondY);
-					ctx.beginPath();
-          ctx.moveTo(firstX, firstY);
-          ctx.lineTo(secondX, secondY);
-          ctx.stroke();
-
-          var textCoordX, textCoordY;
-          ctx.fillStyle = "black";
-          ctx.font="20px Helvetica";
-          if(secondX > 800){
-            textCoordX = (secondX*1 + 20);
-            textCoordY = secondY;
-          } else if(secondX < 200){
-            textCoordX = secondX - 20;
-            textCoordY = secondY;
-          } else if(secondY > 550){
-            textCoordX = secondX;
-            textCoordY = (secondY*1 + 20);
-          } else if(secondY < 150){
-            textCoordX = secondX;
-            textCoordY = secondY - 20;
-          }
-          ctx.fillText(comps[j]['number']+".",textCoordX,textCoordY);
-				}
-			}
-			out = fs.createWriteStream(__dirname + '/figure-' + (number+1) +'.png');
-			canvasStream = canvas.pngStream();
-
-			canvasStream.on('data', function(chunk){
-				out.write(chunk);
-			});
-
-			canvasStream.on('end', function(){
-				console.log('saved png');
-				if(number < images.length - 1){
-					number++;
-					renderImage(number);
-				// once all the images are created, create the rest of the word document
-				} else if (number == images.length - 1 ){
+		function createWordDoc(){
 					res.writeHead ( 200, {
 						"Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 						'Content-disposition': 'attachment; filename=PreliminaryApplication.docx'
@@ -436,8 +370,6 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 						}
 					}
 
-
-
 					for(i=0;i<images.length; i++){
 						docx.putPageBreak ();
 						pObj = docx.createP ();
@@ -457,8 +389,76 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 				        console.log ( err );
 				    }
 					} );
+		}			
 
+		function renderImage(number) {
+			var outStreams = [];
+			var canvasStreams = [];
 
+			canvas = new Canvas(1000, 700);
+			ctx = canvas.getContext('2d');
+
+			ctx.fillStyle="#FFFFFF";
+			ctx.fillRect(0,0,1000,700);
+
+			img = new Image();
+			img.src = "data:" + images[number].imageMimetype + ";base64," + images[number].image.toString('base64');
+			ctx.drawImage(img, 200, 150, 600, 400);
+
+			var componentImageIds = [], imageIndex;
+			for(var j=0; j < comps.length; j++){
+				componentImageIds = _.map(comps[j].images, function(image){
+					return image['imageID'].toString();
+				});
+
+				if(componentImageIds.indexOf(images[number].id) > -1  && 
+						comps[j]['number'] ){
+					
+					imageIndex = componentImageIds.indexOf(images[number].id);
+
+					var firstX = parseInt(comps[j].images[imageIndex].firstX);
+					var firstY = parseInt(comps[j].images[imageIndex].firstY);
+					var secondX = parseInt(comps[j].images[imageIndex].secondX);
+					var secondY = parseInt(comps[j].images[imageIndex].secondY);
+					ctx.beginPath();
+          ctx.moveTo(firstX, firstY);
+          ctx.lineTo(secondX, secondY);
+          ctx.stroke();
+
+          var textCoordX, textCoordY;
+          ctx.fillStyle = "black";
+          ctx.font="20px Helvetica";
+          if(secondX > 800){
+            textCoordX = (secondX*1 + 20);
+            textCoordY = secondY;
+          } else if(secondX < 200){
+            textCoordX = secondX - 20;
+            textCoordY = secondY;
+          } else if(secondY > 550){
+            textCoordX = secondX;
+            textCoordY = (secondY*1 + 20);
+          } else if(secondY < 150){
+            textCoordX = secondX;
+            textCoordY = secondY - 20;
+          }
+          ctx.fillText(comps[j]['number']+".",textCoordX,textCoordY);
+				}
+			}
+			out = fs.createWriteStream(__dirname + '/figure-' + (number+1) +'.png');
+			canvasStream = canvas.pngStream();
+
+			canvasStream.on('data', function(chunk){
+				out.write(chunk);
+			});
+
+			canvasStream.on('end', function(){
+				console.log('saved png');
+				if(number < images.length - 1){
+					number++;
+					renderImage(number);
+				// once all the images are created, create the rest of the word document
+				} else if (number == images.length - 1 ){
+					createWordDoc();
 
 				}
 			});
@@ -467,16 +467,9 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 		if(images.length > 0){
 			var number = 0;
 			renderImage(number);
+		} else {
+			createWordDoc();
 		}
-		
-
-
-
-
-
-
-
-
 
 };
 
