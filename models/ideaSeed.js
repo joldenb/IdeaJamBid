@@ -4,8 +4,10 @@ var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 var officegen = require('officegen');
 var fs = require('fs');
+var path = require('path');
 var IdeaReview = require('./ideaReviews');
 var ObjectId = mongoose.Schema.Types.ObjectId;
+var Canvas = require('canvas'), Image = Canvas.Image;
 
 var IdeaSeed = new Schema({
 	name			: String,
@@ -130,158 +132,351 @@ IdeaSeed.statics.getWasteValueCompletion = function(idea){
 	
 };
 
-IdeaSeed.statics.createApplication = function(idea, account, res){
-		res.writeHead ( 200, {
-			"Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-			'Content-disposition': 'attachment; filename=PreliminaryApplication.docx'
-		});
+IdeaSeed.statics.createApplication = function(idea, account, problems, images, comps, res){
 
-		var docx = officegen ( 'docx' );
+		function renderImage(number) {
+			var outStreams = [];
+			var canvasStreams = [];
 
-		docx.on ( 'finalize', function ( written ) {
-			console.log ( 'Finish to create a Word file.\nTotal bytes created: ' + written + '\n' );
-		});
+			canvas = new Canvas(1000, 700);
+			ctx = canvas.getContext('2d');
 
-		docx.on ( 'error', function ( err ) {
-			console.log ( 'Errors: ' + err + '\n' );
-		});
+			ctx.fillStyle="#FFFFFF";
+			ctx.fillRect(0,0,1000,700);
+
+			img = new Image();
+			img.src = "data:" + images[number].imageMimetype + ";base64," + images[number].image.toString('base64');
+			ctx.drawImage(img, 200, 150, 600, 400);
+
+			var componentImageIds = [], imageIndex;
+			for(var j=0; j < comps.length; j++){
+				componentImageIds = _.map(comps[j].images, function(image){
+					return image['imageID'].toString();
+				});
+
+				if(componentImageIds.indexOf(images[number].id) > -1  && 
+						comps[j]['number'] ){
+					
+					imageIndex = componentImageIds.indexOf(images[number].id);
+
+					var firstX = parseInt(comps[j].images[imageIndex].firstX);
+					var firstY = parseInt(comps[j].images[imageIndex].firstY);
+					var secondX = parseInt(comps[j].images[imageIndex].secondX);
+					var secondY = parseInt(comps[j].images[imageIndex].secondY);
+					ctx.beginPath();
+          ctx.moveTo(firstX, firstY);
+          ctx.lineTo(secondX, secondY);
+          ctx.stroke();
+
+          var textCoordX, textCoordY;
+          ctx.fillStyle = "black";
+          ctx.font="20px Helvetica";
+          if(secondX > 800){
+            textCoordX = (secondX*1 + 20);
+            textCoordY = secondY;
+          } else if(secondX < 200){
+            textCoordX = secondX - 20;
+            textCoordY = secondY;
+          } else if(secondY > 550){
+            textCoordX = secondX;
+            textCoordY = (secondY*1 + 20);
+          } else if(secondY < 150){
+            textCoordX = secondX;
+            textCoordY = secondY - 20;
+          }
+          ctx.fillText(comps[j]['number']+".",textCoordX,textCoordY);
+				}
+			}
+			out = fs.createWriteStream(__dirname + '/figure-' + (number+1) +'.png');
+			canvasStream = canvas.pngStream();
+
+			canvasStream.on('data', function(chunk){
+				out.write(chunk);
+			});
+
+			canvasStream.on('end', function(){
+				console.log('saved png');
+				if(number < images.length - 1){
+					number++;
+					renderImage(number);
+				// once all the images are created, create the rest of the word document
+				} else if (number == images.length - 1 ){
+					res.writeHead ( 200, {
+						"Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+						'Content-disposition': 'attachment; filename=PreliminaryApplication.docx'
+					});
+
+					var docx = officegen ( 'docx' );
+
+					docx.on ( 'finalize', function ( written ) {
+						console.log ( 'Finish to create a Word file.\nTotal bytes created: ' + written + '\n' );
+					});
+
+					docx.on ( 'error', function ( err ) {
+						console.log ( 'Errors: ' + err + '\n' );
+					});
 
 
-		var pObj = docx.createP ({ align: 'center' });
-		pObj.addText ( 'Preliminary Application for', { font_size: 30 } );
-		pObj = docx.createP ({ align: 'center' });
-		pObj.addText( '', { font_size : 25 } );
-		pObj = docx.createP ({ align: 'center' });
-		pObj.addText ( idea.name, { font_size: 30 } );
-		pObj = docx.createP ({ align: 'center' });
-		pObj.addText( '', { font_size : 25 } );
-		pObj = docx.createP ({ align: 'center' });
-		pObj.addText( 'By : ', { font_size : 25 } );
-		pObj = docx.createP ({ align: 'center' });
-		pObj.addText( account.username, { font_size : 25 } );
+					var pObj = docx.createP ({ align: 'center' });
+					pObj.addText ( 'IN THE UNITED STATES PATENT AND TRADEMARK OFFICE', { font_size: 14 } );
+					pObj = docx.createP ({ align: 'center' });
+					pObj.addText ( 'Provisional Utility Patent Application', { font_size: 14 } );
+					pObj = docx.createP ({ align: 'center' });
+					pObj.addText( '', { font_size : 14 } );
 
-		docx.putPageBreak ();
+					//what its called and who its by
+					pObj = docx.createP ({ align: 'center' });
+					pObj.addText ( idea.name, { font_size: 14 } );
+					pObj = docx.createP ({ align: 'center' });
+					pObj.addText( account.username, { font_size : 14 } );
+					pObj = docx.createP ({ align: 'center' });
+					pObj.addText( '', { font_size : 14 } );
 
-		pObj = docx.createP ();
-		pObj.addText( 'Idea Description', { font_size : 25 } );
-		pObj = docx.createP ();
-		if(idea.description){
-			pObj.addText( idea.description, {font_size : 14});
-		} else {
-			pObj.addText( "No idea description entered yet.", {font_size : 14});
+					pObj = docx.createP ({ align: 'center' });
+					pObj.addText ( 'CROSS-REFERENCE TO RELATED APPLICATIONS: Not Applicable', { font_size: 14 } );
+					pObj = docx.createP ({ align: 'center' });
+					pObj.addText( '', { font_size : 14 } );
+					pObj = docx.createP ({ align: 'center' });
+					pObj.addText ( 'STATEMENT REGARDING FEDERALLY SPONSORED RESEARCH OR DEVELOPMENT: Not Applicable', { font_size: 14 } );
+					pObj = docx.createP ({ align: 'center' });
+					pObj.addText( '', { font_size : 14 } );
+					pObj = docx.createP ({ align: 'center' });
+					pObj.addText ( 'REFERENCE TO SEQUENCE LISTING, A TABLE, OR A COMPUTER PROGRAM LISTING COMPACT DISK APPENDIX: Not Applicable', { font_size: 14 } );
+
+					docx.putPageBreak ();
+
+					pObj = docx.createP ();
+					pObj.addText( 'BACKGROUND OF THE INVENTION', { font_size : 14 } );
+
+					// enter description which involves broad problem statement.
+					pObj = docx.createP ({ align: 'center' });
+					pObj.addText ( 'The present inventor has recognized \"' + idea.problem.toLowerCase() +
+						'\".  Currently there are a number of solutions for \"' + idea.problem.toLowerCase() +
+						'\". These solutions, however, fail to meet the needs of the'+
+						' industry because of the challenges associated with ', { font_size : 14 });
+					for(var i = 0;  i < problems.length; i++){
+						if(i < problems.length - 1){
+							pObj.addText ( problems[i].text.toLowerCase() + '\", \"', { font_size : 14 } );
+						} else {
+							pObj.addText ( + "and \"" + problems[i].text.toLowerCase() + '\". ', { font_size : 14 } );
+						}
+					}
+
+					pObj = docx.createP ();
+					pObj.addText( 'BRIEF DESCRIPTION OF FIGURES', { font_size : 14 } );
+
+					for(i=0; i < images.length; i++){
+						pObj = docx.createP ();
+						pObj.addText( 'Figure 1 depicts an embodiment of the invention comprising \"', { font_size : 14 } );
+						pObj.addText( images[i].filename + '\".', { font_size : 14 } );
+					}
+
+					pObj = docx.createP ();
+					pObj.addText( 'BRIEF DESCRIPTION OF NUMERICAL REFERENCES IN FIGURES', { font_size : 14 } );
+					for(i=0; i < comps.length; i++){
+						if(comps[i].number && comps[i].text){
+							pObj = docx.createP ();
+							pObj.addText( comps[i].number +'. \"', { font_size : 14 } );
+							pObj.addText( comps[i].text + '\" in an embodiment of the invention.', { font_size : 14 } );
+						}
+					}
+
+					pObj = docx.createP ();
+					pObj.addText( 'DESCRIPTION OF THE INVENTION', { font_size : 14 } );
+
+					pObj = docx.createP ();
+					pObj.addText( 'The preferred embodiment of the present invention is a \"' + idea.name + 
+						'\".  \"' + idea.name + '\" is intended to \"' + idea.description + '\".  ' + 
+						'Embodiments of the invention comprise some or all of the following components: ', { font_size : 14 } );
+					for(i=0; i < comps.length; i++){
+						if(comps[i].problemID && comps[i].descriptions.length > 0){
+							pObj.addText( '(' + (i+1) +'.) ', { font_size : 14 } );
+							pObj.addText( comps[i].descriptions[0].toLowerCase() + '\", \"', { font_size : 14 } );
+						}
+					}
+					pObj.addText('.', {font_size : 14});
+
+					for(i=0; i < comps.length; i++){
+						if(comps[i].problemID && comps[i].descriptions.length > 0){
+							pObj = docx.createP ();
+							pObj.addText( 'An embodiment of the invention incorporates \"' +
+								comps[i].descriptions[0].toLowerCase() + '\". ', { font_size : 14 } );
+							pObj.addText( 'The present inventor has recognized that \"' +
+								comps[i].descriptions[0].toLowerCase() + '\" addresses the problem of \"', { font_size : 14 } );
+							for(j=0; j < problems.length; j++){
+								if(comps[i].problemID.toString() == problems[j]['id'].toString()){
+									pObj.addText( problems[j]['text'] + '\".  \"', { font_size : 14 } );
+								}
+							}	
+							
+							if(comps[i].descriptions.length > 1){
+								for(j=1; j < comps[i].descriptions.length; j++){
+									pObj.addText( '\"'+comps[i].descriptions[0] + '\" is described as \"', { font_size : 14 } );
+									pObj.addText( comps[i].descriptions[j] + '\". ', { font_size : 14 } );
+								}
+							}
+						}
+					}
+
+					var alreadyListed = [];
+					var otherCompName = '';
+					for(i=0; i < comps.length; i++){
+						if(comps[i].relatedComps.length > 0){
+							for(j=0; j < comps[i].relatedComps.length; j++){
+								
+								//since the component relationship is listed in both components, we only list the relationship if
+								// it hasn't been listed yet.
+								if(alreadyListed.indexOf(comps[i].id.toString()+"-"+ comps[i].relatedComps[j].compID.toString()) == -1  &&
+									alreadyListed.indexOf(comps[i].relatedComps[j].compID.toString()+"-"+ comps[i].id.toString()) == -1 ){
+									
+									//get the other component's name or first description
+									for(k=0; k < comps.length; k++){
+										if(comps[k].id.toString() == comps[i].relatedComps[j].compID.toString()){
+											if(comps[k].text && comps[i].text){
+												otherCompName = comps[k].text;
+												pObj = docx.createP ();
+												pObj.addText( 'In an embodiment of the invention, \"' + comps[i].text.toLowerCase() + '\"\"\" and \"\"', { font_size : 14 } );
+												pObj.addText( otherCompName.toLowerCase() + '\" are related. \"\"', { font_size : 14 } );
+												pObj.addText( comps[i].text.toLowerCase() + '\" and \"', { font_size : 14 } );
+												pObj.addText( otherCompName + '\" related to one another in such embodiment by \"', { font_size : 14 } );
+												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase() + '\". ', { font_size : 14 } );
+											} else if(!comps[k].text && comps[i].text) {
+												otherCompName = comps[k].descriptions[0];
+												pObj = docx.createP ();
+												pObj.addText( 'In an embodiment of the invention, \"' + comps[i].text.toLowerCase() + '\" and \"', { font_size : 14 } );
+												pObj.addText( otherCompName.toLowerCase() + '\" are related. \"', { font_size : 14 } );
+												pObj.addText( comps[i].text.toLowerCase() + '\" and \"', { font_size : 14 } );
+												pObj.addText( otherCompName + '\" related to one another in such embodiment by \"', { font_size : 14 } );
+												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase() + '\". ', { font_size : 14 } );
+											} else if(comps[k].text && !comps[i].text) {
+												otherCompName = comps[k].text;
+												pObj = docx.createP ();
+												pObj.addText( 'In an embodiment of the invention, \"' + comps[i].descriptions[0].toLowerCase() + '\" and \"', { font_size : 14 } );
+												pObj.addText( otherCompName.toLowerCase() + '\" are related. \"', { font_size : 14 } );
+												pObj.addText( comps[i].descriptions[0].toLowerCase() + '\" and \"', { font_size : 14 } );
+												pObj.addText( otherCompName + '\" related to one another in such embodiment by \"', { font_size : 14 } );
+												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase() + '\". ', { font_size : 14 } );
+											} else if(!comps[k].text && !comps[i].text) {
+												otherCompName = comps[k].descriptions[0];
+												pObj = docx.createP ();
+												pObj.addText( 'In an embodiment of the invention, \"' + comps[i].descriptions[0].toLowerCase() + '\" and \"', { font_size : 14 } );
+												pObj.addText( otherCompName.toLowerCase() + '\" are related. \"', { font_size : 14 } );
+												pObj.addText( comps[i].descriptions[0].toLowerCase() + '\" and \"', { font_size : 14 } );
+												pObj.addText( otherCompName + '\" related to one another in such embodiment by \"', { font_size : 14 } );
+												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase() + '\". ', { font_size : 14 } );
+											}
+										}
+									}
+
+									alreadyListed.push(comps[i].id.toString()+"-"+ comps[i].relatedComps[j].compID.toString());
+									otherCompName = '';
+
+								}
+							}
+						}
+
+
+					}
+
+					pObj = docx.createP ();
+					pObj.addText( 'In the foregoing specification, specific embodiments have been described. '+
+						'However, one of ordinary skill in the art appreciates that various modifications and changes '+
+						'can be made without departing from the scope of the invention as set forth in the claims below. '+
+						'Accordingly, the specification and figures are to be regarded in an illustrative rather than a '+
+						'restrictive sense, and all such modifications are intended to be included within the scope of present '+
+						'teachings.', { font_size : 14 } );
+					pObj = docx.createP ();
+					pObj.addText( 'The benefits, advantages, solutions to problems, and any element(s) that may cause any '+
+						'benefit, advantage, or solution to occur or become more pronounced are not to be construed as a critical, '+
+						'required, or essential features or elements of any or all the claims. The invention is defined solely '+
+						'by the appended claims including any amendments made during the pendency of this application and all '+
+						'equivalents of those claims as issued.', { font_size : 14 } );
+					pObj = docx.createP ();
+					pObj.addText( 'Moreover in this document, relational terms such as first and second, top and bottom, and '+
+						'the like may be used solely to distinguish one entity or action from another entity or action without '+
+						'necessarily requiring or implying any actual such relationship or order between such entities or actions. '+
+						'The terms "comprises," "comprising," "has", "having," "includes", "including," "contains", "containing" or '+
+						'any other variation thereof, are intended to cover a non-exclusive inclusion, such that a process, method, '+
+						'article, or apparatus that comprises, has, includes, contains a list of elements does not include only those '+
+						'elements but may include other elements not expressly listed or inherent to such process, method, article, '+
+						'or apparatus. An element proceeded by "comprises ... a", "has ... a", "includes ... a", "contains ... a" '+
+						'does not, without more constraints, preclude the existence of additional identical elements in the process, '+
+						'method, article, or apparatus that comprises, has, includes, contains the element. The terms "a" and "an" are '+
+						'defined as one or more unless explicitly stated otherwise herein. The terms "substantially", "essentially", '+
+						'"approximately", "about" or any other version thereof, are defined as being close to as understood by one of '+
+						'ordinary skill in the art. The terms "coupled" and “linked” as used herein is defined as connected, although '+
+						'not necessarily directly and not necessarily mechanically. A device or structure that is "configured" in a '+
+						'certain way is configured in at least that way, but may also be configured in ways that are not listed. Also, '+
+						'the sequence of steps in a flow diagram or elements in the claims, even when preceded by a letter does not '+
+						'imply or require that sequence.', { font_size : 14 } );
+
+
+					docx.putPageBreak ();
+					pObj = docx.createP ();
+					pObj.addText( 'CLIAMS', { font_size : 14 } );
+					pObj = docx.createP ();
+					pObj.addText( 'I claim:', { font_size : 14 } );
+					pObj = docx.createP ();
+					pObj.addText( '1. The invention described herein.', { font_size : 14 } );
+
+
+
+					docx.putPageBreak ();
+					pObj = docx.createP ();
+					pObj.addText( 'Legend of Components', { font_size : 14 } );
+					for(i=0; i < comps.length; i++){
+						if(comps[i].number && comps[i].text){
+							pObj = docx.createP ();
+							pObj.addText( comps[i].number +'. ', { font_size : 14 } );
+							pObj.addText( comps[i].text, { font_size : 14 } );
+						} else if(comps[i].number && comps[i].text){
+							pObj = docx.createP ();
+							pObj.addText( comps[i].number +'. ', { font_size : 14 } );
+							pObj.addText( comps[i].descriptions[0], { font_size : 14 } );
+						}
+					}
+
+
+
+					for(i=0;i<images.length; i++){
+						docx.putPageBreak ();
+						pObj = docx.createP ();
+						pObj.addText( 'Figure ' + (i+1), { font_size : 14 } );
+						pObj.addImage(__dirname + '/figure-' + (i+1) +'.png', { cx: 600, cy: 400 } ) ;
+					}
+
+					docx.generate ( res, {
+				    'finalize': function ( written ) {
+								for(i=0;i<images.length; i++){
+									fs.unlink(__dirname + '/figure-' + (i+1) +'.png');
+								}
+
+				        console.log ( 'Finish to create a preliminary application.\nTotal bytes created: ' + written + '\n' );
+				    },
+				    'error': function ( err ) {
+				        console.log ( err );
+				    }
+					} );
+
+
+
+				}
+			});
 		}
-		pObj = docx.createP ();
-		pObj.addText( '', { font_size : 25 } );
-		pObj = docx.createP ();
-		pObj.addText( 'Problem It Will Solve', { font_size : 25 } );
-		pObj = docx.createP ();
-		if(idea.problem){
-			pObj.addText( idea.problem, {font_size : 14});
-		} else {
-			pObj.addText( "No idea problem entered yet.", {font_size : 14});
+
+		if(images.length > 0){
+			var number = 0;
+			renderImage(number);
 		}
-
-		docx.putPageBreak ();
-
-		pObj = docx.createP ();
-		pObj.addText( 'Value Scores and Problems', { font_size : 25 } );
 		
-		pObj = docx.createP ();
-		var performance = idea.performOne || "No value yet entered";
-		pObj.addText( "Performability Rating: " + performance, {font_size : 18});
-		pObj = docx.createP ();
-		pObj.addText( "Performability Problem: " + idea.performProblem, { font_size : 14 } );
-		
-		pObj = docx.createP ();
-		var afford = idea.affordOne || "No value yet entered";
-		pObj.addText( "Affordability Rating: " + afford, {font_size : 18});
-		pObj = docx.createP ();
-		pObj.addText( "Affordability Problem: " + idea.affordProblem, { font_size : 14 } );
-		
-		pObj = docx.createP ();
-		var feature = idea.featureOne || "No value yet entered";
-		pObj.addText( "Featurability Rating: " + feature, {font_size : 18});
-		pObj = docx.createP ();
-		pObj.addText( "Featurability Problem: " + idea.featureProblem, { font_size : 14 } );
-		
-		pObj = docx.createP ();
-		var deliver = idea.deliverOne || "No value yet entered";
-		pObj.addText( "Deliverability Rating: " + deliver, {font_size : 18});
-		pObj = docx.createP ();
-		pObj.addText( "Deliverability Problem: " + idea.deliverProblem, { font_size : 14 } );
-		
-		pObj = docx.createP ();
-		var useability = idea.useabilityOne || "No value yet entered";
-		pObj.addText( "Useability Rating: " + useability, {font_size : 18});
-		pObj = docx.createP ();
-		pObj.addText( "Useability Problem: " + idea.useabilityProblem, { font_size : 14 } );
-		
-		pObj = docx.createP ();
-		var maintain = idea.maintainOne || "No value yet entered";
-		pObj.addText( "Maintainability Rating: " + maintain, {font_size : 18});
-		pObj = docx.createP ();
-		pObj.addText( "Maintainability Problem: " + idea.maintainProblem, { font_size : 14 } );
-		
-		pObj = docx.createP ();
-		var durable = idea.durabilityOne || "No value yet entered";
-		pObj.addText( "Durability Rating: " + durable, {font_size : 18});
-		pObj = docx.createP ();
-		pObj.addText( "Durability Problem: " + idea.durabilityProblem, { font_size : 14 } );
-		
-		pObj = docx.createP ();
-		var image = idea.imageOne || "No value yet entered";
-		pObj.addText( "Imageability Rating: " + image, {font_size : 18});
-		pObj = docx.createP ();
-		pObj.addText( "Imageability Problem: " + idea.imageProblem, { font_size : 14 } );
 
-		docx.putPageBreak ();
 
-		pObj = docx.createP ();
-		pObj.addText( 'Waste Scores and Problems', { font_size : 25 } );
-		
-		pObj = docx.createP ();
-		var complex = idea.complexOne || "No value yet entered";
-		pObj.addText( "Complexity Rating: " + complex, {font_size : 18});
-		pObj = docx.createP ();
-		pObj.addText( "Complexity Problem: " + idea.complexProblem, { font_size : 14 } );
 
-		pObj = docx.createP ();
-		var precise = idea.precisionOne || "No value yet entered";
-		pObj.addText( "Precision Rating: " + precise, {font_size : 18});
-		pObj = docx.createP ();
-		pObj.addText( "Precision Problem: " + idea.precisionProblem, { font_size : 14 } );
 
-		pObj = docx.createP ();
-		var variable = idea.variabilityOne || "No value yet entered";
-		pObj.addText( "Variability Rating: " + variable, {font_size : 18});
-		pObj = docx.createP ();
-		pObj.addText( "Variability Problem: " + idea.variabilityProblem, { font_size : 14 } );
-		
-		pObj = docx.createP ();
-		var sensitive = idea.sensitivityOne || "No value yet entered";
-		pObj.addText( "Sensitivity Rating: " + sensitive, {font_size : 18});
-		pObj = docx.createP ();
-		pObj.addText( "Sensitivity Problem: " + idea.sensitivityProblem, { font_size : 14 } );
 
-		pObj = docx.createP ();
-		var immature = idea.immatureOne || "No value yet entered";
-		pObj.addText( "Immaturity Rating: " + immature, {font_size : 18});
-		pObj = docx.createP ();
-		pObj.addText( "Immaturity Problem: " + idea.immatureProblem, { font_size : 14 } );
 
-		pObj = docx.createP ();
-		var danger = idea.dangerOne || "No value yet entered";
-		pObj.addText( "Danger Rating: " + danger, {font_size : 18});
-		pObj = docx.createP ();
-		pObj.addText( "Danger Problem: " + idea.dangerProblem, { font_size : 14 } );
 
-		pObj = docx.createP ();
-		var skills = idea.skillsOne || "No value yet entered";
-		pObj.addText( "Skills Required Rating: " + skills, {font_size : 18});
-		pObj = docx.createP ();
-		pObj.addText( "Skills Required Problem: " + idea.skillsProblem, { font_size : 14 } );
 
-		docx.generate ( res );
 
 };
 

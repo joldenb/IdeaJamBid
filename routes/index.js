@@ -1233,7 +1233,15 @@ router.get('/create-application', function(req, res){
       currentAccount = account._doc;
       IdeaSeed.findById(req.session.idea,function(err, idea){
         currentIdea = idea._doc;
-        IdeaSeed.createApplication(currentIdea, currentAccount, res);
+        IdeaProblem.find({"_id" : { $in : idea.problemPriorities}}, function(err, problems){
+          IdeaImage.find({"_id" : { $in : idea.images}}, function(err, images){
+            Component.find({"ideaSeed" : idea.id}, function(err, comps){
+
+              IdeaSeed.createApplication(currentIdea, currentAccount, problems, images, comps, res);
+
+            });
+          }); // end of image query
+        });// end of problem query
       });
   });
 });

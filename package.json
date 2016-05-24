@@ -9,6 +9,7 @@
   "dependencies": {
     "body-parser": "^1.14.2",
     "bootstrap": "^3.3.6",
+    "canvas": "^1.3.15",
     "chai": "^3.5.0",
     "connect-mongo": "^1.1.0",
     "cookie-parser": "^1.4.1",
