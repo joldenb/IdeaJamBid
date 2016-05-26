@@ -221,9 +221,11 @@ html
           componentName : $("#componentName").val(),
           componentDescription : $("#componentDescription").val()
         },
-        function(data, respone) {
-          $("#image-component").val( $("#componentName").val() );
-          document.getElementById("formImageUpload").submit();
+        function(data, response) {
+          if(document.getElementById("fileInput").files.length != 0){
+            $("#image-component").val( data['identifier'] );
+            document.getElementById("formImageUpload").submit();
+          }
           $("#idea-summary-components ul")
             .append("<li><a href='/component-profile/"+ data['identifier'] +"'><h4>"+ data['number'] + " : " + data['text'] + "</h4></a></li>");
           $("#componentName").val('');

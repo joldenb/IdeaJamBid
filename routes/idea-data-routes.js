@@ -145,7 +145,7 @@ router.post('/add-component-image', uploading.single('picture'), function(req, r
       if (err) {
         console.log(err);
       } else {
-        Component.update({"text" : req.body.imageComponent},
+        Component.update({"identifier" : req.body.imageComponent},
           { "mainImage" : newImage.id }, function(err, component){
             if (err) {
               console.log(err);

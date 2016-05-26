@@ -33,6 +33,14 @@ html
       .imagesList
         if(imageURLs)
           h4 Uploaded Images
+          if !component['mainImage']
+            form(role='form', id="formImageUpload" action="/add-component-image", method="post", data-idea-doc=idea, enctype="multipart/form-data")
+              .form-group
+                p Upload Component Image
+                |  
+                input#fileInput(type="file", name="picture")
+                input(type="hidden" id="image-component" name="imageComponent", value="#{component['identifier']}")
+
           each imageURL, index in imageURLs
             if index == 0
               .image-summary-image
@@ -147,3 +155,6 @@ html
       $("#component-identifier").val("!{component['identifier']}");
     });
 
+    document.getElementById("fileInput").onchange = function() {
+      document.getElementById("formImageUpload").submit();
+    };
