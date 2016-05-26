@@ -124,19 +124,19 @@ html
             .modal-title 
               h2 Add a Related Component:
           .modal-body
-            form(role='form', id="addRelatedComponent" action="/add-related-component", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            form(role='form', id="addRelatedComponent" action="/add-related-component", method="post", style='max-width: 340px;', data-idea-doc=idea)
               .form-group
-                h3 Select a Component:
+                h4 Select another component of the invention that #{component['text']} relates to:
                 |  
                 select(name="addRelatedComponent").form-control#relatedComponents
                   option(value="None Selected") None Selected
-                  each component in components
-                    if component['identifier']                    
-                      if component['text']
-                        option(value=component['identifier']) #{component['number']} : #{component['text']}
-                      else if component['descriptions'].length > 0
-                        if component['identifier']
-                          option(value=component['identifier']) #{component['descriptions'][0]}
+                  each thisComponent in components
+                    if thisComponent['identifier'] && thisComponent['text']!=component['text']
+                      if thisComponent['text']
+                        option(value=thisComponent['identifier']) #{thisComponent['number']} : #{thisComponent['text']}
+                      else if thisComponent['descriptions'].length > 0
+                        if thisComponent['identifier']
+                          option(value=thisComponent['identifier']) #{thisComponent['descriptions'][0]}
                         
                 h4#new-related-component-description These components are related by:
                 |  
