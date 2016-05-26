@@ -282,7 +282,7 @@ img.summary-image {
 }
 
 #formImageUpload input {
-  margin: 2em;
+  margin: 2em auto;
 }
 
 .imageListItems {

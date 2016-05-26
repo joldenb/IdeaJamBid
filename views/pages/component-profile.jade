@@ -137,16 +137,16 @@ html
                       else if thisComponent['descriptions'].length > 0
                         if thisComponent['identifier']
                           option(value=thisComponent['identifier']) #{thisComponent['descriptions'][0]}
-                        
-                h4#new-related-component-description These components are related by:
-                |  
-                textarea.form-control(rows='6', cols="75", name="newRelatedComponentDesc", id="newRelCompDesc",
-                  placeholder='They press against each other to close the panel.')
+                #relatedCompDescription
+                  h4#new-related-component-description These components are related by:
+                  |  
+                  textarea.form-control(rows='6', cols="75", name="newRelatedComponentDesc", id="newRelCompDesc")
+                  p Example: The Flux Capacitor relates to the Mr. Fusion by channeling the 1.21 gigawatts captured by Mr. Fusion through the time circuits of the Flux Capacitor.
                 input(type="hidden" id="component-identifier" name="component-identifier")
 
               .modal-footer
                 button.btn.btn-info(data-dismiss="modal") Cancel
-                button.btn.btn-success#newRelCompSubmit(type='submit') Save
+                button.btn.btn-success#newRelCompSubmit(type='submit') Submit (+20)
 
 
 
@@ -154,8 +154,64 @@ html
   script(type="text/javascript").
     $("#modalButton").click(function(){
       $("#component-identifier").val("!{component['identifier']}");
+      $("#addRelatedComponent #relatedCompDescription").hide();
     });
-
     document.getElementById("fileInput").onchange = function() {
       document.getElementById("formImageUpload").submit();
     };
+    $("#relatedComponents").change(function(){
+      var otherCompName = $("#relatedComponents option:selected").text();
+      if(!isNaN(otherCompName.substring(0,1))){
+        otherCompName = otherCompName.split(":")[1].substring(1);
+      }
+      if(otherCompName.indexOf("component is") > -1){
+        otherCompName = otherCompName.substring(24);
+      }
+      if(otherCompName.indexOf("solution of") > -1){
+        otherCompName = otherCompName.substring(16);
+      }
+
+      $("#relatedCompDescription").show();
+      if("!{component['text']}" != ""){
+        var thisCompName = "!{component['text']}";
+        if(thisCompName.indexOf("component is") > -1){
+          thisCompName = thisCompName.substring(24);
+        }
+        if(thisCompName.indexOf("solution of") > -1){
+          thisCompName = thisCompName.substring(16);
+        }
+        $("#addRelatedComponent textarea").val("The " + thisCompName + " relates to "+ otherCompName + " by ");
+      } else {
+        var thisCompName = "!{component['descriptions'][0]}";
+        if(thisCompName.indexOf("component is") > -1){
+          thisCompName = thisCompName.substring(24);
+        }
+        if(thisCompName.indexOf("solution of") > -1){
+          thisCompName = thisCompName.substring(16);
+        }
+        $("#addRelatedComponent textarea").val("The " + thisCompName + " relates to "+ otherCompName+ " by ");
+      }
+
+      var input = document.getElementsByTagName ("textarea");
+
+      // This is for the main solution text input
+      var requiredText = $("#addRelatedComponent textarea").val();
+      input[0].addEventListener ("mousedown", function () {
+        if (String($(this).val()).indexOf(requiredText) == -1) {
+              $(this).val(requiredText);
+        }
+        if (this.selectionStart < $("#addRelatedComponent textarea").val().length) {
+          this.selectionStart = $("#addRelatedComponent textarea").val().length;
+        }
+      }, false);
+
+      input[0].addEventListener ("keydown", function () {
+        if (String($(this).val()).indexOf(requiredText) == -1) {
+              $(this).val(requiredText);
+        }
+        if (this.selectionStart < $("#addRelatedComponent textarea").val().length) {
+          this.selectionStart = $("#addRelatedComponent textarea").val().length;
+        }
+      }, false);
+    
+    });
