@@ -40,6 +40,7 @@ html
                 |  
                 input#fileInput(type="file", name="picture")
                 input(type="hidden" id="image-component" name="imageComponent", value="#{component['identifier']}")
+                input(type="hidden" id="image-component" name="componentProfilePage", value="true")
 
           each imageURL, index in imageURLs
             if index == 0

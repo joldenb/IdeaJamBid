@@ -150,7 +150,11 @@ router.post('/add-component-image', uploading.single('picture'), function(req, r
             if (err) {
               console.log(err);
             } else {
-              res.redirect('/idea-summary');
+              if(req.body.componentProfilePage ){
+                res.redirect('/component-profile/'+req.body.imageComponent);
+              } else {
+                res.redirect('/idea-summary');
+              }
             }
           });
 
