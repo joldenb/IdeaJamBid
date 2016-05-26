@@ -1713,7 +1713,7 @@ router.get('/component-profile/:identifier', function(req, res){
                     var filename = images[i]["filename"];
                     //if it's the main component image, put in the first spot of the array so it's big on 
                     // the component profile page
-                    if(images[i].id.toString() == component.mainImage.toString()){
+                    if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
                       imageURLs.unshift([
                         filename,
                         "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
