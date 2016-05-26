@@ -4,11 +4,19 @@ var mongoose = require('mongoose');
 var _ = require('underscore');
 var IdeaSeed = require('../models/ideaSeed');
 var Component = require('../models/component');
+var IdeaImage = require('../models/ideaImage');
 var IdeaReview = require('../models/ideaReviews');
 var IdeaProblem = require('../models/ideaProblem');
 var Account = require('../models/account');
 var router = express.Router();
 var multer = require('multer');
+
+
+var storage = multer.memoryStorage();
+var uploading = multer({
+  storage: storage,
+  dest: '../uploads/'
+});
 
 
 ////////////////////////////////////////////////
@@ -125,6 +133,37 @@ router.post('/add-idea-problem', function(req, res) {
 ////////////////////////////////////////////////
 // Add a component to an idea seed
 ////////////////////////////////////////////////
+router.post('/add-component-image', uploading.single('picture'), function(req, res) {
+  
+  IdeaImage.find({"filename" : {$regex : ".*"+req.file.originalname+".*"}}, function(err, images){
+
+    var newFileName = req.file.originalname + "-" + (images.length + 1).toString();
+
+    var image = new IdeaImage({ image : req.file.buffer, imageMimetype : req.file.mimetype,
+      filename : newFileName, uploader : req.user.username });
+    image.save(function(err, newImage){
+      if (err) {
+        console.log(err);
+      } else {
+        Component.update({"text" : req.body.imageComponent},
+          { "mainImage" : newImage.id }, function(err, component){
+            if (err) {
+              console.log(err);
+            } else {
+              res.redirect('/idea-summary');
+            }
+          });
+
+      }
+    });
+
+  }); //end of idea image query
+});
+
+
+////////////////////////////////////////////////
+// Add a component to an idea seed
+////////////////////////////////////////////////
 router.post('/add-idea-component', function(req, res) {
   
   Component.count({"ideaSeed" : req.session.idea}, function(err, count){
@@ -146,6 +185,7 @@ router.post('/add-idea-component', function(req, res) {
     );
     res.json(newComponent);
   });
+
 });
 
 

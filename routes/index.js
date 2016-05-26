@@ -1388,7 +1388,14 @@ router.get('/annotate-image/:image', function(req, res){
               imageName : currentImage.filename,
               annotations : JSON.stringify(annotations),
               masterComponentList : masterComponentList,
-              masterComponentsString : JSON.stringify(masterComponentList),
+              masterComponentsString : JSON.stringify(masterComponentList).replace(/\\n/g, "\\n")
+                                      .replace(/'/g, "\\'")
+                                      .replace(/"/g, '\\"')
+                                      .replace(/\\&/g, "\\&")
+                                      .replace(/\\r/g, "\\r")
+                                      .replace(/\\t/g, "\\t")
+                                      .replace(/\\b/g, "\\b")
+                                      .replace(/\\f/g, "\\f"),
               comps : compArray,
               compsString : JSON.stringify(compArray),
               nextNumber : nextNumber
@@ -1632,15 +1639,30 @@ router.get('/component-profile/:identifier', function(req, res){
             //first get the images that the component is in
             if(component.images.length > 0){
               var imageIDs = _.map(component.images, function(item){ return item['imageID']});
+
+              // add main component image to list of id's to be retrieved
+              if(component.mainImage){
+                imageIDs.unshift(component.mainImage);
+              }
+
               IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
                 var imageURLs = [];
                 for(var i = 0; i < images.length; i++){
                   if(images[i] && images[i].image){
                     var filename = images[i]["filename"];
-                    imageURLs.push([
-                      filename,
-                      "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
-                    ]);
+                    //if it's the main component image, put in the first spot of the array so it's big on 
+                    // the component profile page
+                    if(images[i].id.toString() == component.mainImage.toString()){
+                      imageURLs.unshift([
+                        filename,
+                        "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
+                      ]);
+                    } else {
+                      imageURLs.push([
+                        filename,
+                        "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
+                      ]);
+                    }
                   }
                   res.render('pages/component-profile', {
                     user : req.user,
@@ -1676,31 +1698,47 @@ router.get('/component-profile/:identifier', function(req, res){
           });// end of problem query
         } else {
             //first get the images that the component is in
-            if(component.images.length > 0){
-              var imageIDs = _.map(component.images, function(item){ return item['imageID']});
+            if(component.images.length > 0 || component.mainImage){
+              var imageIDs = _.map(component.images || [], function(item){ return item['imageID']});
+
+              // add main component image to list of id's to be retrieved
+              if(component.mainImage){
+                imageIDs.unshift(component.mainImage);
+              }
+
               IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
                 var imageURLs = [];
                 for(var i = 0; i < images.length; i++){
                   if(images[i] && images[i].image){
                     var filename = images[i]["filename"];
-                    imageURLs.push([
-                      filename,
-                      "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
-                    ]);
+                    //if it's the main component image, put in the first spot of the array so it's big on 
+                    // the component profile page
+                    if(images[i].id.toString() == component.mainImage.toString()){
+                      imageURLs.unshift([
+                        filename,
+                        "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
+                      ]);
+                    } else {
+                      imageURLs.push([
+                        filename,
+                        "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
+                      ]);
+                    }
                   }
-                  res.render('pages/component-profile', {
-                    user : req.user,
-                    idea : idea._doc,
-                    components : components,
-                    component : component,
-                    problem : "none",
-                    variantDates : variantDates,
-                    imageURLs : imageURLs,
-                    relatedComponents : relatedComponents
-                    //components : components,
-                    //listOfProblems : listOfProblems 
-                  });
                 }
+                res.render('pages/component-profile', {
+                  user : req.user,
+                  idea : idea._doc,
+                  components : components,
+                  component : component,
+                  problem : "none",
+                  variantDates : variantDates,
+                  imageURLs : imageURLs,
+                  relatedComponents : relatedComponents
+                  //components : components,
+                  //listOfProblems : listOfProblems 
+                });
+                
               });//end of image query
 
             // in case theres no images
