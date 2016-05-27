@@ -58,24 +58,24 @@ html
             if component[0]['identifier']
               li 
                 a(href="/component-profile/"+component[0]['identifier'])
-                  h4 #{component[0]['number']} : #{component[0]['text']}
+                  h4.compName #{component[0]['number']} : #{component[0]['text']}
                 p <b>Relationship</b> 
                 p #{component[1]}
             else
               li 
-                h4 #{component[0]['number']} : #{component[0]['text']}
+                h4.compName #{component[0]['number']} : #{component[0]['text']}
                 p <b>Relationship</b> 
                 p #{component[1]}
           else if component[0]['descriptions'].length > 0
             if component[0]['identifier']
               li
                 a(href="/component-profile/"+component[0]['identifier'])
-                  h4 #{component[0]['descriptions'][0]}
+                  h4.compName #{component[0]['descriptions'][0]}
                 p <b>Relationship</b> 
                 p #{component[1]}
           else
               li
-                h4 #{component[0]['descriptions'][0]}
+                h4.compName #{component[0]['descriptions'][0]}
                 p <b>Relationship</b> 
                 p #{component[1]}
         button(type="button" id="modalButton" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Add New Related Component
@@ -163,6 +163,11 @@ html
       };
     }
     $("#relatedComponents").change(function(){
+      if($(".compName:contains('" + $("#relatedComponents option:selected").text() + "')").length){
+        var also = " also";
+      } else {
+        var also = "";
+      }
       var otherCompName = $("#relatedComponents option:selected").text();
       if(!isNaN(otherCompName.substring(0,1))){
         otherCompName = otherCompName.split(":")[1].substring(1);
@@ -183,7 +188,7 @@ html
         if(thisCompName.indexOf("solution of") > -1){
           thisCompName = thisCompName.substring(16);
         }
-        $("#addRelatedComponent textarea").val("The " + thisCompName + " relates to "+ otherCompName + " by ");
+        $("#addRelatedComponent textarea").val("The " + thisCompName + also + " relates to "+ otherCompName + " by ");
       } else {
         var thisCompName = "!{component['descriptions'][0]}";
         if(thisCompName.indexOf("component is") > -1){
@@ -192,7 +197,7 @@ html
         if(thisCompName.indexOf("solution of") > -1){
           thisCompName = thisCompName.substring(16);
         }
-        $("#addRelatedComponent textarea").val("The " + thisCompName + " relates to "+ otherCompName+ " by ");
+        $("#addRelatedComponent textarea").val("The " + thisCompName + also + " relates to "+ otherCompName+ " by ");
       }
 
       var input = document.getElementsByTagName ("textarea");

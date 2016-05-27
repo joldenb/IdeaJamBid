@@ -1613,9 +1613,12 @@ router.get('/component-profile/:identifier', function(req, res){
           });
 
           for(var j = 0; j < components.length; j++){
-            if(relatedCompIdStrings.indexOf(components[j]['id']) > -1 ){
-              compDescription = component.relatedComps[relatedCompIdStrings.indexOf(components[j]['id'])]['relationship'];
-              relatedComponents.push([components[j], compDescription]);
+            //gets the component object for each id in the list of related comp ID's
+            for(var i = 0; i < relatedCompIdStrings.length; i++){
+              if(relatedCompIdStrings[i] == components[j]['id']){
+                compDescription = component.relatedComps[i]['relationship'];
+                relatedComponents.push([components[j], compDescription]);
+              }
             }
           }
         }

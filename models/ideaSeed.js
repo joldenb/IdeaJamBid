@@ -253,6 +253,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 					}
 
 					var alreadyListed = [];
+					var listedDescriptions = [];
 					var otherCompName = '';
 					for(i=0; i < comps.length; i++){
 						if(comps[i].relatedComps.length > 0){
@@ -260,8 +261,9 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 								
 								//since the component relationship is listed in both components, we only list the relationship if
 								// it hasn't been listed yet.
-								if(alreadyListed.indexOf(comps[i].id.toString()+"-"+ comps[i].relatedComps[j].compID.toString()) == -1  &&
-									alreadyListed.indexOf(comps[i].relatedComps[j].compID.toString()+"-"+ comps[i].id.toString()) == -1 ){
+								if((alreadyListed.indexOf(comps[i].id.toString()+"-"+ comps[i].relatedComps[j].compID.toString()) == -1  &&
+									alreadyListed.indexOf(comps[i].relatedComps[j].compID.toString()+"-"+ comps[i].id.toString()) == -1 ) ||
+									listedDescriptions.indexOf(comps[i].relatedComps[j].relationship) == -1 ){
 									
 									//get the other component's name or first description
 									for(k=0; k < comps.length; k++){
@@ -303,6 +305,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 									}
 
 									alreadyListed.push(comps[i].id.toString()+"-"+ comps[i].relatedComps[j].compID.toString());
+									listedDescriptions.push(comps[i].relatedComps[j].relationship);
 									otherCompName = '';
 
 								}
