@@ -1,0 +1,14 @@
+.suggestion-element.view-all-ideas-block
+	.idea-image
+		img(src=ideaImage height="50" width="50")
+	.suggestion.view-all-ideas
+		.suggestion-text
+			if ideaLink
+				p <b>Idea Name: </b> #[a(href=ideaLink) #{ideaName || 'No Idea Name'}]
+			else
+				p <b>Idea Name: </b>#{ideaName || 'No Idea Name'}
+		.suggestion-category
+			p <b>Viability: </b>#{suggestionProblem} <b>Description: </b>#{problemCategory}
+	.suggestion-maker
+		img(src="/avatar.png" height="50" width="50")
+		div.userName #{accountName || user.username}

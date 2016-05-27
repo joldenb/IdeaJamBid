@@ -191,6 +191,25 @@ form {
   min-height:5.5em;
 }
 
+.idea-image{
+  display: inline-block;
+  float: left;
+  width: 10%;
+}
+
+.idea-image img {
+  height:100%;
+  width:100%;
+}
+
+.suggestion.view-all-ideas {
+  width : 60%;
+}
+
+.suggestion-element.view-all-ideas-block {
+  padding:1em 0;
+}
+
 .suggestion-maker {
   width:30%;
   float:right;

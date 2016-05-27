@@ -19,18 +19,17 @@ html
     table.suggestion-table
       tr
         th.left-column Latest Idea Seeds
-        th 
       each idea in ideas
         if idea[0]
           tr
             td
-              - var suggestionText = idea[0]
+              - var ideaName = idea[0]
+              - var ideaLink = "/contributor-idea-summary/"+ idea[0]
               - var problemCategory = idea[1]
               - var suggestionProblem = "W: "+ idea[2][0] +" V: "+idea[2][1]
               - var accountName = idea[3]
-              include ../partials/suggestion-element.jade
-            td 
-              a.btn.btn-default(href="/contributor-idea-summary/#{idea[0]}") View Idea
+              - var ideaImage = idea[4]
+              include ../partials/view-all-idea-block.jade
     br
 
     br

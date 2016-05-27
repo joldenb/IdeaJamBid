@@ -168,19 +168,47 @@ router.get('/view-all-ideas', function(req, res){
 //    IdeaSeed.find({"visibility" : "public"}, function(err, ideas){
     IdeaSeed.find({}, function(err, ideas){
       var wasteValueScores = [0, 0];
-      var ideaList = _.map(ideas, function(idea){
-        wasteValueScores = IdeaSeed.getWasteValueScores(idea);
-        return [
-          idea['name'], //String
-          idea['description'], //String
-          wasteValueScores, //array of two numbers
-          idea['inventorName']
-        ];
+
+      //get the first image for each idea for now
+      var imageList = _.map(ideas, function(idea){
+        return idea.images[0];
       });
-      res.render('pages/view-all-ideas', {
-        user : req.user,
-        ideas : ideaList
+
+
+      IdeaImage.find({"_id" : { $in : imageList}}, function(err, images){
+
+
+
+        var currentImage;
+        var ideaList = _.map(ideas, function(idea){
+          wasteValueScores = IdeaSeed.getWasteValueScores(idea);
+
+          //get the image document corresponding to the first image ID
+          // for each individual idea
+          for (var i = 0; i < images.length; i++){
+            if(idea.images.length > 0 &&
+              idea.images[0].toString() == images[i].id.toString()){
+              currentImage = "data:"+images[i]._doc["imageMimetype"]+";base64,"+ images[i]._doc["image"].toString('base64');
+              break;
+            }
+          }
+
+          return [
+            idea['name'], //String
+            idea['description'], //String
+            wasteValueScores, //array of two numbers
+            idea['inventorName'],
+            currentImage
+          ];
+        });
+        res.render('pages/view-all-ideas', {
+          user : req.user,
+          ideas : ideaList
+        });
       });
+
+
+
     });
   } else {
     res.redirect('/');
