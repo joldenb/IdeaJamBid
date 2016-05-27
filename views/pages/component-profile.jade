@@ -142,6 +142,7 @@ html
                   |  
                   textarea.form-control(rows='6', cols="75", name="newRelatedComponentDesc", id="newRelCompDesc")
                   p Example: The Flux Capacitor relates to the Mr. Fusion by channeling the 1.21 gigawatts captured by Mr. Fusion through the time circuits of the Flux Capacitor.
+                  p#charactersRemaining 200 characters remaining.
                 input(type="hidden" id="component-identifier" name="component-identifier")
 
               .modal-footer
@@ -156,9 +157,11 @@ html
       $("#component-identifier").val("!{component['identifier']}");
       $("#addRelatedComponent #relatedCompDescription").hide();
     });
-    document.getElementById("fileInput").onchange = function() {
-      document.getElementById("formImageUpload").submit();
-    };
+    if(document.getElementById("fileInput")){
+      document.getElementById("fileInput").onchange = function() {
+        document.getElementById("formImageUpload").submit();
+      };
+    }
     $("#relatedComponents").change(function(){
       var otherCompName = $("#relatedComponents option:selected").text();
       if(!isNaN(otherCompName.substring(0,1))){
@@ -214,4 +217,7 @@ html
         }
       }, false);
     
+      $("#newRelCompDesc").keyup(function(){
+        $("#charactersRemaining").text((200 + requiredText.length - $(this).val().length) + " characters remaining");
+      })
     });
