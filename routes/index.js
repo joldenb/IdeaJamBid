@@ -258,11 +258,7 @@ router.get('/view-all-ideas', function(req, res){
           return idea.images[0];
         });
 
-
         IdeaImage.find({"_id" : { $in : imageList}}, function(err, images){
-
-
-
           var currentImage;
           var ideaList = _.map(ideas, function(idea){
             wasteValueScores = IdeaSeed.getWasteValueScores(idea);
@@ -285,15 +281,53 @@ router.get('/view-all-ideas', function(req, res){
               currentImage
             ];
           });
-          res.render('pages/view-all-ideas', {
-            user : req.user,
-            headshot : headshotURL,
-            ideas : ideaList
-          });
+
+          var inventorList = _.map(ideaList, function(idea){
+            return idea[3];
+          })
+
+          Account.find({"username" : {$in : inventorList}},
+            function(err, accounts){
+              var accountPictures = _.map(accounts, function(account){
+                if(account.headshots){
+                  return account.headshots[0];
+                } else {
+                  return "";
+                }
+              });
+
+              IdeaImage.find({"id" : {$in : accountPictures}}, function(err, profilePictures){
+                
+                if(profilePictures){
+                  //find which ideaList item is connected to the right profile picture
+                  for(var j=0; j < ideaList.length; j++){
+                    //find the account with the right username
+                    for(var k = 0; k < accounts.length; k++){
+                      if(accounts[k].username == ideaList[j][3]){
+                        //find the profile picture with the id that matches the accounts
+                        // first profile picture ID and attach it to the ideaList
+                        if(accounts[k].headshots && accounts[k].headshots[0]){
+                          for(var n = 0; n < profilePictures.length; n++){
+                            if(profilePictures[n]["id"].toString() == accounts[k].headshots[0].toString()){
+                              ideaList[j].push("data:"+profilePictures[n]._doc["imageMimetype"]+";base64,"+ profilePictures[n]._doc["image"].toString('base64'));
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+
+
+                  res.render('pages/view-all-ideas', {
+                    user : req.user,
+                    headshot : headshotURL,
+                    ideas : ideaList
+                  });
+                }
+              });
+            }
+          )
         });
-
-
-
       });
     });
   } else {
