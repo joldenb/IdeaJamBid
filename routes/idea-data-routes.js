@@ -192,5 +192,76 @@ router.post('/add-idea-component', function(req, res) {
 
 });
 
+////////////////////////////////////////////////
+// Add a profile headshot
+////////////////////////////////////////////////
+router.post('/add-profile-headshot', uploading.single('picture'), function(req, res) {
+  
+  if(!req.user){
+    res.redirect('/');
+  } else {
+    
+    IdeaImage.find({"filename" : {$regex : ".*"+req.file.originalname+".*"}}, function(err, images){
+
+      var newFileName = req.file.originalname + "-" + (images.length + 1).toString();
+
+      var image = new IdeaImage({ image : req.file.buffer, imageMimetype : req.file.mimetype,
+        filename : newFileName, uploader : req.user.username });
+      image.save(function(err, newImage){
+        if (err) {
+          console.log(err);
+        } else {
+          Account.findById( req.user.id,
+            function (err, account) {
+              if(account.headshots){
+                account.headshots.unshift(newImage.id);
+              } else {
+                account.headshots = [newImage.id];
+              }
+              account.save(function (err) {
+                res.redirect('/profile-picture');
+              });
+          });
+        }
+      });
+
+    }); //end of idea image query
+
+
+    
+
+  }
+
+});
+
+////////////////////////////////////////////////
+// Resetting profile picture
+////////////////////////////////////////////////
+router.post('/set-existing-profile-pic', function(req, res) {
+  
+  if(!req.user){
+    res.redirect('/');
+  } else {
+    Account.findById( req.user.id, function(err, account){
+      IdeaImage.find({"filename" : req.body.newPictureFilename}, function(err, image){
+        if(image){
+          var index = account.headshots.indexOf(image[0].id);
+          if (index > -1) {
+            account.headshots.splice(index, 1);
+            account.headshots.unshift(image[0].id);
+            account.save(function(err){
+              res.sendStatus(200);
+            });
+          }
+        }
+      });
+    });
+
+
+
+
+  }
+});
+
 
 module.exports = router;

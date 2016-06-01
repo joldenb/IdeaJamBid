@@ -1,0 +1,65 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body
+  .header
+    span.userName Howdy #{user.username}
+    |  
+    .profile-headshot
+      if headshot
+        img.placeholder(src=headshot height="75" width="75")
+        a.plus-overlay(href="/profile-picture")
+          img(src='/plus-overlay.png' height="75" width="75")
+      else  
+        img.placeholder(src="/avatar.png" height="75" width="75")
+        a.plus-overlay(href="/profile-picture")
+          img(src='/plus-overlay.png' height="75" width="75")
+    a.home-logout.btn.btn-default( href="/begin" ) My Profile
+    | 
+    a.home-logout.btn.btn-default( href="/logout" ) Log Out
+
+  .container
+    form(role='form', id="headshotForm" action="/add-profile-headshot", method="post", data-idea-doc=idea, enctype="multipart/form-data")
+      .form-group
+        h3 Upload a new User Profile Picture
+        |  
+        input#headshotButton(type="file", name="picture")
+        br
+    .imagesList
+      if(imageURLs)
+        h4 Uploaded profile pictures
+        each imageURL, index in imageURLs
+          if imageURL[0] == profilePictureFilename
+            .image-summary-image
+              img(src=imageURL[1] height="300" width="400", id=imageURL[0])
+        each imageURL, index in imageURLs
+          if imageURL[0] != profilePictureFilename
+            a
+              img.imageListItems(src=imageURL[1], id=imageURL[0])
+        .view-all-images-btn
+          a#resetPicture.btn.btn-default() Set Profile Image
+      a.home-logout.btn.btn-default( href="/idea-summary" ) < Back to Idea Summary
+          
+
+
+  include ../partials/js-includes.jade
+  script(type="text/javascript").
+    document.getElementById("headshotButton").onchange = function() {
+      document.getElementById("headshotForm").submit();
+    };
+
+    $("a img").click(function(event){
+      $(".selectedProfilePic").removeClass("selectedProfilePic");
+      $(this).addClass("selectedProfilePic");
+    });
+
+    $("#resetPicture").click(function(event){
+      var data = {
+        "newPictureFilename" : $(".selectedProfilePic").attr("id")
+      };
+
+      $.post("/set-existing-profile-pic", data, function(data, response) {
+        window.location.reload();
+      });
+    });

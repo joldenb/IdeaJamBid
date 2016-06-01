@@ -3,6 +3,7 @@ var passport = require('passport');
 var mongoose = require('mongoose');
 var _ = require('underscore');
 var IdeaSeed = require('../models/ideaSeed');
+var IdeaImage = require('../models/ideaImage');
 var IdeaProblem = require('../models/ideaProblem');
 var IdeaReview = require('../models/ideaReviews');
 var Account = require('../models/account');
@@ -24,13 +25,19 @@ router.get('/waste-values-summary', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    if(req.session.ideaReview){ var reviewing = true; }
-    else { var reviewing = false; }
-    res.render('pages/waste-values', {
-      user : req.user, idea : currentIdea,
-      reviewing :  reviewing});
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+      res.render('pages/waste-values', {
+        user : req.user, idea : currentIdea,
+        headshot : headshotURL,
+        reviewing :  reviewing});
+    });
   });
 });
 
@@ -42,19 +49,25 @@ router.get('/performability', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    if(req.session.ideaReview){ var reviewing = true; }
-    else { var reviewing = false; }
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
 
-    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
-      'problemArea' : { 
-        $regex: /.*Performability.*/, $options: 'i' }},
-      function (err, problems){
-      res.render('pages/values-wastes/performability', {
-        user : req.user, idea : currentIdea,
-        problems : problems,
-        reviewing :  reviewing});
+      IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+        'problemArea' : { 
+          $regex: /.*Performability.*/, $options: 'i' }},
+        function (err, problems){
+        res.render('pages/values-wastes/performability', {
+          user : req.user, idea : currentIdea,
+          problems : problems,
+          headshot : headshotURL,
+          reviewing :  reviewing});
+      });
     });
   });
 });
@@ -160,18 +173,24 @@ router.get('/affordability', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    if(req.session.ideaReview){ var reviewing = true; }
-    else { var reviewing = false; }
-    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
-      'problemArea' : { 
-        $regex: /.*Affordability.*/, $options: 'i' }},
-      function (err, problems){
-      res.render('pages/values-wastes/affordability', { user : req.user,
-        idea : currentIdea,
-        problems : problems,
-        reviewing : reviewing });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+      IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+        'problemArea' : { 
+          $regex: /.*Affordability.*/, $options: 'i' }},
+        function (err, problems){
+        res.render('pages/values-wastes/affordability', { user : req.user,
+          idea : currentIdea,
+          headshot : headshotURL,
+          problems : problems,
+          reviewing : reviewing });
+      });
     });
   });
 });
@@ -277,18 +296,24 @@ router.get('/featurability', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    if(req.session.ideaReview){ var reviewing = true; }
-    else { var reviewing = false; }
-    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
-      'problemArea' : { 
-        $regex: /.*Featurability.*/, $options: 'i' }},
-      function (err, problems){
-      res.render('pages/values-wastes/featurability', { user : req.user,
-        idea : currentIdea,
-        problems : problems,
-        reviewing : reviewing });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+      IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+        'problemArea' : { 
+          $regex: /.*Featurability.*/, $options: 'i' }},
+        function (err, problems){
+        res.render('pages/values-wastes/featurability', { user : req.user,
+          idea : currentIdea,
+          headshot : headshotURL,
+          problems : problems,
+          reviewing : reviewing });
+      });
     });
   });
 });
@@ -393,18 +418,24 @@ router.get('/deliverability', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    if(req.session.ideaReview){ var reviewing = true; }
-    else { var reviewing = false; }
-    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
-      'problemArea' : { 
-        $regex: /.*Deliverability.*/, $options: 'i' }},
-      function (err, problems){
-      res.render('pages/values-wastes/deliverability', { user : req.user,
-        idea : currentIdea,
-        problems : problems,
-        reviewing : reviewing });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+      IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+        'problemArea' : { 
+          $regex: /.*Deliverability.*/, $options: 'i' }},
+        function (err, problems){
+        res.render('pages/values-wastes/deliverability', { user : req.user,
+          idea : currentIdea,
+          headshot : headshotURL,
+          problems : problems,
+          reviewing : reviewing });
+      });
     });
   });
 });
@@ -510,18 +541,24 @@ router.get('/useability', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    if(req.session.ideaReview){ var reviewing = true; }
-    else { var reviewing = false; }
-    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
-      'problemArea' : { 
-        $regex: /.*Useability.*/, $options: 'i' }},
-      function (err, problems){
-      res.render('pages/values-wastes/useability', { user : req.user,
-        idea : currentIdea,
-        problems : problems,
-        reviewing : reviewing });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+      IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+        'problemArea' : { 
+          $regex: /.*Useability.*/, $options: 'i' }},
+        function (err, problems){
+        res.render('pages/values-wastes/useability', { user : req.user,
+          idea : currentIdea,
+          headshot : headshotURL,
+          problems : problems,
+          reviewing : reviewing });
+      });
     });
   });
 });
@@ -630,18 +667,24 @@ router.get('/maintainability', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    if(req.session.ideaReview){ var reviewing = true; }
-    else { var reviewing = false; }
-    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
-      'problemArea' : { 
-        $regex: /.*Maintainability.*/, $options: 'i' }},
-      function (err, problems){
-      res.render('pages/values-wastes/maintainability', { user : req.user,
-        idea : currentIdea,
-        problems : problems,
-        reviewing : reviewing });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+      IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+        'problemArea' : { 
+          $regex: /.*Maintainability.*/, $options: 'i' }},
+        function (err, problems){
+        res.render('pages/values-wastes/maintainability', { user : req.user,
+          idea : currentIdea,
+          headshot : headshotURL,
+          problems : problems,
+          reviewing : reviewing });
+      });
     });
   });
 });
@@ -748,18 +791,24 @@ router.get('/durability', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    if(req.session.ideaReview){ var reviewing = true; }
-    else { var reviewing = false; }
-    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
-      'problemArea' : { 
-        $regex: /.*Durability.*/, $options: 'i' }},
-      function (err, problems){
-      res.render('pages/values-wastes/durability', { user : req.user,
-        idea : currentIdea,
-        problems : problems,
-        reviewing : reviewing });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+      IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+        'problemArea' : { 
+          $regex: /.*Durability.*/, $options: 'i' }},
+        function (err, problems){
+        res.render('pages/values-wastes/durability', { user : req.user,
+          idea : currentIdea,
+          problems : problems,
+          headshot : headshotURL,
+          reviewing : reviewing });
+      });
     });
   });
 });
@@ -866,18 +915,24 @@ router.get('/imageability', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    if(req.session.ideaReview){ var reviewing = true; }
-    else { var reviewing = false; }
-    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
-      'problemArea' : { 
-        $regex: /.*Imageability.*/, $options: 'i' }},
-      function (err, problems){
-      res.render('pages/values-wastes/imageability', { user : req.user,
-        idea : currentIdea,
-        problems : problems,
-        reviewing : reviewing });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+      IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+        'problemArea' : { 
+          $regex: /.*Imageability.*/, $options: 'i' }},
+        function (err, problems){
+        res.render('pages/values-wastes/imageability', { user : req.user,
+          idea : currentIdea,
+          problems : problems,
+          headshot : headshotURL,
+          reviewing : reviewing });
+      });
     });
   });
 });
@@ -984,18 +1039,24 @@ router.get('/complexity', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    if(req.session.ideaReview){ var reviewing = true; }
-    else { var reviewing = false; }
-    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
-      'problemArea' : { 
-        $regex: /.*Complexity.*/, $options: 'i' }},
-      function (err, problems){
-      res.render('pages/values-wastes/complexity', { user : req.user,
-        idea : currentIdea,
-        problems : problems,
-        reviewing : reviewing });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+      IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+        'problemArea' : { 
+          $regex: /.*Complexity.*/, $options: 'i' }},
+        function (err, problems){
+        res.render('pages/values-wastes/complexity', { user : req.user,
+          idea : currentIdea,
+          problems : problems,
+          headshot : headshotURL,
+          reviewing : reviewing });
+      });
     });
   });
 });
@@ -1102,18 +1163,24 @@ router.get('/precision', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    if(req.session.ideaReview){ var reviewing = true; }
-    else { var reviewing = false; }
-    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
-      'problemArea' : { 
-        $regex: /.*Precision.*/, $options: 'i' }},
-      function (err, problems){
-      res.render('pages/values-wastes/precision', { user : req.user,
-        idea : currentIdea,
-        problems : problems,
-        reviewing : reviewing });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+      IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+        'problemArea' : { 
+          $regex: /.*Precision.*/, $options: 'i' }},
+        function (err, problems){
+        res.render('pages/values-wastes/precision', { user : req.user,
+          idea : currentIdea,
+          headshot : headshotURL,
+          problems : problems,
+          reviewing : reviewing });
+      });
     });
   });
 });
@@ -1219,18 +1286,24 @@ router.get('/variability', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    if(req.session.ideaReview){ var reviewing = true; }
-    else { var reviewing = false; }
-    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
-      'problemArea' : { 
-        $regex: /.*Variability.*/, $options: 'i' }},
-      function (err, problems){
-      res.render('pages/values-wastes/variability', { user : req.user,
-        idea : currentIdea,
-        problems : problems,
-        reviewing : reviewing });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+      IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+        'problemArea' : { 
+          $regex: /.*Variability.*/, $options: 'i' }},
+        function (err, problems){
+        res.render('pages/values-wastes/variability', { user : req.user,
+          idea : currentIdea,
+          problems : problems,
+          headshot : headshotURL,
+          reviewing : reviewing });
+      });
     });
   });
 });
@@ -1336,18 +1409,24 @@ router.get('/sensitivity', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    if(req.session.ideaReview){ var reviewing = true; }
-    else { var reviewing = false; }
-    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
-      'problemArea' : { 
-        $regex: /.*Sensitivity.*/, $options: 'i' }},
-      function (err, problems){
-      res.render('pages/values-wastes/sensitivity', { user : req.user,
-        idea : currentIdea,
-        problems : problems,
-        reviewing : reviewing });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+      IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+        'problemArea' : { 
+          $regex: /.*Sensitivity.*/, $options: 'i' }},
+        function (err, problems){
+        res.render('pages/values-wastes/sensitivity', { user : req.user,
+          idea : currentIdea,
+          problems : problems,
+          headshot : headshotURL,
+          reviewing : reviewing });
+      });
     });
   });
 });
@@ -1453,18 +1532,24 @@ router.get('/immaturity', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    if(req.session.ideaReview){ var reviewing = true; }
-    else { var reviewing = false; }
-    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
-      'problemArea' : { 
-        $regex: /.*Immaturity.*/, $options: 'i' }},
-      function (err, problems){
-      res.render('pages/values-wastes/immaturity', { user : req.user,
-        idea : currentIdea,
-        problems : problems,
-        reviewing : reviewing });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+      IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+        'problemArea' : { 
+          $regex: /.*Immaturity.*/, $options: 'i' }},
+        function (err, problems){
+        res.render('pages/values-wastes/immaturity', { user : req.user,
+          idea : currentIdea,
+          headshot : headshotURL,
+          problems : problems,
+          reviewing : reviewing });
+      });
     });
   });
 });
@@ -1570,18 +1655,24 @@ router.get('/dangerous', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    if(req.session.ideaReview){ var reviewing = true; }
-    else { var reviewing = false; }
-    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
-      'problemArea' : { 
-        $regex: /.*Danger.*/, $options: 'i' }},
-      function (err, problems){
-      res.render('pages/values-wastes/dangerous', { user : req.user,
-        idea : currentIdea,
-        problems : problems,
-        reviewing : reviewing });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+      IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+        'problemArea' : { 
+          $regex: /.*Danger.*/, $options: 'i' }},
+        function (err, problems){
+        res.render('pages/values-wastes/dangerous', { user : req.user,
+          idea : currentIdea,
+          headshot : headshotURL,
+          problems : problems,
+          reviewing : reviewing });
+      });
     });
   });
 });
@@ -1687,18 +1778,24 @@ router.get('/skills', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    if(req.session.ideaReview){ var reviewing = true; }
-    else { var reviewing = false; }
-    IdeaProblem.find({ "ideaSeed" : currentIdea._id,
-      'problemArea' : { 
-        $regex: /.*Skills.*/, $options: 'i' }},
-      function (err, problems){
-      res.render('pages/values-wastes/skills', { user : req.user,
-        idea : currentIdea,
-        problems : problems,
-        reviewing : reviewing });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
+      if(req.session.ideaReview){ var reviewing = true; }
+      else { var reviewing = false; }
+      IdeaProblem.find({ "ideaSeed" : currentIdea._id,
+        'problemArea' : { 
+          $regex: /.*Skills.*/, $options: 'i' }},
+        function (err, problems){
+        res.render('pages/values-wastes/skills', { user : req.user,
+          idea : currentIdea,
+          headshot : headshotURL,
+          problems : problems,
+          reviewing : reviewing });
+      });
     });
   });
 });

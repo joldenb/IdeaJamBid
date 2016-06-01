@@ -88,9 +88,17 @@ router.get('/begin-scoring', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    res.render('pages/begin-scoring', { user : req.user, idea : currentIdea });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
+      res.render('pages/begin-scoring', { user : req.user,
+        headshot : headshotURL,
+        idea : currentIdea });
+    });
   });
 });
 
@@ -106,55 +114,126 @@ router.get('/begin', function(req, res) {
       if (req.session.idea){
         req.session.idea = null;
       }
-      if(req.user.ideaSeeds && req.user.ideaSeeds.length > 0){
-        var ideaNames = [],
-            j = 0;
-            IdeaReview.find({"reviewer" : req.user.username}, function(err, reviews){
-              var ideaSeedIDs = _.map(reviews, function(item){return item["ideaSeedId"];});
-              ideaSeedIDs = _.filter(ideaSeedIDs, Boolean);
-              IdeaSeed.find({_id : {$in : ideaSeedIDs}}, function(err, reviewedIdeas){
-                var reviewedIdeaNames = _.map(reviewedIdeas, function(item){return item["name"];});
-                var context = {"reviewedNames" : reviewedIdeaNames};
-                _.each(req.user.ideaSeeds, function(element, index,  list){
-                  reviewNames = this["reviewedNames"];
-                  (function(reviewNames){
-                  IdeaSeed.findById(element._id, function(error, document){
-                    j++;
-                    if(document){
-                      ideaNames.push(document.name);
-                      if(j == req.user.ideaSeeds.length){
-                        return res.render('pages/begin', {
-                          reviewNames : reviewNames,
-                          user : req.user,
-                          accountIdeaSeeds : ideaNames
-                        });
+      IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+        if(headshot){
+          var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+        }
+        if(req.user.ideaSeeds && req.user.ideaSeeds.length > 0){
+          var ideaNames = [],
+              j = 0;
+              IdeaReview.find({"reviewer" : req.user.username}, function(err, reviews){
+                var ideaSeedIDs = _.map(reviews, function(item){return item["ideaSeedId"];});
+                ideaSeedIDs = _.filter(ideaSeedIDs, Boolean);
+                IdeaSeed.find({_id : {$in : ideaSeedIDs}}, function(err, reviewedIdeas){
+                  var reviewedIdeaNames = _.map(reviewedIdeas, function(item){return item["name"];});
+                  var context = {"reviewedNames" : reviewedIdeaNames};
+                  _.each(req.user.ideaSeeds, function(element, index,  list){
+                    reviewNames = this["reviewedNames"];
+                    (function(reviewNames){
+                    IdeaSeed.findById(element._id, function(error, document){
+                      j++;
+                      if(document){
+                        ideaNames.push(document.name);
+                        if(j == req.user.ideaSeeds.length){
+                          return res.render('pages/begin', {
+                            reviewNames : reviewNames,
+                            headshot : headshotURL,
+                            user : req.user,
+                            accountIdeaSeeds : ideaNames
+                          });
+                        }
+                      } else {
+                        if(j == req.user.ideaSeeds.length){
+                          return res.render('pages/begin', {
+                            reviewNames : reviewNames,
+                            headshot : headshotURL,
+                            user : req.user,
+                            accountIdeaSeeds : ideaNames
+                          });
+                        }
                       }
-                    } else {
-                      if(j == req.user.ideaSeeds.length){
-                        return res.render('pages/begin', {
-                          reviewNames : reviewNames,
-                          user : req.user,
-                          accountIdeaSeeds : ideaNames
-                        });
-                      }
-                    }
-                  });
-                  }(reviewNames));
-                }, context); //each
+                    });
+                    }(reviewNames));
+                  }, context); //each
+                });
               });
-            });
-      }
-      else {
-        return res.render('pages/begin', {
-          user : req.user,
-          accountIdeaSeeds : []
-        });
-      }
+        }
+        else {
+          return res.render('pages/begin', {
+            user : req.user,
+            headshot : headshotURL,
+            accountIdeaSeeds : []
+          });
+        }
+      });
 
     } else {
       res.redirect('/');
     }
 });
+
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for profile picture
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/profile-picture', function(req, res){
+  if(req.user){
+
+    IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+      if(headshot){
+        var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      }
+
+
+      var headshotIDs = _.map(req.user.headshots, function(image){
+        return image.toString();
+      })
+
+      IdeaImage.find({"_id" : { $in : headshotIDs}}, function(err, images){
+        
+        var imageURLs = [];
+        var profilePictureFilename = "";
+        if(images && images.length > 0){
+          for(var i=0; i < images.length; i++){
+            //get the first image listed in the accounts headshots, use this as the
+            // primary one to display in the header bar
+            if(images[i].id.toString() == req.user.headshots[0]){
+              profilePictureFilename = images[i].filename;
+            }
+            
+            var filename = images[i]._doc["filename"];
+            imageURLs.push([
+              filename,
+              "data:"+images[i]._doc["imageMimetype"]+";base64,"+ images[i]._doc["image"].toString('base64')
+            ]);
+          }
+
+          res.render('pages/profile-picture', {
+            user : req.user,
+            imageURLs : imageURLs,
+            headshot : headshotURL,
+            profilePictureFilename : profilePictureFilename
+          });
+        } else {
+          res.render('pages/profile-picture', {
+            user : req.user,
+            headshot : headshotURL,
+            imageURLs : [],
+            profilePictureFilename : ""
+          });
+        }
+      });
+    });
+  } else {
+    res.redirect('/');
+  }
+});
+
+
 
 /*****************************************************************
 ******************************************************************
@@ -166,49 +245,56 @@ router.get('/begin', function(req, res) {
 router.get('/view-all-ideas', function(req, res){
   if(req.user){
 //    IdeaSeed.find({"visibility" : "public"}, function(err, ideas){
-    IdeaSeed.find({}, function(err, ideas){
-      var wasteValueScores = [0, 0];
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
 
-      //get the first image for each idea for now
-      var imageList = _.map(ideas, function(idea){
-        return idea.images[0];
-      });
+      IdeaSeed.find({}, function(err, ideas){
+        var wasteValueScores = [0, 0];
+
+        //get the first image for each idea for now
+        var imageList = _.map(ideas, function(idea){
+          return idea.images[0];
+        });
 
 
-      IdeaImage.find({"_id" : { $in : imageList}}, function(err, images){
+        IdeaImage.find({"_id" : { $in : imageList}}, function(err, images){
 
 
 
-        var currentImage;
-        var ideaList = _.map(ideas, function(idea){
-          wasteValueScores = IdeaSeed.getWasteValueScores(idea);
+          var currentImage;
+          var ideaList = _.map(ideas, function(idea){
+            wasteValueScores = IdeaSeed.getWasteValueScores(idea);
 
-          //get the image document corresponding to the first image ID
-          // for each individual idea
-          for (var i = 0; i < images.length; i++){
-            if(idea.images.length > 0 &&
-              idea.images[0].toString() == images[i].id.toString()){
-              currentImage = "data:"+images[i]._doc["imageMimetype"]+";base64,"+ images[i]._doc["image"].toString('base64');
-              break;
+            //get the image document corresponding to the first image ID
+            // for each individual idea
+            for (var i = 0; i < images.length; i++){
+              if(idea.images.length > 0 &&
+                idea.images[0].toString() == images[i].id.toString()){
+                currentImage = "data:"+images[i]._doc["imageMimetype"]+";base64,"+ images[i]._doc["image"].toString('base64');
+                break;
+              }
             }
-          }
 
-          return [
-            idea['name'], //String
-            idea['description'], //String
-            wasteValueScores, //array of two numbers
-            idea['inventorName'],
-            currentImage
-          ];
+            return [
+              idea['name'], //String
+              idea['description'], //String
+              wasteValueScores, //array of two numbers
+              idea['inventorName'],
+              currentImage
+            ];
+          });
+          res.render('pages/view-all-ideas', {
+            user : req.user,
+            headshot : headshotURL,
+            ideas : ideaList
+          });
         });
-        res.render('pages/view-all-ideas', {
-          user : req.user,
-          ideas : ideaList
-        });
+
+
+
       });
-
-
-
     });
   } else {
     res.redirect('/');
@@ -224,24 +310,31 @@ router.get('/view-all-ideas', function(req, res){
 *****************************************************************/
 router.get('/introduce-idea', function(req, res) {
     if(req.user){
-      if(!req.session.idea) {
-        var newIdea = new IdeaSeed({inventorName : req.user.username});
-        newIdea.save();
-        Account.update(
-          { _id : req.user.id },
-          { $push : { ideaSeeds : newIdea }},
-          function(err, raw){
-            console.log('The raw response from Mongo was ', raw);
-          }
-        );
-        req.session.idea = newIdea._doc._id.toHexString();
-        res.render('pages/introduce-idea', { user : req.user, idea : req.session.idea });
-      } else {
-        IdeaSeed.findById(req.session.idea,function(err, idea){
-          currentIdea = idea._doc;
-          res.render('pages/introduce-idea', { user : req.user, idea : currentIdea });
-        });
-      }
+      IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+        if(headshot){
+          var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+        }
+        if(!req.session.idea) {
+          var newIdea = new IdeaSeed({inventorName : req.user.username});
+          newIdea.save();
+          Account.update(
+            { _id : req.user.id },
+            { $push : { ideaSeeds : newIdea }},
+            function(err, raw){
+              console.log('The raw response from Mongo was ', raw);
+            }
+          );
+          req.session.idea = newIdea._doc._id.toHexString();
+          res.render('pages/introduce-idea', { user : req.user, idea : req.session.idea });
+        } else {
+          IdeaSeed.findById(req.session.idea,function(err, idea){
+            currentIdea = idea._doc;
+            res.render('pages/introduce-idea', { user : req.user,
+              headshot : headshotURL,
+              idea : currentIdea });
+          });
+        }
+      });
     } else {
       res.redirect('/');
     }
@@ -280,9 +373,17 @@ router.get('/accomplish', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    res.render('pages/accomplish', { user : req.user, idea : currentIdea });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
+      res.render('pages/accomplish', { user : req.user,
+        headshot: headshotURL,
+        idea : currentIdea });
+    });
   });
 });
 
@@ -432,9 +533,16 @@ router.get('/title-your-invention', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    res.render('pages/title-your-invention', { user : req.user, idea : currentIdea });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
+      res.render('pages/title-your-invention', { user : req.user,
+        headshot : headshotURL,
+        idea : currentIdea });
+    });
   });
 });
 
@@ -469,7 +577,14 @@ router.get('/problem-solver', function(req, res){
     res.redirect('/');
     return;
   }
-  res.render('pages/problem-solver', { user : req.user, idea : req.session.idea });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    res.render('pages/problem-solver', { user : req.user,
+      headshot : headshotURL,
+      idea : req.session.idea });
+  });
 });
 
 /*****************************************************************
@@ -523,40 +638,49 @@ router.get('/image-upload', function(req, res){
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    var imageURLs = [];
-    currentIdea = idea._doc;
-    if (idea._doc.images.length != 0){
-      for (var i =0; i < idea._doc.images.length; i++){
-        var j = 0;
-        IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
-          j++;
-          if(image && image._doc && image._doc.image){
-            var filename = image._doc["filename"];
-            imageURLs.push([
-              filename,
-              "data:"+image._doc["imageMimetype"]+";base64,"+ image._doc["image"].toString('base64'),
-              image._doc["uploader"]
-            ]);
-          }
-          if (j == idea._doc.images.length){
-            if(req.session.ideaReview){ var reviewing = true; }
-            else { var reviewing = false; }
-            res.render('pages/image-upload', {
-              user : req.user,
-              idea : currentIdea,
-              imageURLs : imageURLs,
-              reviewing: reviewing
-            });
-          }
-        });
-      }
-    } else {
-      if(req.session.ideaReview){ var reviewing = true; }
-      else { var reviewing = false; }
-
-      res.render('pages/image-upload', { user : req.user, idea : currentIdea, imageURLs : [], reviewing: reviewing });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
     }
+
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      var imageURLs = [];
+      currentIdea = idea._doc;
+      if (idea._doc.images.length != 0){
+        for (var i =0; i < idea._doc.images.length; i++){
+          var j = 0;
+          IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
+            j++;
+            if(image && image._doc && image._doc.image){
+              var filename = image._doc["filename"];
+              imageURLs.push([
+                filename,
+                "data:"+image._doc["imageMimetype"]+";base64,"+ image._doc["image"].toString('base64'),
+                image._doc["uploader"]
+              ]);
+            }
+            if (j == idea._doc.images.length){
+              if(req.session.ideaReview){ var reviewing = true; }
+              else { var reviewing = false; }
+              res.render('pages/image-upload', {
+                user : req.user,
+                headshot: headshotURL,
+                idea : currentIdea,
+                imageURLs : imageURLs,
+                reviewing: reviewing
+              });
+            }
+          });
+        }
+      } else {
+        if(req.session.ideaReview){ var reviewing = true; }
+        else { var reviewing = false; }
+
+        res.render('pages/image-upload', { user : req.user,
+          headshot: headshotURL,
+          idea : currentIdea, imageURLs : [], reviewing: reviewing });
+      }
+    });
   });
 });
 
@@ -640,54 +764,60 @@ router.get('/suggestion-summary', function(req, res){
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    
-    IdeaProblem.find({"_id" : { $in : idea.problemPriorities}}, function(err, problems){
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
+      
+      IdeaProblem.find({"_id" : { $in : idea.problemPriorities}}, function(err, problems){
 
-      if (problems.length > 0) {
-        var problemIds = _.map(problems, function(item){ return item.id;});
-        var sortedProblems = [];
-        for(var k = 0; k < problemIds.length; k++){
-          //get the priority for each ID
-          sortedProblems[idea.problemPriorities.indexOf(problemIds[k])] = problems[k];
-        }
-
-        var firstProblemIndex = problemIds.indexOf(idea.problemPriorities[0].toString());
-        var firstProblemText = problems[firstProblemIndex]['text'];
-
-        Component.find({
-          'ideaSeed' : idea.id,
-          'problemID' : problems[firstProblemIndex]['id']
-        }, function(err, components){
-
-          var categorizedSuggestions = {};
-          for(var i = 0; i < components.length; i++){
-            if(components[i].category && categorizedSuggestions[components[i].category]){
-              categorizedSuggestions[components[i].category].push(components[i]);
-            } else if (components[i].category && !categorizedSuggestions[components[i].category]){
-              categorizedSuggestions[components[i].category] = [components[i]];
-            }
+        if (problems.length > 0) {
+          var problemIds = _.map(problems, function(item){ return item.id;});
+          var sortedProblems = [];
+          for(var k = 0; k < problemIds.length; k++){
+            //get the priority for each ID
+            sortedProblems[idea.problemPriorities.indexOf(problemIds[k])] = problems[k];
           }
-          var categoryPointValues = Component.getCategoryPointValues(categorizedSuggestions);
 
+          var firstProblemIndex = problemIds.indexOf(idea.problemPriorities[0].toString());
+          var firstProblemText = problems[firstProblemIndex]['text'];
+
+          Component.find({
+            'ideaSeed' : idea.id,
+            'problemID' : problems[firstProblemIndex]['id']
+          }, function(err, components){
+
+            var categorizedSuggestions = {};
+            for(var i = 0; i < components.length; i++){
+              if(components[i].category && categorizedSuggestions[components[i].category]){
+                categorizedSuggestions[components[i].category].push(components[i]);
+              } else if (components[i].category && !categorizedSuggestions[components[i].category]){
+                categorizedSuggestions[components[i].category] = [components[i]];
+              }
+            }
+            var categoryPointValues = Component.getCategoryPointValues(categorizedSuggestions);
+
+            if(req.session.ideaReview){ var reviewing = true; }
+            else { var reviewing = false; }
+
+
+            res.render('pages/suggestion-summary', { user : req.user, idea : currentIdea,
+              problems : sortedProblems, categoryPoints : categoryPointValues,
+              headshot : headshotURL,
+              firstProblemText : firstProblemText, reviewing : reviewing
+            });
+          });
+        } else {
           if(req.session.ideaReview){ var reviewing = true; }
           else { var reviewing = false; }
-
-
           res.render('pages/suggestion-summary', { user : req.user, idea : currentIdea,
-            problems : sortedProblems, categoryPoints : categoryPointValues,
-            firstProblemText : firstProblemText, reviewing : reviewing
+            problems : [], categoryPoints : {}, headshot : headshotURL,
+            firstProblemText : "", reviewing : reviewing
           });
-        });
-      } else {
-        if(req.session.ideaReview){ var reviewing = true; }
-        else { var reviewing = false; }
-        res.render('pages/suggestion-summary', { user : req.user, idea : currentIdea,
-          problems : [], categoryPoints : {},
-          firstProblemText : "", reviewing : reviewing
-        });
-      }
+        }
+      });
     });
   });
 });
@@ -704,64 +834,70 @@ router.get('/view-idea-suggestions', function(req, res){
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    
-    Component.find({"ideaSeed" : idea.id}, function(err, components){
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      
+      Component.find({"ideaSeed" : idea.id}, function(err, components){
 
-      var categorizedSuggestions = {}; //build components by category
-      var imagesAndComponents = {}; //build list of components within each imageID key
-      //not sure about components with no image or category yet
+        var categorizedSuggestions = {}; //build components by category
+        var imagesAndComponents = {}; //build list of components within each imageID key
+        //not sure about components with no image or category yet
 
-      for(var i = 0; i < components.length; i++){
-        //break into two lists, one for components with no images, and on for those with
-        if(components[i].images.length == 0){
-          if(components[i].category && categorizedSuggestions[components[i].category]){
-            categorizedSuggestions[components[i].category].push(components[i]);
-          } else if (components[i].category && !categorizedSuggestions[components[i].category]){
-            categorizedSuggestions[components[i].category] = [components[i]];
-          } else if (categorizedSuggestions["other"]){
-            categorizedSuggestions["other"].push(components[i]);
-          } else {
-            categorizedSuggestions["other"] = [components[i]];
-          }
-        } else {
-          for(var k=0; k < components[i].images.length; k++){
-            if(imagesAndComponents[components[i].images[k]['imageID'].toString()]){
-              imagesAndComponents[components[i].images[k]['imageID'].toString()].push(components[i]);
+        for(var i = 0; i < components.length; i++){
+          //break into two lists, one for components with no images, and on for those with
+          if(components[i].images.length == 0){
+            if(components[i].category && categorizedSuggestions[components[i].category]){
+              categorizedSuggestions[components[i].category].push(components[i]);
+            } else if (components[i].category && !categorizedSuggestions[components[i].category]){
+              categorizedSuggestions[components[i].category] = [components[i]];
+            } else if (categorizedSuggestions["other"]){
+              categorizedSuggestions["other"].push(components[i]);
             } else {
-              imagesAndComponents[components[i].images[k]['imageID'].toString()] = [components[i]];
+              categorizedSuggestions["other"] = [components[i]];
+            }
+          } else {
+            for(var k=0; k < components[i].images.length; k++){
+              if(imagesAndComponents[components[i].images[k]['imageID'].toString()]){
+                imagesAndComponents[components[i].images[k]['imageID'].toString()].push(components[i]);
+              } else {
+                imagesAndComponents[components[i].images[k]['imageID'].toString()] = [components[i]];
+              }
             }
           }
         }
-      }
 
-      // after categorizedSuggestions is completed, replace the abbreviated 
-      // categories with the full names
-      categorizedSuggestions = IdeaSeed.getCategoryDisplayNames(categorizedSuggestions);
+        // after categorizedSuggestions is completed, replace the abbreviated 
+        // categories with the full names
+        categorizedSuggestions = IdeaSeed.getCategoryDisplayNames(categorizedSuggestions);
 
-      if(req.session.ideaReview){ var reviewing = true; }
-      else { var reviewing = false; }
+        if(req.session.ideaReview){ var reviewing = true; }
+        else { var reviewing = false; }
 
-      IdeaImage.find({"_id" : {$in : Object.keys(imagesAndComponents)}}, function(err, images){
-        var imageList = _.map(images, function(image){return [image["filename"], image["uploader"], image["id"], []]});
+        IdeaImage.find({"_id" : {$in : Object.keys(imagesAndComponents)}}, function(err, images){
+          var imageList = _.map(images, function(image){return [image["filename"], image["uploader"], image["id"], []]});
 
-          for(var i = 0; i < imageList.length; i++){
-            imageList[i][3] = _.map(imagesAndComponents[imageList[i][2]], function(component){
-              return [component['number'], component['text']];
+            for(var i = 0; i < imageList.length; i++){
+              imageList[i][3] = _.map(imagesAndComponents[imageList[i][2]], function(component){
+                return [component['number'], component['text']];
+              });
+            }
+            currentIdea = idea._doc;
+            res.render('pages/view-idea-suggestions', {
+              user : req.user, //user document
+              idea : currentIdea, //document
+              images : imageList, //[[imagename, uploader, objectid, [componentNumber, componentText  ]]]
+              categorizedSuggestions : categorizedSuggestions, //special structure
+              imagesAndComponents : imagesAndComponents,
+              headshot : headshotURL,
+              reviewing : reviewing
             });
-          }
-          currentIdea = idea._doc;
-          res.render('pages/view-idea-suggestions', {
-            user : req.user, //user document
-            idea : currentIdea, //document
-            images : imageList, //[[imagename, uploader, objectid, [componentNumber, componentText  ]]]
-            categorizedSuggestions : categorizedSuggestions, //special structure
-            imagesAndComponents : imagesAndComponents,
-            reviewing : reviewing
-          });
 
-      });
-    }); //end of component query
+        });
+      }); //end of component query
+    });
   });
 });
 
@@ -777,23 +913,29 @@ router.get('/sort-problems', function(req, res){
     res.redirect('/');
     return;
   }
-  
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    IdeaProblem.find({"_id" : { $in : idea.problemPriorities}}, function(err, problems){
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      IdeaProblem.find({"_id" : { $in : idea.problemPriorities}}, function(err, problems){
 
-      var problemIds = _.map(problems, function(item){ return item.id;});
-      var sortedProblems = [];
-      for(var k = 0; k < problemIds.length; k++){
-        //get the priority for each ID
-        sortedProblems[idea.problemPriorities.indexOf(problemIds[k])] = problems[k];
-      }
+        var problemIds = _.map(problems, function(item){ return item.id;});
+        var sortedProblems = [];
+        for(var k = 0; k < problemIds.length; k++){
+          //get the priority for each ID
+          sortedProblems[idea.problemPriorities.indexOf(problemIds[k])] = problems[k];
+        }
 
-      if(req.session.ideaReview){ var reviewing = true; }
-      else { var reviewing = false; }
+        if(req.session.ideaReview){ var reviewing = true; }
+        else { var reviewing = false; }
 
 
-      res.render('pages/sort-problems', { user : req.user, idea : idea._doc,
-        problems : sortedProblems });
+        res.render('pages/sort-problems', { user : req.user, idea : idea._doc,
+          headshot : headshotURL,
+          problems : sortedProblems });
+      });
     });
   });
 });
@@ -946,15 +1088,21 @@ router.get('/idea-seed-summary', function(req, res){
     res.redirect('/');
     return;
   }
-  var currentIdea,
-    imageURL = "";
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
-    if(currentIdea.image){
-      imageURL = "data:"+currentIdea.imageMimetype+";base64,"+ currentIdea.image.toString('base64');
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
     }
-    res.render('pages/idea-seed-summary', { user : req.user, idea : currentIdea,
-      imgURL : imageURL });
+    var currentIdea,
+      imageURL = "";
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
+      if(currentIdea.image){
+        imageURL = "data:"+currentIdea.imageMimetype+";base64,"+ currentIdea.image.toString('base64');
+      }
+      res.render('pages/idea-seed-summary', { user : req.user, idea : currentIdea,
+        headshot : headshotURL,
+        imgURL : imageURL });
+    });
   });
 });
 
@@ -966,7 +1114,13 @@ router.get('/idea-seed-summary', function(req, res){
 ******************************************************************
 *****************************************************************/
 router.get('/napkin-sketch', function(req, res){
-  res.render('pages/problem-solver', { user : req.user, idea : req.session.idea });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+  if(headshot){
+    var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+  }
+
+    res.render('pages/problem-solver', { user : req.user, headshot : headshotURL, idea : req.session.idea });
+  });
 });
 
 /*****************************************************************
@@ -977,7 +1131,13 @@ router.get('/napkin-sketch', function(req, res){
 ******************************************************************
 *****************************************************************/
 router.get('/problem-solver', function(req, res){
-  res.render('pages/problem-solver', { user : req.user, idea : req.session.idea });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+  if(headshot){
+    var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+  }
+
+    res.render('pages/problem-solver', { user : req.user, headshot : headshotURL, idea : req.session.idea });
+  });
 });
 
 /*****************************************************************
@@ -988,7 +1148,13 @@ router.get('/problem-solver', function(req, res){
 ******************************************************************
 *****************************************************************/
 router.get('/key-features', function(req, res){
-  res.render('pages/key-features', { user : req.user, idea : req.session.idea });
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+  if(headshot){
+    var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+  }
+
+    res.render('pages/problem-solver', { user : req.user, headshot : headshotURL, idea : req.session.idea });
+  });
 });
 
 /*****************************************************************
@@ -1022,30 +1188,72 @@ router.get('/contributor-idea-summary', function(req, res){
     res.redirect('/');
     return;
   }
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      var imageURLs = [];
+      currentIdea = idea._doc;
+      var currentlyReviewing = false;
 
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    var imageURLs = [];
-    currentIdea = idea._doc;
-    var currentlyReviewing = false;
 
+      Component.find({"ideaSeed" : idea.id}, function(err, components){
+        if(idea.ideaReviews.length > 0){
+          var reviewsChecked = 0;
+          for(var k = 0; k < idea.ideaReviews.length; k++) {
+            
 
-    Component.find({"ideaSeed" : idea.id}, function(err, components){
-      if(idea.ideaReviews.length > 0){
-        var reviewsChecked = 0;
-        for(var k = 0; k < idea.ideaReviews.length; k++) {
-          
+            IdeaReview.findById(idea.ideaReviews[k], function(err, review){
+              if(review && review.reviewer == req.user.username){
+                currentlyReviewing = true;
+                req.session.ideaReview = review.id;
+              }
+              if(reviewsChecked >= (idea.ideaReviews.length - 1) || currentlyReviewing){
+                if (idea._doc.images.length != 0){
+                  for (var i =0; i < idea._doc.images.length; i++){
+                    var j = 0;
+                    
 
-          IdeaReview.findById(idea.ideaReviews[k], function(err, review){
-            if(review && review.reviewer == req.user.username){
-              currentlyReviewing = true;
-              req.session.ideaReview = review.id;
-            }
-            if(reviewsChecked >= (idea.ideaReviews.length - 1) || currentlyReviewing){
+                    IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
+                      j++;
+                      if(image && image._doc && image._doc.image){
+                        var filename = image._doc["filename"];
+                        imageURLs.push([
+                          filename,
+                          "data:"+image._doc["imageMimetype"]+";base64,"+ image._doc["image"].toString('base64')
+                        ]);
+                      }
+                      if (j == idea._doc.images.length){
+                        res.render('pages/contributor-idea-summary', {
+                          user : req.user, idea : currentIdea,
+                          currentReview : review,
+                          headshot : headshotURL,
+                          imageURLs : imageURLs,
+                          components : components,
+                          currentlyReviewing : currentlyReviewing
+                        });
+                      }
+                    });
+                  }
+                } else {
+                  res.render('pages/contributor-idea-summary', {
+                    user : req.user, idea : currentIdea,
+                    currentReview : review,
+                    headshot : headshotURL,
+                    imageURLs : [],
+                    components : components,
+                    currentlyReviewing : currentlyReviewing
+                  });
+                }
+              }
+              reviewsChecked++;
+            });
+          }
+        } else {
               if (idea._doc.images.length != 0){
                 for (var i =0; i < idea._doc.images.length; i++){
                   var j = 0;
-                  
-
                   IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
                     j++;
                     if(image && image._doc && image._doc.image){
@@ -1058,8 +1266,8 @@ router.get('/contributor-idea-summary', function(req, res){
                     if (j == idea._doc.images.length){
                       res.render('pages/contributor-idea-summary', {
                         user : req.user, idea : currentIdea,
-                        currentReview : review,
                         imageURLs : imageURLs,
+                        headshot : headshotURL,
                         components : components,
                         currentlyReviewing : currentlyReviewing
                       });
@@ -1069,49 +1277,15 @@ router.get('/contributor-idea-summary', function(req, res){
               } else {
                 res.render('pages/contributor-idea-summary', {
                   user : req.user, idea : currentIdea,
-                  currentReview : review,
                   imageURLs : [],
+                  headshot : headshotURL,
                   components : components,
                   currentlyReviewing : currentlyReviewing
                 });
               }
-            }
-            reviewsChecked++;
-          });
         }
-      } else {
-            if (idea._doc.images.length != 0){
-              for (var i =0; i < idea._doc.images.length; i++){
-                var j = 0;
-                IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
-                  j++;
-                  if(image && image._doc && image._doc.image){
-                    var filename = image._doc["filename"];
-                    imageURLs.push([
-                      filename,
-                      "data:"+image._doc["imageMimetype"]+";base64,"+ image._doc["image"].toString('base64')
-                    ]);
-                  }
-                  if (j == idea._doc.images.length){
-                    res.render('pages/contributor-idea-summary', {
-                      user : req.user, idea : currentIdea,
-                      imageURLs : imageURLs,
-                      components : components,
-                      currentlyReviewing : currentlyReviewing
-                    });
-                  }
-                });
-              }
-            } else {
-              res.render('pages/contributor-idea-summary', {
-                user : req.user, idea : currentIdea,
-                imageURLs : [],
-                components : components,
-                currentlyReviewing : currentlyReviewing
-              });
-            }
-      }
-    });//end of component query
+      });//end of component query
+    });
   });
 });
 
@@ -1143,106 +1317,114 @@ router.get('/idea-summary', function(req, res){
     return;
   }
 
-  delete req.session.ideaReview;
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
+
+    delete req.session.ideaReview;
 
 
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    currentIdea = idea._doc;
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      currentIdea = idea._doc;
 
-    IdeaProblem.find({"ideaSeed" : currentIdea._id, date : {$exists : true}}, null, {sort: '-date'}, function(err, problems){
-      Component.find({"ideaSeed" : idea.id}, function(err, components){
-        var variantDates = [],
-            sortedProblems = [];
-        var imageURLs = [];
-        var componentsList = [];
+      IdeaProblem.find({"ideaSeed" : currentIdea._id, date : {$exists : true}}, null, {sort: '-date'}, function(err, problems){
+        Component.find({"ideaSeed" : idea.id}, function(err, components){
+          var variantDates = [],
+              sortedProblems = [];
+          var imageURLs = [];
+          var componentsList = [];
 
-        componentsList = _.map(components, function(item){return "Component : "+item['text'];});
-        componentsList = componentsList.filter(function(item){
-          if(item == "Component : undefined"){
-            return false;
-          } else {
-            return true;
-          }
-        });
-
-        var problemAreas = componentsList.concat([
-          "Area : Performability",
-          "Area : Affordability",
-          "Area : Featurability",
-          "Area : Deliverability",
-          "Area : Useability",
-          "Area : Maintainability",
-          "Area : Durability",
-          "Area : Imageability",
-          "Area : Complexity",
-          "Area : Precision",
-          "Area : Variability",
-          "Area : Sensitivity",
-          "Area : Immaturity",
-          "Area : Danger",
-          "Area : Skills"
-        ]);
-
-        if(idea.inventorName != req.user.username){
-          res.redirect('/contributor-idea-summary');
-          return;
-        }
-
-        var listOfProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
-        var typeOfProblem, rankingOfProblem;
-        for(var i = 0; i < listOfProblems.length; i++){
-          typeOfProblem = _.invert(currentIdea)[listOfProblems[i][1]];
-          rankingOfProblem = idea[typeOfProblem.slice(0, -7) + "Priority"];
-          listOfProblems[i].push(rankingOfProblem);
-        }
-
-
-        listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
-
-        if(currentIdea.variants.length > 0){
-          for(var i = 0; i < currentIdea.variants.length; i++){
-            variantDates.push([
-              new Date(parseInt(currentIdea.variants[i].name.substr(-13))).toString(),
-              currentIdea.variants[i].name
-            ]);
-          }
-        }
-
-          if (idea._doc.images.length !== 0){
-            for (i =0; i < idea._doc.images.length; i++){
-              var j = 0;
-              IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
-                j++;
-                if(image && image._doc && image._doc.image){
-                  var filename = image._doc["filename"];
-                  imageURLs.push([
-                    filename,
-                    "data:"+image._doc["imageMimetype"]+";base64,"+ image._doc["image"].toString('base64')
-                  ]);
-                }
-                if (j == idea._doc.images.length){
-                  res.render('pages/idea-summary', { user : req.user, idea : currentIdea,
-                    variantDates : variantDates,
-                    problemAreas  : problemAreas,
-                    imageURLs : imageURLs,
-                    problems : problems,
-                    components : components,
-                    listOfProblems : listOfProblems });
-                }
-              });
+          componentsList = _.map(components, function(item){return "Component : "+item['text'];});
+          componentsList = componentsList.filter(function(item){
+            if(item == "Component : undefined"){
+              return false;
+            } else {
+              return true;
             }
-          } else {
-                  res.render('pages/idea-summary', { user : req.user, idea : currentIdea,
-                    variantDates : variantDates,
-                    problemAreas  : problemAreas,
-                    imageURLs : [],
-                    problems : problems,
-                    components : components,
-                    listOfProblems : listOfProblems });
+          });
+
+          var problemAreas = componentsList.concat([
+            "Area : Performability",
+            "Area : Affordability",
+            "Area : Featurability",
+            "Area : Deliverability",
+            "Area : Useability",
+            "Area : Maintainability",
+            "Area : Durability",
+            "Area : Imageability",
+            "Area : Complexity",
+            "Area : Precision",
+            "Area : Variability",
+            "Area : Sensitivity",
+            "Area : Immaturity",
+            "Area : Danger",
+            "Area : Skills"
+          ]);
+
+          if(idea.inventorName != req.user.username){
+            res.redirect('/contributor-idea-summary');
+            return;
           }
-        
-      }); //end of components query
-    }); // end of idea problems query
+
+          var listOfProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
+          var typeOfProblem, rankingOfProblem;
+          for(var i = 0; i < listOfProblems.length; i++){
+            typeOfProblem = _.invert(currentIdea)[listOfProblems[i][1]];
+            rankingOfProblem = idea[typeOfProblem.slice(0, -7) + "Priority"];
+            listOfProblems[i].push(rankingOfProblem);
+          }
+
+
+          listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
+
+          if(currentIdea.variants.length > 0){
+            for(var i = 0; i < currentIdea.variants.length; i++){
+              variantDates.push([
+                new Date(parseInt(currentIdea.variants[i].name.substr(-13))).toString(),
+                currentIdea.variants[i].name
+              ]);
+            }
+          }
+
+            if (idea._doc.images.length !== 0){
+              for (i =0; i < idea._doc.images.length; i++){
+                var j = 0;
+                IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
+                  j++;
+                  if(image && image._doc && image._doc.image){
+                    var filename = image._doc["filename"];
+                    imageURLs.push([
+                      filename,
+                      "data:"+image._doc["imageMimetype"]+";base64,"+ image._doc["image"].toString('base64')
+                    ]);
+                  }
+                  if (j == idea._doc.images.length){
+                    res.render('pages/idea-summary', { user : req.user, idea : currentIdea,
+                      variantDates : variantDates,
+                      problemAreas  : problemAreas,
+                      headshot : headshotURL,
+                      imageURLs : imageURLs,
+                      problems : problems,
+                      components : components,
+                      listOfProblems : listOfProblems });
+                  }
+                });
+              }
+            } else {
+                    res.render('pages/idea-summary', { user : req.user, idea : currentIdea,
+                      variantDates : variantDates,
+                      problemAreas  : problemAreas,
+                      imageURLs : [],
+                      headshot : headshotURL,
+                      problems : problems,
+                      components : components,
+                      listOfProblems : listOfProblems });
+            }
+          
+        }); //end of components query
+      }); // end of idea problems query
+    });
   });
 });
 
@@ -1286,83 +1468,90 @@ router.get('/variant/:variantname', function(req, res){
     res.redirect('/');
     return;
   }
-  IdeaSeed.findById(req.session.idea,function(err, idea){
-    
-    var currentIdea = idea._doc;
-    var currentVariant;
 
-    Component.find({"ideaSeed" : idea.id}, function(err, components){
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
 
-      for (var i = 0; i < currentIdea.variants.length; i++){
-        if(currentIdea.variants[i].name == req.params.variantname){
-          currentVariant = currentIdea.variants[i];
-        }
-      }
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      
+      var currentIdea = idea._doc;
+      var currentVariant;
 
-      if(!currentVariant){
-        res.redirect('/idea-summary');
-        return;
-      }
+      Component.find({"ideaSeed" : idea.id}, function(err, components){
 
-      var categorizedSuggestions = {}; //build components by category
-      var imagesAndComponents = {}; //build list of components within each imageID key
-      //not sure about components with no image or category yet
-      var currentImageID;
-
-      for(var i = 0; i < components.length; i++){
-        //break into two lists, one for components with no images, and on for those with
-        if(components[i].images.length == 0){
-          if(currentVariant.components.indexOf(components[i]['id'].toString()) > -1){
-            if(components[i].category && categorizedSuggestions[components[i].category]){
-              categorizedSuggestions[components[i].category].push(components[i]);
-            } else if (components[i].category && !categorizedSuggestions[components[i].category]){
-              categorizedSuggestions[components[i].category] = [components[i]];
-            } else if (categorizedSuggestions["other"]){
-              categorizedSuggestions["other"].push(components[i]);
-            } else {
-              categorizedSuggestions["other"] = [components[i]];
-            }
+        for (var i = 0; i < currentIdea.variants.length; i++){
+          if(currentIdea.variants[i].name == req.params.variantname){
+            currentVariant = currentIdea.variants[i];
           }
-        } else {
-          for(var k=0; k < components[i].images.length; k++){
-            currentImageID = components[i].images[k]['imageID'].toString();
-            if(currentVariant.images.indexOf(currentImageID) > -1){
-              if(imagesAndComponents[components[i].images[k]['imageID'].toString()]){
-                imagesAndComponents[components[i].images[k]['imageID'].toString()].push(components[i]);
+        }
+
+        if(!currentVariant){
+          res.redirect('/idea-summary');
+          return;
+        }
+
+        var categorizedSuggestions = {}; //build components by category
+        var imagesAndComponents = {}; //build list of components within each imageID key
+        //not sure about components with no image or category yet
+        var currentImageID;
+
+        for(var i = 0; i < components.length; i++){
+          //break into two lists, one for components with no images, and on for those with
+          if(components[i].images.length == 0){
+            if(currentVariant.components.indexOf(components[i]['id'].toString()) > -1){
+              if(components[i].category && categorizedSuggestions[components[i].category]){
+                categorizedSuggestions[components[i].category].push(components[i]);
+              } else if (components[i].category && !categorizedSuggestions[components[i].category]){
+                categorizedSuggestions[components[i].category] = [components[i]];
+              } else if (categorizedSuggestions["other"]){
+                categorizedSuggestions["other"].push(components[i]);
               } else {
-                imagesAndComponents[components[i].images[k]['imageID'].toString()] = [components[i]];
+                categorizedSuggestions["other"] = [components[i]];
+              }
+            }
+          } else {
+            for(var k=0; k < components[i].images.length; k++){
+              currentImageID = components[i].images[k]['imageID'].toString();
+              if(currentVariant.images.indexOf(currentImageID) > -1){
+                if(imagesAndComponents[components[i].images[k]['imageID'].toString()]){
+                  imagesAndComponents[components[i].images[k]['imageID'].toString()].push(components[i]);
+                } else {
+                  imagesAndComponents[components[i].images[k]['imageID'].toString()] = [components[i]];
+                }
               }
             }
           }
         }
-      }
 
-      // after categorizedSuggestions is completed, replace the abbreviated 
-      // categories with the full names
-      categorizedSuggestions = IdeaSeed.getCategoryDisplayNames(categorizedSuggestions);
+        // after categorizedSuggestions is completed, replace the abbreviated 
+        // categories with the full names
+        categorizedSuggestions = IdeaSeed.getCategoryDisplayNames(categorizedSuggestions);
 
-      if(req.session.ideaReview){ var reviewing = true; }
-      else { var reviewing = false; }
+        if(req.session.ideaReview){ var reviewing = true; }
+        else { var reviewing = false; }
 
-      IdeaImage.find({"_id" : {$in : Object.keys(imagesAndComponents)}}, function(err, images){
-        var imageList = _.map(images, function(image){return [image["filename"], image["uploader"], image["id"], []]});
+        IdeaImage.find({"_id" : {$in : Object.keys(imagesAndComponents)}}, function(err, images){
+          var imageList = _.map(images, function(image){return [image["filename"], image["uploader"], image["id"], []]});
 
-          for(var i = 0; i < imageList.length; i++){
-            imageList[i][3] = _.map(imagesAndComponents[imageList[i][2]], function(component){
-              return [component['number'], component['text']];
-            });
-          }
-          currentIdea = idea._doc;
+            for(var i = 0; i < imageList.length; i++){
+              imageList[i][3] = _.map(imagesAndComponents[imageList[i][2]], function(component){
+                return [component['number'], component['text']];
+              });
+            }
+            currentIdea = idea._doc;
 
-          res.render('pages/variant', { user : req.user, idea : currentIdea,
-            categorizedSuggestions : categorizedSuggestions,
-            images : imageList,
-            imagesAndComponents : imagesAndComponents,
-            problemType : req.session.problemType });
-      });
-    }); //end of component query
+            res.render('pages/variant', { user : req.user, idea : currentIdea,
+              categorizedSuggestions : categorizedSuggestions,
+              images : imageList,
+              headshot : headshotURL,
+              imagesAndComponents : imagesAndComponents,
+              problemType : req.session.problemType });
+        });
+      }); //end of component query
+    });
   });
-
 });
 
 /*****************************************************************
@@ -1377,63 +1566,70 @@ router.get('/annotate-image/:image', function(req, res){
     res.redirect('/');
     return;
   }
-  IdeaImage.findOne({"filename": req.params.image} ,function(err, image){
-    currentImage = image._doc;
-    var annotations = [];
-    if(currentImage.image){
-      imageURL = "data:"+currentImage.imageMimetype+";base64," + currentImage.image.toString('base64');
-      Component.find({"images.imageID" : image.id}, function(err, comps){
-        var compArray = [], masterComponentList = [];
-        for(var i = 0; i < comps.length; i++){
-          for(var k = 0; k < comps[i].images.length; k++){
-            if(comps[i].images[k].imageID.toString() == image.id) {
-              compArray[i] = {
-                "text" : comps[i].text,
-                "number"  : comps[i].number,
-                "firstX"  : comps[i].images[k].firstX,
-                "firstY"  : comps[i].images[k].firstY,
-                "secondX" : comps[i].images[k].secondX,
-                "secondY" : comps[i].images[k].secondY
-              };
-            }
-          }
-        }
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
 
-        var nextNumber = 1;
-          Component.find({ }, function(err, comps){
-            for(var j = 0; j < comps.length; j++){
-              if ( comps[j]['ideaSeed'] && comps[j]['ideaSeed'].toString() ==  req.session.idea ) {
-                masterComponentList.push(comps[j]);
-                nextNumber++;
+    IdeaImage.findOne({"filename": req.params.image} ,function(err, image){
+      currentImage = image._doc;
+      var annotations = [];
+      if(currentImage.image){
+        imageURL = "data:"+currentImage.imageMimetype+";base64," + currentImage.image.toString('base64');
+        Component.find({"images.imageID" : image.id}, function(err, comps){
+          var compArray = [], masterComponentList = [];
+          for(var i = 0; i < comps.length; i++){
+            for(var k = 0; k < comps[i].images.length; k++){
+              if(comps[i].images[k].imageID.toString() == image.id) {
+                compArray[i] = {
+                  "text" : comps[i].text,
+                  "number"  : comps[i].number,
+                  "firstX"  : comps[i].images[k].firstX,
+                  "firstY"  : comps[i].images[k].firstY,
+                  "secondX" : comps[i].images[k].secondX,
+                  "secondY" : comps[i].images[k].secondY
+                };
               }
             }
+          }
 
-            compArray = _.sortBy(compArray, 'number');
-            masterComponentList = _.sortBy(masterComponentList, 'number');
-            res.render('pages/annotate-image', {
-              user : req.user,
-              imgURL : imageURL,
-              imageName : currentImage.filename,
-              annotations : JSON.stringify(annotations),
-              masterComponentList : masterComponentList,
-              masterComponentsString : JSON.stringify(masterComponentList).replace(/\\n/g, "\\n")
-                                      .replace(/'/g, "\\'")
-                                      .replace(/"/g, '\\"')
-                                      .replace(/\\&/g, "\\&")
-                                      .replace(/\\r/g, "\\r")
-                                      .replace(/\\t/g, "\\t")
-                                      .replace(/\\b/g, "\\b")
-                                      .replace(/\\f/g, "\\f"),
-              comps : compArray,
-              compsString : JSON.stringify(compArray),
-              nextNumber : nextNumber
-            });
+          var nextNumber = 1;
+            Component.find({ }, function(err, comps){
+              for(var j = 0; j < comps.length; j++){
+                if ( comps[j]['ideaSeed'] && comps[j]['ideaSeed'].toString() ==  req.session.idea ) {
+                  masterComponentList.push(comps[j]);
+                  nextNumber++;
+                }
+              }
+
+              compArray = _.sortBy(compArray, 'number');
+              masterComponentList = _.sortBy(masterComponentList, 'number');
+              res.render('pages/annotate-image', {
+                user : req.user,
+                imgURL : imageURL,
+                headshot : headshotURL,
+                imageName : currentImage.filename,
+                annotations : JSON.stringify(annotations),
+                masterComponentList : masterComponentList,
+                masterComponentsString : JSON.stringify(masterComponentList).replace(/\\n/g, "\\n")
+                                        .replace(/'/g, "\\'")
+                                        .replace(/"/g, '\\"')
+                                        .replace(/\\&/g, "\\&")
+                                        .replace(/\\r/g, "\\r")
+                                        .replace(/\\t/g, "\\t")
+                                        .replace(/\\b/g, "\\b")
+                                        .replace(/\\f/g, "\\f"),
+                comps : compArray,
+                compsString : JSON.stringify(compArray),
+                nextNumber : nextNumber
+              });
+          });
+
         });
-
-      });
-    } else {
-      res.redirect('/idea-seed-summary');
-    }
+      } else {
+        res.redirect('/idea-seed-summary');
+      }
+    });
   });
 });
 
@@ -1626,173 +1822,183 @@ router.get('/component-profile/:identifier', function(req, res){
     return;
   }
 
-  Component.findOne({"identifier" : req.params.identifier}, function(err, component){
-    IdeaSeed.findById(req.session.idea,function(err, idea){
+  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+    if(headshot){
+      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    }
 
-      Component.find({
-        "ideaSeed" : req.session.idea
-        }, function(err, components){
+    Component.findOne({"identifier" : req.params.identifier}, function(err, component){
+      IdeaSeed.findById(req.session.idea,function(err, idea){
 
-        var relatedComponents = [];
-        if(component.relatedComps.length > 0){
-          var compDescription = "";
-          var relatedCompIdStrings = _.map(component.relatedComps, function(item){
-            return item['compID'].toString();
+        Component.find({
+          "ideaSeed" : req.session.idea
+          }, function(err, components){
+
+          var relatedComponents = [];
+          if(component.relatedComps.length > 0){
+            var compDescription = "";
+            var relatedCompIdStrings = _.map(component.relatedComps, function(item){
+              return item['compID'].toString();
+            });
+
+            for(var j = 0; j < components.length; j++){
+              //gets the component object for each id in the list of related comp ID's
+              for(var i = 0; i < relatedCompIdStrings.length; i++){
+                if(relatedCompIdStrings[i] == components[j]['id']){
+                  compDescription = component.relatedComps[i]['relationship'];
+                  relatedComponents.push([components[j], compDescription]);
+                }
+              }
+            }
+          }
+
+          var listOfVariants = [], variantDates = [];
+          if(idea.variants.length > 0){
+            for(var k = 0; k < idea.variants.length; k ++){
+              if(idea.variants[k].components && idea.variants[k].components.indexOf(component['id'].toString()) > -1){
+                listOfVariants.push(idea.variants[k]);
+              }
+            }
+          }
+
+          variantDates = _.map(listOfVariants, function(item){
+            return [new Date(parseInt(item.name.substr(-13))).toString(), item.name]
           });
 
-          for(var j = 0; j < components.length; j++){
-            //gets the component object for each id in the list of related comp ID's
-            for(var i = 0; i < relatedCompIdStrings.length; i++){
-              if(relatedCompIdStrings[i] == components[j]['id']){
-                compDescription = component.relatedComps[i]['relationship'];
-                relatedComponents.push([components[j], compDescription]);
+
+          if(component['problemID']){
+            IdeaProblem.findOne({"_id" : component['problemID']}, function(err, problem){
+              //first get the images that the component is in
+              if(component.images.length > 0){
+                var imageIDs = _.map(component.images, function(item){ return item['imageID']});
+
+                // add main component image to list of id's to be retrieved
+                if(component.mainImage){
+                  imageIDs.unshift(component.mainImage);
+                }
+
+                IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
+                  var imageURLs = [];
+                  for(var i = 0; i < images.length; i++){
+                    if(images[i] && images[i].image){
+                      var filename = images[i]["filename"];
+                      //if it's the main component image, put in the first spot of the array so it's big on 
+                      // the component profile page
+                      if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
+                        imageURLs.unshift([
+                          filename,
+                          "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
+                        ]);
+                      } else {
+                        imageURLs.push([
+                          filename,
+                          "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
+                        ]);
+                      }
+                    }
+                    res.render('pages/component-profile', {
+                      user : req.user,
+                      headshot : headshotURL,
+                      idea : idea._doc,
+                      component : component,
+                      problem : problem,
+                      variantDates : variantDates,
+                      imageURLs : imageURLs,
+                      components : components,
+                      relatedComponents : relatedComponents
+                      //components : components,
+                      //listOfProblems : listOfProblems 
+                    });
+                  }
+                });//end of image query
+
+              // in case theres no images
+              } else {
+                    res.render('pages/component-profile', {
+                      user : req.user,
+                      headshot : headshotURL,
+                      idea : idea._doc,
+                      components : components,
+                      component : component,
+                      problem : problem,
+                      variantDates : variantDates,
+                      //problemAreas  : problemAreas,
+                      imageURLs : [],
+                      relatedComponents : relatedComponents
+                      //components : components,
+                      //listOfProblems : listOfProblems 
+                    });
               }
-            }
-          }
-        }
+            });// end of problem query
+          } else {
+              //first get the images that the component is in
+              if(component.images.length > 0 || component.mainImage){
+                var imageIDs = _.map(component.images || [], function(item){ return item['imageID']});
 
-        var listOfVariants = [], variantDates = [];
-        if(idea.variants.length > 0){
-          for(var k = 0; k < idea.variants.length; k ++){
-            if(idea.variants[k].components && idea.variants[k].components.indexOf(component['id'].toString()) > -1){
-              listOfVariants.push(idea.variants[k]);
-            }
-          }
-        }
+                // add main component image to list of id's to be retrieved
+                if(component.mainImage){
+                  imageIDs.unshift(component.mainImage);
+                }
 
-        variantDates = _.map(listOfVariants, function(item){
-          return [new Date(parseInt(item.name.substr(-13))).toString(), item.name]
-        });
-
-
-        if(component['problemID']){
-          IdeaProblem.findOne({"_id" : component['problemID']}, function(err, problem){
-            //first get the images that the component is in
-            if(component.images.length > 0){
-              var imageIDs = _.map(component.images, function(item){ return item['imageID']});
-
-              // add main component image to list of id's to be retrieved
-              if(component.mainImage){
-                imageIDs.unshift(component.mainImage);
-              }
-
-              IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
-                var imageURLs = [];
-                for(var i = 0; i < images.length; i++){
-                  if(images[i] && images[i].image){
-                    var filename = images[i]["filename"];
-                    //if it's the main component image, put in the first spot of the array so it's big on 
-                    // the component profile page
-                    if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
-                      imageURLs.unshift([
-                        filename,
-                        "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
-                      ]);
-                    } else {
-                      imageURLs.push([
-                        filename,
-                        "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
-                      ]);
+                IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
+                  var imageURLs = [];
+                  for(var i = 0; i < images.length; i++){
+                    if(images[i] && images[i].image){
+                      var filename = images[i]["filename"];
+                      //if it's the main component image, put in the first spot of the array so it's big on 
+                      // the component profile page
+                      if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
+                        imageURLs.unshift([
+                          filename,
+                          "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
+                        ]);
+                      } else {
+                        imageURLs.push([
+                          filename,
+                          "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
+                        ]);
+                      }
                     }
                   }
                   res.render('pages/component-profile', {
                     user : req.user,
+                    headshot : headshotURL,
                     idea : idea._doc,
+                    components : components,
                     component : component,
-                    problem : problem,
+                    problem : "none",
                     variantDates : variantDates,
                     imageURLs : imageURLs,
-                    components : components,
                     relatedComponents : relatedComponents
                     //components : components,
                     //listOfProblems : listOfProblems 
                   });
-                }
-              });//end of image query
 
-            // in case theres no images
-            } else {
-                  res.render('pages/component-profile', {
-                    user : req.user,
-                    idea : idea._doc,
-                    components : components,
-                    component : component,
-                    problem : problem,
-                    variantDates : variantDates,
-                    //problemAreas  : problemAreas,
-                    imageURLs : [],
-                    relatedComponents : relatedComponents
-                    //components : components,
-                    //listOfProblems : listOfProblems 
-                  });
-            }
-          });// end of problem query
-        } else {
-            //first get the images that the component is in
-            if(component.images.length > 0 || component.mainImage){
-              var imageIDs = _.map(component.images || [], function(item){ return item['imageID']});
+                });//end of image query
 
-              // add main component image to list of id's to be retrieved
-              if(component.mainImage){
-                imageIDs.unshift(component.mainImage);
+              // in case theres no images
+              } else {
+                    res.render('pages/component-profile', {
+                      user : req.user,
+                      headshot : headshotURL,
+                      idea : idea._doc,
+                      components : components,
+                      component : component,
+                      variantDates : variantDates,
+                      problem : "none",
+                      relatedComponents : relatedComponents,
+                      imageURLs : []
+                      //problems : problems,
+                      //components : components,
+                      //listOfProblems : listOfProblems 
+                    });
               }
+          }
+        }); // end of other component query
+      });
 
-              IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
-                var imageURLs = [];
-                for(var i = 0; i < images.length; i++){
-                  if(images[i] && images[i].image){
-                    var filename = images[i]["filename"];
-                    //if it's the main component image, put in the first spot of the array so it's big on 
-                    // the component profile page
-                    if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
-                      imageURLs.unshift([
-                        filename,
-                        "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
-                      ]);
-                    } else {
-                      imageURLs.push([
-                        filename,
-                        "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
-                      ]);
-                    }
-                  }
-                }
-                res.render('pages/component-profile', {
-                  user : req.user,
-                  idea : idea._doc,
-                  components : components,
-                  component : component,
-                  problem : "none",
-                  variantDates : variantDates,
-                  imageURLs : imageURLs,
-                  relatedComponents : relatedComponents
-                  //components : components,
-                  //listOfProblems : listOfProblems 
-                });
-
-              });//end of image query
-
-            // in case theres no images
-            } else {
-                  res.render('pages/component-profile', {
-                    user : req.user,
-                    idea : idea._doc,
-                    components : components,
-                    component : component,
-                    variantDates : variantDates,
-                    problem : "none",
-                    relatedComponents : relatedComponents,
-                    imageURLs : []
-                    //problems : problems,
-                    //components : components,
-                    //listOfProblems : listOfProblems 
-                  });
-            }
-        }
-      }); // end of other component query
-    });
-
-  });// end of component query
+    });// end of component query
+  });
 });
 
 /*****************************************************************

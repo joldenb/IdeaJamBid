@@ -498,3 +498,31 @@ canvas {
   border: 1px solid gray;
   border-radius: 8px;
 }
+
+.profile-headshot{
+  display:inline;
+}
+
+a.plus-overlay {
+  display: none;
+  margin-left: -75px;
+}
+
+a.plus-overlay img{
+  opacity : .5;
+}
+
+
+.profile-headshot:hover a.plus-overlay {
+  display: inline;
+}
+
+.profile-headshot:hover .placeholder {
+  opacity : .2;
+}
+
+.selectedProfilePic {
+  border : 1px solid blue;
+  margin : 5px;
+  padding : 5px;
+}
