@@ -5,5 +5,8 @@
 		.suggestion-category
 			p <b>Problem: </b>#{suggestionProblem} <b>Category: </b>#{problemCategory}
 	.suggestion-maker
-		img(src="/avatar.png" height="50" width="50")
+		if headshot
+			img(src=headshot height="50" width="50")
+		else
+			img(src="/avatar.png" height="50" width="50")
 		div.userName #{accountName || user.username}

@@ -108,7 +108,10 @@ html
                 li
                   p <b> Outsight :</b> #{component['outsight'] || "No value yet"} 
           .suggestion-maker
-            img(src="/avatar.png" height="50" width="50")
+            if problemHeadshotURL != ""
+              img(src=problemHeadshotURL height="50" width="50")
+            else
+              img(src="/avatar.png" height="50" width="50")
             div.userName #{problem['creator'] || "Unknown User"}
 
       .component-variants

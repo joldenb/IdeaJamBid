@@ -39,6 +39,7 @@ html
                 - var suggestionText = component['descriptions'][0]
                 - var problemCategory = category
                 - var accountName = component['creator']
+                - var headshot = headshotURLs[component['creator']]
                 include ../partials/suggestion-element.jade
               td 
                 .radio
@@ -60,6 +61,8 @@ html
               - var imageName = image[0]
               - var componentList = image[3]
               - var accountName = image[1]
+              - var headshot = headshotURLs[image[1]]
+
               include ../partials/image-block-element.jade
             td 
               .radio

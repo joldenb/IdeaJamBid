@@ -879,6 +879,7 @@ router.get('/view-idea-suggestions', function(req, res){
         var categorizedSuggestions = {}; //build components by category
         var imagesAndComponents = {}; //build list of components within each imageID key
         //not sure about components with no image or category yet
+        var headshotNames = [];
 
         for(var i = 0; i < components.length; i++){
           //break into two lists, one for components with no images, and on for those with
@@ -892,6 +893,7 @@ router.get('/view-idea-suggestions', function(req, res){
             } else {
               categorizedSuggestions["other"] = [components[i]];
             }
+
           } else {
             for(var k=0; k < components[i].images.length; k++){
               if(imagesAndComponents[components[i].images[k]['imageID'].toString()]){
@@ -900,6 +902,9 @@ router.get('/view-idea-suggestions', function(req, res){
                 imagesAndComponents[components[i].images[k]['imageID'].toString()] = [components[i]];
               }
             }
+          }
+          if( headshotNames.indexOf(components[i]['creator']) == -1 ){
+            headshotNames.push(components[i]['creator']);
           }
         }
 
@@ -913,22 +918,43 @@ router.get('/view-idea-suggestions', function(req, res){
         IdeaImage.find({"_id" : {$in : Object.keys(imagesAndComponents)}}, function(err, images){
           var imageList = _.map(images, function(image){return [image["filename"], image["uploader"], image["id"], []]});
 
-            for(var i = 0; i < imageList.length; i++){
-              imageList[i][3] = _.map(imagesAndComponents[imageList[i][2]], function(component){
-                return [component['number'], component['text']];
-              });
-            }
-            currentIdea = idea._doc;
-            res.render('pages/view-idea-suggestions', {
-              user : req.user, //user document
-              idea : currentIdea, //document
-              images : imageList, //[[imagename, uploader, objectid, [componentNumber, componentText  ]]]
-              categorizedSuggestions : categorizedSuggestions, //special structure
-              imagesAndComponents : imagesAndComponents,
-              headshot : headshotURL,
-              reviewing : reviewing
+          for(var i = 0; i < imageList.length; i++){
+            imageList[i][3] = _.map(imagesAndComponents[imageList[i][2]], function(component){
+              return [component['number'], component['text']];
             });
+          }
 
+          //get component creator and image uploader profile headshots
+          Account.find({"username" : {$in : headshotNames}}, function(err, contributors){
+
+            var headshotIDs = _.map(contributors, function(contributor){
+              if(contributor.headshots && contributor.headshots[0]){
+                return contributor.headshots[0];
+              } else {
+                return false;
+              }
+            });
+            headshotIDs = _.filter(headshotIDs, function(id){return id;});
+
+            IdeaImage.find({"_id" : {$in : headshotIDs}}, function(err, headshots){
+              var headshotURLs = {};
+              for(var j = 0; j < headshots.length; j++){
+                headshotURLs[headshots[j]['uploader']] = "data:"+headshots[j]["imageMimetype"]+";base64,"+ headshots[j]["image"].toString('base64');
+              }
+
+              currentIdea = idea._doc;
+              res.render('pages/view-idea-suggestions', {
+                user : req.user, //user document
+                idea : currentIdea, //document
+                images : imageList, //[[imagename, uploader, objectid, [componentNumber, componentText  ]]]
+                headshotURLs : headshotURLs,
+                categorizedSuggestions : categorizedSuggestions, //special structure
+                imagesAndComponents : imagesAndComponents,
+                headshot : headshotURL,
+                reviewing : reviewing
+              });
+            });
+          }); //end of contributor account lookup
         });
       }); //end of component query
     });
@@ -1896,73 +1922,90 @@ router.get('/component-profile/:identifier', function(req, res){
           }
 
           variantDates = _.map(listOfVariants, function(item){
-            return [new Date(parseInt(item.name.substr(-13))).toString(), item.name]
+            return [new Date(parseInt(item.name.substr(-13))).toString(), item.name];
           });
 
 
           if(component['problemID']){
             IdeaProblem.findOne({"_id" : component['problemID']}, function(err, problem){
-              //first get the images that the component is in
-              if(component.images.length > 0){
-                var imageIDs = _.map(component.images, function(item){ return item['imageID']});
+              
+              //Get problem creator picture
+              Account.findOne({"username": problem['creator']}, function(err, problemCreator){
 
-                // add main component image to list of id's to be retrieved
-                if(component.mainImage){
-                  imageIDs.unshift(component.mainImage);
-                }
+                //assumes the first headshot in the user's array of headshots is their 
+                // primary one for display
+                var problemHeadshotID = problemCreator['headshots'][0];
+                var problemHeadshotURL = '';
 
-                IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
-                  var imageURLs = [];
-                  for(var i = 0; i < images.length; i++){
-                    if(images[i] && images[i].image){
-                      var filename = images[i]["filename"];
-                      //if it's the main component image, put in the first spot of the array so it's big on 
-                      // the component profile page
-                      if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
-                        imageURLs.unshift([
-                          filename,
-                          "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
-                        ]);
-                      } else {
-                        imageURLs.push([
-                          filename,
-                          "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
-                        ]);
-                      }
-                    }
-                    res.render('pages/component-profile', {
-                      user : req.user,
-                      headshot : headshotURL,
-                      idea : idea._doc,
-                      component : component,
-                      problem : problem,
-                      variantDates : variantDates,
-                      imageURLs : imageURLs,
-                      components : components,
-                      relatedComponents : relatedComponents
-                      //components : components,
-                      //listOfProblems : listOfProblems 
-                    });
+                //first get the images that the component is in
+                if(component.images.length > 0 || problemHeadshotID){
+                  var imageIDs = _.map(component.images, function(item){ return item['imageID']});
+
+                  // add main component image to list of id's to be retrieved
+                  if(component.mainImage){
+                    imageIDs.unshift(component.mainImage);
                   }
-                });//end of image query
+                  if(problemHeadshotID){
+                    imageIDs.push(problemHeadshotID);
+                  }
 
-              // in case theres no images
-              } else {
-                    res.render('pages/component-profile', {
-                      user : req.user,
-                      headshot : headshotURL,
-                      idea : idea._doc,
-                      components : components,
-                      component : component,
-                      problem : problem,
-                      variantDates : variantDates,
-                      //problemAreas  : problemAreas,
-                      imageURLs : [],
-                      relatedComponents : relatedComponents
-                      //components : components,
-                      //listOfProblems : listOfProblems 
-                    });
-              }
+                  IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
+                    var imageURLs = [];
+                    for(var i = 0; i < images.length; i++){
+                      if(images[i] && images[i].image){
+                        var filename = images[i]["filename"];
+                        //if it's the main component image, put in the first spot of the array so it's big on 
+                        // the component profile page
+                        if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
+                          imageURLs.unshift([
+                            filename,
+                            "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
+                          ]);
+                        } else if( images[i].id.toString() == problemCreator['headshots'][0]){
+                          problemHeadshotURL = "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64');
+                        } else {
+                          imageURLs.push([
+                            filename,
+                            "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
+                          ]);
+                        }
+                      }
+                      res.render('pages/component-profile', {
+                        user : req.user,
+                        headshot : headshotURL,
+                        idea : idea._doc,
+                        problemHeadshotURL : problemHeadshotURL,
+                        component : component,
+                        problem : problem,
+                        variantDates : variantDates,
+                        imageURLs : imageURLs,
+                        components : components,
+                        relatedComponents : relatedComponents
+                        //components : components,
+                        //listOfProblems : listOfProblems 
+                      });
+                    }
+                  });//end of image query
+
+                // in case theres no images
+                } else {
+                      res.render('pages/component-profile', {
+                        user : req.user,
+                        headshot : headshotURL,
+                        problemHeadshotURL : problemHeadshotURL,
+                        idea : idea._doc,
+                        components : components,
+                        component : component,
+                        problem : problem,
+                        variantDates : variantDates,
+                        //problemAreas  : problemAreas,
+                        imageURLs : [],
+                        relatedComponents : relatedComponents
+                        //components : components,
+                        //listOfProblems : listOfProblems 
+                      });
+                }
+              }); // end of problem creator query
             });// end of problem query
           } else {
               //first get the images that the component is in
