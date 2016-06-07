@@ -35,6 +35,8 @@ html
             td.left-column 
               - var suggestionText = component['descriptions'][0]
               - var problemCategory = category
+              - var accountName = component['creator']
+              - var compHeadshot = headshotURLs[component['creator']]
               include ../partials/suggestion-element.jade
     br
     h2 Images
@@ -48,6 +50,7 @@ html
             - var imageName = image[0]
             - var componentList = image[3]
             - var accountName = image[1]
+            - var compHeadshot = headshotURLs[image[1]]
             include ../partials/image-block-element.jade
 
     #myModal.modal.fade.annotate-modal(role="dialog")

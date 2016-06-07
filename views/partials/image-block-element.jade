@@ -9,8 +9,8 @@
 					li 
 						p <b> Component #{component[0]}</b> : #{component[1]}
 	.suggestion-maker
-		if headshot
-			img(src=headshot height="50" width="50")
+		if compHeadshot
+			img(src=compHeadshot height="50" width="50")
 		else
 			img(src="/avatar.png" height="50" width="50")
 		div.userName #{accountName || "Unknown User"}

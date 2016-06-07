@@ -244,7 +244,7 @@ router.get('/profile-picture', function(req, res){
 *****************************************************************/
 router.get('/view-all-ideas', function(req, res){
   if(req.user){
-//    IdeaSeed.find({"visibility" : "public"}, function(err, ideas){
+  // IdeaSeed.find({"visibility" : "public"}, function(err, ideas){
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
       var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
@@ -1556,6 +1556,8 @@ router.get('/variant/:variantname', function(req, res){
         var imagesAndComponents = {}; //build list of components within each imageID key
         //not sure about components with no image or category yet
         var currentImageID;
+        var headshotNames = [];
+
 
         for(var i = 0; i < components.length; i++){
           //break into two lists, one for components with no images, and on for those with
@@ -1583,6 +1585,9 @@ router.get('/variant/:variantname', function(req, res){
               }
             }
           }
+          if( headshotNames.indexOf(components[i]['creator']) == -1 ){
+            headshotNames.push(components[i]['creator']);
+          }
         }
 
         // after categorizedSuggestions is completed, replace the abbreviated 
@@ -1600,14 +1605,36 @@ router.get('/variant/:variantname', function(req, res){
                 return [component['number'], component['text']];
               });
             }
-            currentIdea = idea._doc;
 
-            res.render('pages/variant', { user : req.user, idea : currentIdea,
-              categorizedSuggestions : categorizedSuggestions,
-              images : imageList,
-              headshot : headshotURL,
-              imagesAndComponents : imagesAndComponents,
-              problemType : req.session.problemType });
+            //get component creator and image uploader profile headshots
+            Account.find({"username" : {$in : headshotNames}}, function(err, contributors){
+
+              var headshotIDs = _.map(contributors, function(contributor){
+                if(contributor.headshots && contributor.headshots[0]){
+                  return contributor.headshots[0];
+                } else {
+                  return false;
+                }
+              });
+              headshotIDs = _.filter(headshotIDs, function(id){return id;});
+
+              IdeaImage.find({"_id" : {$in : headshotIDs}}, function(err, headshots){
+                var headshotURLs = {};
+                for(var j = 0; j < headshots.length; j++){
+                  headshotURLs[headshots[j]['uploader']] = "data:"+headshots[j]["imageMimetype"]+";base64,"+ headshots[j]["image"].toString('base64');
+                }
+
+                currentIdea = idea._doc;
+
+                res.render('pages/variant', { user : req.user, idea : currentIdea,
+                  categorizedSuggestions : categorizedSuggestions,
+                  images : imageList,
+                  headshotURLs : headshotURLs,
+                  headshot : headshotURL,
+                  imagesAndComponents : imagesAndComponents,
+                  problemType : req.session.problemType });
+              });
+            });
         });
       }); //end of component query
     });
