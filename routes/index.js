@@ -204,6 +204,9 @@ router.get('/begin', function(req, res) {
                             return res.render('pages/begin', {
                               reviewNames : reviewNames,
                               headshot : headshotURL,
+                              mySchoolNetwork : mySchoolNetwork,
+                              myLocationNetwork : myLocationNetwork,
+                              myCompanyNetwork : myCompanyNetwork,
                               user : req.user,
                               accountIdeaSeeds : ideaNames
                             });
@@ -219,6 +222,9 @@ router.get('/begin', function(req, res) {
             return res.render('pages/begin', {
               user : req.user,
               headshot : headshotURL,
+              mySchoolNetwork : mySchoolNetwork,
+              myLocationNetwork : myLocationNetwork,
+              myCompanyNetwork : myCompanyNetwork,
               accountIdeaSeeds : []
             });
           }
