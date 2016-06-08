@@ -25,14 +25,16 @@ html
       h4 Einstein Points: #{user.einsteinPoints}
       h4 Rupees Remaining: #{user.rupees}
     div#begin-info-right
-      if mySchoolNetwork
-        h4 My School : #{mySchoolNetwork} #[a(href="#" id="schoolModalButton" data-toggle="modal" data-target="#schoolModal") Edit]
-      else
-        button(type="button" id="schoolModalButton"  class="btn btn-default" data-toggle="modal" data-target="#schoolModal") Add your School
-      if myCompanyNetwork
-        h4 My Company : #{myCompanyNetwork} #[a(href="#" id="companyModalButton" data-toggle="modal" data-target="#companyModal") Edit]
-      else
-        button(type="button" id="companyModalButton"  class="btn btn-default" data-toggle="modal" data-target="#companyModal") Add your Company
+      .profileSchool
+        if mySchoolNetwork
+          h4 My School : #{mySchoolNetwork} #[a(href="#" id="schoolModalButton" data-toggle="modal" data-target="#schoolModal") Edit]
+        else
+          button(type="button" id="schoolModalButton"  class="btn btn-default" data-toggle="modal" data-target="#schoolModal") Add your School
+      .profileCompany
+        if myCompanyNetwork
+          h4 My Company : #{myCompanyNetwork} #[a(href="#" id="companyModalButton" data-toggle="modal" data-target="#companyModal") Edit]
+        else
+          button(type="button" id="companyModalButton"  class="btn btn-default" data-toggle="modal" data-target="#companyModal") Add your Company
       .profileLocation
         if myLocationNetwork
           h4 My Location : #{myLocationNetwork} #[a(href="#" id="locationModalButton" data-toggle="modal" data-target="#companyModal") Edit]
