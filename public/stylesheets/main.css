@@ -103,6 +103,10 @@ div#begin-info-right {
   display:inline-block;
 }
 
+ div#begin-info-right button {
+  margin:.3em 0;
+}
+
 .container.idea-summary, .container.scoreIdea {
   text-align: left;
   margin-left: 30%;
