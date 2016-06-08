@@ -10,7 +10,12 @@ var Account = new Schema({
     einsteinPoints	: {type: Number, default:0},
     rupees			: {type: Number, default:0},
     ideaSeeds		: [IdeaSeed],
-    headshots		: [ObjectId] //whatever's first on the list is the main picture
+    headshots		: [ObjectId], //whatever's first on the list is the main picture
+    networks		: {
+			school : ObjectId,
+			company : ObjectId,
+			location	: ObjectId
+    } //for now there's up to three, all ids for network ids
 });
 
 Account.plugin(passportLocalMongoose);

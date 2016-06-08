@@ -7,6 +7,7 @@ var IdeaImage = require('../models/ideaImage');
 var IdeaReview = require('../models/ideaReviews');
 var IdeaSeed = require('../models/ideaSeed');
 var Component = require('../models/component');
+var Network = require('../models/network');
 var IdeaProblem = require('../models/ideaProblem');
 var Account = require('../models/account');
 var router = express.Router();
@@ -114,59 +115,115 @@ router.get('/begin', function(req, res) {
       if (req.session.idea){
         req.session.idea = null;
       }
-      IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-        if(headshot){
-          var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
-        }
-        if(req.user.ideaSeeds && req.user.ideaSeeds.length > 0){
-          var ideaNames = [],
-              j = 0;
-              IdeaReview.find({"reviewer" : req.user.username}, function(err, reviews){
-                var ideaSeedIDs = _.map(reviews, function(item){return item["ideaSeedId"];});
-                ideaSeedIDs = _.filter(ideaSeedIDs, Boolean);
-                IdeaSeed.find({_id : {$in : ideaSeedIDs}}, function(err, reviewedIdeas){
-                  var reviewedIdeaNames = _.map(reviewedIdeas, function(item){return item["name"];});
-                  var context = {"reviewedNames" : reviewedIdeaNames};
-                  _.each(req.user.ideaSeeds, function(element, index,  list){
-                    reviewNames = this["reviewedNames"];
-                    (function(reviewNames){
-                    IdeaSeed.findById(element._id, function(error, document){
-                      j++;
-                      if(document){
-                        ideaNames.push(document.name);
-                        if(j == req.user.ideaSeeds.length){
-                          return res.render('pages/begin', {
-                            reviewNames : reviewNames,
-                            headshot : headshotURL,
-                            user : req.user,
-                            accountIdeaSeeds : ideaNames
-                          });
-                        }
-                      } else {
-                        if(j == req.user.ideaSeeds.length){
-                          return res.render('pages/begin', {
-                            reviewNames : reviewNames,
-                            headshot : headshotURL,
-                            user : req.user,
-                            accountIdeaSeeds : ideaNames
-                          });
-                        }
-                      }
-                    });
-                    }(reviewNames));
-                  }, context); //each
-                });
-              });
-        }
-        else {
-          return res.render('pages/begin', {
-            user : req.user,
-            headshot : headshotURL,
-            accountIdeaSeeds : []
-          });
-        }
-      });
 
+      Network.find({}, function(err, networks){
+        var masterSchoolNetworkList = [],
+            mySchoolNetwork = "",
+            masterCompanyNetworkList = [],
+            myCompanyNetwork = "",
+            masterLocationNetworkList = [],
+            myLocationNetwork = "";
+        
+        _.each(networks, function(element, index, list){
+          if(element['type'] == 'school'){
+            masterSchoolNetworkList.push(element);
+            //get school name if it exists
+            if(req.user.networks
+              && req.user.networks['school']
+              && req.user.networks['school'].toString() == element['id'].toString()){
+                mySchoolNetwork = element['name'];
+            }
+          }
+
+          if(element['type'] == 'company'){
+            masterCompanyNetworkList.push(element);
+            //get company name if it exists
+            if(req.user.networks
+              && req.user.networks['company']
+              && req.user.networks['company'].toString() == element['id'].toString()){
+                myCompanyNetwork = element['name'];
+            }
+          }
+
+          if(element['type'] == 'location'){
+            masterLocationNetworkList.push(element);
+            //get company name if it exists
+            if(req.user.networks
+              && req.user.networks['location']
+              && req.user.networks['location'].toString() == element['id'].toString()){
+                myLocationNetwork = element['name'];
+            }
+          }
+        });
+
+
+        IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+          if(headshot){
+            var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+          }
+          if(req.user.ideaSeeds && req.user.ideaSeeds.length > 0){
+            var ideaNames = [],
+                j = 0;
+                IdeaReview.find({"reviewer" : req.user.username}, function(err, reviews){
+                  var ideaSeedIDs = _.map(reviews, function(item){return item["ideaSeedId"];});
+                  ideaSeedIDs = _.filter(ideaSeedIDs, Boolean);
+                  IdeaSeed.find({_id : {$in : ideaSeedIDs}}, function(err, reviewedIdeas){
+                    var reviewedIdeaNames = _.map(reviewedIdeas, function(item){return item["name"];});
+                    var context = {"reviewedNames" : reviewedIdeaNames};
+                    _.each(req.user.ideaSeeds, function(element, index,  list){
+                      reviewNames = this["reviewedNames"];
+                      (function(reviewNames){
+                      IdeaSeed.findById(element._id, function(error, document){
+                        j++;
+                        if(document){
+                          ideaNames.push(document.name);
+                          if(j == req.user.ideaSeeds.length){
+                            return res.render('pages/begin', {
+                              reviewNames : reviewNames,
+                              headshot : headshotURL,
+                              user : req.user,
+                              mySchoolNetwork : mySchoolNetwork,
+                              myLocationNetwork : myLocationNetwork,
+                              myCompanyNetwork : myCompanyNetwork,
+                              accountIdeaSeeds : ideaNames,
+                              masterSchoolNetworkList : masterSchoolNetworkList,
+                              masterSchoolNetworkString : JSON.stringify(masterSchoolNetworkList)
+                                                      .replace(/\\n/g, "\\n")
+                                                      .replace(/'/g, "\\'")
+                                                      .replace(/"/g, '\\"')
+                                                      .replace(/\\&/g, "\\&")
+                                                      .replace(/\\r/g, "\\r")
+                                                      .replace(/\\t/g, "\\t")
+                                                      .replace(/\\b/g, "\\b")
+                                                      .replace(/\\f/g, "\\f")
+
+                            });
+                          }
+                        } else {
+                          if(j == req.user.ideaSeeds.length){
+                            return res.render('pages/begin', {
+                              reviewNames : reviewNames,
+                              headshot : headshotURL,
+                              user : req.user,
+                              accountIdeaSeeds : ideaNames
+                            });
+                          }
+                        }
+                      });
+                      }(reviewNames));
+                    }, context); //each
+                  });
+                });
+          }
+          else {
+            return res.render('pages/begin', {
+              user : req.user,
+              headshot : headshotURL,
+              accountIdeaSeeds : []
+            });
+          }
+        });
+      });
     } else {
       res.redirect('/');
     }
@@ -1808,6 +1865,123 @@ router.post('/save-component', function(req, res) {
     });
   });
 });
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for saving a school
+******************************************************************
+******************************************************************
+*****************************************************************/
+
+router.post('/save-school-network', function(req, res) {
+  Network.findOne({"name" : req.body.schoolNetwork}, function(err, schoolNetwork){
+      if(err){
+        res.json({error: err});
+      }
+
+      if(schoolNetwork){
+        Account.findById( req.user.id,
+          function (err, account) {
+            account.networks['school'] = schoolNetwork.id;
+            account.save(function (err) {});
+        });
+        res.redirect('/begin');
+      } else {
+        var newSchool = new Network({
+          name : req.body.schoolNetwork,
+          type : 'school',
+        });
+        newSchool.save(function(err, newSchool){
+          Account.findById( req.user.id,
+            function (err, account) {
+              account.networks['school'] = newSchool.id;
+              account.save(function (err) {});
+          });
+        });
+        res.redirect('/begin');
+      }
+  });
+});
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for saving a company
+******************************************************************
+******************************************************************
+*****************************************************************/
+
+router.post('/save-company-network', function(req, res) {
+  Network.findOne({"name" : req.body.companyNetwork}, function(err, companyNetwork){
+      if(err){
+        res.json({error: err});
+      }
+
+      if(companyNetwork){
+        Account.findById( req.user.id,
+          function (err, account) {
+            account.networks['company'] = companyNetwork.id;
+            account.save(function (err) {});
+        });
+        res.redirect('/begin');
+      } else {
+        var newCompany = new Network({
+          name : req.body.companyNetwork,
+          type : 'company',
+        });
+        newCompany.save(function(err, newCompany){
+          Account.findById( req.user.id,
+            function (err, account) {
+              account.networks['company'] = newCompany.id;
+              account.save(function (err) {});
+          });
+        });
+        res.redirect('/begin');
+      }
+  });
+});
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for saving a profile location
+******************************************************************
+******************************************************************
+*****************************************************************/
+
+router.post('/save-location-network', function(req, res) {
+  //need to add validation to make sure these both exist.
+  var cityAndState = req.body.locationCity + ", " + req.body.locationState;
+  Network.findOne({"name" : cityAndState}, function(err, locationNetwork){
+      if(err){
+        res.json({error: err});
+      }
+
+      if(locationNetwork){
+        Account.findById( req.user.id,
+          function (err, account) {
+            account.networks['location'] = locationNetwork.id;
+            account.save(function (err) {});
+        });
+        res.sendStatus(200);
+      } else {
+        var newLocation = new Network({
+          name : cityAndState,
+          type : 'location',
+        });
+        newLocation.save(function(err, newLocation){
+          Account.findById( req.user.id,
+            function (err, account) {
+              account.networks['location'] = newLocation.id;
+              account.save(function (err) {});
+          });
+        });
+        res.sendStatus(200);
+      }
+  });
+});
+
 
 /*****************************************************************
 ******************************************************************

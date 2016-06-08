@@ -25,8 +25,21 @@ html
       h4 Einstein Points: #{user.einsteinPoints}
       h4 Rupees Remaining: #{user.rupees}
     div#begin-info-right
-      h4 Company : Albatross Air
-      h4 Role : Inventor
+      if mySchoolNetwork
+        h4 My School : #{mySchoolNetwork} #[a(href="#" id="schoolModalButton" data-toggle="modal" data-target="#schoolModal") Edit]
+      else
+        button(type="button" id="schoolModalButton"  class="btn btn-default" data-toggle="modal" data-target="#schoolModal") Add your School
+      if myCompanyNetwork
+        h4 My Company : #{myCompanyNetwork} #[a(href="#" id="companyModalButton" data-toggle="modal" data-target="#companyModal") Edit]
+      else
+        button(type="button" id="companyModalButton"  class="btn btn-default" data-toggle="modal" data-target="#companyModal") Add your Company
+      .profileLocation
+        if myLocationNetwork
+          h4 My Location : #{myLocationNetwork} #[a(href="#" id="locationModalButton" data-toggle="modal" data-target="#companyModal") Edit]
+        else
+          button(type="button" id="locationModalButton" class="btn btn-default" ) Add your Location
+        
+
 
   .existingIdeas
     h2 Existing Ideas:
@@ -52,10 +65,135 @@ html
       h4 None so far.
     a.home-login.btn.btn-success( href="/view-all-ideas" ) View All Ideas
 
+  #schoolModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 School Network
+        .modal-body
+          form(role='form', id="saveSchool" action="/save-school-network", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            .form-group
+              |  
+              input.form-control.ui-front(type='text', id="schoolNetwork", name="schoolNetwork", placeholder='My school is called... ', autocomplete="on")
+            .modal-footer
+              button.btn.btn-info(data-dismiss="modal") Cancel
+              button.btn.btn-success#submit(type='submit') Save
+  #companyModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Company Network
+        .modal-body
+          form(role='form', id="saveCompany" action="/save-company-network", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            .form-group
+              |  
+              input.form-control.ui-front(type='text', id="companyNetwork", name="companyNetwork", placeholder='My company is called... ', autocomplete="on")
+            .modal-footer
+              button.btn.btn-info(data-dismiss="modal") Cancel
+              button.btn.btn-success#submit(type='submit') Save
+  #locationModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Location Network
+        .modal-body
+          form(role='form', id="saveLocation" action="/save-location-network", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            .form-group
+              |  
+              h4 Select State
+              select.form-control#locationState
+              h4.locationCity(style="display:none;") Select City
+              select.form-control.locationCity(style="display:none;")
+
+
+            .modal-footer
+              button.btn.btn-info(data-dismiss="modal") Cancel
+              button.btn.btn-success#locationSubmit(type='submit') Save
+
+  button(type="button" id="secretLocationButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#locationModal") Go Win Fight
+
+
   include ../partials/js-includes.jade
   script(type="text/javascript").
     $( document ).ready(function() {
       jQuery.get("/clear-session-idea", function(data){
         var stop;
       });
+    });
+
+    $("#schoolModal").on('shown.bs.modal', function(){
+      var schoolNetworkList = _.map(JSON.parse('!{masterSchoolNetworkString}'), function(item){return item['name'];})
+      $("#schoolNetwork").autocomplete({
+        source : schoolNetworkList,
+        appendTo : "#saveSchool"
+      });
+    });
+
+    $("#companyModal").on('shown.bs.modal', function(){
+      var companyNetworkList = _.map(JSON.parse('!{masterCompanyNetworkString}'), function(item){return item['name'];})
+      $("#companyNetwork").autocomplete({
+        source : companyNetworkList,
+        appendTo : "#saveCompany"
+      });
+    });
+
+    $("#locationModalButton").click(function(){
+      $.getJSON("/us-cities-and-states.json", function(data){
+        var stateArray = _.map(data, function(object){
+          return object['FIELD2'];
+        });
+
+        stateArray.shift();
+        stateArray = _.uniq(stateArray);
+        stateArray = _.sortBy(stateArray);
+
+        $("#secretLocationButton").click();
+        _.each(stateArray, function(state, index){
+          $('#locationState').append($('<option>', {
+            value: state,
+            text: state
+          }));
+        });
+
+        $("#locationState").change(function(event){
+          $('select.locationCity option').remove();
+
+          var cityArray = _.filter(data, function(object){
+            return object['FIELD2'] == $('#locationState').find(":selected").text();
+          });
+
+          cityArray = _.map(cityArray, function(object){
+            return object['FIELD1'];
+          });
+
+          cityArray = _.uniq(cityArray);
+          cityArray = _.sortBy(cityArray);
+
+          $(".locationCity").show();
+          _.each(cityArray, function(city, index){
+            $('select.locationCity').append($('<option>', {
+              value: city,
+              text: city
+            }));
+          });
+        });
+      });
+    });
+
+    $("#locationSubmit").click(function(event){
+      event.preventDefault();
+      $.post('/save-location-network', 
+        {
+          locationCity : $("select.locationCity option:selected").text(),
+          locationState : $("#locationState option:selected").text(),
+        },
+        function(resp) {
+          window.location.reload(true);
+        });      
     });
