@@ -396,6 +396,7 @@ router.get('/view-all-ideas', function(req, res){
                         }
                       } else {
                         res.redirect('/');
+                        return;
                       }
 
                     }
