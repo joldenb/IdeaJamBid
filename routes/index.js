@@ -17,14 +17,8 @@ var multer = require('multer');
 var fs = require('fs');
 
 
-fs.stat('/../.env', function(err, stats) {
-  if (!err) {
-    env(__dirname + '/../.env');
-    var S3_BUCKET = process.env.S3_BUCKET;
-  } else {
-    var S3_BUCKET = process.env.S3_BUCKET_NAME;
-  }
-});
+env(__dirname + '/../.env');
+var S3_BUCKET = process.env.S3_BUCKET;
 
 var storage = multer.memoryStorage();
 var uploading = multer({
