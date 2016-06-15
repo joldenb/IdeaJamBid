@@ -315,6 +315,8 @@ router.get('/profile-picture', function(req, res){
 ******************************************************************
 *****************************************************************/
 router.get('/view-all-ideas', function(req, res){
+  //workaround for a second
+  if(req){ res.redirect('/begin');} else{
   if(req.user){
   // IdeaSeed.find({"visibility" : "public"}, function(err, ideas){
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
@@ -424,6 +426,7 @@ router.get('/view-all-ideas', function(req, res){
   } else {
     res.redirect('/');
   }
+}//end of workaround
 });
 
 /*****************************************************************

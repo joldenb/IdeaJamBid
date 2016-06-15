@@ -24,6 +24,22 @@ html
     br
     
 
+    table.suggestion-table
+      tr
+        th.left-column Latest Idea Seeds
+      each idea, index in ideas
+        if idea[0] && idea[1]&& idea[2][0]&& idea[2][1]&& idea[3]&& idea[4]&& idea[5] && index < 10
+          tr
+            td
+              - var ideaName = idea[0]
+              - var ideaLink = "/contributor-idea-summary/"+ idea[0]
+              - var problemCategory = idea[1]
+              - var suggestionProblem = "W: "+ idea[2][0] +" V: "+idea[2][1]
+              - var accountName = idea[3]
+              - var ideaImage = idea[4]
+              - var inventorImage = idea[5]
+              include ../partials/view-all-idea-block.jade
+    br
 
     br
     a.home-logout.btn.btn-default( href="/begin" ) < Back to Profile
