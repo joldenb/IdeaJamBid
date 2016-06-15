@@ -28,7 +28,6 @@ var app = express();
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
 
-var S3_BUCKET = process.env.S3_BUCKET;
 
 // views is directory for all template files
 app.set('views', __dirname + '/views');

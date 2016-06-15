@@ -16,7 +16,14 @@ var router = express.Router();
 var multer = require('multer');
 
 
-env(__dirname + '/../.env');
+fs.stat('/../.env', function(err, stats) {
+  if (!err) {
+    env(__dirname + '/../.env');
+    var S3_BUCKET = process.env.S3_BUCKET;
+  } else {
+    var S3_BUCKET = process.env.S3_BUCKET_NAME;
+  }
+});
 
 var storage = multer.memoryStorage();
 var uploading = multer({
