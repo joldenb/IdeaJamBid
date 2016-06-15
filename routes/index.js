@@ -340,7 +340,7 @@ router.get('/view-all-ideas', function(req, res){
             for (var i = 0; i < images.length; i++){
               if(idea.images.length > 0 &&
                 idea.images[0].toString() == images[i].id.toString()){
-                currentImage = images[i]._doc["amazonURL"];
+                currentImage = images[i]._doc["amazonURL"] || "/avatar.png";
                 break;
               }
             }
@@ -390,6 +390,12 @@ router.get('/view-all-ideas', function(req, res){
                   }
 
 
+                  res.render('pages/view-all-ideas', {
+                    user : req.user,
+                    headshot : headshotURL,
+                    ideas : ideaList
+                  });
+                } else {
                   res.render('pages/view-all-ideas', {
                     user : req.user,
                     headshot : headshotURL,
