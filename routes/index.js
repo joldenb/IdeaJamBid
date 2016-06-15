@@ -380,7 +380,8 @@ router.get('/view-all-ideas', function(req, res){
                         // first profile picture ID and attach it to the ideaList
                         if(accounts[k].headshots && accounts[k].headshots[0]){
                           for(var n = 0; n < profilePictures.length; n++){
-                            if(profilePictures[n]["id"].toString() == accounts[k].headshots[0].toString()){
+                            if(profilePictures[n]["id"].toString() == accounts[k].headshots[0].toString()
+                              && profilePictures[n]["amazonURL"]){
                               ideaList[j].push(profilePictures[n]["amazonURL"]);
                             }
                           }
