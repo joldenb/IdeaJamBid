@@ -1,6 +1,7 @@
 var cool = require('cool-ascii-faces');
 var express = require('express');
 var mongodb = require('mongodb');
+var aws = require('aws-sdk');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
@@ -26,6 +27,8 @@ var app = express();
 // not sure about this one
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
+
+var S3_BUCKET = process.env.S3_BUCKET;
 
 // views is directory for all template files
 app.set('views', __dirname + '/views');

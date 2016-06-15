@@ -5,6 +5,7 @@ var passportLocalMongoose = require('passport-local-mongoose');
 var IdeaImage = new Schema({
 	filename		: String,
 	image			: Buffer,
+	amazonURL : String,
 	imageMimetype	: String,
 	uploader		: String //should match the username field of an account
 

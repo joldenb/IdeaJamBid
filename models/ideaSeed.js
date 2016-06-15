@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var _ = require('underscore');
 var Schema = mongoose.Schema;
+var aws = require('aws-sdk');
 var passportLocalMongoose = require('passport-local-mongoose');
 var officegen = require('officegen');
 var fs = require('fs');
@@ -405,66 +406,88 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 			ctx.fillRect(0,0,1000,700);
 
 			img = new Image();
-			img.src = "data:" + images[number].imageMimetype + ";base64," + images[number].image.toString('base64');
-			ctx.drawImage(img, 200, 150, 600, 400);
-
-			var componentImageIds = [], imageIndex;
-			for(var j=0; j < comps.length; j++){
-				componentImageIds = _.map(comps[j].images, function(image){
-					return image['imageID'].toString();
-				});
-
-				if(componentImageIds.indexOf(images[number].id) > -1  && 
-						comps[j]['number'] ){
-					
-					imageIndex = componentImageIds.indexOf(images[number].id);
-
-					var firstX = parseInt(comps[j].images[imageIndex].firstX);
-					var firstY = parseInt(comps[j].images[imageIndex].firstY);
-					var secondX = parseInt(comps[j].images[imageIndex].secondX);
-					var secondY = parseInt(comps[j].images[imageIndex].secondY);
-					ctx.beginPath();
-          ctx.moveTo(firstX, firstY);
-          ctx.lineTo(secondX, secondY);
-          ctx.stroke();
-
-          var textCoordX, textCoordY;
-          ctx.fillStyle = "black";
-          ctx.font="20px Helvetica";
-          if(secondX > 800){
-            textCoordX = (secondX*1 + 20);
-            textCoordY = secondY;
-          } else if(secondX < 200){
-            textCoordX = secondX - 20;
-            textCoordY = secondY;
-          } else if(secondY > 550){
-            textCoordX = secondX;
-            textCoordY = (secondY*1 + 20);
-          } else if(secondY < 150){
-            textCoordX = secondX;
-            textCoordY = secondY - 20;
-          }
-          ctx.fillText(comps[j]['number']+".",textCoordX,textCoordY);
-				}
-			}
-			out = fs.createWriteStream(__dirname + '/figure-' + (number+1) +'.png');
-			canvasStream = canvas.pngStream();
-
-			canvasStream.on('data', function(chunk){
-				out.write(chunk);
+			
+			var s3 = new aws.S3({
+				accessKeyId : process.env.accessKeyId,
+      	secretAccessKey : process.env.secretAccessKey
 			});
+			var params = {
+				Bucket: 'qonspire',
+				Key: images[number].amazonURL.split('/')[3]
+			};
 
-			canvasStream.on('end', function(){
-				console.log('saved png');
-				if(number < images.length - 1){
-					number++;
-					renderImage(number);
-				// once all the images are created, create the rest of the word document
-				} else if (number == images.length - 1 ){
-					createWordDoc();
 
-				}
-			});
+			s3.getObject(params).
+				on('error', function(error){
+					console.log('error is ' + error);
+				}).
+				on('complete', function(response) {
+					img.src = "data:" + images[number].imageMimetype + ";base64," + response.data.Body.toString('base64');
+					console.log(img.src)
+					ctx.drawImage(img, 200, 150, 600, 400);
+
+					// This part takes the image from Amazon S3 and overlays all the annotated
+					// components over it to lay into the Word File
+					//
+					var componentImageIds = [], imageIndex;
+					for(var j=0; j < comps.length; j++){
+						componentImageIds = _.map(comps[j].images, function(image){
+							return image['imageID'].toString();
+						});
+
+						if(componentImageIds.indexOf(images[number].id) > -1  && 
+								comps[j]['number'] ){
+							
+							imageIndex = componentImageIds.indexOf(images[number].id);
+
+							var firstX = parseInt(comps[j].images[imageIndex].firstX);
+							var firstY = parseInt(comps[j].images[imageIndex].firstY);
+							var secondX = parseInt(comps[j].images[imageIndex].secondX);
+							var secondY = parseInt(comps[j].images[imageIndex].secondY);
+							ctx.beginPath();
+		          ctx.moveTo(firstX, firstY);
+		          ctx.lineTo(secondX, secondY);
+		          ctx.stroke();
+
+		          var textCoordX, textCoordY;
+		          ctx.fillStyle = "black";
+		          ctx.font="20px Helvetica";
+		          if(secondX > 800){
+		            textCoordX = (secondX*1 + 20);
+		            textCoordY = secondY;
+		          } else if(secondX < 200){
+		            textCoordX = secondX - 20;
+		            textCoordY = secondY;
+		          } else if(secondY > 550){
+		            textCoordX = secondX;
+		            textCoordY = (secondY*1 + 20);
+		          } else if(secondY < 150){
+		            textCoordX = secondX;
+		            textCoordY = secondY - 20;
+		          }
+		          ctx.fillText(comps[j]['number']+".",textCoordX,textCoordY);
+						}
+					}
+					out = fs.createWriteStream(__dirname + '/figure-' + (number+1) +'.png');
+					canvasStream = canvas.pngStream();
+
+					canvasStream.on('data', function(chunk){
+						out.write(chunk);
+					});
+
+					canvasStream.on('end', function(){
+						console.log('saved png');
+						if(number < images.length - 1){
+							number++;
+							renderImage(number);
+						// once all the images are created, create the rest of the word document
+						} else if (number == images.length - 1 ){
+							createWordDoc();
+
+						}
+					});
+				}).
+				send();
 		}
 
 		if(images.length > 0){

@@ -3,6 +3,8 @@ var passport = require('passport');
 var mongoose = require('mongoose');
 var _ = require('underscore');
 var ObjectId = mongoose.Schema.Types.ObjectId;
+var aws = require('aws-sdk');
+var env = require('node-env-file');
 var IdeaImage = require('../models/ideaImage');
 var IdeaReview = require('../models/ideaReviews');
 var IdeaSeed = require('../models/ideaSeed');
@@ -13,6 +15,8 @@ var Account = require('../models/account');
 var router = express.Router();
 var multer = require('multer');
 
+
+env(__dirname + '/../.env');
 
 var storage = multer.memoryStorage();
 var uploading = multer({
@@ -91,7 +95,7 @@ router.get('/begin-scoring', function(req, res) {
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
 
     IdeaSeed.findById(req.session.idea,function(err, idea){
@@ -159,7 +163,7 @@ router.get('/begin', function(req, res) {
 
         IdeaImage.findById(req.user.headshots[0], function(err, headshot){
           if(headshot){
-            var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+            var headshotURL = headshot["amazonURL"];
           }
           if(req.user.ideaSeeds && req.user.ideaSeeds.length > 0){
             var ideaNames = [],
@@ -248,7 +252,7 @@ router.get('/profile-picture', function(req, res){
 
     IdeaImage.findById(req.user.headshots[0], function(err, headshot){
       if(headshot){
-        var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+        var headshotURL = headshot["amazonURL"];
       }
 
 
@@ -269,10 +273,13 @@ router.get('/profile-picture', function(req, res){
             }
             
             var filename = images[i]._doc["filename"];
-            imageURLs.push([
-              filename,
-              "data:"+images[i]._doc["imageMimetype"]+";base64,"+ images[i]._doc["image"].toString('base64')
-            ]);
+            if(images[i]._doc["image"]){
+            } else {
+              imageURLs.push([
+                filename,
+                images[i]._doc["amazonURL"]
+              ]);
+            }
           }
 
           res.render('pages/profile-picture', {
@@ -310,7 +317,7 @@ router.get('/view-all-ideas', function(req, res){
   // IdeaSeed.find({"visibility" : "public"}, function(err, ideas){
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
 
       IdeaSeed.find({}, function(err, ideas){
@@ -331,7 +338,7 @@ router.get('/view-all-ideas', function(req, res){
             for (var i = 0; i < images.length; i++){
               if(idea.images.length > 0 &&
                 idea.images[0].toString() == images[i].id.toString()){
-                currentImage = "data:"+images[i]._doc["imageMimetype"]+";base64,"+ images[i]._doc["image"].toString('base64');
+                currentImage = images[i]._doc["amazonURL"];
                 break;
               }
             }
@@ -372,7 +379,7 @@ router.get('/view-all-ideas', function(req, res){
                         if(accounts[k].headshots && accounts[k].headshots[0]){
                           for(var n = 0; n < profilePictures.length; n++){
                             if(profilePictures[n]["id"].toString() == accounts[k].headshots[0].toString()){
-                              ideaList[j].push("data:"+profilePictures[n]._doc["imageMimetype"]+";base64,"+ profilePictures[n]._doc["image"].toString('base64'));
+                              ideaList[j].push(profilePictures[n]["amazonURL"]);
                             }
                           }
                         }
@@ -409,7 +416,7 @@ router.get('/introduce-idea', function(req, res) {
     if(req.user){
       IdeaImage.findById(req.user.headshots[0], function(err, headshot){
         if(headshot){
-          var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+          var headshotURL = headshot["amazonURL"];
         }
         if(!req.session.idea) {
           var newIdea = new IdeaSeed({inventorName : req.user.username});
@@ -472,7 +479,7 @@ router.get('/accomplish', function(req, res) {
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
 
     IdeaSeed.findById(req.session.idea,function(err, idea){
@@ -632,7 +639,7 @@ router.get('/title-your-invention', function(req, res) {
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
@@ -676,7 +683,7 @@ router.get('/problem-solver', function(req, res){
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     res.render('pages/problem-solver', { user : req.user,
       headshot : headshotURL,
@@ -737,7 +744,7 @@ router.get('/image-upload', function(req, res){
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
 
     IdeaSeed.findById(req.session.idea,function(err, idea){
@@ -748,11 +755,11 @@ router.get('/image-upload', function(req, res){
           var j = 0;
           IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
             j++;
-            if(image && image._doc && image._doc.image){
+            if(image && image._doc && image._doc.amazonURL){
               var filename = image._doc["filename"];
               imageURLs.push([
                 filename,
-                "data:"+image._doc["imageMimetype"]+";base64,"+ image._doc["image"].toString('base64'),
+                image["amazonURL"],
                 image._doc["uploader"]
               ]);
             }
@@ -788,14 +795,14 @@ router.get('/image-upload', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.post('/image-upload', uploading.single('picture'), function(req, res) {
+router.post('/image-upload', function(req, res) {
     
-    IdeaImage.find({"filename" : {$regex : ".*"+req.file.originalname+".*"}}, function(err, images){
+    IdeaImage.find({"filename" : {$regex : ".*"+req.body.filename+".*"}}, function(err, images){
 
-      var newFileName = req.file.originalname + "-" + (images.length + 1).toString();
+      var newFileName = req.body.filename + "-" + (images.length + 1).toString();
 
-      var image = new IdeaImage({ image : req.file.buffer, imageMimetype : req.file.mimetype,
-        filename : newFileName, uploader : req.user.username });
+      var image = new IdeaImage({ imageMimetype : req.body.type,
+        filename : newFileName, uploader : req.user.username, amazonURL : req.body.fileUrl });
       image.save(function(err, newImage){
         if (err) {
           console.log(err);
@@ -863,7 +870,7 @@ router.get('/suggestion-summary', function(req, res){
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
@@ -933,7 +940,7 @@ router.get('/view-idea-suggestions', function(req, res){
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       
@@ -1002,7 +1009,7 @@ router.get('/view-idea-suggestions', function(req, res){
             IdeaImage.find({"_id" : {$in : headshotIDs}}, function(err, headshots){
               var headshotURLs = {};
               for(var j = 0; j < headshots.length; j++){
-                headshotURLs[headshots[j]['uploader']] = "data:"+headshots[j]["imageMimetype"]+";base64,"+ headshots[j]["image"].toString('base64');
+                headshotURLs[headshots[j]['uploader']] = headshots[j]["amazonURL"];
               }
 
               currentIdea = idea._doc;
@@ -1038,7 +1045,7 @@ router.get('/sort-problems', function(req, res){
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     
     IdeaSeed.findById(req.session.idea,function(err, idea){
@@ -1213,14 +1220,14 @@ router.get('/idea-seed-summary', function(req, res){
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     var currentIdea,
       imageURL = "";
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
       if(currentIdea.image){
-        imageURL = "data:"+currentIdea.imageMimetype+";base64,"+ currentIdea.image.toString('base64');
+        imageURL = currentIdea["amazonURL"];
       }
       res.render('pages/idea-seed-summary', { user : req.user, idea : currentIdea,
         headshot : headshotURL,
@@ -1239,7 +1246,7 @@ router.get('/idea-seed-summary', function(req, res){
 router.get('/napkin-sketch', function(req, res){
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
   if(headshot){
-    var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    var headshotURL = headshot["amazonURL"];
   }
 
     res.render('pages/problem-solver', { user : req.user, headshot : headshotURL, idea : req.session.idea });
@@ -1256,7 +1263,7 @@ router.get('/napkin-sketch', function(req, res){
 router.get('/problem-solver', function(req, res){
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
   if(headshot){
-    var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    var headshotURL = headshot["amazonURL"];
   }
 
     res.render('pages/problem-solver', { user : req.user, headshot : headshotURL, idea : req.session.idea });
@@ -1273,7 +1280,7 @@ router.get('/problem-solver', function(req, res){
 router.get('/key-features', function(req, res){
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
   if(headshot){
-    var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+    var headshotURL = headshot["amazonURL"];
   }
 
     res.render('pages/problem-solver', { user : req.user, headshot : headshotURL, idea : req.session.idea });
@@ -1313,7 +1320,7 @@ router.get('/contributor-idea-summary', function(req, res){
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       var imageURLs = [];
@@ -1344,7 +1351,7 @@ router.get('/contributor-idea-summary', function(req, res){
                         var filename = image._doc["filename"];
                         imageURLs.push([
                           filename,
-                          "data:"+image._doc["imageMimetype"]+";base64,"+ image._doc["image"].toString('base64')
+                          image["amazonURL"]
                         ]);
                       }
                       if (j == idea._doc.images.length){
@@ -1383,7 +1390,7 @@ router.get('/contributor-idea-summary', function(req, res){
                       var filename = image._doc["filename"];
                       imageURLs.push([
                         filename,
-                        "data:"+image._doc["imageMimetype"]+";base64,"+ image._doc["image"].toString('base64')
+                        image["amazonURL"]
                       ]);
                     }
                     if (j == idea._doc.images.length){
@@ -1442,7 +1449,7 @@ router.get('/idea-summary', function(req, res){
 
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
 
     delete req.session.ideaReview;
@@ -1451,7 +1458,8 @@ router.get('/idea-summary', function(req, res){
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
 
-      IdeaProblem.find({"ideaSeed" : currentIdea._id, date : {$exists : true}}, null, {sort: '-date'}, function(err, problems){
+      IdeaProblem.find({"ideaSeed" : currentIdea._id, date : {$exists : true}}, null,
+        {sort: '-date'}, function(err, problems){
         Component.find({"ideaSeed" : idea.id}, function(err, components){
           var variantDates = [],
               sortedProblems = [];
@@ -1515,11 +1523,11 @@ router.get('/idea-summary', function(req, res){
                 var j = 0;
                 IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
                   j++;
-                  if(image && image._doc && image._doc.image){
+                  if(image && image._doc && image.amazonURL){
                     var filename = image._doc["filename"];
                     imageURLs.push([
                       filename,
-                      "data:"+image._doc["imageMimetype"]+";base64,"+ image._doc["image"].toString('base64')
+                      image["amazonURL"]
                     ]);
                   }
                   if (j == idea._doc.images.length){
@@ -1568,6 +1576,8 @@ router.get('/create-application', function(req, res){
         currentIdea = idea._doc;
         IdeaProblem.find({"_id" : { $in : idea.problemPriorities}}, function(err, problems){
           IdeaImage.find({"_id" : { $in : idea.images}}, function(err, images){
+            images = _.filter(images, function(item){return item.amazonURL});
+
             Component.find({"ideaSeed" : idea.id}, function(err, comps){
 
               IdeaSeed.createApplication(currentIdea, currentAccount, problems, images, comps, res);
@@ -1594,7 +1604,7 @@ router.get('/variant/:variantname', function(req, res){
 
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
 
     IdeaSeed.findById(req.session.idea,function(err, idea){
@@ -1684,7 +1694,7 @@ router.get('/variant/:variantname', function(req, res){
               IdeaImage.find({"_id" : {$in : headshotIDs}}, function(err, headshots){
                 var headshotURLs = {};
                 for(var j = 0; j < headshots.length; j++){
-                  headshotURLs[headshots[j]['uploader']] = "data:"+headshots[j]["imageMimetype"]+";base64,"+ headshots[j]["image"].toString('base64');
+                  headshotURLs[headshots[j]['uploader']] = headshots[j]["amazonURL"];
                 }
 
                 currentIdea = idea._doc;
@@ -1718,14 +1728,14 @@ router.get('/annotate-image/:image', function(req, res){
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
 
     IdeaImage.findOne({"filename": req.params.image} ,function(err, image){
       currentImage = image._doc;
       var annotations = [];
-      if(currentImage.image){
-        imageURL = "data:"+currentImage.imageMimetype+";base64," + currentImage.image.toString('base64');
+      if(currentImage.amazonURL){
+        imageURL = currentImage.amazonURL;
         Component.find({"images.imageID" : image.id}, function(err, comps){
           var compArray = [], masterComponentList = [];
           for(var i = 0; i < comps.length; i++){
@@ -1798,7 +1808,7 @@ router.get('/image-modal/:image', function(req, res){
   IdeaImage.findOne({"filename": req.params.image} ,function(err, image){
     currentImage = image._doc;
     if(currentImage.image){
-      imageURL = "data:"+currentImage.imageMimetype+";base64," + currentImage.image.toString('base64');
+      imageURL = currentImage["amazonURL"];
 
       res.json({
         imgURL : imageURL
@@ -2091,7 +2101,7 @@ router.get('/component-profile/:identifier', function(req, res){
 
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
 
     Component.findOne({"identifier" : req.params.identifier}, function(err, component){
@@ -2166,14 +2176,14 @@ router.get('/component-profile/:identifier', function(req, res){
                         if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
                           imageURLs.unshift([
                             filename,
-                            "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
+                            images[i]["amazonURL"]
                           ]);
                         } else if( images[i].id.toString() == problemCreator['headshots'][0]){
-                          problemHeadshotURL = "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64');
+                          problemHeadshotURL = images[i]["amazonURL"];
                         } else {
                           imageURLs.push([
                             filename,
-                            "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
+                            images[i]["amazonURL"]
                           ]);
                         }
                       }
@@ -2234,12 +2244,12 @@ router.get('/component-profile/:identifier', function(req, res){
                       if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
                         imageURLs.unshift([
                           filename,
-                          "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
+                          images[i]["amazonURL"]
                         ]);
                       } else {
                         imageURLs.push([
                           filename,
-                          "data:"+images[i]["imageMimetype"]+";base64,"+ images[i]["image"].toString('base64')
+                          images[i]["amazonURL"]
                         ]);
                       }
                     }
@@ -2337,5 +2347,31 @@ router.post('/add-related-component', function(req, res) {
     });
 });
 
-
+router.get('/sign-s3', function(req, res) {
+  var s3 = new aws.S3({
+      accessKeyId : process.env.accessKeyId,
+      secretAccessKey : process.env.secretAccessKey
+  });
+  var fileName = req.query['file-name'];
+  var fileType = req.query['file-type'];
+  var s3Params = {
+    Bucket: 'qonspire',
+    Key: fileName,
+    Expires: 60,
+    ContentType: fileType,
+    ACL: 'public-read'
+  };
+  s3.getSignedUrl('putObject', s3Params, function(err, data) {
+    if(err){
+      console.log(err);
+      return res.end();
+    }
+    var returnData = {
+      signedRequest: data,
+      url: 'https://qonspire.s3.amazonaws.com/'+fileName
+    };
+    res.write(JSON.stringify(returnData));
+    res.end();
+  });
+});
 module.exports = router;

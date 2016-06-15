@@ -135,12 +135,12 @@ router.post('/add-idea-problem', function(req, res) {
 ////////////////////////////////////////////////
 router.post('/add-component-image', uploading.single('picture'), function(req, res) {
   
-  IdeaImage.find({"filename" : {$regex : ".*"+req.file.originalname+".*"}}, function(err, images){
+  IdeaImage.find({"filename" : {$regex : ".*"+req.body.filename+".*"}}, function(err, images){
 
-    var newFileName = req.file.originalname + "-" + (images.length + 1).toString();
+    var newFileName = req.body.filename + "-" + (images.length + 1).toString();
 
-    var image = new IdeaImage({ image : req.file.buffer, imageMimetype : req.file.mimetype,
-      filename : newFileName, uploader : req.user.username });
+    var image = new IdeaImage({ imageMimetype : req.body.type,
+      filename : newFileName, uploader : req.user.username, amazonURL : req.body.fileUrl });
     image.save(function(err, newImage){
       if (err) {
         console.log(err);
@@ -195,18 +195,18 @@ router.post('/add-idea-component', function(req, res) {
 ////////////////////////////////////////////////
 // Add a profile headshot
 ////////////////////////////////////////////////
-router.post('/add-profile-headshot', uploading.single('picture'), function(req, res) {
+router.post('/add-profile-headshot',  function(req, res) {
   
   if(!req.user){
     res.redirect('/');
   } else {
     
-    IdeaImage.find({"filename" : {$regex : ".*"+req.file.originalname+".*"}}, function(err, images){
+    IdeaImage.find({"filename" : {$regex : ".*"+req.body.filename+".*"}}, function(err, images){
 
-      var newFileName = req.file.originalname + "-" + (images.length + 1).toString();
+      var newFileName = req.body.filename + "-" + (images.length + 1).toString();
 
-      var image = new IdeaImage({ image : req.file.buffer, imageMimetype : req.file.mimetype,
-        filename : newFileName, uploader : req.user.username });
+      var image = new IdeaImage({ imageMimetype : req.body.type,
+        filename : newFileName, uploader : req.user.username, amazonURL : req.body.fileUrl });
       image.save(function(err, newImage){
         if (err) {
           console.log(err);
