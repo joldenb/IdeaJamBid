@@ -316,7 +316,7 @@ router.get('/profile-picture', function(req, res){
 *****************************************************************/
 router.get('/view-all-ideas', function(req, res){
   //workaround for a second
-  if(req){ res.redirect('/begin');} else{
+  //if(req){ res.redirect('/begin');} else{
   if(req.user){
   // IdeaSeed.find({"visibility" : "public"}, function(err, ideas){
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
@@ -327,6 +327,7 @@ router.get('/view-all-ideas', function(req, res){
     }
 
       IdeaSeed.find({}, function(err, ideas){
+            console.log("find all ideas")
         var wasteValueScores = [0, 0];
 
         //get the first image for each idea for now
@@ -336,6 +337,7 @@ router.get('/view-all-ideas', function(req, res){
 
         IdeaImage.find({"_id" : { $in : imageList}}, function(err, images){
           if(err){ console.log("error is " + err)}
+            console.log("find first images for ideas ")
           var currentImage;
           var ideaList = _.map(ideas, function(idea){
             wasteValueScores = IdeaSeed.getWasteValueScores(idea);
@@ -343,6 +345,7 @@ router.get('/view-all-ideas', function(req, res){
             //get the image document corresponding to the first image ID
             // for each individual idea
             for (var i = 0; i < images.length; i++){
+              console.log("find which image goes to which idea ")
               if(idea.images.length > 0 &&
                 idea.images[0].toString() == images[i].id.toString()){
                 currentImage = images[i]._doc["amazonURL"] || "";
@@ -366,6 +369,7 @@ router.get('/view-all-ideas', function(req, res){
           Account.find({"username" : {$in : inventorList}},
             function(err, accounts){
               if(err){ console.log("error is " + err)}
+            console.log("find all accounts")
               var accountPictures = _.map(accounts, function(account){
                 if(account.headshots){
                   return account.headshots[0];
@@ -375,6 +379,7 @@ router.get('/view-all-ideas', function(req, res){
               });
 
               IdeaImage.find({"id" : {$in : accountPictures}}, function(err, profilePictures){
+            console.log("find all account pictures")
                 if(err){ console.log("error is " + err)}
                 if(profilePictures){
                   //find which ideaList item is connected to the right profile picture
@@ -385,32 +390,27 @@ router.get('/view-all-ideas', function(req, res){
                         //find the profile picture with the id that matches the accounts
                         // first profile picture ID and attach it to the ideaList
                         if(accounts[k].headshots && accounts[k].headshots[0]){
+            console.log("match up headshots to accounts")
                           for(var n = 0; n < profilePictures.length; n++){
                             if(profilePictures[n]["id"].toString() == accounts[k].headshots[0].toString()
                               && profilePictures[n]["amazonURL"]){
                               ideaList[j].push(profilePictures[n]["amazonURL"]);
-                            } else {
-                              res.redirect('/');
                             }
                           }
-                        } else {
-                          res.redirect('/');
                         }
-                      } else {
-                        res.redirect('/');
-                        return;
-                      }
+                      } 
 
                     }
                   }
 
-
+                  console.log("render invocation one")
                   res.render('pages/view-all-ideas', {
                     user : req.user,
                     headshot : headshotURL,
                     ideas : ideaList
                   });
                 } else {
+                  console.log("render invocation two")
                   res.render('pages/view-all-ideas', {
                     user : req.user,
                     headshot : headshotURL,
@@ -426,7 +426,7 @@ router.get('/view-all-ideas', function(req, res){
   } else {
     res.redirect('/');
   }
-}//end of workaround
+//}//end of workaround
 });
 
 /*****************************************************************
