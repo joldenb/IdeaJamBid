@@ -320,6 +320,8 @@ router.get('/view-all-ideas', function(req, res){
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
       var headshotURL = headshot["amazonURL"];
+    } else {
+      var headshotURL = "";
     }
 
       IdeaSeed.find({}, function(err, ideas){
@@ -331,6 +333,7 @@ router.get('/view-all-ideas', function(req, res){
         });
 
         IdeaImage.find({"_id" : { $in : imageList}}, function(err, images){
+          if(err){ console.log("error is " + err)}
           var currentImage;
           var ideaList = _.map(ideas, function(idea){
             wasteValueScores = IdeaSeed.getWasteValueScores(idea);
@@ -340,7 +343,7 @@ router.get('/view-all-ideas', function(req, res){
             for (var i = 0; i < images.length; i++){
               if(idea.images.length > 0 &&
                 idea.images[0].toString() == images[i].id.toString()){
-                currentImage = images[i]._doc["amazonURL"] || "/avatar.png";
+                currentImage = images[i]._doc["amazonURL"] || "";
                 break;
               }
             }
@@ -360,6 +363,7 @@ router.get('/view-all-ideas', function(req, res){
 
           Account.find({"username" : {$in : inventorList}},
             function(err, accounts){
+              if(err){ console.log("error is " + err)}
               var accountPictures = _.map(accounts, function(account){
                 if(account.headshots){
                   return account.headshots[0];
@@ -369,7 +373,7 @@ router.get('/view-all-ideas', function(req, res){
               });
 
               IdeaImage.find({"id" : {$in : accountPictures}}, function(err, profilePictures){
-                
+                if(err){ console.log("error is " + err)}
                 if(profilePictures){
                   //find which ideaList item is connected to the right profile picture
                   for(var j=0; j < ideaList.length; j++){
@@ -383,10 +387,17 @@ router.get('/view-all-ideas', function(req, res){
                             if(profilePictures[n]["id"].toString() == accounts[k].headshots[0].toString()
                               && profilePictures[n]["amazonURL"]){
                               ideaList[j].push(profilePictures[n]["amazonURL"]);
+                            } else {
+                              res.redirect('/');
                             }
                           }
+                        } else {
+                          res.redirect('/');
                         }
+                      } else {
+                        res.redirect('/');
                       }
+
                     }
                   }
 
