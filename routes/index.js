@@ -379,7 +379,7 @@ router.get('/view-all-ideas', function(req, res){
               });
 
               IdeaImage.find({"id" : {$in : accountPictures}}, function(err, profilePictures){
-            console.log("find all account pictures")
+                console.log("find all account pictures")
                 if(err){ console.log("error is " + err)}
                 if(profilePictures){
                   //find which ideaList item is connected to the right profile picture
