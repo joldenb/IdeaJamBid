@@ -2054,6 +2054,8 @@ router.get('/clear-session-idea', function(req, res){
   if(req.session.idea){
     req.session.idea = null;
     req.session.save();
+  } else {
+    res.sendStatus(200)
   }
 });
 /*****************************************************************
