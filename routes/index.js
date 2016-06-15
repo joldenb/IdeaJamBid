@@ -14,6 +14,7 @@ var IdeaProblem = require('../models/ideaProblem');
 var Account = require('../models/account');
 var router = express.Router();
 var multer = require('multer');
+var fs = require('fs');
 
 
 fs.stat('/../.env', function(err, stats) {
