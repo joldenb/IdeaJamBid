@@ -1349,7 +1349,7 @@ router.get('/contributor-idea-summary', function(req, res){
 
                     IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
                       j++;
-                      if(image && image._doc && image._doc.image){
+                      if(image && image._doc && image.amazonURL){
                         var filename = image._doc["filename"];
                         imageURLs.push([
                           filename,
@@ -1388,7 +1388,7 @@ router.get('/contributor-idea-summary', function(req, res){
                   var j = 0;
                   IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
                     j++;
-                    if(image && image._doc && image._doc.image){
+                    if(image && image._doc && image._doc.amazonURL){
                       var filename = image._doc["filename"];
                       imageURLs.push([
                         filename,
