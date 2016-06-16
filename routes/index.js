@@ -382,6 +382,10 @@ router.get('/view-all-ideas', function(req, res){
                 }
               });
 
+              console.log("about to find account pictures");
+              console.log("account picture length before removing empties" + accountPictures.length);
+              accountPictures = _.without(accountPictures, "");
+              console.log("account picture length after removing empties" + accountPictures.length);
               IdeaImage.find({"id" : {$in : accountPictures}}, function(err, profilePictures){
                 console.log("find all account pictures");
                 if(err){ console.log("error is " + err)}
