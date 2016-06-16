@@ -326,8 +326,10 @@ router.get('/view-all-ideas', function(req, res){
       var headshotURL = "";
     }
 
-      IdeaSeed.find({}, function(err, ideas){
-        console.log("find all ideas");
+      IdeaSeed.find({}).
+        limit(10).
+        exec(function(err, ideas){
+        console.log("find all ideas, there are " + ideas.length);
         var wasteValueScores = [0, 0];
 
         //get the first image for each idea for now
@@ -335,6 +337,8 @@ router.get('/view-all-ideas', function(req, res){
           return idea.images[0];
         });
 
+
+        console.log("imagelist has " + imageList.length);
         IdeaImage.find({"_id" : { $in : imageList}}, function(err, images){
           if(err){ console.log("error is " + err)}
           console.log("find first images for ideas ");
@@ -421,7 +425,7 @@ router.get('/view-all-ideas', function(req, res){
             }
           )
         });
-      }).limit(10);
+      });
     });
   } else {
     res.redirect('/');
