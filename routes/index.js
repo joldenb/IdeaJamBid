@@ -17,7 +17,6 @@ var multer = require('multer');
 var fs = require('fs');
 
 
-env(__dirname + '/../.env');
 var S3_BUCKET = process.env.S3_BUCKET;
 
 var storage = multer.memoryStorage();
