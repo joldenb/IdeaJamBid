@@ -22,26 +22,9 @@ html
   .container
     form(role='form', id="formAccomplish" action="/accomplish", method="post", style='max-width: 300px;', data-idea-doc=idea)
       .form-group
-        h3 Your idea is a :
-        .radio
-          label
-            input#optionsRadios1(type="radio", name="characterization", value="device", checked="")
-            | Device
-        .radio
-          label
-            input#optionsRadios2(type="radio", name="characterization", value="method")
-            | Method
-        .radio
-          label
-            input#optionsRadios3(type="radio", name="characterization", value="system")
-            | System
-        .radio
-          label
-            input#optionsRadios3(type="radio", name="characterization", value="software")
-            | Software
-        h3 That, briefly, is described as
-        input.form-control(type="text" name="purposeHow", placeholder='The solution of...')
-        p (ex. "channelling 1.21 jigawatts")
+        h3 Your idea is described as
+        input.form-control(type="text" name="purposeHow", value='The solution of ')
+        p (ex. "The solution of channelling 1.21 jigawatts", < 160 characters)
         br
       a.home-logout.btn.btn-default( href="/idea-summary" ) Idea Summary
       |  
@@ -51,3 +34,26 @@ html
     p Hint : You can describe more later!
 
   include ../partials/js-includes.jade
+  script(type="text/javascript").
+    var input = document.getElementsByTagName ("input");
+
+    // This is for the main solution text input
+    var requiredText = "The solution of "
+    input[0].addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredText) == -1) {
+            $(this).val(requiredText);
+      }
+      if (this.selectionStart < 16) {
+        this.selectionStart = 16;
+      }
+    }, false);
+
+    input[0].addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredText) == -1) {
+            $(this).val(requiredText);
+      }
+      if (this.selectionStart < 16) {
+        this.selectionStart = 16;
+      }
+    }, false);
+

@@ -838,11 +838,10 @@ router.post('/image-upload', function(req, res) {
         } else {
           IdeaSeed.update(
               { _id : req.session.idea },
-              { $push : { images : newImage.id }, firstFeature : req.body.firstFeature,
-              secondFeature : req.body.secondFeature, thirdFeature : req.body.thirdFeature},
+              { $push : { images : newImage.id }},
               function(err, raw){
                 console.log('The raw response from Mongo was ', raw);
-                res.redirect('/image-upload');
+                res.json({"redirectURL" : '/annotate-image/'+newFileName});
               }
           );
         }
