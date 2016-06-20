@@ -36,6 +36,8 @@ html
                 |  
                 textarea.form-control(rows='6', cols="75", name="description", id="description",
                   placeholder='Describe the new component...')
+                input(type="hidden" id="previous-title" name="previousTitle")
+                input(type="hidden" id="previous-description" name="previousDescription")
           .modal-footer
             // button.btn.btn-info(data-dismiss="modal") Cancel
             button.btn.btn-success#submit(type='submit') Save
@@ -49,17 +51,17 @@ html
       each value in comps
         canvas.component(id="component-#{value['number']}", width="1000", height="700", style="border:1px solid #d3d3d3;")
     #componentList
-      each value in comps
-        .individual-component
-          img.delete-component(data-component="#{value.text}" src="/delete.png" height="25" width="25")
-          h4 #{value.number}. #{value.text}
+      #listOfComponents
+        each value in comps
+          .individual-component
+            img.delete-component(data-component="#{value.text}" src="/delete.png" height="25" width="25")
+            img(class='edit-annotation' data-component="#{value.text}" data-toggle='modal' data-target='#myModal' src="/pencil.png" height="25" width="25")
+            h4 #{value.number}. #{value.text}
       br
       br
       a#save-annotations.btn.btn-success( href="/image-upload" ) Save Annotations >
-      h4 Click on the image to add features/components
+      h4 Click on your image to describe the components of your invention:
       .checkbox
-        input#show-annotations(type="checkbox", href="/image-upload", value="show-annotations", checked, name="show-annotations")
-        label(for="show-annotations") Show Annotations
 
 
       
@@ -144,88 +146,137 @@ html
       event.preventDefault();
       $("#imageName").val("#{imageName}");
 
-
-      var textCoordX, textCoordY;
+      if($("#previous-title").val()){
+        // if there is a previous title, then the user is editing an already existing component.
         var data = {
-          component : $("#componentName").val(),
-          firstX    : firstClickX,
-          firstY    : firstClickY,
-          secondX   : secondClickX,
-          secondY   : secondClickY,
-          imageName : "#{imageName}",
-          number    : componentNumber,
-          description  : $("#description").val()
+          previousTitle : $("#previous-title").val(),
+          newTitle      : $("#componentName").val(),
+          previousDescription : $("#previous-description").val(),
+          newDescription : $("#description").val()
         };
+
+        $.post('/edit-component', data, function(response) {
+          //update the list of components with the new component name
+          location.reload();
+        });
+      } else {
       
-      
 
-      $.post('/save-component', data, function(resp) {
-        $("#componentName").val('The component is called ');
-        $("#description").val('');
-        $("#existingComponents option[value='None Selected']").prop({'selected': true});
-        $("#myModal").modal('hide');
+        var textCoordX, textCoordY;
+          var data = {
+            component : $("#componentName").val(),
+            firstX    : firstClickX,
+            firstY    : firstClickY,
+            secondX   : secondClickX,
+            secondY   : secondClickY,
+            imageName : "#{imageName}",
+            number    : componentNumber,
+            description  : $("#description").val()
+          };
+        
+        
 
-        $("<canvas class='component' id='component-"+data['number']+"' width='1000' height='700' style='border:1px solid #d3d3d3;'>").insertAfter("#myCanvas").
-        click(function(e){
+        $.post('/save-component', data, function(resp) {
+          $("#componentName").val('The component is called ');
+          $("#description").val('');
+          $("#existingComponents option[value='None Selected']").prop({'selected': true});
+          $("#myModal").modal('hide');
 
-          firstClickX = e.offsetX;
-          firstClickY = e.offsetY;
+          $("<canvas class='component' id='component-"+data['number']+"' width='1000' height='700' style='border:1px solid #d3d3d3;'>").insertAfter("#myCanvas").
+          click(function(e){
 
-          if(firstClickY  - .63*firstClickX > 24){
-            if(firstClickY + .63*firstClickX > 654){
-              secondClickX = firstClickX;
-              secondClickY = 580;
+            firstClickX = e.offsetX;
+            firstClickY = e.offsetY;
+
+            if(firstClickY  - .63*firstClickX > 24){
+              if(firstClickY + .63*firstClickX > 654){
+                secondClickX = firstClickX;
+                secondClickY = 580;
+              } else {
+                secondClickX = 170;
+                secondClickY = firstClickY;
+              }
             } else {
-              secondClickX = 170;
-              secondClickY = firstClickY;
+              if(firstClickY + .63*firstClickX > 654){
+                secondClickX = 830;
+                secondClickY = firstClickY;
+              } else {
+                secondClickX = firstClickX;
+                secondClickY = 120;
+              }
             }
-          } else {
-            if(firstClickY + .63*firstClickX > 654){
-              secondClickX = 830;
-              secondClickY = firstClickY;
-            } else {
-              secondClickX = firstClickX;
-              secondClickY = 120;
-            }
+            $("#modalButton").click();
+          });;
+
+          canvas = document.getElementById("component-"+data['number']);
+          var ctx = canvas.getContext("2d");
+          ctx.beginPath();
+          ctx.moveTo(firstClickX, firstClickY);
+          ctx.lineTo(secondClickX, secondClickY);
+          ctx.stroke(); 
+
+          ctx.font="20px Helvetica";
+          if(secondClickX > 800){
+            textCoordX = (secondClickX*1 + 20);
+            textCoordY = secondClickY;
+          } else if(secondClickX < 200){
+            textCoordX = secondClickX - 20;
+            textCoordY = secondClickY;
+          } else if(secondClickY > 550){
+            textCoordX = secondClickX;
+            textCoordY = (secondClickY*1 + 20);
+          } else if(secondClickY < 150){
+            textCoordX = secondClickX;
+            textCoordY = secondClickY - 20;
           }
-          $("#modalButton").click();
-        });;
+          ctx.fillText(data['number']+".",textCoordX,textCoordY);
 
-        canvas = document.getElementById("component-"+data['number']);
-        var ctx = canvas.getContext("2d");
-        ctx.beginPath();
-        ctx.moveTo(firstClickX, firstClickY);
-        ctx.lineTo(secondClickX, secondClickY);
-        ctx.stroke(); 
+          if($("#listOfComponents .individual-component").length == 0){
+            $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component']+"' src='/delete.png' height='25' width='25'><img class='edit-annotation' data-component='"+ data['component']+"' data-toggle='modal' data-target='#myModal' src='/pencil.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component']+"</h4></div>").
+              appendTo("#listOfComponents");
+          } else {
+            $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component']+"' src='/delete.png' height='25' width='25'><img class='edit-annotation' data-component='"+ data['component']+"' data-toggle='modal' data-target='#myModal' src='/pencil.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component']+"</h4></div>").
+              insertAfter("#listOfComponents div:last-of-type");
+          }
 
-        ctx.font="20px Helvetica";
-        if(secondClickX > 800){
-          textCoordX = (secondClickX*1 + 20);
-          textCoordY = secondClickY;
-        } else if(secondClickX < 200){
-          textCoordX = secondClickX - 20;
-          textCoordY = secondClickY;
-        } else if(secondClickY > 550){
-          textCoordX = secondClickX;
-          textCoordY = (secondClickY*1 + 20);
-        } else if(secondClickY < 150){
-          textCoordX = secondClickX;
-          textCoordY = secondClickY - 20;
-        }
-        ctx.fillText(data['number']+".",textCoordX,textCoordY);
+          $(".edit-annotation").click(function(){
+            $.get("/get-last-component-description", $(this)[0].dataset, function(response){
+              if(response["description"]){
+                $("textarea#description").val(response["description"]);
+                $("#previous-description").val(response["description"]);
+              }
 
-        if($("#componentList .individual-component:last-of-type").length == 0){
-          $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component']+"' src='/delete.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component']+"</h4></div>").
-            prependTo("#componentList");
-        } else {
-          $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component']+"' src='/delete.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component']+"</h4></div>").
-            insertAfter("#componentList .individual-component:last-of-type");
-        }
+              if(response["identifier"]){
+                $(".modal-footer").prepend('<a type="button" class="btn btn-info" href=/component-profile/'+ response["identifier"] +'>Component Profile</a>')
+              }
+
+              $("input#componentName").val(response["title"]);
+              $("#previous-title").val(response["title"]);
+            });
+          });
 
 
-        componentNumber++;
-      });      
+          componentNumber++;
+        });
+      }
     });
+
+    $(".edit-annotation").click(function(){
+      $.get("/get-last-component-description", $(this)[0].dataset, function(response){
+          if(response["description"]){
+            $("textarea#description").val(response["description"]);
+            $("#previous-description").val(response["description"]);
+          }
+
+          if(response["identifier"]){
+            $(".modal-footer").prepend('<a type="button" class="btn btn-info" href=/component-profile/'+ response["identifier"] +'>Component Profile</a>')
+          }
+
+          $("input#componentName").val(response["title"]);
+          $("#previous-title").val(response["title"]);
+      });
+    });
+
 
     $('body').on('click', 'img.delete-component', function() {
       var data = {
@@ -252,12 +303,8 @@ html
       }
     });
 
-    $("#show-annotations").change(function(event){
-      if(this.checked){
-        $("canvas.component").show();
-      } else {
-        $("canvas.component").hide();
-      }
+    $("#myModal").on('hide.bs.modal', function(){
+      $(".modal-footer .btn-info").remove();
     });
 
     $("#myModal").on('shown.bs.modal', function(){

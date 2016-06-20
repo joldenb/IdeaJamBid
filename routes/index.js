@@ -1770,8 +1770,9 @@ router.get('/annotate-image/:image', function(req, res){
             for(var k = 0; k < comps[i].images.length; k++){
               if(comps[i].images[k].imageID.toString() == image.id) {
                 compArray[i] = {
-                  "text" : comps[i].text,
+                  "text" : comps[i].text.slice(24),
                   "number"  : comps[i].number,
+                  "identifier"  : comps[i].images[k].identifier,
                   "firstX"  : comps[i].images[k].firstX,
                   "firstY"  : comps[i].images[k].firstY,
                   "secondX" : comps[i].images[k].secondX,
@@ -1828,6 +1829,35 @@ router.get('/annotate-image/:image', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
+router.get('/get-last-component-description', function(req, res){
+  Component.findOne({"text" : "The component is called " + req.query.component}, function(err, component){
+    if(err || !component){
+      res.sendStatus(404);
+      return;
+    }
+    if(component.descriptions.length > 0){
+      res.json({
+        "description" : component.descriptions[component.descriptions.length - 1],
+        "title"       : component.text,
+        "identifier"  : component.identifier
+      });
+    } else { 
+      res.json({
+        "title"       : component.text,
+        "identifier"  : component.identifier
+      });
+    }
+  });
+});
+
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for image modal
+******************************************************************
+******************************************************************
+*****************************************************************/
 router.get('/image-modal/:image', function(req, res){
   if(!req.session.idea){
     res.redirect('/');
@@ -1871,7 +1901,9 @@ router.post('/save-component', function(req, res) {
       }
 
       if(component){
-        component.descriptions.push(req.body.description);
+        if(req.body.description!=""){
+          component.descriptions.push(req.body.description);
+        }
         component.images.push(
           {
             imageID   : image.id,
@@ -1888,8 +1920,7 @@ router.post('/save-component', function(req, res) {
       } else {
         var newComp = new Component({
           text : req.body.component,
-          number : req.body.number,
-          descriptions : [req.body.description],
+          number : req.body.number,          
           images : [{
             imageID   : image.id,
             firstX    : req.body.firstX,
@@ -1901,6 +1932,9 @@ router.post('/save-component', function(req, res) {
           ideaSeed    : req.session.idea,
           identifier  : "comp-"+Date.now()
         });
+        if(req.body.description!=""){
+          newComp.descriptions = [req.body.description]
+        }
         newComp.save(function(err){
           var stop;
         });
@@ -1910,6 +1944,34 @@ router.post('/save-component', function(req, res) {
   });
 });
 
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for editing an existing component
+******************************************************************
+******************************************************************
+*****************************************************************/
+
+router.post('/edit-component', function(req, res) {
+    Component.findOne({"text" : req.body.previousTitle}, function(err, component){
+      if(err){
+        res.json({error: err});
+      }
+
+      if(component){
+        var prevDescIndex = component.descriptions.indexOf(req.body.previousDescription);
+        component.descriptions.set(prevDescIndex, req.body.newDescription);
+
+        component.text = req.body.newTitle;
+
+        component.save(function(err){
+          res.json(req.body);
+        });
+      } else { // no existing component found with previous title
+        res.sendStatus(200);
+      }
+    });
+});
 /*****************************************************************
 ******************************************************************
 ******************************************************************
