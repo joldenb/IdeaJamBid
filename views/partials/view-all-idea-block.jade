@@ -1,6 +1,6 @@
 .suggestion-element.view-all-ideas-block
 	.idea-image
-		img(src=ideaImage height="50" width="50")
+		img(src='#{ideaImage || "/lightbulb.png"}' height="50" width="50")
 	.suggestion.view-all-ideas
 		.suggestion-text
 			if ideaLink
