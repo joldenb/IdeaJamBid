@@ -530,3 +530,8 @@ a.plus-overlay img{
   margin : 5px;
   padding : 5px;
 }
+
+.edit-annotation:hover, .delete-component:hover  {
+  cursor: pointer; cursor: hand; 
+  border: 1px solid blue;
+}
