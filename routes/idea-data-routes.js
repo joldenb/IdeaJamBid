@@ -133,7 +133,7 @@ router.post('/add-idea-problem', function(req, res) {
 ////////////////////////////////////////////////
 // Add a component to an idea seed
 ////////////////////////////////////////////////
-router.post('/add-component-image', uploading.single('picture'), function(req, res) {
+router.post('/add-component-image', function(req, res) {
   
   IdeaImage.find({"filename" : {$regex : ".*"+req.body.filename+".*"}}, function(err, images){
 
@@ -151,9 +151,9 @@ router.post('/add-component-image', uploading.single('picture'), function(req, r
               console.log(err);
             } else {
               if(req.body.componentProfilePage ){
-                res.redirect('/component-profile/'+req.body.imageComponent);
+                res.json({"redirectURL" : '/component-profile/'+req.body.imageComponent});
               } else {
-                res.redirect('/idea-summary');
+                res.json({"redirectURL" : '/idea-summary'});
               }
             }
           });

@@ -24,7 +24,7 @@ html
       .modal-dialog
         .modal-content
           .modal-header
-            button(type="button", class="close" data-dismiss="modal") &times;
+            button(type="button", class="close", data-dismiss="modal", id="close-modal") &times;
             .modal-title 
               h2 Create a Component
           .modal-body
@@ -56,7 +56,7 @@ html
           .individual-component
             img.delete-component(data-component="#{value.text}" src="/delete.png" height="25" width="25")
             img(class='edit-annotation' data-component="#{value.text}" data-toggle='modal' data-target='#myModal' src="/pencil.png" height="25" width="25")
-            h4 #{value.number}. #{value.text}
+            h4 #{value.number}. #{value.text.slice(24)}
       br
       br
       a#save-annotations.btn.btn-success( href="/image-upload" ) Save Annotations >
@@ -146,7 +146,7 @@ html
       event.preventDefault();
       $("#imageName").val("#{imageName}");
 
-      if($("#previous-title").val()){
+      if($("#previous-title").val() && $("#previous-title").val() != ""){
         // if there is a previous title, then the user is editing an already existing component.
         var data = {
           previousTitle : $("#previous-title").val(),
@@ -232,10 +232,10 @@ html
           ctx.fillText(data['number']+".",textCoordX,textCoordY);
 
           if($("#listOfComponents .individual-component").length == 0){
-            $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component']+"' src='/delete.png' height='25' width='25'><img class='edit-annotation' data-component='"+ data['component']+"' data-toggle='modal' data-target='#myModal' src='/pencil.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component']+"</h4></div>").
+            $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component']+"' src='/delete.png' height='25' width='25'><img class='edit-annotation' data-component='"+ data['component']+"' data-toggle='modal' data-target='#myModal' src='/pencil.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component'].slice(24)+"</h4></div>").
               appendTo("#listOfComponents");
           } else {
-            $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component']+"' src='/delete.png' height='25' width='25'><img class='edit-annotation' data-component='"+ data['component']+"' data-toggle='modal' data-target='#myModal' src='/pencil.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component']+"</h4></div>").
+            $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component']+"' src='/delete.png' height='25' width='25'><img class='edit-annotation' data-component='"+ data['component']+"' data-toggle='modal' data-target='#myModal' src='/pencil.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component'].slice(24)+"</h4></div>").
               insertAfter("#listOfComponents div:last-of-type");
           }
 
@@ -246,7 +246,7 @@ html
                 $("#previous-description").val(response["description"]);
               }
 
-              if(response["identifier"]){
+              if(response["identifier"] && $(".modal-footer .btn-info").length == 0){
                 $(".modal-footer").prepend('<a type="button" class="btn btn-info" href=/component-profile/'+ response["identifier"] +'>Component Profile</a>')
               }
 
@@ -303,8 +303,14 @@ html
       }
     });
 
+    $("#close-modal").click(function(event){
+      $(".modal-footer .btn-info").remove();
+      $("#previous-title").val("");
+    });
+
     $("#myModal").on('hide.bs.modal', function(){
       $(".modal-footer .btn-info").remove();
+      $("#previous-title").val("");
     });
 
     $("#myModal").on('shown.bs.modal', function(){

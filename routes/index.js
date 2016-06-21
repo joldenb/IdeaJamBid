@@ -1759,7 +1759,7 @@ router.get('/annotate-image/:image', function(req, res){
             for(var k = 0; k < comps[i].images.length; k++){
               if(comps[i].images[k].imageID.toString() == image.id) {
                 compArray[i] = {
-                  "text" : comps[i].text.slice(24),
+                  "text" : comps[i].text,
                   "number"  : comps[i].number,
                   "identifier"  : comps[i].images[k].identifier,
                   "firstX"  : comps[i].images[k].firstX,
@@ -1819,7 +1819,7 @@ router.get('/annotate-image/:image', function(req, res){
 ******************************************************************
 *****************************************************************/
 router.get('/get-last-component-description', function(req, res){
-  Component.findOne({"text" : "The component is called " + req.query.component}, function(err, component){
+  Component.findOne({"text" : req.query.component}, function(err, component){
     if(err || !component){
       res.sendStatus(404);
       return;
@@ -2250,7 +2250,7 @@ router.get('/component-profile/:identifier', function(req, res){
                   IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
                     var imageURLs = [];
                     for(var i = 0; i < images.length; i++){
-                      if(images[i] && images[i].image){
+                      if(images[i] && images[i]['amazonURL']){
                         var filename = images[i]["filename"];
                         //if it's the main component image, put in the first spot of the array so it's big on 
                         // the component profile page
@@ -2318,7 +2318,7 @@ router.get('/component-profile/:identifier', function(req, res){
                 IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
                   var imageURLs = [];
                   for(var i = 0; i < images.length; i++){
-                    if(images[i] && images[i].image){
+                    if(images[i] && images[i]["amazonURL"]){
                       var filename = images[i]["filename"];
                       //if it's the main component image, put in the first spot of the array so it's big on 
                       // the component profile page
