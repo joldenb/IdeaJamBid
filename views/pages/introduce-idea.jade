@@ -23,8 +23,9 @@ html
     form(role='form', id="formIntroduceIdea" action="/introduce-idea", method="post", style='max-width: 300px;', data-idea-doc=idea)
       .form-group
         h3 What challenge does your idea solve?
-        input.form-control(type="text",name="purposeFor", value='The problem of ')
-        p (ex. "time travel", < 160 characters)
+        input.form-control(type="text",name="purposeFor", value='The problem of ', id="challenge")
+        p (ex. "time travel")
+        p#charactersRemaining 
         br
       a.home-logout.btn.btn-default( href="/idea-summary" ) Idea Summary
       |  
@@ -40,6 +41,7 @@ html
 
     // This is for the main solution text input
     var requiredText = "The problem of "
+    $("#charactersRemaining").text((200 ) + " characters remaining");
     input[0].addEventListener ("mousedown", function () {
       if (String($(this).val()).indexOf(requiredText) == -1) {
             $(this).val(requiredText);
@@ -56,5 +58,8 @@ html
       if (this.selectionStart < 15) {
         this.selectionStart = 15;
       }
+      $("input#challenge").keyup(function(){
+        $("#charactersRemaining").text((200 + requiredText.length - $(this).val().length) + " characters remaining");
+      });
     }, false);
 

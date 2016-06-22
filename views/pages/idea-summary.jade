@@ -119,8 +119,9 @@ html
         .modal-body
           form(role='form', id="saveIdeaName" action="/save-idea-name", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
-              input.form-control(type="text", name="inventionName", placeholder='...')
-              p (ex. "Flux Capacitor", < 30 characters)
+              input.form-control(type="text", name="inventionName", value='My idea is named ')
+              p (ex. "Flux Capacitor")
+              p.charactersRemaining
             .modal-footer
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#submit(type='submit') Save
@@ -135,8 +136,9 @@ html
         .modal-body
           form(role='form', id="addIdeaProblem" action="/add-idea-problem", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
-              input#problemStatement.form-control(type="text", name="problemStatement", placeholder='The problem is...')
-              p (ex. "It draws too much power", < 30 characters)
+              input#problemStatement.form-control(type="text", name="problemStatement", value='The problem is ')
+              p (ex. "It draws too much power")
+              p.charactersRemaining
               h3 Select Problem Area:
               select.form-control#problemArea
                   option(value="None Selected") None Selected
@@ -156,10 +158,12 @@ html
         .modal-body
           form(role='form', id="addIdeaComponent" action="/add-idea-component", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
-              input#componentName.form-control(type="text", name="componentName", placeholder='The component is called...')
-              p (ex. "The Start Button", < 30 characters)
-              input#componentDescription.form-control(type="text", name="componentDescription", placeholder='The way it works is...')
+              input#componentName.form-control(type="text", name="componentName", value='The component is called ')
+              p (ex. "The Start Button")
+              p.compNameCharRemaining
+              input#componentDescription.form-control(type="text", name="componentDescription", value='The way it works is ')
               p (ex. "it initiates the sequence automatically", < 120 characters)
+              p.compDescrCharRemaining
           form(role='form', id="formImageUpload" action="/add-component-image", method="post", data-idea-doc=idea, enctype="multipart/form-data")
             .form-group
               h4 Component Image
@@ -242,3 +246,102 @@ html
         });      
     });
 
+    // This is for the idea name
+    var inputName = $("#saveIdeaName input")[0];
+    var requiredNameText = "My idea is named "
+    $("#saveIdeaName .charactersRemaining").text((30) + " characters remaining");
+    inputName.addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredNameText) == -1) {
+            $(this).val(requiredNameText);
+      }
+      if (this.selectionStart < 17) {
+        this.selectionStart = 17;
+      }
+    }, false);
+
+    inputName.addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredNameText) == -1) {
+            $(this).val(requiredNameText);
+      }
+      if (this.selectionStart < 17) {
+        this.selectionStart = 17;
+      }
+      $("#saveIdeaName input").keyup(function(){
+        $("#saveIdeaName .charactersRemaining").text((30 + requiredNameText.length - $(this).val().length) + " characters remaining");
+      });
+    }, false);
+
+    // This is for the problem input
+    var inputProb = $("#addIdeaProblem input")[0];
+    var requiredProbText = "The problem is "
+    $("#addIdeaProblem .charactersRemaining").text((200) + " characters remaining");
+    inputProb.addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredProbText) == -1) {
+            $(this).val(requiredProbText);
+      }
+      if (this.selectionStart < 17) {
+        this.selectionStart = 17;
+      }
+    }, false);
+
+    inputProb.addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredProbText) == -1) {
+            $(this).val(requiredProbText);
+      }
+      if (this.selectionStart < 17) {
+        this.selectionStart = 17;
+      }
+      $("#addIdeaProblem input").keyup(function(){
+        $("#addIdeaProblem .charactersRemaining").text((200 + requiredProbText.length - $(this).val().length) + " characters remaining");
+      });
+    }, false);
+
+    // This is for the first text input field in the add component modal
+    var inputOne = $("#addIdeaComponent input#componentName")[0];
+    var requiredCompTextOne = "The component is called "
+    $("#addIdeaComponent .compNameCharRemaining").text((200) + " characters remaining");
+    inputOne.addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredCompTextOne) == -1) {
+            $(this).val(requiredCompTextOne);
+      }
+      if (this.selectionStart < 24) {
+        this.selectionStart = 24;
+      }
+    }, false);
+
+    inputOne.addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredCompTextOne) == -1) {
+            $(this).val(requiredCompTextOne);
+      }
+      if (this.selectionStart < 24) {
+        this.selectionStart = 24;
+      }
+      $("#addIdeaComponent input#componentName").keyup(function(){
+        $("#addIdeaComponent .compNameCharRemaining").text((200 + requiredCompTextOne.length - $(this).val().length) + " characters remaining");
+      });
+    }, false);
+
+    // This is for the second text input field in the add component modal
+    var inputTwo = $("#addIdeaComponent input#componentDescription")[0];
+    var requiredCompTextTwo = "The way it works is "
+    $("#addIdeaComponent .compDescrCharRemaining").text((200) + " characters remaining");
+    inputTwo.addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredCompTextTwo) == -1) {
+            $(this).val(requiredCompTextTwo);
+      }
+      if (this.selectionStart < 21) {
+        this.selectionStart = 21;
+      }
+    }, false);
+
+    inputTwo.addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredCompTextTwo) == -1) {
+            $(this).val(requiredCompTextTwo);
+      }
+      if (this.selectionStart < 21) {
+        this.selectionStart = 21;
+      }
+      $("#addIdeaComponent input#componentDescription").keyup(function(){
+        $("#addIdeaComponent .compDescrCharRemaining").text((200 + requiredCompTextTwo.length - $(this).val().length) + " characters remaining");
+      });
+    }, false);
