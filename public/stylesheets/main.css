@@ -535,3 +535,20 @@ a.plus-overlay img{
   cursor: pointer; cursor: hand; 
   border: 1px solid blue;
 }
+
+.example-text {
+  color: black;
+  font-size: 14px;
+  text-align: center;
+}
+
+form#addDescription {
+  padding: 0 3em 3em;
+}
+form#addDescription #submit{
+  margin-top: 1em;
+}
+
+.no-descriptions {
+  font-style: italic;
+}

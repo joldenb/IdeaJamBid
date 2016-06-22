@@ -263,5 +263,29 @@ router.post('/set-existing-profile-pic', function(req, res) {
   }
 });
 
+////////////////////////////////////////////////
+// Add a description to a component
+////////////////////////////////////////////////
+router.post('/add-description', function(req, res) {
+
+
+    Component.findOne({"identifier" : req.body["component-identifier"]}, function(err, component){
+      if(err){
+        res.json({error: err});
+      }
+
+      if(component){
+        if( req.body.description!=="" ){
+          component.descriptions.push(req.body.description);
+        }
+        component.save(function(err){
+          res.sendStatus(200);
+        });
+      } else {
+        res.sendStatus(409);
+      }
+    });
+});
+
 
 module.exports = router;

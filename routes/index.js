@@ -1890,9 +1890,6 @@ router.post('/save-component', function(req, res) {
       }
 
       if(component){
-        if(req.body.description!=""){
-          component.descriptions.push(req.body.description);
-        }
         component.images.push(
           {
             imageID   : image.id,
@@ -1921,9 +1918,6 @@ router.post('/save-component', function(req, res) {
           ideaSeed    : req.session.idea,
           identifier  : "comp-"+Date.now()
         });
-        if(req.body.description!=""){
-          newComp.descriptions = [req.body.description]
-        }
         newComp.save(function(err){
           var stop;
         });

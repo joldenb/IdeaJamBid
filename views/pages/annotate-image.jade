@@ -26,21 +26,17 @@ html
           .modal-header
             button(type="button", class="close", data-dismiss="modal", id="close-modal") &times;
             .modal-title 
-              h2 Create a Component
+              h2 Describe the part of your invention that you just clicked:
           .modal-body
             form(role='form', id="saveComponent" action="/save-component", method="post", style='max-width: 300px;', data-idea-doc=idea)
               .form-group
                 |  
-                input.form-control.ui-front(type='text', name="component", id="componentName", value='The component is called ', autocomplete="on")
-                h4#new-idea-description Description:
-                |  
-                textarea.form-control(rows='6', cols="75", name="description", id="description",
-                  placeholder='Describe the new component...')
+                input.form-control.ui-front(type='text', name="component", id="componentName", value='The solution of ', autocomplete="on")
+                p.example-text (Example: The solution of a flux capacitor.)
                 input(type="hidden" id="previous-title" name="previousTitle")
-                input(type="hidden" id="previous-description" name="previousDescription")
           .modal-footer
             // button.btn.btn-info(data-dismiss="modal") Cancel
-            button.btn.btn-success#submit(type='submit') Save
+            button.btn.btn-success#submit(type='submit') Submit
 
   button(type="button" id="modalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Go Win Fight
 
@@ -56,7 +52,7 @@ html
           .individual-component
             img.delete-component(data-component="#{value.text}" src="/delete.png" height="25" width="25")
             img(class='edit-annotation' data-component="#{value.text}" data-toggle='modal' data-target='#myModal' src="/pencil.png" height="25" width="25")
-            h4 #{value.number}. #{value.text.slice(24)}
+            h4 #{value.number}. #{value.text.slice(16)}
       br
       br
       a#save-annotations.btn.btn-success( href="/image-upload" ) Save Annotations >
@@ -232,10 +228,10 @@ html
           ctx.fillText(data['number']+".",textCoordX,textCoordY);
 
           if($("#listOfComponents .individual-component").length == 0){
-            $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component']+"' src='/delete.png' height='25' width='25'><img class='edit-annotation' data-component='"+ data['component']+"' data-toggle='modal' data-target='#myModal' src='/pencil.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component'].slice(24)+"</h4></div>").
+            $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component']+"' src='/delete.png' height='25' width='25'><img class='edit-annotation' data-component='"+ data['component']+"' data-toggle='modal' data-target='#myModal' src='/pencil.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component'].slice(16)+"</h4></div>").
               appendTo("#listOfComponents");
           } else {
-            $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component']+"' src='/delete.png' height='25' width='25'><img class='edit-annotation' data-component='"+ data['component']+"' data-toggle='modal' data-target='#myModal' src='/pencil.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component'].slice(24)+"</h4></div>").
+            $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component']+"' src='/delete.png' height='25' width='25'><img class='edit-annotation' data-component='"+ data['component']+"' data-toggle='modal' data-target='#myModal' src='/pencil.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component'].slice(16)+"</h4></div>").
               insertAfter("#listOfComponents div:last-of-type");
           }
 
@@ -324,13 +320,13 @@ html
     var input = document.getElementsByTagName ("input");
 
     // This is for the main solution text input
-    var requiredText = "The component is called "
+    var requiredText = "The solution of "
     input[0].addEventListener ("mousedown", function () {
       if (String($(this).val()).indexOf(requiredText) == -1) {
             $(this).val(requiredText);
       }
-      if (this.selectionStart < 24) {
-        this.selectionStart = 24;
+      if (this.selectionStart < 16) {
+        this.selectionStart = 16;
       }
     }, false);
 
@@ -338,7 +334,7 @@ html
       if (String($(this).val()).indexOf(requiredText) == -1) {
             $(this).val(requiredText);
       }
-      if (this.selectionStart < 24) {
-        this.selectionStart = 24;
+      if (this.selectionStart < 16) {
+        this.selectionStart = 16;
       }
     }, false);

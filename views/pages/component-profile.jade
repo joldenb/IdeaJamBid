@@ -29,13 +29,24 @@ html
           .component-name
             h3 Name : #{component['number']}
     h4 It is a component of the idea seed "#{idea.name}"
-    if( component['descriptions'].length > 0)
       .component-descriptions
         h3 Description(s)
-        ul
-          each description in component['descriptions']
-            li #{description}
+        if( component['descriptions'].length > 0)
+          ul
+            each description, index in component['descriptions']
+              li #{index+1}. #{description}
+              br
+        else
+          ul
+            li.no-descriptions No Descriptions Yet
             br
+        form(role='form', id="addDescription" action="/add-description", method="post", data-idea-doc=idea)
+          h5#new-idea-description Add a New Description:
+          |  
+          input.form-control(name="description", id="description",
+            placeholder='Describe the new component...')
+          |  
+          button.btn.btn-success#submit(type='submit') Submit
 
     .edit-column.half-column
       .imagesList
@@ -291,3 +302,18 @@ html
       };
       xhr.send();
     }
+
+    $("#addDescription #submit").click(function(event){
+      event.preventDefault();
+      var data = {
+        "description" : $("#description").val(),
+        "component-identifier" :  "!{component['identifier']}"
+      }
+      $.post("/add-description", data, function(response){
+        if(response=="OK"){
+          location.reload();
+        } else {
+          alert("Not submitted successfully");
+        }
+      });
+    });
