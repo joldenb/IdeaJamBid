@@ -27,7 +27,7 @@ router.get('/waste-values-summary', function(req, res) {
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
@@ -51,7 +51,7 @@ router.get('/performability', function(req, res) {
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
@@ -175,7 +175,7 @@ router.get('/affordability', function(req, res) {
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
@@ -298,7 +298,7 @@ router.get('/featurability', function(req, res) {
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
@@ -420,7 +420,7 @@ router.get('/deliverability', function(req, res) {
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
@@ -543,7 +543,7 @@ router.get('/useability', function(req, res) {
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
@@ -669,7 +669,7 @@ router.get('/maintainability', function(req, res) {
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
@@ -793,7 +793,7 @@ router.get('/durability', function(req, res) {
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
@@ -917,7 +917,7 @@ router.get('/imageability', function(req, res) {
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
@@ -1041,7 +1041,7 @@ router.get('/complexity', function(req, res) {
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
@@ -1165,7 +1165,7 @@ router.get('/precision', function(req, res) {
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
@@ -1288,7 +1288,7 @@ router.get('/variability', function(req, res) {
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
@@ -1411,7 +1411,7 @@ router.get('/sensitivity', function(req, res) {
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
@@ -1534,7 +1534,7 @@ router.get('/immaturity', function(req, res) {
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
@@ -1657,7 +1657,7 @@ router.get('/dangerous', function(req, res) {
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
@@ -1780,7 +1780,7 @@ router.get('/skills', function(req, res) {
   }
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
-      var headshotURL = "data:"+headshot["imageMimetype"]+";base64,"+ headshot["image"].toString('base64');
+      var headshotURL = headshot["amazonURL"];
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;

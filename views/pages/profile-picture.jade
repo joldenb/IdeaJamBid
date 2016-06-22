@@ -73,7 +73,7 @@ html
       xhr.open('PUT', signedRequest);
       xhr.onreadystatechange = function() {
         if(xhr.readyState === 4){
-          if(xhr.status === 200){
+          if(xhr.status === 200 && (file.type=="image/jpeg" || file.type=="image/png")){
             var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type };
             $(".image-summary-image img").attr("src", url);
             $.post('/add-profile-headshot', data , function(response, status){
