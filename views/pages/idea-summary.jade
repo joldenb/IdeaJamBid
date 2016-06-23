@@ -162,7 +162,7 @@ html
               p (ex. "The Start Button")
               p.compNameCharRemaining
               input#componentDescription.form-control(type="text", name="componentDescription", value='The way it works is ')
-              p (ex. "it initiates the sequence automatically", < 120 characters)
+              p (ex. "it initiates the sequence automatically")
               p.compDescrCharRemaining
           form(role='form', id="formImageUpload" action="/add-component-image", method="post", data-idea-doc=idea, enctype="multipart/form-data")
             .form-group
@@ -216,7 +216,7 @@ html
       event.preventDefault();
       $.post('/add-idea-problem', 
         {
-          problemStatement : $("#problemStatement").val(),
+          problemStatement : $("#problemStatement").val().slice(15),
           problemArea : $("#problemArea option:selected").text(),
         },
         function(resp) {
@@ -230,8 +230,8 @@ html
 
       $.post('/add-idea-component', 
         {
-          componentName : $("#componentName").val(),
-          componentDescription : $("#componentDescription").val()
+          componentName : $("#componentName").val().slice(24),
+          componentDescription : $("#componentDescription").val().slice(20)
         },
         function(data, response) {
           if(document.getElementById("fileInput").files.length != 0){

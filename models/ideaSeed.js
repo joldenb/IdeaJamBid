@@ -141,7 +141,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 						'Content-disposition': 'attachment; filename=PreliminaryApplication.docx'
 					});
 
-					var docx = officegen ( 'docx' );
+					var docx = officegen ( {type: 'docx', font_face :'Times New Roman'} );
 
 					docx.on ( 'finalize', function ( written ) {
 						console.log ( 'Finish to create a Word file.\nTotal bytes created: ' + written + '\n' );
@@ -184,16 +184,16 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 					pObj.addText( 'BACKGROUND OF THE INVENTION', { font_size : 14 } );
 
 					// enter description which involves broad problem statement.
-					pObj = docx.createP ({ align: 'center' });
-					pObj.addText ( 'The present inventor has recognized \"' + idea.problem.toLowerCase() +
-						'\".  Currently there are a number of solutions for \"' + idea.problem.toLowerCase() +
-						'\". These solutions, however, fail to meet the needs of the'+
+					pObj = docx.createP ();
+					pObj.addText ( 'The present inventor has recognized ' + idea.problem.toLowerCase() +
+						'.  Currently there are a number of solutions for ' + idea.problem.toLowerCase() +
+						'. These solutions, however, fail to meet the needs of the'+
 						' industry because of the challenges associated with ', { font_size : 14 });
 					for(var i = 0;  i < problems.length; i++){
 						if(i < problems.length - 1){
-							pObj.addText ( problems[i].text.toLowerCase() + '\", \"', { font_size : 14 } );
+							pObj.addText ( problems[i].text.toLowerCase() + ', ', { font_size : 14 } );
 						} else {
-							pObj.addText ( + "and \"" + problems[i].text.toLowerCase() + '\". ', { font_size : 14 } );
+							pObj.addText ( + "and " + problems[i].text.toLowerCase() + '. ', { font_size : 14 } );
 						}
 					}
 
@@ -202,17 +202,18 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 
 					for(i=0; i < images.length; i++){
 						pObj = docx.createP ();
-						pObj.addText( 'Figure 1 depicts an embodiment of the invention comprising \"', { font_size : 14 } );
-						pObj.addText( images[i].filename + '\".', { font_size : 14 } );
+						pObj.addText( 'Figure 1 depicts an embodiment of the invention comprising ', { font_size : 14 } );
+						pObj.addText( images[i].filename + '.', { font_size : 14 } );
 					}
 
 					pObj = docx.createP ();
 					pObj.addText( 'BRIEF DESCRIPTION OF NUMERICAL REFERENCES IN FIGURES', { font_size : 14 } );
+					comps = _.sortBy(comps, 'number');
 					for(i=0; i < comps.length; i++){
 						if(comps[i].number && comps[i].text){
 							pObj = docx.createP ();
-							pObj.addText( comps[i].number +'. \"', { font_size : 14 } );
-							pObj.addText( comps[i].text + '\" in an embodiment of the invention.', { font_size : 14 } );
+							pObj.addText( comps[i].number +'. ', { font_size : 14 } );
+							pObj.addText( comps[i].text.charAt(0).toUpperCase() + comps[i].text.slice(1) + ' in an embodiment of the invention.', { font_size : 14 } );
 						}
 					}
 
@@ -220,13 +221,13 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 					pObj.addText( 'DESCRIPTION OF THE INVENTION', { font_size : 14 } );
 
 					pObj = docx.createP ();
-					pObj.addText( 'The preferred embodiment of the present invention is a \"' + idea.name + 
-						'\".  \"' + idea.name + '\" is intended to \"' + idea.description + '\".  ' + 
+					pObj.addText( 'The preferred embodiment of the present invention is a ' + idea.name + 
+						'.  ' + idea.name + ' is intended to ' + idea.description + '.  ' + 
 						'Embodiments of the invention comprise some or all of the following components: ', { font_size : 14 } );
 					for(i=0; i < comps.length; i++){
 						if(comps[i].problemID && comps[i].descriptions.length > 0){
 							pObj.addText( '(' + (i+1) +'.) ', { font_size : 14 } );
-							pObj.addText( comps[i].descriptions[0].toLowerCase() + '\", \"', { font_size : 14 } );
+							pObj.addText( comps[i].descriptions[0].toLowerCase() + ', ', { font_size : 14 } );
 						}
 					}
 					pObj.addText('.', {font_size : 14});
@@ -234,20 +235,20 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 					for(i=0; i < comps.length; i++){
 						if(comps[i].problemID && comps[i].descriptions.length > 0){
 							pObj = docx.createP ();
-							pObj.addText( 'An embodiment of the invention incorporates \"' +
-								comps[i].descriptions[0].toLowerCase() + '\". ', { font_size : 14 } );
-							pObj.addText( 'The present inventor has recognized that \"' +
-								comps[i].descriptions[0].toLowerCase() + '\" addresses the problem of \"', { font_size : 14 } );
+							pObj.addText( 'An embodiment of the invention incorporates ' +
+								comps[i].descriptions[0].toLowerCase() + '. ', { font_size : 14 } );
+							pObj.addText( 'The present inventor has recognized that ' +
+								comps[i].descriptions[0].toLowerCase() + ' addresses the problem of ', { font_size : 14 } );
 							for(j=0; j < problems.length; j++){
 								if(comps[i].problemID.toString() == problems[j]['id'].toString()){
-									pObj.addText( problems[j]['text'] + '\".  \"', { font_size : 14 } );
+									pObj.addText( problems[j]['text'] + '.  ', { font_size : 14 } );
 								}
 							}	
 							
 							if(comps[i].descriptions.length > 1){
 								for(j=1; j < comps[i].descriptions.length; j++){
-									pObj.addText( '\"'+comps[i].descriptions[0] + '\" is described as \"', { font_size : 14 } );
-									pObj.addText( comps[i].descriptions[j] + '\". ', { font_size : 14 } );
+									pObj.addText( ''+comps[i].descriptions[0] + ' is described as ', { font_size : 14 } );
+									pObj.addText( comps[i].descriptions[j] + '. ', { font_size : 14 } );
 								}
 							}
 						}
@@ -272,35 +273,35 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 											if(comps[k].text && comps[i].text){
 												otherCompName = comps[k].text;
 												pObj = docx.createP ();
-												pObj.addText( 'In an embodiment of the invention, \"' + comps[i].text.toLowerCase() + '\"\"\" and \"\"', { font_size : 14 } );
-												pObj.addText( otherCompName.toLowerCase() + '\" are related. \"\"', { font_size : 14 } );
-												pObj.addText( comps[i].text.toLowerCase() + '\" and \"', { font_size : 14 } );
-												pObj.addText( otherCompName + '\" related to one another in such embodiment by \"', { font_size : 14 } );
-												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase() + '\". ', { font_size : 14 } );
+												pObj.addText( 'In an embodiment of the invention, ' + comps[i].text.toLowerCase() + ' and ', { font_size : 14 } );
+												pObj.addText( otherCompName.toLowerCase() + ' are related. ', { font_size : 14 } );
+												pObj.addText( comps[i].text.toLowerCase() + ' and ', { font_size : 14 } );
+												pObj.addText( otherCompName + ' related to one another in such embodiment by ', { font_size : 14 } );
+												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase() + '. ', { font_size : 14 } );
 											} else if(!comps[k].text && comps[i].text) {
 												otherCompName = comps[k].descriptions[0];
 												pObj = docx.createP ();
-												pObj.addText( 'In an embodiment of the invention, \"' + comps[i].text.toLowerCase() + '\" and \"', { font_size : 14 } );
-												pObj.addText( otherCompName.toLowerCase() + '\" are related. \"', { font_size : 14 } );
-												pObj.addText( comps[i].text.toLowerCase() + '\" and \"', { font_size : 14 } );
-												pObj.addText( otherCompName + '\" related to one another in such embodiment by \"', { font_size : 14 } );
-												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase() + '\". ', { font_size : 14 } );
+												pObj.addText( 'In an embodiment of the invention, ' + comps[i].text.toLowerCase() + ' and ', { font_size : 14 } );
+												pObj.addText( otherCompName.toLowerCase() + ' are related. ', { font_size : 14 } );
+												pObj.addText( comps[i].text.toLowerCase() + ' and ', { font_size : 14 } );
+												pObj.addText( otherCompName + ' related to one another in such embodiment by ', { font_size : 14 } );
+												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase() + '. ', { font_size : 14 } );
 											} else if(comps[k].text && !comps[i].text) {
 												otherCompName = comps[k].text;
 												pObj = docx.createP ();
-												pObj.addText( 'In an embodiment of the invention, \"' + comps[i].descriptions[0].toLowerCase() + '\" and \"', { font_size : 14 } );
-												pObj.addText( otherCompName.toLowerCase() + '\" are related. \"', { font_size : 14 } );
-												pObj.addText( comps[i].descriptions[0].toLowerCase() + '\" and \"', { font_size : 14 } );
-												pObj.addText( otherCompName + '\" related to one another in such embodiment by \"', { font_size : 14 } );
-												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase() + '\". ', { font_size : 14 } );
+												pObj.addText( 'In an embodiment of the invention, ' + comps[i].descriptions[0].toLowerCase() + ' and ', { font_size : 14 } );
+												pObj.addText( otherCompName.toLowerCase() + ' are related. ', { font_size : 14 } );
+												pObj.addText( comps[i].descriptions[0].toLowerCase() + ' and ', { font_size : 14 } );
+												pObj.addText( otherCompName + ' related to one another in such embodiment by ', { font_size : 14 } );
+												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase() + '. ', { font_size : 14 } );
 											} else if(!comps[k].text && !comps[i].text) {
 												otherCompName = comps[k].descriptions[0];
 												pObj = docx.createP ();
-												pObj.addText( 'In an embodiment of the invention, \"' + comps[i].descriptions[0].toLowerCase() + '\" and \"', { font_size : 14 } );
-												pObj.addText( otherCompName.toLowerCase() + '\" are related. \"', { font_size : 14 } );
-												pObj.addText( comps[i].descriptions[0].toLowerCase() + '\" and \"', { font_size : 14 } );
-												pObj.addText( otherCompName + '\" related to one another in such embodiment by \"', { font_size : 14 } );
-												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase() + '\". ', { font_size : 14 } );
+												pObj.addText( 'In an embodiment of the invention, ' + comps[i].descriptions[0].toLowerCase() + ' and ', { font_size : 14 } );
+												pObj.addText( otherCompName.toLowerCase() + ' are related. ', { font_size : 14 } );
+												pObj.addText( comps[i].descriptions[0].toLowerCase() + ' and ', { font_size : 14 } );
+												pObj.addText( otherCompName + ' related to one another in such embodiment by ', { font_size : 14 } );
+												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase() + '. ', { font_size : 14 } );
 											}
 										}
 									}

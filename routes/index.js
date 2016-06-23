@@ -475,8 +475,7 @@ router.post('/introduce-idea', function(req, res) {
     return;
   }
   IdeaSeed.update({_id : req.session.idea}, {
-    problem : req.body.purposeFor,
-    name : req.body.inventionName},
+    problem : req.body.purposeFor.slice(15)},
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
   });
@@ -521,8 +520,7 @@ router.post('/accomplish', function(req, res) {
     res.redirect('/');
   }
   IdeaSeed.update({_id : req.session.idea}, {
-    description : req.body.purposeHow,
-    characterization : req.body.characterization },
+    description : req.body.purposeHow.slice(16)},
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
   });
@@ -548,10 +546,10 @@ router.post('/suggestion-submit', function(req, res) {
     }, function(err, problem){
 
       var newSuggestion = {
-        descriptions : [req.body.suggestion],
-        hindsight : req.body.hindsight,
-        foresight : req.body.foresight,
-        outsight : req.body.outsight,
+        descriptions : [req.body.suggestion.slice(16)], //getting rid of "the solution of "
+        hindsight : req.body.hindsight.slice(14), //getting rid of "in hindsight, "
+        foresight : req.body.foresight.slice(14), //getting rid of "in foresight, "
+        outsight : req.body.outsight.slice(13), //getting rid of "in outsight, "
         category : req.body.suggestionCategory,
         creator : req.user.username,
         ideaSeed : req.session.idea,
@@ -741,7 +739,7 @@ router.post('/save-idea-name', function(req, res) {
     return;
   }
   IdeaSeed.update({_id : req.session.idea}, {
-    name : req.body.inventionName},
+    name : req.body.inventionName.slice(17)},
     { multi: false }, function (err, raw) {
       console.log('The raw response from Mongo was ', raw);
   });
@@ -1883,6 +1881,8 @@ router.post('/save-component', function(req, res) {
     if(err){
       res.json({error: err});
     }
+
+    req.body.component = req.body.component.slice(16); //get rid of "the solution of "
 
     Component.findOne({"text" : req.body.component}, function(err, component){
       if(err){

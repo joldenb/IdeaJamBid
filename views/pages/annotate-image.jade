@@ -52,7 +52,7 @@ html
           .individual-component
             img.delete-component(data-component="#{value.text}" src="/delete.png" height="25" width="25")
             img(class='edit-annotation' data-component="#{value.text}" data-toggle='modal' data-target='#myModal' src="/pencil.png" height="25" width="25")
-            h4 #{value.number}. #{value.text.slice(16)}
+            h4 #{value.number}. #{value.text}
       br
       br
       a#save-annotations.btn.btn-success( href="/image-upload" ) Save Annotations >
@@ -173,7 +173,7 @@ html
         
 
         $.post('/save-component', data, function(resp) {
-          $("#componentName").val('The component is called ');
+          $("#componentName").val('The solution of ');
           $("#description").val('');
           $("#existingComponents option[value='None Selected']").prop({'selected': true});
           $("#myModal").modal('hide');
@@ -246,7 +246,7 @@ html
                 $(".modal-footer").prepend('<a type="button" class="btn btn-info" href=/component-profile/'+ response["identifier"] +'>Component Profile</a>')
               }
 
-              $("input#componentName").val(response["title"]);
+              $("input#componentName").val("The solution of "+ response["title"]);
               $("#previous-title").val(response["title"]);
             });
           });
@@ -268,7 +268,7 @@ html
             $(".modal-footer").prepend('<a type="button" class="btn btn-info" href=/component-profile/'+ response["identifier"] +'>Component Profile</a>')
           }
 
-          $("input#componentName").val(response["title"]);
+          $("input#componentName").val("The solution of "+ response["title"]);
           $("#previous-title").val(response["title"]);
       });
     });

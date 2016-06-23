@@ -206,7 +206,7 @@ router.post('/affordability', function(req, res) {
     }
     if(req.body.affordProblem){
       var newProblem = {
-        text          : req.body.affordProblem,
+        text          : req.body.affordProblem.slice(15), //get rid of "the problem of ""
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Affordability",
         ideaSeed      : thisIdea.id
@@ -247,7 +247,7 @@ router.post('/affordability', function(req, res) {
       }
       if(req.body.affordProblem){
         var newProblem = {
-          text          : req.body.affordProblem,
+          text          : req.body.affordProblem.slice(15),
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Affordability",
           ideaSeed      : thisIdea.id
@@ -329,7 +329,7 @@ router.post('/featurability', function(req, res) {
     }
     if(req.body.featureProblem){
       var newProblem = {
-        text          : req.body.featureProblem,
+        text          : req.body.featureProblem.slice(15),
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Featurability",
         ideaSeed      : thisIdea.id
@@ -370,7 +370,7 @@ router.post('/featurability', function(req, res) {
       }
       if(req.body.featureProblem){
         var newProblem = {
-          text          : req.body.featureProblem,
+          text          : req.body.featureProblem.slice(15),
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Featurability",
           ideaSeed      : thisIdea.id
@@ -451,7 +451,7 @@ router.post('/deliverability', function(req, res) {
     }
     if(req.body.deliverProblem){
       var newProblem = {
-        text          : req.body.deliverProblem,
+        text          : req.body.deliverProblem.slice(15),
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Deliverability",
         ideaSeed      : thisIdea.id
@@ -492,7 +492,7 @@ router.post('/deliverability', function(req, res) {
       }
       if(req.body.deliverProblem){
         var newProblem = {
-          text          : req.body.deliverProblem,
+          text          : req.body.deliverProblem.slice(15),
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Deliverability",
           ideaSeed      : thisIdea.id
@@ -575,7 +575,7 @@ router.post('/useability', function(req, res) {
     }
     if(req.body.useabilityProblem){
       var newProblem = {
-        text          : req.body.useabilityProblem,
+        text          : req.body.useabilityProblem.slice(15),
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Useability",
         ideaSeed      : thisIdea.id
@@ -618,7 +618,7 @@ router.post('/useability', function(req, res) {
       }
       if(req.body.useabilityProblem){
         var newProblem = {
-          text          : req.body.useabilityProblem,
+          text          : req.body.useabilityProblem.slice(15),
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Useability",
           ideaSeed      : thisIdea.id
@@ -701,7 +701,7 @@ router.post('/maintainability', function(req, res) {
     }
     if(req.body.maintainProblem){
       var newProblem = {
-        text          : req.body.maintainProblem,
+        text          : req.body.maintainProblem.slice(15),
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Maintainability",
         ideaSeed      : thisIdea.id
@@ -742,7 +742,7 @@ router.post('/maintainability', function(req, res) {
       }
       if(req.body.maintainProblem){
         var newProblem = {
-          text          : req.body.maintainProblem,
+          text          : req.body.maintainProblem.slice(15),
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Maintainability",
           ideaSeed      : thisIdea.id
@@ -825,7 +825,7 @@ router.post('/durability', function(req, res) {
     }
     if(req.body.durabilityProblem){
       var newProblem = {
-        text          : req.body.durabilityProblem,
+        text          : req.body.durabilityProblem.slice(15),
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Durability",
         ideaSeed      : thisIdea.id
@@ -866,7 +866,7 @@ router.post('/durability', function(req, res) {
       }
       if(req.body.durabilityProblem){
         var newProblem = {
-          text          : req.body.durabilityProblem,
+          text          : req.body.durabilityProblem.slice(15),
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Durability",
           ideaSeed      : thisIdea.id
@@ -949,7 +949,7 @@ router.post('/imageability', function(req, res) {
     }
     if(req.body.imageProblem){
       var newProblem = {
-        text          : req.body.imageProblem,
+        text          : req.body.imageProblem.slice(15),
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Imageability",
         ideaSeed      : thisIdea.id
@@ -990,7 +990,7 @@ router.post('/imageability', function(req, res) {
       }
       if(req.body.imageProblem){
         var newProblem = {
-          text          : req.body.imageProblem,
+          text          : req.body.imageProblem.slice(15),
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Imageability",
           ideaSeed      : thisIdea.id
@@ -1073,7 +1073,7 @@ router.post('/complexity', function(req, res) {
     }
     if(req.body.complexProblem){
       var newProblem = {
-        text          : req.body.complexProblem,
+        text          : req.body.complexProblem.slice(15),
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Complexity",
         ideaSeed      : thisIdea.id
@@ -1114,7 +1114,7 @@ router.post('/complexity', function(req, res) {
       }
       if(req.body.complexProblem){
         var newProblem = {
-          text          : req.body.complexProblem,
+          text          : req.body.complexProblem.slice(15),
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Complexity",
           ideaSeed      : thisIdea.id
@@ -1197,7 +1197,7 @@ router.post('/precision', function(req, res) {
     }
     if(req.body.precisionProblem){
       var newProblem = {
-        text          : req.body.precisionProblem,
+        text          : req.body.precisionProblem.slice(15),
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Precision",
         ideaSeed      : thisIdea.id
@@ -1238,7 +1238,7 @@ router.post('/precision', function(req, res) {
       }
       if(req.body.precisionProblem){
         var newProblem = {
-          text          : req.body.precisionProblem,
+          text          : req.body.precisionProblem.slice(15),
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Precision",
           ideaSeed      : thisIdea.id
@@ -1320,7 +1320,7 @@ router.post('/variability', function(req, res) {
     }
     if(req.body.variabilityProblem){
       var newProblem = {
-        text          : req.body.variabilityProblem,
+        text          : req.body.variabilityProblem.slice(15),
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Variability",
         ideaSeed      : thisIdea.id
@@ -1361,7 +1361,7 @@ router.post('/variability', function(req, res) {
       }
       if(req.body.variabilityProblem){
         var newProblem = {
-          text          : req.body.variabilityProblem,
+          text          : req.body.variabilityProblem.slice(15),
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Variability",
           ideaSeed      : thisIdea.id
@@ -1443,7 +1443,7 @@ router.post('/sensitivity', function(req, res) {
     }
     if(req.body.sensitivityProblem){
       var newProblem = {
-        text          : req.body.sensitivityProblem,
+        text          : req.body.sensitivityProblem.slice(15),
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Sensitivity",
         ideaSeed      : thisIdea.id
@@ -1484,7 +1484,7 @@ router.post('/sensitivity', function(req, res) {
       }
       if(req.body.sensitivityProblem){
         var newProblem = {
-          text          : req.body.sensitivityProblem,
+          text          : req.body.sensitivityProblem.slice(15),
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Sensitivity",
           ideaSeed      : thisIdea.id
@@ -1566,7 +1566,7 @@ router.post('/immaturity', function(req, res) {
     }
     if(req.body.immatureProblem){
       var newProblem = {
-        text          : req.body.immatureProblem,
+        text          : req.body.immatureProblem.slice(15),
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Immaturity",
         ideaSeed      : thisIdea.id
@@ -1607,7 +1607,7 @@ router.post('/immaturity', function(req, res) {
       }
       if(req.body.immatureProblem){
         var newProblem = {
-          text          : req.body.immatureProblem,
+          text          : req.body.immatureProblem.slice(15),
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Immaturity",
           ideaSeed      : thisIdea.id
@@ -1689,7 +1689,7 @@ router.post('/dangerous', function(req, res) {
     }
     if(req.body.dangerProblem){
       var newProblem = {
-        text          : req.body.dangerProblem,
+        text          : req.body.dangerProblem.slice(15),
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Danger",
         ideaSeed      : thisIdea.id
@@ -1730,7 +1730,7 @@ router.post('/dangerous', function(req, res) {
       }
       if(req.body.dangerProblem){
         var newProblem = {
-          text          : req.body.dangerProblem,
+          text          : req.body.dangerProblem.slice(15),
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Danger",
           ideaSeed      : thisIdea.id
@@ -1812,7 +1812,7 @@ router.post('/skills', function(req, res) {
     }
     if(req.body.skillsProblem){
       var newProblem = {
-        text          : req.body.skillsProblem,
+        text          : req.body.skillsProblem.slice(15),
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Skills",
         ideaSeed      : thisIdea.id
@@ -1853,7 +1853,7 @@ router.post('/skills', function(req, res) {
       }
       if(req.body.skillsProblem){
         var newProblem = {
-          text          : req.body.skillsProblem,
+          text          : req.body.skillsProblem.slice(15),
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Skills",
           ideaSeed      : thisIdea.id
