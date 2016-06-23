@@ -2262,21 +2262,21 @@ router.get('/component-profile/:identifier', function(req, res){
                           ]);
                         }
                       }
-                      res.render('pages/component-profile', {
-                        user : req.user,
-                        headshot : headshotURL,
-                        idea : idea._doc,
-                        problemHeadshotURL : problemHeadshotURL,
-                        component : component,
-                        problem : problem,
-                        variantDates : variantDates,
-                        imageURLs : imageURLs,
-                        components : components,
-                        relatedComponents : relatedComponents
-                        //components : components,
-                        //listOfProblems : listOfProblems 
-                      });
                     }
+                    res.render('pages/component-profile', {
+                      user : req.user,
+                      headshot : headshotURL,
+                      idea : idea._doc,
+                      problemHeadshotURL : problemHeadshotURL,
+                      component : component,
+                      problem : problem,
+                      variantDates : variantDates,
+                      imageURLs : imageURLs,
+                      components : components,
+                      relatedComponents : relatedComponents
+                      //components : components,
+                      //listOfProblems : listOfProblems 
+                    });
                   });//end of image query
 
                 // in case theres no images

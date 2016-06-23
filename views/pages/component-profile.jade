@@ -245,25 +245,23 @@ html
       })
     });
 
-    (() => {
-      if($("#fileInput").length > 0){
-        document.getElementById("fileInput").onchange = () => {
-          const files = document.getElementById('fileInput').files;
-          const file = files[0];
-          if(file == null){
-            return alert('No file selected.');
-          }
+    if($("#fileInput").length > 0){
+      document.getElementById("fileInput").onchange = function(event) {
+        const files = document.getElementById('fileInput').files;
+        const file = files[0];
+        if(file == null){
+          return alert('No file selected.');
+        }
 
-          if(file.size < 3000000){
-            getSignedRequest(file);
-          } else if (file.size > 3000000){
-            alert('Please choose an image smaller than 3 MB.')
-          } else {
-            alert('An error ocurred with this image.')
-          }
-        };
-      }
-    })();
+        if(file.size < 3000000){
+          getSignedRequest(file);
+        } else if (file.size > 3000000){
+          alert('Please choose an image smaller than 3 MB.')
+        } else {
+          alert('An error ocurred with this image.')
+        }
+      };
+    }
 
     function uploadFile(file, signedRequest, url){
       const xhr = new XMLHttpRequest();
