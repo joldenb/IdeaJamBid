@@ -1341,60 +1341,64 @@ router.get('/contributor-idea-summary', function(req, res){
       var imageURLs = [];
       currentIdea = idea._doc;
       var currentlyReviewing = false;
-
-
       Component.find({"ideaSeed" : idea.id}, function(err, components){
         if(idea.ideaReviews.length > 0){
           var reviewsChecked = 0;
-          for(var k = 0; k < idea.ideaReviews.length; k++) {
-            
-
-            IdeaReview.findById(idea.ideaReviews[k], function(err, review){
-              if(review && review.reviewer == req.user.username){
-                currentlyReviewing = true;
-                req.session.ideaReview = review.id;
-              }
-              if(reviewsChecked >= (idea.ideaReviews.length - 1) || currentlyReviewing){
-                if (idea._doc.images.length != 0){
-                  for (var i =0; i < idea._doc.images.length; i++){
-                    var j = 0;
-                    
-
-                    IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
-                      j++;
-                      if(image && image._doc && image.amazonURL){
-                        var filename = image._doc["filename"];
-                        imageURLs.push([
-                          filename,
-                          image["amazonURL"]
-                        ]);
-                      }
-                      if (j == idea._doc.images.length){
+            IdeaReview.find({"_id" : {$in : idea.ideaReviews } }, function(err, reviews){
+              var k = 0;
+              var currentReview;
+              while(k < reviews.length && !currentlyReviewing) {
+                if(reviews[k] && reviews[k].reviewer == req.user.username){
+                  currentlyReviewing = true;
+                  currentReview = reviews[k];
+                  req.session.ideaReview = reviews[k].id;
+                }
+                if(reviewsChecked >= (reviews.length - 1) || currentlyReviewing){
+                  if (idea.images.length > 0){
+                      IdeaImage.find({"_id" : {$in : idea.images } } , function(err, images){
+                        for(var j = 0; j < images.length; j++){
+                          if(images[j] && images[j].amazonURL){
+                            var filename = images[j]["filename"];
+                            imageURLs.push([
+                              filename,
+                              images[j]["amazonURL"]
+                            ]);
+                          }
+                        } // end of loop of images
                         res.render('pages/contributor-idea-summary', {
                           user : req.user, idea : currentIdea,
-                          currentReview : review,
+                          currentReview : currentReview,
                           headshot : headshotURL,
                           imageURLs : imageURLs,
                           components : components,
                           currentlyReviewing : currentlyReviewing
                         });
-                      }
+                      }); //end of images query
+                  } else {
+                    res.render('pages/contributor-idea-summary', {
+                      user : req.user, idea : currentIdea,
+                      currentReview : currentReview,
+                      headshot : headshotURL,
+                      imageURLs : [],
+                      components : components,
+                      currentlyReviewing : currentlyReviewing
                     });
+                    return;
                   }
-                } else {
-                  res.render('pages/contributor-idea-summary', {
-                    user : req.user, idea : currentIdea,
-                    currentReview : review,
-                    headshot : headshotURL,
-                    imageURLs : [],
-                    components : components,
-                    currentlyReviewing : currentlyReviewing
-                  });
                 }
+                k++;
+                reviewsChecked++;
               }
-              reviewsChecked++;
-            });
-          }
+            }); //end of review query
+
+
+
+
+
+
+
+
+
         } else {
               if (idea._doc.images.length != 0){
                 for (var i =0; i < idea._doc.images.length; i++){
