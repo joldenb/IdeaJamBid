@@ -228,10 +228,10 @@ html
           ctx.fillText(data['number']+".",textCoordX,textCoordY);
 
           if($("#listOfComponents .individual-component").length == 0){
-            $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component']+"' src='/delete.png' height='25' width='25'><img class='edit-annotation' data-component='"+ data['component']+"' data-toggle='modal' data-target='#myModal' src='/pencil.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component'].slice(16)+"</h4></div>").
+            $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component'].slice(16)+"' src='/delete.png' height='25' width='25'><img class='edit-annotation' data-component='"+ data['component'].slice(16)+"' data-toggle='modal' data-target='#myModal' src='/pencil.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component'].slice(16)+"</h4></div>").
               appendTo("#listOfComponents");
           } else {
-            $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component']+"' src='/delete.png' height='25' width='25'><img class='edit-annotation' data-component='"+ data['component']+"' data-toggle='modal' data-target='#myModal' src='/pencil.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component'].slice(16)+"</h4></div>").
+            $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component'].slice(16)+"' src='/delete.png' height='25' width='25'><img class='edit-annotation' data-component='"+ data['component'].slice(16)+"' data-toggle='modal' data-target='#myModal' src='/pencil.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component'].slice(16)+"</h4></div>").
               insertAfter("#listOfComponents div:last-of-type");
           }
 
@@ -246,7 +246,7 @@ html
                 $(".modal-footer").prepend('<a type="button" class="btn btn-info" href=/component-profile/'+ response["identifier"] +'>Component Profile</a>')
               }
 
-              $("input#componentName").val("The solution of "+ response["title"]);
+              $("input#componentName").val("The solution of " + response["title"]);
               $("#previous-title").val(response["title"]);
             });
           });
@@ -268,7 +268,7 @@ html
             $(".modal-footer").prepend('<a type="button" class="btn btn-info" href=/component-profile/'+ response["identifier"] +'>Component Profile</a>')
           }
 
-          $("input#componentName").val("The solution of "+ response["title"]);
+          $("input#componentName").val("The solution of " + response["title"]);
           $("#previous-title").val(response["title"]);
       });
     });

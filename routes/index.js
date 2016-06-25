@@ -1946,10 +1946,7 @@ router.post('/edit-component', function(req, res) {
       }
 
       if(component){
-        var prevDescIndex = component.descriptions.indexOf(req.body.previousDescription);
-        component.descriptions.set(prevDescIndex, req.body.newDescription);
-
-        component.text = req.body.newTitle;
+        component.text = req.body.newTitle.slice(16);
 
         component.save(function(err){
           res.json(req.body);
