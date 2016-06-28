@@ -83,6 +83,10 @@ router.post('/performability', function(req, res) {
       thisIdea.performOne = req.body.perfSliderOneValue;
     }
     if(req.body.performProblem){
+      req.body.performProblem = req.body.performProblem.slice(15);
+      if(req.body.performProblem.charAt(req.body.performProblem.length-1) == "."){
+        req.body.performProblem = req.body.performProblem.slice(-1);
+      }
       var newProblem = {
         text          : req.body.performProblem,
         creator       : req.user.username, date : new Date(),
@@ -125,6 +129,10 @@ router.post('/performability', function(req, res) {
         });
       }
       if(req.body.performProblem){
+        req.body.performProblem = req.body.performProblem.slice(15);
+        if(req.body.performProblem.charAt(req.body.performProblem.length-1) == "."){
+          req.body.performProblem = req.body.performProblem.slice(-1);
+        }
         var newProblem = {
           text          : req.body.performProblem,
           creator       : req.user.username, date : new Date(),
@@ -205,8 +213,12 @@ router.post('/affordability', function(req, res) {
       thisIdea.affordOne = req.body.affordSliderOneValue;
     }
     if(req.body.affordProblem){
+      req.body.affordProblem = req.body.affordProblem.slice(15);
+      if(req.body.affordProblem.charAt(req.body.affordProblem.length-1) == "."){
+        req.body.affordProblem = req.body.affordProblem.slice(-1);
+      }
       var newProblem = {
-        text          : req.body.affordProblem.slice(15), //get rid of "the problem of ""
+        text          : req.body.affordProblem, //get rid of "the problem of ""
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Affordability",
         ideaSeed      : thisIdea.id
@@ -246,8 +258,12 @@ router.post('/affordability', function(req, res) {
         });
       }
       if(req.body.affordProblem){
+        req.body.affordProblem = req.body.affordProblem.slice(15);
+        if(req.body.affordProblem.charAt(req.body.affordProblem.length-1) == "."){
+          req.body.affordProblem = req.body.affordProblem.slice(-1);
+        }
         var newProblem = {
-          text          : req.body.affordProblem.slice(15),
+          text          : req.body.affordProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Affordability",
           ideaSeed      : thisIdea.id
@@ -328,8 +344,12 @@ router.post('/featurability', function(req, res) {
       thisIdea.featureOne = req.body.featureSliderOneValue;
     }
     if(req.body.featureProblem){
+      req.body.featureProblem = req.body.featureProblem.slice(15);
+      if(req.body.featureProblem.charAt(req.body.featureProblem.length-1) == "."){
+        req.body.featureProblem = req.body.featureProblem.slice(-1);
+      }
       var newProblem = {
-        text          : req.body.featureProblem.slice(15),
+        text          : req.body.featureProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Featurability",
         ideaSeed      : thisIdea.id
@@ -369,8 +389,12 @@ router.post('/featurability', function(req, res) {
         });
       }
       if(req.body.featureProblem){
+        req.body.featureProblem = req.body.featureProblem.slice(15);
+        if(req.body.featureProblem.charAt(req.body.featureProblem.length-1) == "."){
+          req.body.featureProblem = req.body.featureProblem.slice(-1);
+        }
         var newProblem = {
-          text          : req.body.featureProblem.slice(15),
+          text          : req.body.featureProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Featurability",
           ideaSeed      : thisIdea.id
@@ -450,8 +474,12 @@ router.post('/deliverability', function(req, res) {
       thisIdea.deliverOne = req.body.deliverSliderOneValue;
     }
     if(req.body.deliverProblem){
+      req.body.deliverProblem = req.body.deliverProblem.slice(15);
+      if(req.body.deliverProblem.charAt(req.body.deliverProblem.length-1) == "."){
+        req.body.deliverProblem = req.body.deliverProblem.slice(-1);
+      }
       var newProblem = {
-        text          : req.body.deliverProblem.slice(15),
+        text          : req.body.deliverProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Deliverability",
         ideaSeed      : thisIdea.id
@@ -491,8 +519,12 @@ router.post('/deliverability', function(req, res) {
         });
       }
       if(req.body.deliverProblem){
+        req.body.deliverProblem = req.body.deliverProblem.slice(15);
+        if(req.body.deliverProblem.charAt(req.body.deliverProblem.length-1) == "."){
+          req.body.deliverProblem = req.body.deliverProblem.slice(-1);
+        }
         var newProblem = {
-          text          : req.body.deliverProblem.slice(15),
+          text          : req.body.deliverProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Deliverability",
           ideaSeed      : thisIdea.id
@@ -574,8 +606,12 @@ router.post('/useability', function(req, res) {
       thisIdea.useabilityOne = req.body.useabilitySliderOneValue;
     }
     if(req.body.useabilityProblem){
+      req.body.useabilityProblem = req.body.useabilityProblem.slice(15);
+      if(req.body.useabilityProblem.charAt(req.body.useabilityProblem.length-1) == "."){
+        req.body.useabilityProblem = req.body.useabilityProblem.slice(-1);
+      }
       var newProblem = {
-        text          : req.body.useabilityProblem.slice(15),
+        text          : req.body.useabilityProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Useability",
         ideaSeed      : thisIdea.id
@@ -617,8 +653,12 @@ router.post('/useability', function(req, res) {
         });
       }
       if(req.body.useabilityProblem){
+        req.body.useabilityProblem = req.body.useabilityProblem.slice(15);
+        if(req.body.useabilityProblem.charAt(req.body.useabilityProblem.length-1) == "."){
+          req.body.useabilityProblem = req.body.useabilityProblem.slice(-1);
+        }
         var newProblem = {
-          text          : req.body.useabilityProblem.slice(15),
+          text          : req.body.useabilityProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Useability",
           ideaSeed      : thisIdea.id
@@ -700,8 +740,12 @@ router.post('/maintainability', function(req, res) {
       thisIdea.maintainOne = req.body.maintainSliderOneValue;
     }
     if(req.body.maintainProblem){
+      req.body.maintainProblem = req.body.maintainProblem.slice(15);
+      if(req.body.maintainProblem.charAt(req.body.maintainProblem.length-1) == "."){
+        req.body.maintainProblem = req.body.maintainProblem.slice(-1);
+      }
       var newProblem = {
-        text          : req.body.maintainProblem.slice(15),
+        text          : req.body.maintainProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Maintainability",
         ideaSeed      : thisIdea.id
@@ -741,8 +785,12 @@ router.post('/maintainability', function(req, res) {
         });
       }
       if(req.body.maintainProblem){
+        req.body.maintainProblem = req.body.maintainProblem.slice(15);
+        if(req.body.maintainProblem.charAt(req.body.maintainProblem.length-1) == "."){
+          req.body.maintainProblem = req.body.maintainProblem.slice(-1);
+        }
         var newProblem = {
-          text          : req.body.maintainProblem.slice(15),
+          text          : req.body.maintainProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Maintainability",
           ideaSeed      : thisIdea.id
@@ -824,8 +872,12 @@ router.post('/durability', function(req, res) {
       thisIdea.durabilityOne = req.body.durabilitySliderOneValue;
     }
     if(req.body.durabilityProblem){
+      req.body.durabilityProblem = req.body.durabilityProblem.slice(15);
+      if(req.body.durabilityProblem.charAt(req.body.durabilityProblem.length-1) == "."){
+        req.body.durabilityProblem = req.body.durabilityProblem.slice(-1);
+      }
       var newProblem = {
-        text          : req.body.durabilityProblem.slice(15),
+        text          : req.body.durabilityProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Durability",
         ideaSeed      : thisIdea.id
@@ -865,8 +917,12 @@ router.post('/durability', function(req, res) {
         });
       }
       if(req.body.durabilityProblem){
+        req.body.durabilityProblem = req.body.durabilityProblem.slice(15);
+        if(req.body.durabilityProblem.charAt(req.body.durabilityProblem.length-1) == "."){
+          req.body.durabilityProblem = req.body.durabilityProblem.slice(-1);
+        }
         var newProblem = {
-          text          : req.body.durabilityProblem.slice(15),
+          text          : req.body.durabilityProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Durability",
           ideaSeed      : thisIdea.id
@@ -948,8 +1004,12 @@ router.post('/imageability', function(req, res) {
       thisIdea.imageOne = req.body.imageSliderOneValue;
     }
     if(req.body.imageProblem){
+      req.body.imageProblem = req.body.imageProblem.slice(15);
+      if(req.body.imageProblem.charAt(req.body.imageProblem.length-1) == "."){
+        req.body.imageProblem = req.body.imageProblem.slice(-1);
+      }
       var newProblem = {
-        text          : req.body.imageProblem.slice(15),
+        text          : req.body.imageProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Imageability",
         ideaSeed      : thisIdea.id
@@ -989,8 +1049,12 @@ router.post('/imageability', function(req, res) {
         });
       }
       if(req.body.imageProblem){
+        req.body.imageProblem = req.body.imageProblem.slice(15);
+        if(req.body.imageProblem.charAt(req.body.imageProblem.length-1) == "."){
+          req.body.imageProblem = req.body.imageProblem.slice(-1);
+        }
         var newProblem = {
-          text          : req.body.imageProblem.slice(15),
+          text          : req.body.imageProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Imageability",
           ideaSeed      : thisIdea.id
@@ -1072,8 +1136,12 @@ router.post('/complexity', function(req, res) {
       thisIdea.complexOne = req.body.complexSliderOneValue;
     }
     if(req.body.complexProblem){
+      req.body.complexProblem = req.body.complexProblem.slice(15);
+      if(req.body.complexProblem.charAt(req.body.complexProblem.length-1) == "."){
+        req.body.complexProblem = req.body.complexProblem.slice(-1);
+      }
       var newProblem = {
-        text          : req.body.complexProblem.slice(15),
+        text          : req.body.complexProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Complexity",
         ideaSeed      : thisIdea.id
@@ -1113,8 +1181,12 @@ router.post('/complexity', function(req, res) {
         });
       }
       if(req.body.complexProblem){
+        req.body.complexProblem = req.body.complexProblem.slice(15);
+        if(req.body.complexProblem.charAt(req.body.complexProblem.length-1) == "."){
+          req.body.complexProblem = req.body.complexProblem.slice(-1);
+        }
         var newProblem = {
-          text          : req.body.complexProblem.slice(15),
+          text          : req.body.complexProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Complexity",
           ideaSeed      : thisIdea.id
@@ -1196,8 +1268,12 @@ router.post('/precision', function(req, res) {
       thisIdea.precisionOne = req.body.precisionSliderOneValue;
     }
     if(req.body.precisionProblem){
+      req.body.precisionProblem = req.body.precisionProblem.slice(15);
+      if(req.body.precisionProblem.charAt(req.body.precisionProblem.length-1) == "."){
+        req.body.precisionProblem = req.body.precisionProblem.slice(-1);
+      }
       var newProblem = {
-        text          : req.body.precisionProblem.slice(15),
+        text          : req.body.precisionProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Precision",
         ideaSeed      : thisIdea.id
@@ -1237,8 +1313,12 @@ router.post('/precision', function(req, res) {
         });
       }
       if(req.body.precisionProblem){
+        req.body.precisionProblem = req.body.precisionProblem.slice(15);
+        if(req.body.precisionProblem.charAt(req.body.precisionProblem.length-1) == "."){
+          req.body.precisionProblem = req.body.precisionProblem.slice(-1);
+        }
         var newProblem = {
-          text          : req.body.precisionProblem.slice(15),
+          text          : req.body.precisionProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Precision",
           ideaSeed      : thisIdea.id
@@ -1319,8 +1399,12 @@ router.post('/variability', function(req, res) {
       thisIdea.variabilityOne = req.body.variabilitySliderOneValue;
     }
     if(req.body.variabilityProblem){
+      req.body.variabilityProblem = req.body.variabilityProblem.slice(15);
+      if(req.body.variabilityProblem.charAt(req.body.variabilityProblem.length-1) == "."){
+        req.body.variabilityProblem = req.body.variabilityProblem.slice(-1);
+      }
       var newProblem = {
-        text          : req.body.variabilityProblem.slice(15),
+        text          : req.body.variabilityProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Variability",
         ideaSeed      : thisIdea.id
@@ -1360,8 +1444,12 @@ router.post('/variability', function(req, res) {
         });
       }
       if(req.body.variabilityProblem){
+        req.body.variabilityProblem = req.body.variabilityProblem.slice(15);
+        if(req.body.variabilityProblem.charAt(req.body.variabilityProblem.length-1) == "."){
+          req.body.variabilityProblem = req.body.variabilityProblem.slice(-1);
+        }
         var newProblem = {
-          text          : req.body.variabilityProblem.slice(15),
+          text          : req.body.variabilityProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Variability",
           ideaSeed      : thisIdea.id
@@ -1442,8 +1530,12 @@ router.post('/sensitivity', function(req, res) {
       thisIdea.sensitivityOne = req.body.sensitivitySliderOneValue;
     }
     if(req.body.sensitivityProblem){
+      req.body.sensitivityProblem = req.body.sensitivityProblem.slice(15);
+      if(req.body.sensitivityProblem.charAt(req.body.sensitivityProblem.length-1) == "."){
+        req.body.sensitivityProblem = req.body.sensitivityProblem.slice(-1);
+      }
       var newProblem = {
-        text          : req.body.sensitivityProblem.slice(15),
+        text          : req.body.sensitivityProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Sensitivity",
         ideaSeed      : thisIdea.id
@@ -1483,8 +1575,12 @@ router.post('/sensitivity', function(req, res) {
         });
       }
       if(req.body.sensitivityProblem){
+        req.body.sensitivityProblem = req.body.sensitivityProblem.slice(15);
+        if(req.body.sensitivityProblem.charAt(req.body.sensitivityProblem.length-1) == "."){
+          req.body.sensitivityProblem = req.body.sensitivityProblem.slice(-1);
+        }
         var newProblem = {
-          text          : req.body.sensitivityProblem.slice(15),
+          text          : req.body.sensitivityProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Sensitivity",
           ideaSeed      : thisIdea.id
@@ -1565,8 +1661,12 @@ router.post('/immaturity', function(req, res) {
       thisIdea.immatureOne = req.body.immatureSliderOneValue;
     }
     if(req.body.immatureProblem){
+      req.body.immatureProblem = req.body.immatureProblem.slice(15);
+      if(req.body.immatureProblem.charAt(req.body.immatureProblem.length-1) == "."){
+        req.body.immatureProblem = req.body.immatureProblem.slice(-1);
+      }
       var newProblem = {
-        text          : req.body.immatureProblem.slice(15),
+        text          : req.body.immatureProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Immaturity",
         ideaSeed      : thisIdea.id
@@ -1606,8 +1706,12 @@ router.post('/immaturity', function(req, res) {
         });
       }
       if(req.body.immatureProblem){
+        req.body.immatureProblem = req.body.immatureProblem.slice(15);
+        if(req.body.immatureProblem.charAt(req.body.immatureProblem.length-1) == "."){
+          req.body.immatureProblem = req.body.immatureProblem.slice(-1);
+        }
         var newProblem = {
-          text          : req.body.immatureProblem.slice(15),
+          text          : req.body.immatureProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Immaturity",
           ideaSeed      : thisIdea.id
@@ -1688,8 +1792,12 @@ router.post('/dangerous', function(req, res) {
       thisIdea.dangerOne = req.body.dangerSliderOneValue;
     }
     if(req.body.dangerProblem){
+      req.body.dangerProblem = req.body.dangerProblem.slice(15);
+      if(req.body.dangerProblem.charAt(req.body.dangerProblem.length-1) == "."){
+        req.body.dangerProblem = req.body.dangerProblem.slice(-1);
+      }
       var newProblem = {
-        text          : req.body.dangerProblem.slice(15),
+        text          : req.body.dangerProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Danger",
         ideaSeed      : thisIdea.id
@@ -1729,8 +1837,12 @@ router.post('/dangerous', function(req, res) {
         });
       }
       if(req.body.dangerProblem){
+        req.body.dangerProblem = req.body.dangerProblem.slice(15);
+        if(req.body.dangerProblem.charAt(req.body.dangerProblem.length-1) == "."){
+          req.body.dangerProblem = req.body.dangerProblem.slice(-1);
+        }
         var newProblem = {
-          text          : req.body.dangerProblem.slice(15),
+          text          : req.body.dangerProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Danger",
           ideaSeed      : thisIdea.id
@@ -1811,8 +1923,12 @@ router.post('/skills', function(req, res) {
       thisIdea.skillsOne = req.body.skillsSliderOneValue;
     }
     if(req.body.skillsProblem){
+      req.body.skillsProblem = req.body.skillsProblem.slice(15);
+      if(req.body.skillsProblem.charAt(req.body.skillsProblem.length-1) == "."){
+        req.body.skillsProblem = req.body.skillsProblem.slice(-1);
+      }
       var newProblem = {
-        text          : req.body.skillsProblem.slice(15),
+        text          : req.body.skillsProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Skills",
         ideaSeed      : thisIdea.id
@@ -1852,8 +1968,12 @@ router.post('/skills', function(req, res) {
         });
       }
       if(req.body.skillsProblem){
+        req.body.skillsProblem = req.body.skillsProblem.slice(15);
+        if(req.body.skillsProblem.charAt(req.body.skillsProblem.length-1) == "."){
+          req.body.skillsProblem = req.body.skillsProblem.slice(-1);
+        }
         var newProblem = {
-          text          : req.body.skillsProblem.slice(15),
+          text          : req.body.skillsProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Skills",
           ideaSeed      : thisIdea.id

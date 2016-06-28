@@ -6,6 +6,7 @@ var ObjectId = mongoose.Schema.Types.ObjectId;
 var aws = require('aws-sdk');
 var env = require('node-env-file');
 var IdeaImage = require('../models/ideaImage');
+var Aptitude = require('../models/aptitude');
 var IdeaReview = require('../models/ideaReviews');
 var IdeaSeed = require('../models/ideaSeed');
 var Component = require('../models/component');
@@ -162,6 +163,9 @@ router.get('/begin', function(req, res) {
         });
 
 
+        Aptitude.find({"id" : {$in : req.user.aptitudes}}, function(err, myAptitudes){
+
+
         IdeaImage.findById(req.user.headshots[0], function(err, headshot){
           if(headshot){
             var headshotURL = headshot["amazonURL"];
@@ -187,6 +191,7 @@ router.get('/begin', function(req, res) {
                               reviewNames : reviewNames,
                               headshot : headshotURL,
                               user : req.user,
+                              myAptitudes : myAptitudes,
                               mySchoolNetwork : mySchoolNetwork,
                               myLocationNetwork : myLocationNetwork,
                               myCompanyNetwork : myCompanyNetwork,
@@ -208,6 +213,7 @@ router.get('/begin', function(req, res) {
                           if(j == req.user.ideaSeeds.length){
                             return res.render('pages/begin', {
                               reviewNames : reviewNames,
+                              myAptitudes : myAptitudes,
                               headshot : headshotURL,
                               mySchoolNetwork : mySchoolNetwork,
                               myLocationNetwork : myLocationNetwork,
@@ -226,6 +232,7 @@ router.get('/begin', function(req, res) {
           else {
             return res.render('pages/begin', {
               user : req.user,
+              myAptitudes : myAptitudes,
               headshot : headshotURL,
               mySchoolNetwork : mySchoolNetwork,
               myLocationNetwork : myLocationNetwork,
@@ -234,6 +241,7 @@ router.get('/begin', function(req, res) {
             });
           }
         });
+      }); //end of the aptitude query
       });
     } else {
       res.redirect('/');
@@ -1888,6 +1896,10 @@ router.post('/save-component', function(req, res) {
 
     req.body.component = req.body.component.slice(16); //get rid of "the solution of "
 
+    if(req.body.component.charAt(req.body.component.length-1) == "."){
+      req.body.component = req.body.component.slice(-1);
+    }
+
     Component.findOne({"text" : req.body.component}, function(err, component){
       if(err){
         res.json({error: err});
@@ -1948,6 +1960,11 @@ router.post('/edit-component', function(req, res) {
       if(component){
         component.text = req.body.newTitle.slice(16);
 
+        if(component.text.charAt(component.text.length-1) == "."){
+          component.text = component.text.slice(-1);
+        }
+
+        req.body.newTitle = component.text;
         component.save(function(err){
           res.json(req.body);
         });
@@ -2071,6 +2088,47 @@ router.post('/save-location-network', function(req, res) {
       }
   });
 });
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for saving a new aptitude
+******************************************************************
+******************************************************************
+*****************************************************************/
+
+router.post('/save-aptitude', function(req, res) {
+  
+  var aptitudeTitle = req.body.aptitudeTitle;
+  Aptitude.find({"title" : aptitudeTitle}, function(err, existingAptitudes){
+    if(err){
+      res.json({error: err})
+    }
+
+    if(existingAptitudes.length > 0){
+      Account.findById( req.user.id,
+        function (err, account) {
+          account.aptitudes.push(existingAptitudes[0].id); //use the first existing record
+          account.save(function (err) {});
+      });
+      res.sendStatus(200);
+    } else {
+      var newAptitude = new Aptitude({
+        title : aptitudeTitle,
+        identifier : "aptitude-"+Date.now()
+      });
+      newAptitude.save(function(err, newSavedAptitude){
+        Account.findById( req.user.id,
+          function (err, account) {
+            account.aptitudes.push(newSavedAptitude.id);
+            account.save(function (err) {});
+        });
+      });
+      res.sendStatus(200);
+    }
+  });
+});
+
 
 
 /*****************************************************************

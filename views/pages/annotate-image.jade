@@ -113,6 +113,9 @@ html
     
     $('canvas').click(function(e){
 
+        if($("#componentName").val() != "The solution of "){
+          $("#componentName").val("The solution of ");
+        }
         firstClickX = e.offsetX;
         firstClickY = e.offsetY;
 

@@ -3,11 +3,11 @@ var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 var ObjectId = mongoose.Schema.Types.ObjectId;
 
-var Network = new Schema({
-	name : String,
-	type : String //either school, company, or city/state
+var Aptitude = new Schema({
+	title : String,
+	identifier : String //either school, company, or city/state
 });
 
 
 
-module.exports = mongoose.model('Network', Network);
+module.exports = mongoose.model('Aptitude', Aptitude);

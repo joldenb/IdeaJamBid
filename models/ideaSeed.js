@@ -193,7 +193,10 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 						if(i < problems.length - 1){
 							pObj.addText ( problems[i].text.toLowerCase() + ', ', { font_size : 14 } );
 						} else {
-							pObj.addText ( + "and " + problems[i].text.toLowerCase() + '. ', { font_size : 14 } );
+							if(problems.length > 1){
+								pObj.addText ("and ", { font_size : 14 });
+							}
+							pObj.addText (problems[i].text.toLowerCase() + '. ', { font_size : 14 } );
 						}
 					}
 
@@ -227,7 +230,10 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 					for(i=0; i < comps.length; i++){
 						if(comps[i].problemID && comps[i].descriptions.length > 0){
 							pObj.addText( '(' + (i+1) +'.) ', { font_size : 14 } );
-							pObj.addText( comps[i].descriptions[0].toLowerCase() + ', ', { font_size : 14 } );
+							pObj.addText( comps[i].descriptions[0].toLowerCase() , { font_size : 14 } );
+						}
+						if(i != (comps.length-1) ) {
+							pObj.addText(', ', { font_size : 14 } );
 						}
 					}
 					pObj.addText('.', {font_size : 14});

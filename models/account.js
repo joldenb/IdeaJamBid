@@ -11,6 +11,7 @@ var Account = new Schema({
     rupees			: {type: Number, default:0},
     ideaSeeds		: [IdeaSeed],
     headshots		: [ObjectId], //whatever's first on the list is the main picture
+    aptitudes       : [ObjectId],
     networks		: {
 			school : ObjectId,
 			company : ObjectId,

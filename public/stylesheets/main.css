@@ -94,15 +94,23 @@ h1, h2, h3, h4, p {
 div#begin-info {
   width:20%;
   display:inline-block;
-  text-align: center
+  text-align: center;
+  vertical-align: top;
 }
 
 div#begin-info-right {
-  width:50%;
+  width:30%;
   text-align:left;
+  vertical-align: top;
   display:inline-block;
 }
 
+div#begin-info-aptitudes {
+  width:30%;
+  text-align:left;
+  vertical-align: top;
+  display:inline-block;
+}
  div#begin-info-right button {
   margin:.3em 0;
 }

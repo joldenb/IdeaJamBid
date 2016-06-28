@@ -26,19 +26,32 @@ html
     div#begin-info-right
       .profileSchool
         if mySchoolNetwork
-          h4 My School : #{mySchoolNetwork} #[a(href="#" id="schoolModalButton" data-toggle="modal" data-target="#schoolModal") Edit]
+          h4 My School :  #[a(href="#" id="schoolModalButton" data-toggle="modal" data-target="#schoolModal") #{mySchoolNetwork}]
         else
           button(type="button" id="schoolModalButton"  class="btn btn-default" data-toggle="modal" data-target="#schoolModal") Add your School
       .profileCompany
         if myCompanyNetwork
-          h4 My Company : #{myCompanyNetwork} #[a(href="#" id="companyModalButton" data-toggle="modal" data-target="#companyModal") Edit]
+          h4 My Company :  #[a(href="#" id="companyModalButton" data-toggle="modal" data-target="#companyModal") #{myCompanyNetwork}]
         else
           button(type="button" id="companyModalButton"  class="btn btn-default" data-toggle="modal" data-target="#companyModal") Add your Company
       .profileLocation
         if myLocationNetwork
-          h4 My Location : #{myLocationNetwork} #[a(href="#" id="locationModalButton" data-toggle="modal" data-target="#companyModal") Edit]
+          h4 My Location : #[a(href="#" id="locationModalButton" data-toggle="modal" data-target="#companyModal") #{myLocationNetwork}]
         else
           button(type="button" id="locationModalButton" class="btn btn-default" ) Add your Location
+    div#begin-info-aptitudes
+      .profileAptitudes
+        if myAptitudes
+          h3 My aptitudes : 
+          ul
+            each aptitude in myAptitudes
+              li(data-apt-id="#{aptitude.identifier}") #{aptitude.title}
+        form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
+          .form-group
+            |  
+            input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
+          .modal-footer
+            button.btn.btn-success#aptitudeSubmit(type='submit') Save
         
 
 
@@ -126,6 +139,28 @@ html
       jQuery.get("/clear-session-idea", function(data){
         var stop;
       });
+
+
+      $.getJSON("/university-majors.json", function(data){
+        var majorName, words = [];
+        var majorsArray = _.map(data, function(object){
+           majorName = object['Major']
+           words = majorName.toLowerCase().split(' ');;
+            for(var i = 0; i < words.length; i++){
+              words[i] = words[i].split('');
+              words[i][0] = words[i][0].toUpperCase(); 
+              words[i] = words[i].join('');
+            }
+            return words.join(' ');
+        });
+
+        $("#aptitudeTitle").autocomplete({
+          source : majorsArray,
+          appendTo : "#saveAptitude .form-group"
+        });
+      });
+
+
     });
 
     $("#schoolModal").on('shown.bs.modal', function(){
@@ -193,6 +228,17 @@ html
         {
           locationCity : $("select.locationCity option:selected").text(),
           locationState : $("#locationState option:selected").text(),
+        },
+        function(resp) {
+          window.location.reload(true);
+        });      
+    });
+
+    $("#aptitudeSubmit").click(function(event){
+      event.preventDefault();
+      $.post('/save-aptitude', 
+        {
+          aptitudeTitle : $("#aptitudeTitle").val(),
         },
         function(resp) {
           window.location.reload(true);
