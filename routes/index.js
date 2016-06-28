@@ -163,7 +163,7 @@ router.get('/begin', function(req, res) {
         });
 
 
-        Aptitude.find({"id" : {$in : req.user.aptitudes}}, function(err, myAptitudes){
+        Aptitude.find({"_id" : {$in : req.user.aptitudes}}, function(err, myAptitudes){
 
 
         IdeaImage.findById(req.user.headshots[0], function(err, headshot){
@@ -2111,6 +2111,7 @@ router.post('/save-aptitude', function(req, res) {
           account.aptitudes.push(existingAptitudes[0].id); //use the first existing record
           account.save(function (err) {});
       });
+      console.log
       res.sendStatus(200);
     } else {
       var newAptitude = new Aptitude({
