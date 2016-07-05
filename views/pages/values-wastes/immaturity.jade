@@ -3,23 +3,7 @@ html
   head
     include ../../partials/head.jade
   body
-  .header
-    span.userName Howdy #{user.username}
-    |  
-    .profile-headshot
-      if headshot
-        img.placeholder(src=headshot height="75" width="75")
-        a.plus-overlay(href="/profile-picture")
-          img(src='/plus-overlay.png' height="75" width="75")
-      else  
-        img.placeholder(src="/avatar.png" height="75" width="75")
-        a.plus-overlay(href="/profile-picture")
-          img(src='/plus-overlay.png' height="75" width="75")
-    a.home-logout.btn.btn-default( href="/begin" ) My Profile
-    | 
-    a.home-logout.btn.btn-default( href="/logout" ) Log Out
-
-  .container.scoreIdea
+  div.scoreIdea(class='modalContainer')
     h1 Immaturity
     h4 
       | Will the design, manufacture, or production of #{idea.name} involve new or unproven technology, processes or materials?
@@ -42,56 +26,10 @@ html
       textarea.form-control(rows='6', cols="75", name="immatureProblem")
         | The problem of 
       br
-      if reviewing
-        a(href="/contributor-idea-summary").btn.btn-info View All
-      else
-        a(href="/idea-summary").btn.btn-info View All
-      |  
-      |  
-      button.btn.btn-success Continue >
-      br
-      br
       h3 Einstein Points: #{user.einsteinPoints}
 
   include ../../partials/js-includes.jade
   script(type="text/javascript").
-    var labelArr = _.range(101).map(function(number){
-      return number.toString();
-    });
-    var initialValue, min=1, max=100, valueEntered = false;
-    initialValue = '#{idea.immatureOne}' || 50;
-
-    ////////////////////////////////////////////
-    // SET UP SLIDER ONE
-    ////////////////////////////////////////////
-    $("#immaturitySliderOne").slider({
-      value:initialValue,
-      min: min,
-      max: max,
-      step: 1,
-      slide: function( event, ui ) {
-          valueEntered = true;
-          $("#immaturityLabelOne").text(labelArr[ui.value]);
-          $("#immaturityLabelOne").css("margin-left", (ui.value-min)/(max-min)*100+"%");
-          $("#immaturityLabelOne").css("left", "-50px");
-      }
-    });
-    $("#immaturityLabelOne").text(labelArr[initialValue]);
-    $("#immaturityLabelOne" ).css("margin-left", (initialValue -1)/(max-min)*100+"%");
-    $("#immaturityLabelOne").css("left", "-50px");
-
-    $("button.btn-success").click(function(event){
-      if(valueEntered){
-        var sliderOneValue = $("#immaturitySliderOne").slider("value");
-        var inputOne = $("<input>")
-                 .attr("type", "hidden")
-                 .attr("name", "immatureSliderOneValue").val(sliderOneValue);
-        $('#formImmaturity').append($(inputOne)).submit();
-      } else {
-        $('#formImmaturity').submit();
-      }
-    });
-
     var input = document.getElementsByTagName ("textarea");
 
     // This is for the main solution text input

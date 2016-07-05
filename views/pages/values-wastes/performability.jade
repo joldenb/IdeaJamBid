@@ -3,94 +3,33 @@ html
   head
     include ../../partials/head.jade
   body
-  .header
-    span.userName Howdy #{user.username}
-    |  
-    .profile-headshot
-      if headshot
-        img.placeholder(src=headshot height="75" width="75")
-        a.plus-overlay(href="/profile-picture")
-          img(src='/plus-overlay.png' height="75" width="75")
-      else  
-        img.placeholder(src="/avatar.png" height="75" width="75")
-        a.plus-overlay(href="/profile-picture")
-          img(src='/plus-overlay.png' height="75" width="75")
-    a.home-logout.btn.btn-default( href="/begin" ) My Profile
-    | 
-    a.home-logout.btn.btn-default( href="/logout" ) Log Out
-
-  form(role='form', id="formPerformability" action="/performability", method="post", style='max-width: 700px;', data-idea-doc=idea)
-    .container.scoreIdea
-    h1 Performability
-    h4
-      | Will #{idea.name}, as it is, perform to solve the [user-entered challenge] in an effective way?
-    br
-    .slider-container
-      .slider-end-labels
-        span.no-way Low Performability
-        span.yes-way High Performability
-      #perfLabelOne.sliderLabel
-      #perfSliderOne(name="perfSliderOne")
-    br
-    h4 Recorded problems for Performability:
-    ul.waste-value-problem-list
-      each problem, index in problems
-        li
-          h4 #{index + 1} : #{problem.text}
-    br
-    h4 Add a new performability problem:
-    textarea.form-control(rows='6', cols="75", name="performProblem")
-        | The problem of 
-    br
-    if reviewing
-      a(href="/contributor-idea-summary").btn.btn-info View All
-    else
-      a(href="/idea-summary").btn.btn-info View All
-    |  
-    |  
-    button.btn.btn-success Continue >
-    br
-    br
-    h3 Einstein Points: #{user.einsteinPoints}
+  div.scoreIdea(class='modalContainer')
+    form(role='form', id="formPerformability" action="/performability", method="post", style='max-width: 700px;', data-idea-doc=idea)
+      h1 Performability
+      h4
+        | Will #{idea.name}, as it is, perform to solve the [user-entered challenge] in an effective way?
+      br
+      .slider-container
+        .slider-end-labels
+          span.no-way Low Performability
+          span.yes-way High Performability
+        #perfLabelOne.sliderLabel
+        #perfSliderOne(name="perfSliderOne")
+      br
+      h4 Recorded problems for Performability:
+      ul.waste-value-problem-list
+        each problem, index in problems
+          li
+            h4 #{index + 1} : #{problem.text}
+      br
+      h4 Add a new performability problem:
+      textarea.form-control(rows='6', cols="75", name="performProblem")
+          | The problem of 
+      br
+      h3 Einstein Points: #{user.einsteinPoints}
 
   include ../../partials/js-includes.jade
   script(type="text/javascript").
-    var labelArr = _.range(101).map(function(number){
-      return number.toString();
-    });
-    var initialValue, min=1, max=100, valueEntered = false;
-    initialValue = '#{idea.performOne}' || 50;
-
-    ////////////////////////////////////////////
-    // SET UP SLIDER ONE
-    ////////////////////////////////////////////
-    $("#perfSliderOne").slider({
-      value:initialValue,
-      min: min,
-      max: max,
-      step: 1,
-      slide: function( event, ui ) {
-          valueEntered = true;
-          $("#perfLabelOne").text(labelArr[ui.value]);
-          $("#perfLabelOne").css("margin-left", (ui.value-min)/(max-min)*100+"%");
-          $("#perfLabelOne").css("left", "-50px");
-      }
-    });
-    $("#perfLabelOne").text(labelArr[initialValue]);
-    $("#perfLabelOne" ).css("margin-left", (initialValue -1)/(max-min)*100+"%");
-    $("#perfLabelOne").css("left", "-50px");
-
-    $("button.btn-success").click(function(event){
-      if(valueEntered){
-        var sliderOneValue = $("#perfSliderOne").slider("value");
-        var inputOne = $("<input>")
-                 .attr("type", "hidden")
-                 .attr("name", "perfSliderOneValue").val(sliderOneValue);
-        $('#formPerformability').append($(inputOne)).submit();
-      } else {
-        $('#formPerformability').submit();
-      }
-    });
 
     var input = document.getElementsByTagName ("textarea");
 

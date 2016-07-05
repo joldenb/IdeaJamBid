@@ -49,32 +49,32 @@ router.get('/performability', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-    if(headshot){
-      var headshotURL = headshot["amazonURL"];
-    }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
-      if(req.session.ideaReview){ var reviewing = true; }
-      else { var reviewing = false; }
-
       IdeaProblem.find({ "ideaSeed" : currentIdea._id,
-        'problemArea' : { 
+        'problemArea' : {
           $regex: /.*Performability.*/, $options: 'i' }},
         function (err, problems){
-        res.render('pages/values-wastes/performability', {
-          user : req.user, idea : currentIdea,
-          problems : problems,
-          headshot : headshotURL,
-          reviewing :  reviewing});
+        if(req.session.ideaReview){
+          var reviewing = true;
+          res.render('pages/values-wastes/performability', {
+            user : req.user, idea : currentIdea,
+            problems : problems,
+            reviewing :  reviewing
+          });
+        } else {
+          var reviewing = false;
+          res.render('pages/values-wastes/performability', {
+            user : req.user, idea : currentIdea,
+            problems : problems,
+            reviewing :  reviewing
+          });
+        }
       });
     });
-  });
 });
 
 router.post('/performability', function(req, res) {
-  
-
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
   // this is if the inventor is the same as the session user
   // enters info into the ideaSeed model vs the ideaReview model
@@ -118,6 +118,7 @@ router.post('/performability', function(req, res) {
           account.einsteinPoints = account.einsteinPoints + 10;
         }
         account.save(function (err) {
+          res.redirect('/affordability');
         });
     });
   } else {
@@ -163,12 +164,13 @@ router.post('/performability', function(req, res) {
             account.einsteinPoints = account.einsteinPoints + 10;
           }
           account.save(function (err) {
+            res.redirect('/affordability');
           });
       });
     }
   }
   });
-  res.redirect('/affordability');
+  
 });
 
 
@@ -181,10 +183,6 @@ router.get('/affordability', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-    if(headshot){
-      var headshotURL = headshot["amazonURL"];
-    }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
       if(req.session.ideaReview){ var reviewing = true; }
@@ -195,12 +193,10 @@ router.get('/affordability', function(req, res) {
         function (err, problems){
         res.render('pages/values-wastes/affordability', { user : req.user,
           idea : currentIdea,
-          headshot : headshotURL,
           problems : problems,
           reviewing : reviewing });
       });
     });
-  });
 });
 
 router.post('/affordability', function(req, res) {
@@ -247,6 +243,7 @@ router.post('/affordability', function(req, res) {
           account.einsteinPoints = account.einsteinPoints + 10;
         }
         account.save(function (err) {
+            res.redirect('/featurability');
         });
     });
   } else {
@@ -292,6 +289,7 @@ router.post('/affordability', function(req, res) {
             account.einsteinPoints = account.einsteinPoints + 10;
           }
           account.save(function (err) {
+            res.redirect('/featurability');
           });
       });
 
@@ -301,7 +299,7 @@ router.post('/affordability', function(req, res) {
 
 
 
-  res.redirect('/featurability');
+  
 });
 
 ////////////////////////////////////////////////
@@ -312,10 +310,6 @@ router.get('/featurability', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-    if(headshot){
-      var headshotURL = headshot["amazonURL"];
-    }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
       if(req.session.ideaReview){ var reviewing = true; }
@@ -326,12 +320,10 @@ router.get('/featurability', function(req, res) {
         function (err, problems){
         res.render('pages/values-wastes/featurability', { user : req.user,
           idea : currentIdea,
-          headshot : headshotURL,
           problems : problems,
           reviewing : reviewing });
       });
     });
-  });
 });
 
 router.post('/featurability', function(req, res) {
@@ -378,6 +370,7 @@ router.post('/featurability', function(req, res) {
           account.einsteinPoints = account.einsteinPoints + 10;
         }
         account.save(function (err) {
+          res.redirect('/deliverability');
         });
     });
   } else {
@@ -423,6 +416,7 @@ router.post('/featurability', function(req, res) {
             account.einsteinPoints = account.einsteinPoints + 10;
           }
           account.save(function (err) {
+            res.redirect('/deliverability');
           });
       });
     }
@@ -431,7 +425,6 @@ router.post('/featurability', function(req, res) {
 
 
 
-  res.redirect('/deliverability');
 });
 
 ////////////////////////////////////////////////
@@ -442,10 +435,6 @@ router.get('/deliverability', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-    if(headshot){
-      var headshotURL = headshot["amazonURL"];
-    }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
       if(req.session.ideaReview){ var reviewing = true; }
@@ -456,12 +445,10 @@ router.get('/deliverability', function(req, res) {
         function (err, problems){
         res.render('pages/values-wastes/deliverability', { user : req.user,
           idea : currentIdea,
-          headshot : headshotURL,
           problems : problems,
           reviewing : reviewing });
       });
     });
-  });
 });
 
 router.post('/deliverability', function(req, res) {
@@ -508,6 +495,7 @@ router.post('/deliverability', function(req, res) {
           account.einsteinPoints = account.einsteinPoints + 10;
         }
         account.save(function (err) {
+          res.redirect('/useability');
         });
     });
   } else {
@@ -553,6 +541,7 @@ router.post('/deliverability', function(req, res) {
             account.einsteinPoints = account.einsteinPoints + 10;
           }
           account.save(function (err) {
+            res.redirect('/useability');
           });
       });
 
@@ -562,7 +551,7 @@ router.post('/deliverability', function(req, res) {
 
 
 
-  res.redirect('/useability');
+  
 });
 
 ////////////////////////////////////////////////
@@ -573,10 +562,6 @@ router.get('/useability', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-    if(headshot){
-      var headshotURL = headshot["amazonURL"];
-    }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
       if(req.session.ideaReview){ var reviewing = true; }
@@ -587,12 +572,10 @@ router.get('/useability', function(req, res) {
         function (err, problems){
         res.render('pages/values-wastes/useability', { user : req.user,
           idea : currentIdea,
-          headshot : headshotURL,
           problems : problems,
           reviewing : reviewing });
       });
     });
-  });
 });
 
 router.post('/useability', function(req, res) {
@@ -641,6 +624,7 @@ router.post('/useability', function(req, res) {
           account.einsteinPoints = account.einsteinPoints + 10;
         }
         account.save(function (err) {
+          res.redirect('/maintainability');
         });
       });
 
@@ -687,6 +671,7 @@ router.post('/useability', function(req, res) {
             account.einsteinPoints = account.einsteinPoints + 10;
           }
           account.save(function (err) {
+            res.redirect('/maintainability');
           });
       });
 
@@ -696,7 +681,7 @@ router.post('/useability', function(req, res) {
 
 
 
-  res.redirect('/maintainability');
+  
 });
 
 ////////////////////////////////////////////////
@@ -707,10 +692,6 @@ router.get('/maintainability', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-    if(headshot){
-      var headshotURL = headshot["amazonURL"];
-    }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
       if(req.session.ideaReview){ var reviewing = true; }
@@ -721,12 +702,10 @@ router.get('/maintainability', function(req, res) {
         function (err, problems){
         res.render('pages/values-wastes/maintainability', { user : req.user,
           idea : currentIdea,
-          headshot : headshotURL,
           problems : problems,
           reviewing : reviewing });
       });
     });
-  });
 });
 
 router.post('/maintainability', function(req, res) {
@@ -736,8 +715,8 @@ router.post('/maintainability', function(req, res) {
   // this is if the inventor is the same as the session user
   // enters info into the ideaSeed model vs the ideaReview model
   if(thisIdea.inventorName == req.user.username){
-    if(req.body.maintainSliderOneValue){
-      thisIdea.maintainOne = req.body.maintainSliderOneValue;
+    if(req.body.maintainabilitySliderOneValue){
+      thisIdea.maintainOne = req.body.maintainabilitySliderOneValue;
     }
     if(req.body.maintainProblem){
       req.body.maintainProblem = req.body.maintainProblem.slice(15);
@@ -767,19 +746,20 @@ router.post('/maintainability', function(req, res) {
     }
     Account.findById( req.user.id,
       function (err, account) {
-        if(req.body.maintainSliderOneValue){
+        if(req.body.maintainabilitySliderOneValue){
           account.einsteinPoints = account.einsteinPoints + 5;
         }
         if(req.body.maintainProblem){
           account.einsteinPoints = account.einsteinPoints + 10;
         }
         account.save(function (err) {
+          res.redirect('/durability');
         });
     });
   } else {
     if(req.session.ideaReview){
-      if(req.body.maintainSliderOneValue){
-        IdeaReview.update({_id : req.session.ideaReview}, {maintainOne : req.body.maintainSliderOneValue},
+      if(req.body.maintainabilitySliderOneValue){
+        IdeaReview.update({_id : req.session.ideaReview}, {maintainOne : req.body.maintainabilitySliderOneValue},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
@@ -812,13 +792,14 @@ router.post('/maintainability', function(req, res) {
       }
       Account.findById( req.user.id,
         function (err, account) {
-          if(req.body.maintainSliderOneValue){
+          if(req.body.maintainabilitySliderOneValue){
             account.einsteinPoints = account.einsteinPoints + 5;
           }
           if(req.body.maintainProblem){
             account.einsteinPoints = account.einsteinPoints + 10;
           }
           account.save(function (err) {
+            res.redirect('/durability');
           });
       });
 
@@ -828,7 +809,7 @@ router.post('/maintainability', function(req, res) {
 
 
 
-  res.redirect('/durability');
+  
 });
 
 ////////////////////////////////////////////////
@@ -839,10 +820,6 @@ router.get('/durability', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-    if(headshot){
-      var headshotURL = headshot["amazonURL"];
-    }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
       if(req.session.ideaReview){ var reviewing = true; }
@@ -854,11 +831,9 @@ router.get('/durability', function(req, res) {
         res.render('pages/values-wastes/durability', { user : req.user,
           idea : currentIdea,
           problems : problems,
-          headshot : headshotURL,
           reviewing : reviewing });
       });
     });
-  });
 });
 
 router.post('/durability', function(req, res) {
@@ -906,6 +881,7 @@ router.post('/durability', function(req, res) {
           account.einsteinPoints = account.einsteinPoints + 10;
         }
         account.save(function (err) {
+          res.redirect('/imageability');
         });
     });
   } else {
@@ -951,6 +927,7 @@ router.post('/durability', function(req, res) {
             account.einsteinPoints = account.einsteinPoints + 10;
           }
           account.save(function (err) {
+            res.redirect('/imageability');
           });
       });
 
@@ -960,7 +937,7 @@ router.post('/durability', function(req, res) {
 
 
 
-  res.redirect('/imageability');
+  
 });
 
 ////////////////////////////////////////////////
@@ -971,10 +948,6 @@ router.get('/imageability', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-    if(headshot){
-      var headshotURL = headshot["amazonURL"];
-    }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
       if(req.session.ideaReview){ var reviewing = true; }
@@ -986,11 +959,9 @@ router.get('/imageability', function(req, res) {
         res.render('pages/values-wastes/imageability', { user : req.user,
           idea : currentIdea,
           problems : problems,
-          headshot : headshotURL,
           reviewing : reviewing });
       });
     });
-  });
 });
 
 router.post('/imageability', function(req, res) {
@@ -1000,8 +971,8 @@ router.post('/imageability', function(req, res) {
   // this is if the inventor is the same as the session user
   // enters info into the ideaSeed model vs the ideaReview model
   if(thisIdea.inventorName == req.user.username){
-    if(req.body.imageSliderOneValue){
-      thisIdea.imageOne = req.body.imageSliderOneValue;
+    if(req.body.imageabilitySliderOneValue){
+      thisIdea.imageOne = req.body.imageabilitySliderOneValue;
     }
     if(req.body.imageProblem){
       req.body.imageProblem = req.body.imageProblem.slice(15);
@@ -1031,19 +1002,20 @@ router.post('/imageability', function(req, res) {
     }
     Account.findById( req.user.id,
       function (err, account) {
-        if(req.body.imageSliderOneValue){
+        if(req.body.imageabilitySliderOneValue){
           account.einsteinPoints = account.einsteinPoints + 5;
         }
         if(req.body.imageProblem){
           account.einsteinPoints = account.einsteinPoints + 10;
         }
         account.save(function (err) {
+          res.redirect('/complexity');
         });
     });
   } else {
     if(req.session.ideaReview){
-      if(req.body.imageSliderOneValue){
-        IdeaReview.update({_id : req.session.ideaReview}, {imageOne : req.body.imageSliderOneValue},
+      if(req.body.imageabilitySliderOneValue){
+        IdeaReview.update({_id : req.session.ideaReview}, {imageOne : req.body.imageabilitySliderOneValue},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
@@ -1076,13 +1048,14 @@ router.post('/imageability', function(req, res) {
       }
       Account.findById( req.user.id,
         function (err, account) {
-          if(req.body.imageSliderOneValue){
+          if(req.body.imageabilitySliderOneValue){
             account.einsteinPoints = account.einsteinPoints + 5;
           }
           if(req.body.imageProblem){
             account.einsteinPoints = account.einsteinPoints + 10;
           }
           account.save(function (err) {
+            res.redirect('/complexity');
           });
       });
 
@@ -1092,7 +1065,7 @@ router.post('/imageability', function(req, res) {
 
 
 
-  res.redirect('/complexity');
+  
 });
 
 ////////////////////////////////////////////////
@@ -1103,10 +1076,6 @@ router.get('/complexity', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-    if(headshot){
-      var headshotURL = headshot["amazonURL"];
-    }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
       if(req.session.ideaReview){ var reviewing = true; }
@@ -1118,11 +1087,9 @@ router.get('/complexity', function(req, res) {
         res.render('pages/values-wastes/complexity', { user : req.user,
           idea : currentIdea,
           problems : problems,
-          headshot : headshotURL,
           reviewing : reviewing });
       });
     });
-  });
 });
 
 router.post('/complexity', function(req, res) {
@@ -1132,8 +1099,8 @@ router.post('/complexity', function(req, res) {
   // this is if the inventor is the same as the session user
   // enters info into the ideaSeed model vs the ideaReview model
   if(thisIdea.inventorName == req.user.username){
-    if(req.body.complexSliderOneValue){
-      thisIdea.complexOne = req.body.complexSliderOneValue;
+    if(req.body.complexitySliderOneValue){
+      thisIdea.complexOne = req.body.complexitySliderOneValue;
     }
     if(req.body.complexProblem){
       req.body.complexProblem = req.body.complexProblem.slice(15);
@@ -1163,19 +1130,20 @@ router.post('/complexity', function(req, res) {
     }
     Account.findById( req.user.id,
       function (err, account) {
-        if(req.body.complexSliderOneValue){
+        if(req.body.complexitySliderOneValue){
           account.einsteinPoints = account.einsteinPoints + 5;
         }
         if(req.body.complexProblem){
           account.einsteinPoints = account.einsteinPoints + 10;
         }
         account.save(function (err) {
+          res.redirect('/precision');
         });
     });
   } else {
     if(req.session.ideaReview){
-      if(req.body.complexSliderOneValue){
-        IdeaReview.update({_id : req.session.ideaReview}, {complexOne : req.body.complexSliderOneValue},
+      if(req.body.complexitySliderOneValue){
+        IdeaReview.update({_id : req.session.ideaReview}, {complexOne : req.body.complexitySliderOneValue},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
@@ -1208,13 +1176,14 @@ router.post('/complexity', function(req, res) {
       }
       Account.findById( req.user.id,
         function (err, account) {
-          if(req.body.complexSliderOneValue){
+          if(req.body.complexitySliderOneValue){
             account.einsteinPoints = account.einsteinPoints + 5;
           }
           if(req.body.complexProblem){
             account.einsteinPoints = account.einsteinPoints + 10;
           }
           account.save(function (err) {
+            res.redirect('/precision');
           });
       });
 
@@ -1224,7 +1193,7 @@ router.post('/complexity', function(req, res) {
 
 
 
-  res.redirect('/precision');
+  
 });
 
 ////////////////////////////////////////////////
@@ -1235,10 +1204,6 @@ router.get('/precision', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-    if(headshot){
-      var headshotURL = headshot["amazonURL"];
-    }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
       if(req.session.ideaReview){ var reviewing = true; }
@@ -1249,12 +1214,10 @@ router.get('/precision', function(req, res) {
         function (err, problems){
         res.render('pages/values-wastes/precision', { user : req.user,
           idea : currentIdea,
-          headshot : headshotURL,
           problems : problems,
           reviewing : reviewing });
       });
     });
-  });
 });
 
 router.post('/precision', function(req, res) {
@@ -1302,6 +1265,7 @@ router.post('/precision', function(req, res) {
           account.einsteinPoints = account.einsteinPoints + 10;
         }
         account.save(function (err) {
+          res.redirect('/variability');
         });
     });
   } else {
@@ -1347,6 +1311,7 @@ router.post('/precision', function(req, res) {
             account.einsteinPoints = account.einsteinPoints + 10;
           }
           account.save(function (err) {
+            res.redirect('/variability');
           });
       });
 
@@ -1356,7 +1321,7 @@ router.post('/precision', function(req, res) {
 
 
 
-  res.redirect('/variability');
+  
 });
 ////////////////////////////////////////////////
 // Variability
@@ -1366,10 +1331,6 @@ router.get('/variability', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-    if(headshot){
-      var headshotURL = headshot["amazonURL"];
-    }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
       if(req.session.ideaReview){ var reviewing = true; }
@@ -1381,11 +1342,9 @@ router.get('/variability', function(req, res) {
         res.render('pages/values-wastes/variability', { user : req.user,
           idea : currentIdea,
           problems : problems,
-          headshot : headshotURL,
           reviewing : reviewing });
       });
     });
-  });
 });
 
 router.post('/variability', function(req, res) {
@@ -1433,6 +1392,7 @@ router.post('/variability', function(req, res) {
           account.einsteinPoints = account.einsteinPoints + 10;
         }
         account.save(function (err) {
+          res.redirect('/sensitivity');
         });
     });
   } else {
@@ -1478,6 +1438,7 @@ router.post('/variability', function(req, res) {
             account.einsteinPoints = account.einsteinPoints + 10;
           }
           account.save(function (err) {
+            res.redirect('/sensitivity');
           });
       });
 
@@ -1487,7 +1448,7 @@ router.post('/variability', function(req, res) {
 
 
 
-  res.redirect('/sensitivity');
+  
 });
 ////////////////////////////////////////////////
 // Sensitivity
@@ -1497,10 +1458,6 @@ router.get('/sensitivity', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-    if(headshot){
-      var headshotURL = headshot["amazonURL"];
-    }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
       if(req.session.ideaReview){ var reviewing = true; }
@@ -1509,14 +1466,14 @@ router.get('/sensitivity', function(req, res) {
         'problemArea' : { 
           $regex: /.*Sensitivity.*/, $options: 'i' }},
         function (err, problems){
-        res.render('pages/values-wastes/sensitivity', { user : req.user,
+        res.render('pages/values-wastes/sensitivity', {
+          user : req.user,
           idea : currentIdea,
           problems : problems,
-          headshot : headshotURL,
-          reviewing : reviewing });
+          reviewing : reviewing
+        });
       });
     });
-  });
 });
 
 router.post('/sensitivity', function(req, res) {
@@ -1564,6 +1521,7 @@ router.post('/sensitivity', function(req, res) {
           account.einsteinPoints = account.einsteinPoints + 10;
         }
         account.save(function (err) {
+          res.redirect('/immaturity');
         });
     });
   } else {
@@ -1609,6 +1567,7 @@ router.post('/sensitivity', function(req, res) {
             account.einsteinPoints = account.einsteinPoints + 10;
           }
           account.save(function (err) {
+            res.redirect('/immaturity');
           });
       });
 
@@ -1618,7 +1577,7 @@ router.post('/sensitivity', function(req, res) {
 
 
 
-  res.redirect('/immaturity');
+  
 });
 ////////////////////////////////////////////////
 // Immaturity
@@ -1628,10 +1587,6 @@ router.get('/immaturity', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-    if(headshot){
-      var headshotURL = headshot["amazonURL"];
-    }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
       if(req.session.ideaReview){ var reviewing = true; }
@@ -1642,12 +1597,10 @@ router.get('/immaturity', function(req, res) {
         function (err, problems){
         res.render('pages/values-wastes/immaturity', { user : req.user,
           idea : currentIdea,
-          headshot : headshotURL,
           problems : problems,
           reviewing : reviewing });
       });
     });
-  });
 });
 
 router.post('/immaturity', function(req, res) {
@@ -1657,8 +1610,8 @@ router.post('/immaturity', function(req, res) {
   // this is if the inventor is the same as the session user
   // enters info into the ideaSeed model vs the ideaReview model
   if(thisIdea.inventorName == req.user.username){
-    if(req.body.immatureSliderOneValue){
-      thisIdea.immatureOne = req.body.immatureSliderOneValue;
+    if(req.body.immaturitySliderOneValue){
+      thisIdea.immatureOne = req.body.immaturitySliderOneValue;
     }
     if(req.body.immatureProblem){
       req.body.immatureProblem = req.body.immatureProblem.slice(15);
@@ -1688,19 +1641,20 @@ router.post('/immaturity', function(req, res) {
     }
     Account.findById( req.user.id,
       function (err, account) {
-        if(req.body.immatureSliderOneValue){
+        if(req.body.immaturitySliderOneValue){
           account.einsteinPoints = account.einsteinPoints + 5;
         }
         if(req.body.immatureProblem){
           account.einsteinPoints = account.einsteinPoints + 10;
         }
         account.save(function (err) {
+          res.redirect('/dangerous');
         });
     });
   } else {
     if(req.session.ideaReview){
-      if(req.body.immatureSliderOneValue){
-        IdeaReview.update({_id : req.session.ideaReview}, {immatureOne : req.body.immatureSliderOneValue},
+      if(req.body.immaturitySliderOneValue){
+        IdeaReview.update({_id : req.session.ideaReview}, {immatureOne : req.body.immaturitySliderOneValue},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
@@ -1733,13 +1687,14 @@ router.post('/immaturity', function(req, res) {
       }
       Account.findById( req.user.id,
         function (err, account) {
-          if(req.body.immatureSliderOneValue){
+          if(req.body.immaturitySliderOneValue){
             account.einsteinPoints = account.einsteinPoints + 5;
           }
           if(req.body.immatureProblem){
             account.einsteinPoints = account.einsteinPoints + 10;
           }
           account.save(function (err) {
+            res.redirect('/dangerous');
           });
       });
 
@@ -1749,7 +1704,7 @@ router.post('/immaturity', function(req, res) {
 
 
 
-  res.redirect('/dangerous');
+  
 });
 ////////////////////////////////////////////////
 // Dangerous
@@ -1759,10 +1714,6 @@ router.get('/dangerous', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-    if(headshot){
-      var headshotURL = headshot["amazonURL"];
-    }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
       if(req.session.ideaReview){ var reviewing = true; }
@@ -1773,12 +1724,10 @@ router.get('/dangerous', function(req, res) {
         function (err, problems){
         res.render('pages/values-wastes/dangerous', { user : req.user,
           idea : currentIdea,
-          headshot : headshotURL,
           problems : problems,
           reviewing : reviewing });
       });
     });
-  });
 });
 
 router.post('/dangerous', function(req, res) {
@@ -1788,8 +1737,8 @@ router.post('/dangerous', function(req, res) {
   // this is if the inventor is the same as the session user
   // enters info into the ideaSeed model vs the ideaReview model
   if(thisIdea.inventorName == req.user.username){
-    if(req.body.dangerSliderOneValue){
-      thisIdea.dangerOne = req.body.dangerSliderOneValue;
+    if(req.body.dangerousSliderOneValue){
+      thisIdea.dangerOne = req.body.dangerousSliderOneValue;
     }
     if(req.body.dangerProblem){
       req.body.dangerProblem = req.body.dangerProblem.slice(15);
@@ -1819,19 +1768,20 @@ router.post('/dangerous', function(req, res) {
     }
     Account.findById( req.user.id,
       function (err, account) {
-        if(req.body.dangerSliderOneValue){
+        if(req.body.dangerousSliderOneValue){
           account.einsteinPoints = account.einsteinPoints + 5;
         }
         if(req.body.dangerProblem){
           account.einsteinPoints = account.einsteinPoints + 10;
         }
         account.save(function (err) {
+          res.redirect('/skills');
         });
     });
   } else {
     if(req.session.ideaReview){
-      if(req.body.dangerSliderOneValue){
-        IdeaReview.update({_id : req.session.ideaReview}, {dangerOne : req.body.dangerSliderOneValue},
+      if(req.body.dangerousSliderOneValue){
+        IdeaReview.update({_id : req.session.ideaReview}, {dangerOne : req.body.dangerousSliderOneValue},
           { multi: false }, function (err, raw) {
             console.log('The raw response from Mongo was ', raw);
         });
@@ -1864,13 +1814,14 @@ router.post('/dangerous', function(req, res) {
       }
       Account.findById( req.user.id,
         function (err, account) {
-          if(req.body.dangerSliderOneValue){
+          if(req.body.dangerousSliderOneValue){
             account.einsteinPoints = account.einsteinPoints + 5;
           }
           if(req.body.dangerProblem){
             account.einsteinPoints = account.einsteinPoints + 10;
           }
           account.save(function (err) {
+            res.redirect('/skills');
           });
       });
 
@@ -1880,7 +1831,7 @@ router.post('/dangerous', function(req, res) {
 
 
 
-  res.redirect('/skills');
+  
 });
 ////////////////////////////////////////////////
 // Skill Intensive
@@ -1890,10 +1841,6 @@ router.get('/skills', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-    if(headshot){
-      var headshotURL = headshot["amazonURL"];
-    }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
       if(req.session.ideaReview){ var reviewing = true; }
@@ -1902,14 +1849,13 @@ router.get('/skills', function(req, res) {
         'problemArea' : { 
           $regex: /.*Skills.*/, $options: 'i' }},
         function (err, problems){
-        res.render('pages/values-wastes/skills', { user : req.user,
+        res.render('pages/values-wastes/skills', {
+          user : req.user,
           idea : currentIdea,
-          headshot : headshotURL,
           problems : problems,
           reviewing : reviewing });
       });
     });
-  });
 });
 
 router.post('/skills', function(req, res) {
@@ -1957,6 +1903,7 @@ router.post('/skills', function(req, res) {
           account.einsteinPoints = account.einsteinPoints + 10;
         }
         account.save(function (err) {
+          res.redirect('/idea-summary');
         });
     });
   } else {
@@ -2002,6 +1949,7 @@ router.post('/skills', function(req, res) {
             account.einsteinPoints = account.einsteinPoints + 10;
           }
           account.save(function (err) {
+            res.redirect('/idea-summary');
           });
       });
 
@@ -2009,9 +1957,7 @@ router.post('/skills', function(req, res) {
   }
   });
 
-
-
-  res.redirect('/idea-summary');
+  
 });
 
 module.exports = router;

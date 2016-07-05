@@ -757,6 +757,89 @@ router.post('/save-idea-name', function(req, res) {
 /*****************************************************************
 ******************************************************************
 ******************************************************************
+* Route for updating viability scores in idea profile
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/update-viability-scores', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
+
+  IdeaSeed.findById(req.session.idea, function(err, thisIdea){
+    // this is if the inventor is the same as the session user
+    // enters info into the ideaSeed model vs the ideaReview model
+    if(thisIdea.inventorName == req.user.username){
+      res.json(thisIdea._doc);
+
+    } else {
+      IdeaReview.findOne({"_id" : req.session.ideaReview}, function(error, currentReview){
+        if(error){
+          console.error('ERROR! ' + error);
+          res.json({});
+        } else {
+          res.json(currentReview._doc);
+        }
+      });
+    }
+  });
+});
+
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for saving viability scores in idea profile
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.post('/update-all-viabilities', function(req, res) {
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
+  IdeaSeed.findById(req.session.idea, function(err, thisIdea){
+    // this is if the inventor is the same as the session user
+    // enters info into the ideaSeed model vs the ideaReview model
+    if(thisIdea.inventorName == req.user.username){
+      _.each(req.body, function(value, key){
+        thisIdea[key] = value;
+      });
+
+      thisIdea.save(function (err, idea, numaffected) {
+        if(err) {
+            console.error('ERROR!' + err);
+        }
+        res.sendStatus(200);
+      });
+
+    } else {
+      IdeaReview.findOne({"_id" : req.session.ideaReview}, function(error, currentReview){
+        if(error){
+          console.error('ERROR! ' + error);
+          res.json({});
+        } else {
+          _.each(req.body, function(value, key){
+            currentReview[key] = value;
+          });
+
+          currentReview.save(function (err, idea, numaffected) {
+            if(err) {
+                console.error('ERROR!' + err);
+            }
+            res.sendStatus(200);
+          });
+        }
+      });
+    }
+  });
+});
+
+
+/*****************************************************************
+******************************************************************
+******************************************************************
 * Route for sort problems
 ******************************************************************
 ******************************************************************
@@ -2048,6 +2131,22 @@ router.post('/save-company-network', function(req, res) {
       }
   });
 });
+
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for viewing all viabilities
+******************************************************************
+******************************************************************
+*****************************************************************/
+
+router.get('/view-all-viabilities', function(req, res) {
+  res.render('partials/viability-overview-modal',
+    { user : req.user, headshot : headshotURL, idea : req.session.idea }
+  );
+});
+
 
 /*****************************************************************
 ******************************************************************

@@ -38,402 +38,10 @@ html
 
     .edit-column.half-column
       if currentlyReviewing
-        h3 Waste Value Scores
-        table.idea-summary
-          tr
-            th Value/Waste
-            th Rating
-            th Problem Statement
-          tr
-            th         
-              a(href="/performability")
-                h4 Performance
-            td 
-              if currentlyReviewing
-                if currentReview.performOne
-                  p #{currentReview.performOne}
-                else 
-                  p No Value Yet
-              else
-                if idea.performOne
-                  h5 #{idea.performOne}
-                else
-                  h5 No Value Yet
-            td 
-              if currentlyReviewing
-                if currentReview.performProblem
-                  p #{currentReview.performProblem}
-                else 
-                  p No Value Yet
-              else
-                if idea.performProblem
-                  p #{idea.performProblem}
-                else 
-                  p No Value Yet
-          tr
-            th 
-              a(href="/affordability")
-                h4 Affordability
-            td 
-              if currentlyReviewing
-                if currentReview.affordOne
-                  p #{currentReview.affordOne}
-                else 
-                  p No Value Yet
-              else
-                if idea.affordOne
-                  h5 #{idea.affordOne}
-                else
-                  h5 No Value Yet
-            td 
-              if currentlyReviewing
-                if currentReview.affordProblem
-                  p #{currentReview.affordProblem}
-                else 
-                  p No Value Yet
-              else
-                if idea.affordProblem 
-                  p #{idea.affordProblem}
-                else
-                  p No Value Yet
-          tr
-            th 
-              a(href="/featurability")
-                h4 Featurability
-            td 
-              if currentlyReviewing
-                if currentReview.featureOne
-                  p #{currentReview.featureOne}
-                else 
-                  p No Value Yet
-              else
-                if idea.featureOne
-                  h5 #{idea.featureOne}
-                else 
-                  h5 No Value Yet
-            td 
-              if currentlyReviewing
-                if currentReview.featureProblem
-                  p #{currentReview.featureProblem}
-                else 
-                  p No Value Yet
-              else
-                if idea.featureProblem
-                  p #{idea.featureProblem}
-                else 
-                  p No Value Yet
-          tr
-            th 
-              a(href="/deliverability")
-                h4 Deliverability
-            td 
-              if currentlyReviewing
-                if currentReview.deliverOne
-                  p #{currentReview.deliverOne}
-                else 
-                  p No Value Yet
-              else
-                if idea.deliverOne
-                  h5 #{idea.deliverOne}
-                else
-                  h5 No Value Yet
-            td 
-              if currentlyReviewing
-                if currentReview.deliverProblem
-                  p #{currentReview.deliverProblem}
-                else 
-                  p No Value Yet
-              else
-                if idea.deliverProblem
-                  p #{idea.deliverProblem}
-                else
-                  p No Value Yet
-          tr
-            th 
-              a(href="/useability")
-                h4 Useability        
-            td 
-              if currentlyReviewing
-                if currentReview.useabilityOne
-                  p #{currentReview.useabilityOne}
-                else 
-                  p No Value Yet
-              else
-                if idea.useabilityOne
-                  h5 #{idea.useabilityOne}
-                else 
-                  h5 No Value Yet
-            td 
-              if currentlyReviewing
-                if currentReview.useabilityProblem
-                  p #{currentReview.useabilityProblem}
-                else 
-                  p No Value Yet
-              else
-                if idea.useabilityProblem
-                  p #{idea.useabilityProblem}
-                else
-                  p No Value Yet
-          tr
-            th 
-              a(href="/maintainability")
-                h4 Maintainability        
-            td 
-              if currentlyReviewing
-                if currentReview.maintainOne
-                  p #{currentReview.maintainOne}
-                else 
-                  p No Value Yet
-              else
-                if idea.maintainOne
-                  h5 #{idea.maintainOne}
-                else
-                  h5 No Value Yet
-            td 
-              if currentlyReviewing
-                if currentReview.maintainProblem
-                  p #{currentReview.maintainProblem}
-                else 
-                  p No Value Yet
-              else
-                if idea.maintainProblem
-                  p #{idea.maintainProblem}
-                else
-                  p No Value Yet
-          tr
-            th 
-              a(href="/durability")
-                h4 Durability
-            td 
-              if currentlyReviewing
-                if currentReview.durabilityOne
-                  p #{currentReview.durabilityOne}
-                else 
-                  p No Value Yet
-              else
-                if idea.durabilityOne
-                  h5 #{idea.durabilityOne}
-                else
-                  h5 No Value Yet
-            td 
-              if currentlyReviewing
-                if currentReview.durabilityProblem
-                  p #{currentReview.durabilityProblem}
-                else 
-                  p No Value Yet
-              else
-                if idea.durabilityProblem
-                  p #{idea.durabilityProblem}
-                else
-                  p No Value Yet
-          tr
-            th 
-              a(href="/imageability")
-                h4 Imageability
-            td 
-              if currentlyReviewing
-                if currentReview.imageOne
-                  p #{currentReview.imageOne}
-                else 
-                  p No Value Yet
-              else
-                if idea.imageOne
-                  h5 #{idea.imageOne}
-                else 
-                  h5 No Value Yet
-            td 
-              if currentlyReviewing
-                if currentReview.imageProblem
-                  p #{currentReview.imageProblem}
-                else 
-                  p No Value Yet
-              else
-                if idea.imageProblem
-                  p #{idea.imageProblem}
-                else
-                  p No Value Yet
-          tr
-            th 
-              a(href="/complexity")
-                h4 Complexity
-            td 
-              if currentlyReviewing
-                if currentReview.complexOne
-                  p #{currentReview.complexOne}
-                else 
-                  p No Value Yet
-              else
-                if idea.complexOne
-                  h5 #{idea.complexOne}
-                else
-                  h5 No Value Yet
-            td 
-              if currentlyReviewing
-                if currentReview.complexProblem
-                  p #{currentReview.complexProblem}
-                else 
-                  p No Value Yet
-              else
-                if idea.complexProblem
-                  p #{idea.complexProblem}
-                else
-                  p No Value Yet
-          tr
-            th 
-              a(href="/precision")
-                h4 Precision
-            td 
-              if currentlyReviewing
-                if currentReview.precisionOne
-                  p #{currentReview.precisionOne}
-                else 
-                  p No Value Yet
-              else
-                if idea.precisionOne
-                  h5 #{idea.precisionOne}
-                else
-                  h5 No Value Yet
-            td 
-              if currentlyReviewing
-                if currentReview.precisionProblem
-                  p #{currentReview.precisionProblem}
-                else 
-                  p No Value Yet
-              else
-                if idea.precisionProblem
-                  p #{idea.precisionProblem}
-                else
-                  p No Value Yet
-          tr
-            th 
-              a(href="/variability")
-                h4 Variability
-            td 
-              if currentlyReviewing
-                if currentReview.variabilityOne
-                  p #{currentReview.variabilityOne}
-                else 
-                  p No Value Yet
-              else
-                if idea.variabilityOne
-                  h5 #{idea.variabilityOne}
-                else
-                  h5 No Value Yet
-            td 
-              if currentlyReviewing
-                if currentReview.variabilityProblem
-                  p #{currentReview.variabilityProblem}
-                else 
-                  p No Value Yet
-              else
-                if idea.variabilityProblem
-                  p #{idea.variabilityProblem}
-                else
-                  p No Value Yet
-          tr
-            th 
-              a(href="/sensitivity")
-                h4 Sensitivity
-            td 
-              if currentlyReviewing
-                if currentReview.sensitivityOne
-                  p #{currentReview.sensitivityOne}
-                else 
-                  p No Value Yet
-              else
-                if idea.sensitivityOne
-                  h5 #{idea.sensitivityOne}
-                else
-                  h5 No Value Yet
-            td 
-              if currentlyReviewing
-                if currentReview.sensitivityProblem
-                  p #{currentReview.sensitivityProblem}
-                else 
-                  p No Value Yet
-              else
-                if idea.sensitivityProblem
-                  p #{idea.sensitivityProblem}
-                else
-                  p No Value Yet
-          tr
-            th 
-              a(href="/immaturity")
-                h4 Immaturity
-            td 
-              if currentlyReviewing
-                if currentReview.immatureOne
-                  p #{currentReview.immatureOne}
-                else 
-                  p No Value Yet
-              else
-                if idea.immatureOne
-                  h5 #{idea.immatureOne}
-                else 
-                  h5 No Value Yet
-            td 
-              if currentlyReviewing
-                if currentReview.immatureProblem
-                  p #{currentReview.immatureProblem}
-                else 
-                  p No Value Yet
-              else
-                if idea.immatureProblem
-                  p #{idea.immatureProblem}
-                else 
-                  p No Value Yet
-          tr
-            th 
-              a(href="/dangerous")
-                h4 Dangerous
-            td 
-              if currentlyReviewing
-                if currentReview.dangerOne
-                  p #{currentReview.dangerOne}
-                else 
-                  p No Value Yet
-              else
-                if idea.dangerOne
-                  h5 #{idea.dangerOne}
-                else
-                  h5 No Value Yet
-            td 
-              if currentlyReviewing
-                if currentReview.dangerProblem
-                  p #{currentReview.dangerProblem}
-                else 
-                  p No Value Yet
-              else
-                if idea.dangerProblem
-                  p #{idea.dangerProblem}
-                else
-                  p No Value Yet
-          tr
-            th 
-              a(href="/skills")
-                h4 Skills
-            td 
-              if currentlyReviewing
-                if currentReview.skillsOne
-                  p #{currentReview.skillsOne}
-                else 
-                  p No Value Yet
-              else
-                if idea.skillsOne
-                  h5 #{idea.skillsOne}
-                else
-                  h5 No Value Yet
-            td 
-              if currentlyReviewing
-                if currentReview.skillsProblem
-                  p #{currentReview.skillsProblem}
-                else 
-                  p No Value Yet
-              else
-                if idea.skillsProblem
-                  p #{idea.skillsProblem}
-                else
-                  p No Value Yet
+      .idea-summary-data#idea-summary-waste-values
+        h4 Idea Viability Scores
+        a.btn.btn-default( type="button" id="viabilityModalButton"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") View All
+        br
     if currentlyReviewing
       .idea-function-column.half-column
         h3 Make a Suggestion
@@ -449,12 +57,387 @@ html
           each imageURL, index in imageURLs
             if index < 3
               img.imageListItems(src=imageURL[1])
-
-
-
-
-
-
+  #viabilityModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Idea Viability Scores
+        .modal-body
+          .view-all-viabilities
+              include ../partials/viability-overview-modal.jade
+          .view-specific-viability
+        .modal-footer.view-all-button
+            button.btn.btn-info.modal-view-all View All
+            button.btn.btn-info.cancel-button(data-dismiss="modal") Cancel
+            button.btn.btn-success#viabilitySubmit(data-viability-category="view-all") Save
 
 
   include ../partials/js-includes.jade
+  script(type="text/javascript").
+    function initializeAllSliders(review){
+      var labelArr = _.range(101).map(function(number){
+        return number.toString();
+      });
+      var initialValue, min=1, max=100, valueEntered = false;
+      var viabilitySliders = [
+        "#perf",
+        "#afford",
+        "#feature",
+        "#deliver",
+        "#useability",
+        "#maintain",
+        "#danger",
+        "#durability",
+        "#image",
+        "#complex",
+        "#precision",
+        "#variability",
+        "#sensitivity",
+        "#immature",
+        "#skills"
+      ]
+
+      for(var i = 0; i < viabilitySliders.length; i++){      
+        switch (viabilitySliders[i]){
+          case "#perf" : 
+            initialValue = review.performOne || '#{currentReview.performOne}' || 50;
+            break;
+          case "#afford" : 
+            initialValue = review.affordOne || '#{currentReview.affordOne}' || 50;
+            break;
+          case "#feature" : 
+            initialValue = review.featureOne || '#{currentReview.featureOne}' || 50;
+            break;
+          case "#deliver" : 
+            initialValue = review.deliverOne || '#{currentReview.deliverOne}' || 50;
+            break;
+          case "#useability" : 
+            initialValue = review.useabilityOne || '#{currentReview.useabilityOne}' || 50;
+            break;
+          case "#maintain" : 
+            initialValue = review.maintainOne || '#{currentReview.maintainOne}' || 50;
+            break;
+          case "#danger" : 
+            initialValue = review.dangerOne || '#{currentReview.dangerOne}' || 50;
+            break;
+          case "#durability" : 
+            initialValue = review.durabilityOne || '#{currentReview.durabilityOne}' || 50;
+            break;
+          case "#image" : 
+            initialValue = review.imageOne || '#{currentReview.imageOne}' || 50;
+            break;
+          case "#complex" : 
+            initialValue = review.complexOne || '#{currentReview.complexOne}' || 50;
+            break;
+          case "#precision" : 
+            initialValue = review.precisionOne || '#{currentReview.precisionOne}' || 50;
+            break;
+          case "#variability" : 
+            initialValue = review.variabilityOne || '#{currentReview.variabilityOne}' || 50;
+            break;
+          case "#sensitivity" : 
+            initialValue = review.sensitivityOne || '#{currentReview.sensitivityOne}' || 50;
+            break;
+          case "#immature" : 
+            initialValue = review.immatureOne || '#{currentReview.immatureOne}' || 50;
+            break;
+          case "#skills" : 
+            initialValue = review.skillsOne || '#{currentReview.skillsOne}' || 50;
+            break;
+        }
+
+        ////////////////////////////////////////////
+        // SET UP SLIDER ONE
+        ////////////////////////////////////////////
+        $(viabilitySliders[i]+ "Slider").slider({
+          value:initialValue,
+          min: min,
+          max: max,
+          step: 1,
+          slide: function( event, ui ) {
+              valueEntered = true;
+          }
+        });
+
+      }
+
+      //kind of a hack because I couldnt get the previous click event handlers
+      // to detach from the submit button between viability categories
+      // as the user went through more than one in a row. I tried the jquery unbind and off
+      // functions
+      $("#viabilitySubmit").remove();
+      $("<button class='btn btn-success' id='viabilitySubmit'>Save</button>")
+      .appendTo("#viabilityModal .modal-footer.view-all-button")
+      .click(function(event){
+
+        var data = {};
+        $(".ui-slider").each(function(index, element){
+          switch ($(this).attr("id")){
+            case "perfSlider" : 
+              data["performOne"] = $(element).slider("value");
+              break;
+            case "affordSlider" : 
+              data["affordOne"] = $(element).slider("value");
+              break;
+            case "featureSlider" : 
+              data["featureOne"] = $(element).slider("value");
+              break;
+            case "deliverSlider" : 
+              data["deliverOne"] = $(element).slider("value");
+              break;
+            case "useabilitySlider" : 
+              data["useabilityOne"] = $(element).slider("value");
+              break;
+            case "maintainSlider" : 
+              data["maintainOne"] = $(element).slider("value");
+              break;
+            case "dangerSlider" : 
+              data["dangerOne"] = $(element).slider("value");
+              break;
+            case "durabilitySlider" : 
+              data["durabilityOne"] = $(element).slider("value");
+              break;
+            case "imageSlider" : 
+              data["imageOne"] = $(element).slider("value");
+              break;
+            case "complexSlider" : 
+              data["complexOne"] = $(element).slider("value");
+              break;
+            case "precisionSlider" : 
+              data["precisionOne"] = $(element).slider("value");
+              break;
+            case "variabilitySlider" : 
+              data["variabilityOne"] = $(element).slider("value");
+              break;
+            case "sensitivitySlider" : 
+              data["sensitivityOne"] = $(element).slider("value");
+              break;
+            case "immatureSlider" : 
+              data["immatureOne"] = $(element).slider("value");
+              break;
+            case "skillsSlider" : 
+              data["skillsOne"] = $(element).slider("value");
+              break;
+          }
+        });
+        $.post('/update-all-viabilities', data, function(returnData, status){
+          if(status=="success"){
+            window.location.reload(true);
+          }
+        });
+      });
+
+    } // end of initialize all sliders function
+
+    //actually invoke this method. it will be used later when some one hits the 
+    // view all button
+    initializeAllSliders("#{currentReview._doc}");
+
+    function getNextSliderConfig(categoryName){
+        switch (categoryName) {
+          case "view-all":
+            break;
+          case "performability" : 
+            var initialValue = '#{currentReview.performOne}' || 50;
+
+            initiateSlider("perfSliderOne", "perfLabelOne",
+              "formPerformability", initialValue, "performability",
+              "performProblem", "affordability")
+            break;
+
+          case "affordability" : 
+            var initialValue = '#{currentReview.affordOne}' || 50;
+
+            initiateSlider("affordSliderOne", "affordLabelOne",
+              "formAffordability", initialValue, "affordability",
+              "affordProblem", "featurability")
+            break;
+          case "featurability" : 
+            var initialValue = '#{currentReview.featureOne}' || 50;
+
+            initiateSlider("featureSliderOne", "featureLabelOne",
+              "formFeaturability", initialValue, "featurability",
+              "featureProblem", "deliverability")
+            break;
+          case "deliverability" : 
+            var initialValue = '#{currentReview.deliverOne}' || 50;
+
+            initiateSlider("deliverSliderOne", "deliverLabelOne",
+              "formDeliverability", initialValue, "deliverability",
+              "deliverProblem", "useability")
+            break;
+          case "useability" : 
+            var initialValue = '#{currentReview.useabilityOne}' || 50;
+
+            initiateSlider("useabilitySliderOne", "useabilityLabelOne",
+              "formUseability", initialValue, "useability",
+              "useabilityProblem", "maintainability")
+            break;
+          case "maintainability" : 
+            var initialValue = '#{currentReview.maintainOne}' || 50;
+
+            initiateSlider("maintainabilitySliderOne", "maintainabilityLabelOne",
+              "formMaintainability", initialValue, "maintainability",
+              "maintainProblem", "durability")
+            break;
+          case "durability" : 
+            var initialValue = '#{currentReview.durabilityOne}' || 50;
+
+            initiateSlider("durabilitySliderOne", "durabilityLabelOne",
+              "formDurability", initialValue, "durability",
+              "durabilityProblem", "imageability")
+            break;
+          case "imageability" : 
+            var initialValue = '#{currentReview.durabilityOne}' || 50;
+
+            initiateSlider("imageabilitySliderOne", "imageabilityLabelOne",
+              "formImageability", initialValue, "imageability",
+              "imageProblem", "complexity")
+            break;
+          case "complexity" : 
+            var initialValue = '#{currentReview.complexOne}' || 50;
+
+            initiateSlider("complexitySliderOne", "complexityLabelOne",
+              "formComplexity", initialValue, "complexity",
+              "complexProblem", "precision")
+            break;
+          case "precision" : 
+            var initialValue = '#{currentReview.precisionOne}' || 50;
+
+            initiateSlider("precisionSliderOne", "precisionLabelOne",
+              "formPrecision", initialValue, "precision",
+              "precisionProblem", "variability")
+            break;
+          case "variability" : 
+            var initialValue = '#{currentReview.variabilityOne}' || 50;
+
+            initiateSlider("variabilitySliderOne", "variabilityLabelOne",
+              "formVariability", initialValue, "variability",
+              "variabilityProblem", "sensitivity")
+            break;
+          case "sensitivity" : 
+            var initialValue = '#{currentReview.sensitivityOne}' || 50;
+
+            initiateSlider("sensitivitySliderOne", "sensitivityLabelOne",
+              "formSensitivity", initialValue, "sensitivity",
+              "sensitivityProblem", "immaturity")
+            break;
+          case "immaturity" : 
+            var initialValue = '#{currentReview.immatureOne}' || 50;
+
+            initiateSlider("immaturitySliderOne", "immaturityLabelOne",
+              "formImmaturity", initialValue, "immaturity",
+              "immatureProblem", "dangerous")
+            break;
+          case "dangerous" : 
+            var initialValue = '#{currentReview.dangerOne}' || 50;
+
+            initiateSlider("dangerousSliderOne", "dangerousLabelOne",
+              "formDangerous", initialValue, "dangerous",
+              "dangerProblem", "skills")
+            break;
+          case "skills" : 
+            var initialValue = '#{currentReview.skillsOne}' || 50;
+
+            initiateSlider("skillsSliderOne", "skillsLabelOne",
+              "formSkills", initialValue, "skills",
+              "skillsProblem", "view-all")
+            break;
+        }
+
+    }
+
+
+    function initiateSlider(sliderName, labelName, formName, initialValue, postPath, problemName, nextCategory){
+      var labelArr = _.range(101).map(function(number){
+        return number.toString();
+      });
+      var min=1, max=100, valueEntered = false, uiValue;
+      
+      $("#"+ sliderName).slider({
+        value:initialValue,
+        min: min,
+        max: max,
+        step: 1,
+        slide: function( event, ui ) {
+            valueEntered = true;
+            uiValue = ui.value;
+            $("#" + labelName).text(labelArr[ui.value]);
+            $("#" + labelName).css("margin-left", (ui.value-min)/(max-min)*100+"%");
+            $("#" + labelName).css("left", "-50px");
+        }
+      });
+      $("#" + labelName).text(labelArr[initialValue]);
+      $("#" + labelName ).css("margin-left", (initialValue -1)/(max-min)*100+"%");
+      $("#" + labelName).css("left", "-50px");
+
+      
+      //kind of a hack because I couldnt get the previous click event handlers
+      // to detach from the submit button between viability categories
+      // as the user went through more than one in a row. I tried the jquery unbind and off
+      // functions
+      $("#viabilitySubmit").remove();
+      $("<button class='btn btn-success' id='viabilitySubmit'>Save</button>")
+      .appendTo("#viabilityModal .modal-footer.view-all-button")
+      .click(function(event){
+          var data = {
+            isModal : true
+          };
+          if(valueEntered){
+            data[sliderName+"Value"] = uiValue;
+            
+          } 
+          if($("#"+formName + " textarea").val() != "The problem of "){
+            data[problemName] = $("#"+formName + " textarea").val();
+          }
+          $.post('/' + postPath, data, function(returnData, status){
+            //dont do anything with this return data, because we need to get the modal version
+            // of the nextCategory page
+            if(nextCategory == "view-all"){
+              window.location.reload(true);
+            } else {
+              $.get("/" + nextCategory, {isModal : true}, function(returnData, status){
+                $("#viabilityModal .modal-body .view-specific-viability").html("")
+                $("#viabilityModal .modal-body .view-specific-viability").append(returnData);
+                getNextSliderConfig(nextCategory);
+              });
+            }
+          });
+      });
+    }
+
+
+
+
+    $("a.viabilityLink").click(function(event){
+      event.preventDefault();
+      var data = {
+        "isModal" : true
+      };
+      var pathname = $(this)[0].pathname;
+      $.get(pathname, data, function(returnData, status){
+        $("#viabilityModal .view-all-viabilities").hide();
+        //$("#viabilitySubmit").attr("data-viability-category", pathname.slice(1));
+        $("#viabilityModal .modal-body .view-specific-viability").append(returnData)
+
+        getNextSliderConfig(pathname.slice(1));
+
+      });
+    });
+
+    $("#viabilityModal .modal-view-all").click(function(eventView){
+      //if view all viabilities is not visible, remove contents and show 
+      // the view-all view
+      if(!$(".view-all-viabilities").is(":visible")){
+        $("#viabilityModal .modal-body .view-specific-viability").html("")
+        //$("#viabilitySubmit").attr("data-viability-category", "view-all");
+        $("#viabilityModal .view-all-viabilities").show();
+        
+        $.get('/update-viability-scores', function(returnData, status){
+          $(".view-all-viabilities .ui-slider").html("");
+          initializeAllSliders(returnData);
+        });
+      }
+    });

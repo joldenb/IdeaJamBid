@@ -61,8 +61,8 @@ html
 
         button(type="button" id="componentModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addComponentModal") Add a Component
       .idea-summary-data#idea-summary-waste-values
-        h4 Waste Value Scores
-        a.btn.btn-default( href="/waste-values-summary" ) View All
+        h4 Idea Viability Scores
+        a.btn.btn-default( type="button" id="viabilityModalButton"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") View All
         br
       .idea-summary-data#idea-summary-problems
         h4 Idea Problems
@@ -126,6 +126,22 @@ html
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#submit(type='submit') Save
 
+  #viabilityModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Idea Viability Scores
+        .modal-body
+          .view-all-viabilities
+              include ../partials/viability-overview-modal.jade
+          .view-specific-viability
+        .modal-footer.view-all-button
+            button.btn.btn-info.modal-view-all View All
+            button.btn.btn-info.cancel-button(data-dismiss="modal") Cancel
+            button.btn.btn-success#viabilitySubmit(data-viability-category="view-all") Save
+
   #addProblemModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
       .modal-content
@@ -170,9 +186,6 @@ html
               |  
               input#fileInput(type="file", name="picture")
               input(type="hidden" id="image-component" name="imageComponent")
-
-
-
             .modal-footer
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#componentSubmit(type='submit') Save
@@ -182,6 +195,372 @@ html
 
   include ../partials/js-includes.jade
   script(type="text/javascript").
+    
+    function initializeAllSliders(idea){
+      var labelArr = _.range(101).map(function(number){
+        return number.toString();
+      });
+      var initialValue, min=1, max=100, valueEntered = false;
+      var viabilitySliders = [
+        "#perf",
+        "#afford",
+        "#feature",
+        "#deliver",
+        "#useability",
+        "#maintain",
+        "#danger",
+        "#durability",
+        "#image",
+        "#complex",
+        "#precision",
+        "#variability",
+        "#sensitivity",
+        "#immature",
+        "#skills"
+      ]
+
+      for(var i = 0; i < viabilitySliders.length; i++){      
+        switch (viabilitySliders[i]){
+          case "#perf" : 
+            initialValue = idea.performOne || '#{idea.performOne}' || 50;
+            break;
+          case "#afford" : 
+            initialValue = idea.affordOne || '#{idea.affordOne}' || 50;
+            break;
+          case "#feature" : 
+            initialValue = idea.featureOne || '#{idea.featureOne}' || 50;
+            break;
+          case "#deliver" : 
+            initialValue = idea.deliverOne || '#{idea.deliverOne}' || 50;
+            break;
+          case "#useability" : 
+            initialValue = idea.useabilityOne || '#{idea.useabilityOne}' || 50;
+            break;
+          case "#maintain" : 
+            initialValue = idea.maintainOne || '#{idea.maintainOne}' || 50;
+            break;
+          case "#danger" : 
+            initialValue = idea.dangerOne || '#{idea.dangerOne}' || 50;
+            break;
+          case "#durability" : 
+            initialValue = idea.durabilityOne || '#{idea.durabilityOne}' || 50;
+            break;
+          case "#image" : 
+            initialValue = idea.imageOne || '#{idea.imageOne}' || 50;
+            break;
+          case "#complex" : 
+            initialValue = idea.complexOne || '#{idea.complexOne}' || 50;
+            break;
+          case "#precision" : 
+            initialValue = idea.precisionOne || '#{idea.precisionOne}' || 50;
+            break;
+          case "#variability" : 
+            initialValue = idea.variabilityOne || '#{idea.variabilityOne}' || 50;
+            break;
+          case "#sensitivity" : 
+            initialValue = idea.sensitivityOne || '#{idea.sensitivityOne}' || 50;
+            break;
+          case "#immature" : 
+            initialValue = idea.immatureOne || '#{idea.immatureOne}' || 50;
+            break;
+          case "#skills" : 
+            initialValue = idea.skillsOne || '#{idea.skillsOne}' || 50;
+            break;
+        }
+
+        ////////////////////////////////////////////
+        // SET UP SLIDER ONE
+        ////////////////////////////////////////////
+        $(viabilitySliders[i]+ "Slider").slider({
+          value:initialValue,
+          min: min,
+          max: max,
+          step: 1,
+          slide: function( event, ui ) {
+              valueEntered = true;
+          }
+        });
+
+      }
+
+      //kind of a hack because I couldnt get the previous click event handlers
+      // to detach from the submit button between viability categories
+      // as the user went through more than one in a row. I tried the jquery unbind and off
+      // functions
+      $("#viabilitySubmit").remove();
+      $("<button class='btn btn-success' id='viabilitySubmit'>Save</button>")
+      .appendTo("#viabilityModal .modal-footer.view-all-button")
+      .click(function(event){
+
+        var data = {};
+        $(".ui-slider").each(function(index, element){
+          switch ($(this).attr("id")){
+            case "perfSlider" : 
+              data["performOne"] = $(element).slider("value");
+              break;
+            case "affordSlider" : 
+              data["affordOne"] = $(element).slider("value");
+              break;
+            case "featureSlider" : 
+              data["featureOne"] = $(element).slider("value");
+              break;
+            case "deliverSlider" : 
+              data["deliverOne"] = $(element).slider("value");
+              break;
+            case "useabilitySlider" : 
+              data["useabilityOne"] = $(element).slider("value");
+              break;
+            case "maintainSlider" : 
+              data["maintainOne"] = $(element).slider("value");
+              break;
+            case "dangerSlider" : 
+              data["dangerOne"] = $(element).slider("value");
+              break;
+            case "durabilitySlider" : 
+              data["durabilityOne"] = $(element).slider("value");
+              break;
+            case "imageSlider" : 
+              data["imageOne"] = $(element).slider("value");
+              break;
+            case "complexSlider" : 
+              data["complexOne"] = $(element).slider("value");
+              break;
+            case "precisionSlider" : 
+              data["precisionOne"] = $(element).slider("value");
+              break;
+            case "variabilitySlider" : 
+              data["variabilityOne"] = $(element).slider("value");
+              break;
+            case "sensitivitySlider" : 
+              data["sensitivityOne"] = $(element).slider("value");
+              break;
+            case "immatureSlider" : 
+              data["immatureOne"] = $(element).slider("value");
+              break;
+            case "skillsSlider" : 
+              data["skillsOne"] = $(element).slider("value");
+              break;
+          }
+        });
+        $.post('/update-all-viabilities', data, function(returnData, status){
+          if(status=="success"){
+            window.location.reload(true);
+          }
+        });
+      });
+
+    } // end of initialize all sliders function
+
+    //actually invoke this method. it will be used later when some one hits the 
+    // view all button
+    initializeAllSliders('#{idea}');
+
+    function getNextSliderConfig(categoryName){
+        switch (categoryName) {
+          case "view-all":
+            break;
+          case "performability" : 
+            var initialValue = '#{idea.performOne}' || 50;
+
+            initiateSlider("perfSliderOne", "perfLabelOne",
+              "formPerformability", initialValue, "performability",
+              "performProblem", "affordability")
+            break;
+
+          case "affordability" : 
+            var initialValue = '#{idea.affordOne}' || 50;
+
+            initiateSlider("affordSliderOne", "affordLabelOne",
+              "formAffordability", initialValue, "affordability",
+              "affordProblem", "featurability")
+            break;
+          case "featurability" : 
+            var initialValue = '#{idea.featureOne}' || 50;
+
+            initiateSlider("featureSliderOne", "featureLabelOne",
+              "formFeaturability", initialValue, "featurability",
+              "featureProblem", "deliverability")
+            break;
+          case "deliverability" : 
+            var initialValue = '#{idea.deliverOne}' || 50;
+
+            initiateSlider("deliverSliderOne", "deliverLabelOne",
+              "formDeliverability", initialValue, "deliverability",
+              "deliverProblem", "useability")
+            break;
+          case "useability" : 
+            var initialValue = '#{idea.useabilityOne}' || 50;
+
+            initiateSlider("useabilitySliderOne", "useabilityLabelOne",
+              "formUseability", initialValue, "useability",
+              "useabilityProblem", "maintainability")
+            break;
+          case "maintainability" : 
+            var initialValue = '#{idea.maintainOne}' || 50;
+
+            initiateSlider("maintainabilitySliderOne", "maintainabilityLabelOne",
+              "formMaintainability", initialValue, "maintainability",
+              "maintainProblem", "durability")
+            break;
+          case "durability" : 
+            var initialValue = '#{idea.durabilityOne}' || 50;
+
+            initiateSlider("durabilitySliderOne", "durabilityLabelOne",
+              "formDurability", initialValue, "durability",
+              "durabilityProblem", "imageability")
+            break;
+          case "imageability" : 
+            var initialValue = '#{idea.durabilityOne}' || 50;
+
+            initiateSlider("imageabilitySliderOne", "imageabilityLabelOne",
+              "formImageability", initialValue, "imageability",
+              "imageProblem", "complexity")
+            break;
+          case "complexity" : 
+            var initialValue = '#{idea.complexOne}' || 50;
+
+            initiateSlider("complexitySliderOne", "complexityLabelOne",
+              "formComplexity", initialValue, "complexity",
+              "complexProblem", "precision")
+            break;
+          case "precision" : 
+            var initialValue = '#{idea.precisionOne}' || 50;
+
+            initiateSlider("precisionSliderOne", "precisionLabelOne",
+              "formPrecision", initialValue, "precision",
+              "precisionProblem", "variability")
+            break;
+          case "variability" : 
+            var initialValue = '#{idea.variabilityOne}' || 50;
+
+            initiateSlider("variabilitySliderOne", "variabilityLabelOne",
+              "formVariability", initialValue, "variability",
+              "variabilityProblem", "sensitivity")
+            break;
+          case "sensitivity" : 
+            var initialValue = '#{idea.sensitivityOne}' || 50;
+
+            initiateSlider("sensitivitySliderOne", "sensitivityLabelOne",
+              "formSensitivity", initialValue, "sensitivity",
+              "sensitivityProblem", "immaturity")
+            break;
+          case "immaturity" : 
+            var initialValue = '#{idea.immatureOne}' || 50;
+
+            initiateSlider("immaturitySliderOne", "immaturityLabelOne",
+              "formImmaturity", initialValue, "immaturity",
+              "immatureProblem", "dangerous")
+            break;
+          case "dangerous" : 
+            var initialValue = '#{idea.dangerOne}' || 50;
+
+            initiateSlider("dangerousSliderOne", "dangerousLabelOne",
+              "formDangerous", initialValue, "dangerous",
+              "dangerProblem", "skills")
+            break;
+          case "skills" : 
+            var initialValue = '#{idea.skillsOne}' || 50;
+
+            initiateSlider("skillsSliderOne", "skillsLabelOne",
+              "formSkills", initialValue, "skills",
+              "skillsProblem", "view-all")
+            break;
+        }
+
+    }
+
+
+    function initiateSlider(sliderName, labelName, formName, initialValue, postPath, problemName, nextCategory){
+      var labelArr = _.range(101).map(function(number){
+        return number.toString();
+      });
+      var min=1, max=100, valueEntered = false, uiValue;
+      
+      $("#"+ sliderName).slider({
+        value:initialValue,
+        min: min,
+        max: max,
+        step: 1,
+        slide: function( event, ui ) {
+            valueEntered = true;
+            uiValue = ui.value;
+            $("#" + labelName).text(labelArr[ui.value]);
+            $("#" + labelName).css("margin-left", (ui.value-min)/(max-min)*100+"%");
+            $("#" + labelName).css("left", "-50px");
+        }
+      });
+      $("#" + labelName).text(labelArr[initialValue]);
+      $("#" + labelName ).css("margin-left", (initialValue -1)/(max-min)*100+"%");
+      $("#" + labelName).css("left", "-50px");
+
+      
+      //kind of a hack because I couldnt get the previous click event handlers
+      // to detach from the submit button between viability categories
+      // as the user went through more than one in a row. I tried the jquery unbind and off
+      // functions
+      $("#viabilitySubmit").remove();
+      $("<button class='btn btn-success' id='viabilitySubmit'>Save</button>")
+      .appendTo("#viabilityModal .modal-footer.view-all-button")
+      .click(function(event){
+        var data = {
+          isModal : true
+        };
+        if(valueEntered){
+          data[sliderName+"Value"] = uiValue;
+          
+        } 
+        if($("#"+formName + " textarea").val() != "The problem of "){
+          data[problemName] = $("#"+formName + " textarea").val();
+        }
+        $.post('/' + postPath, data, function(returnData, status){
+          //dont do anything with this return data, because we need to get the modal version
+          // of the nextCategory page
+          
+          if(nextCategory == "view-all"){
+            window.location.reload(true);
+          } else {
+            $.get("/" + nextCategory, {isModal : true}, function(returnData, status){
+              $("#viabilityModal .modal-body .view-specific-viability").html("")
+              $("#viabilityModal .modal-body .view-specific-viability").append(returnData);
+              getNextSliderConfig(nextCategory);
+            });
+          }
+        });
+
+      });
+    }
+
+    $("a.viabilityLink").click(function(event){
+      event.preventDefault();
+      var data = {
+        "isModal" : true
+      };
+      var pathname = $(this)[0].pathname;
+      $.get(pathname, data, function(returnData, status){
+        $("#viabilityModal .view-all-viabilities").hide();
+        //$("#viabilitySubmit").attr("data-viability-category", pathname.slice(1));
+        $("#viabilityModal .modal-body .view-specific-viability").append(returnData)
+
+        getNextSliderConfig(pathname.slice(1));
+
+      });
+    });
+
+    $("#viabilityModal .modal-view-all").click(function(eventView){
+      //if view all viabilities is not visible, remove contents and show 
+      // the view-all view
+      if(!$(".view-all-viabilities").is(":visible")){
+        $("#viabilityModal .modal-body .view-specific-viability").html("")
+        //$("#viabilitySubmit").attr("data-viability-category", "view-all");
+        $("#viabilityModal .view-all-viabilities").show();
+        
+        $.get('/update-viability-scores', function(returnData, status){
+          $(".view-all-viabilities .ui-slider").html("");
+          initializeAllSliders(returnData);
+        });
+      }
+    });
+
     $(window).load(function(){
         if("!{idea.name}" == ""){
           $('#titleModal').modal('show');

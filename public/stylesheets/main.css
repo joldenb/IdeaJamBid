@@ -560,3 +560,20 @@ form#addDescription #submit{
 .no-descriptions {
   font-style: italic;
 }
+
+.viability-left-column, .viability-right-column {
+  width: 50%;
+  vertical-align: top;
+  display: inline-block;
+}
+
+#viabilityModal label {
+  border: 1px solid gray;
+  padding: .3em;
+  margin: .6em;
+  border-radius: 5px;
+}
+#viabilityModal label:hover {
+  cursor: pointer;
+  background: lightgreen;
+}

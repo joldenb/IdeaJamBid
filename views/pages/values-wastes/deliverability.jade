@@ -3,23 +3,8 @@ html
   head
     include ../../partials/head.jade
   body
-  .header
-    span.userName Howdy #{user.username}
-    |  
-    .profile-headshot
-      if headshot
-        img.placeholder(src=headshot height="75" width="75")
-        a.plus-overlay(href="/profile-picture")
-          img(src='/plus-overlay.png' height="75" width="75")
-      else  
-        img.placeholder(src="/avatar.png" height="75" width="75")
-        a.plus-overlay(href="/profile-picture")
-          img(src='/plus-overlay.png' height="75" width="75")
-    a.home-logout.btn.btn-default( href="/begin" ) My Profile
-    | 
-    a.home-logout.btn.btn-default( href="/logout" ) Log Out
 
-  .container.scoreIdea
+  div.scoreIdea(class='modalContainer')
     h1 Deliverability
     h4 
       | Can #{idea.name} arrive for use at the right time and place to solve [user-entered challenge]?
@@ -42,55 +27,10 @@ html
       textarea.form-control(rows='6', cols="75", name="deliverProblem")
         | The problem of 
       br
-      if reviewing
-        a(href="/contributor-idea-summary").btn.btn-info View All
-      else
-        a(href="/idea-summary").btn.btn-info View All
-      |  
-      |  
-      button.btn.btn-success Continue >
-      br
-      br
       h3 Einstein Points: #{user.einsteinPoints}
 
   include ../../partials/js-includes.jade
   script(type="text/javascript").
-    var labelArr = _.range(101).map(function(number){
-      return number.toString();
-    });
-    var initialValue, min=1, max=100, valueEntered=false;
-    initialValue = '#{idea.deliverOne}' || 50;
-
-    ////////////////////////////////////////////
-    // SET UP SLIDER ONE
-    ////////////////////////////////////////////
-    $("#deliverSliderOne").slider({
-      value:initialValue,
-      min: min,
-      max: max,
-      step: 1,
-      slide: function( event, ui ) {
-          valueEntered = true;
-          $("#deliverLabelOne").text(labelArr[ui.value]);
-          $("#deliverLabelOne").css("margin-left", (ui.value-min)/(max-min)*100+"%");
-          $("#deliverLabelOne").css("left", "-50px");
-      }
-    });
-    $("#deliverLabelOne").text(labelArr[initialValue]);
-    $("#deliverLabelOne" ).css("margin-left", (initialValue -1)/(max-min)*100+"%");
-    $("#deliverLabelOne").css("left", "-50px");
-
-    $("button.btn-success").click(function(event){
-      if(valueEntered){
-        var sliderOneValue = $("#deliverSliderOne").slider("value");
-        var inputOne = $("<input>")
-                 .attr("type", "hidden")
-                 .attr("name", "deliverSliderOneValue").val(sliderOneValue);
-        $('#formDeliverability').append($(inputOne)).submit();
-      } else {
-        $('#formDeliverability').submit();
-      }
-    });
 
     var input = document.getElementsByTagName ("textarea");
 
