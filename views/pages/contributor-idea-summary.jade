@@ -17,38 +17,17 @@ html
           img(src='/plus-overlay.png' height="75" width="75")
     a.home-logout.btn.btn-default( href="/begin" ) My Profile
     | 
+    a.home-login.btn.btn-success( href="/view-all-ideas" ) View All Ideas
+    | 
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
 
   .idea-summary
     h3 Idea Summary for #{idea.name}
-    h4 Waste : //waste/value score averages
-    h4 <b>Problem :</b> #{idea.problem}
-    h4 <b>How :</b> #{idea.description}
-    h4 <b>Features</b>
-    if components
-      ul
-        each component in components
-          li #{component['number']} : #{component['text']}
-
-    br
     if !currentlyReviewing
       a.btn.btn-default( href="/begin-contributor-review" ) Start Review  
-    br
-    a.home-login.btn.btn-success( href="/view-all-ideas" ) View All Ideas
 
-    .edit-column.half-column
-      if currentlyReviewing
-      .idea-summary-data#idea-summary-waste-values
-        h4 Idea Viability Scores
-        a.btn.btn-default( type="button" id="viabilityModalButton"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") View All
-        br
-    if currentlyReviewing
-      .idea-function-column.half-column
-        h3 Make a Suggestion
-        a.btn.btn-default( href="/suggestion-summary" ) Make Suggestions
-        br
-        br
 
+    .edit-column.col-md-4
       .imagesList
         if(imageURLs)
           h3 Uploaded Images
@@ -57,6 +36,21 @@ html
           each imageURL, index in imageURLs
             if index < 3
               img.imageListItems(src=imageURL[1])
+      if currentlyReviewing
+
+    .col-md-8
+      h3 Make a Suggestion
+      if currentlyReviewing
+        a.btn.btn-default( href="/suggestion-summary" ) Make Suggestions
+        br
+        br
+      else
+        h4 Not Currently Reviewing
+      .idea-summary-data#idea-summary-waste-values
+        h4 Idea Viability Scores
+        a.btn.btn-default( type="button" id="viabilityModalButton"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") View All
+        br
+
   #viabilityModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
       .modal-content

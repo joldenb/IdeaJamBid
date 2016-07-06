@@ -22,7 +22,7 @@ html
   .idea-summary
     h3 Idea Summary for #{idea.name}
 
-    .edit-column.half-column
+    .edit-column.col-md-4
       .imagesList
         if(imageURLs)
           h4 Uploaded Images
@@ -34,48 +34,6 @@ html
               img.imageListItems(src=imageURL[1])
           .view-all-images-btn
             a.btn.btn-default( href="/image-upload" ) View All Images
-
-    .idea-function-column.half-column
-      .idea-summary-data#idea-summary-components
-        h4 Components
-        if components
-          ul
-            each component in components
-              if component['text']            
-                if component['identifier']
-                  li 
-                    a(href="/component-profile/"+component['identifier'])
-                      h4 #{component['number']} : #{component['text']}
-                else
-                  li 
-                    h4 #{component['number']} : #{component['text']}
-              else if component['descriptions'].length > 0
-                if component['identifier']
-                  li
-                    a(href="/component-profile/"+component['identifier'])
-                      h4 #{component['descriptions'][0]}
-                else
-                  li
-                    h4 #{component['descriptions'][0]}
-
-
-        button(type="button" id="componentModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addComponentModal") Add a Component
-      .idea-summary-data#idea-summary-waste-values
-        h4 Idea Viability Scores
-        a.btn.btn-default( type="button" id="viabilityModalButton"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") View All
-        br
-      .idea-summary-data#idea-summary-problems
-        h4 Idea Problems
-        h5 Recent Problems
-        ul.idea-summary-problem-list
-          each problem, index in problems
-            if(index < 3 && problem.text)
-              li
-                p #{index + 1} : #{problem.text}
-        button(type="button" id="problemModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addProblemModal") Add a Problem
-        |  
-        a.btn.btn-default( href="/sort-problems" ) Sort Existing Problems
-
       .idea-summary-data#idea-summary-challenge
         h4 Challenge
         p <i>#{idea.problem}</i>
@@ -86,6 +44,66 @@ html
         p <i>#{idea.description}</i>
         a.btn.btn-default( href="/accomplish" ) Edit >
         br
+
+    .idea-function-column.col-md-8
+      //
+        Navigation tabs
+      ul.nav.nav-tabs(role="tablist")
+        li.active(role="presention")
+          a(href="#components" aria-controls="components" role="tab" data-toggle="tab") Components
+        li(role="presention")
+          a(href="#issues" aria-controls="issues" role="tab" data-toggle="tab") Issues
+        li(role="presention")
+          a(href="#suggestions" aria-controls="suggestions" role="tab" data-toggle="tab") Suggestions
+      //
+        Tab content
+      .tab-content
+        .tab-pane.active#components(role="tabpanel")
+          .idea-summary-data#idea-summary-components
+            h4 Components
+            if components
+              ul
+                each component in components
+                  if component['text']            
+                    if component['identifier']
+                      li 
+                        a(href="/component-profile/"+component['identifier'])
+                          h4 #{component['number']} : #{component['text']}
+                    else
+                      li 
+                        h4 #{component['number']} : #{component['text']}
+                  else if component['descriptions'].length > 0
+                    if component['identifier']
+                      li
+                        a(href="/component-profile/"+component['identifier'])
+                          h4 #{component['descriptions'][0]}
+                    else
+                      li
+                        h4 #{component['descriptions'][0]}
+
+
+            button(type="button" id="componentModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addComponentModal") Add a Component
+
+        .tab-pane.active#issues(role="tabpanel")
+          .idea-summary-data#idea-summary-problems
+            h4 Idea Problems
+            h5 Recent Problems
+            ul.idea-summary-problem-list
+              each problem, index in problems
+                if(index < 3 && problem.text)
+                  li
+                    p #{index + 1} : #{problem.text}
+            button(type="button" id="problemModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addProblemModal") Add a Problem
+            |  
+            a.btn.btn-default( href="/sort-problems" ) Sort Existing Problems
+        .tab-pane.active#suggestions(role="tabpanel")
+          h4 Same as components at the moment. Soon to change.
+
+      .idea-summary-data#idea-summary-waste-values
+        h4 Idea Viability Scores
+        a.btn.btn-default( type="button" id="viabilityModalButton"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") View All
+        br
+
 
 .inventor-only-idea-summary
   h1 For the Inventor
