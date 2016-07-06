@@ -21,8 +21,7 @@ html
     | 
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
 
-  .idea-summary
-    h3 Idea Summary for #{idea.name}
+  .idea-summary    
     if !currentlyReviewing
       a.btn.btn-default( href="/begin-contributor-review" ) Start Review  
 
@@ -30,22 +29,65 @@ html
     .edit-column.col-md-4
       .imagesList
         if(imageURLs)
-          h3 Uploaded Images
-          h4
-            a.btn.btn-default( href="/image-upload" ) View All Images
           each imageURL, index in imageURLs
             if index < 3
               img.imageListItems(src=imageURL[1])
+          h4
+            a.btn.btn-default( href="/image-upload" ) View All Images
+      h3 Idea Summary for #{idea.name}
       if currentlyReviewing
 
     .col-md-8
-      h3 Make a Suggestion
-      if currentlyReviewing
-        a.btn.btn-default( href="/suggestion-summary" ) Make Suggestions
-        br
-        br
-      else
-        h4 Not Currently Reviewing
+      //
+        Navigation tabs
+      ul.nav.nav-tabs(role="tablist")
+        li.active(role="presention")
+          a(href="#components" aria-controls="components" role="tab" data-toggle="tab") Components
+        li(role="presention")
+          a(href="#issues" aria-controls="issues" role="tab" data-toggle="tab") Issues
+        li(role="presention")
+          a(href="#suggestions" aria-controls="suggestions" role="tab" data-toggle="tab") Suggestions
+      //
+        Tab content
+      .tab-content.components-issues-suggestions-block
+        .tab-pane.active#components(role="tabpanel")
+          .idea-summary-data#idea-summary-components
+            h4 Components
+            if components
+              ul
+                each component, index in components
+                  if component['text'] && index < 5            
+                    if component['identifier']
+                      li 
+                        a(href="/component-profile/"+component['identifier'])
+                          h4 #{component['number']} : #{component['text']}
+                    else
+                      li 
+                        h4 #{component['number']} : #{component['text']}
+                  else if component['descriptions'].length > 0  && index < 5
+                    if component['identifier']
+                      li
+                        a(href="/component-profile/"+component['identifier'])
+                          h4 #{component['descriptions'][0]}
+                    else
+                      li
+                        h4 #{component['descriptions'][0]}
+
+
+            button(type="button" id="componentModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addComponentModal") Add a Component
+
+        .tab-pane#issues(role="tabpanel")
+          .idea-summary-data#idea-summary-problems
+            h4 Idea Problems
+            h5 Recent Problems
+            // problem loop goes here, copy from idea summary
+
+            button(type="button" id="problemModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addProblemModal") Add a Problem
+            |  
+            a.btn.btn-default( href="/sort-problems" ) Sort Existing Problems
+        .tab-pane#suggestions(role="tabpanel")
+          h4 Same as components at the moment. Soon to change.
+
       .idea-summary-data#idea-summary-waste-values
         h4 Idea Viability Scores
         a.btn.btn-default( type="button" id="viabilityModalButton"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") View All

@@ -20,35 +20,16 @@ html
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
 
   .component-summary
-    h1 Component Summary
-    if component['text']
-      .component-name
-        if component['number']
-          h3 Component # #{component['number']} : #{component['text']}
-        else
-          .component-name
-            h3 Name : #{component['number']}
-    h4 It is a component of the idea seed "#{idea.name}"
-      .component-descriptions
-        h3 Description(s)
-        if( component['descriptions'].length > 0)
-          ul
-            each description, index in component['descriptions']
-              li #{index+1}. #{description}
-              br
-        else
-          ul
-            li.no-descriptions No Descriptions Yet
-            br
-        form(role='form', id="addDescription" action="/add-description", method="post", data-idea-doc=idea)
-          h5#new-idea-description Add a New Description:
-          |  
-          input.form-control(name="description", id="description",
-            placeholder='Describe the new component...')
-          |  
-          button.btn.btn-success#submit(type='submit') Submit
-
-    .edit-column.half-column
+    .col-md-4
+      h1 Component Summary
+      if component['text']
+        .component-name
+          if component['number']
+            h3 Component # #{component['number']} : #{component['text']}
+          else
+            .component-name
+              h3 Name : #{component['number']}
+      h4 It is a component of the idea seed "#{idea.name}"
       .imagesList
         if(imageURLs)
           h4 Uploaded Images
@@ -70,6 +51,28 @@ html
               img.imageListItems(src=imageURL[1])
           .view-all-images-btn
             a.btn.btn-default( href="/image-upload" ) View All Images
+
+
+    .edit-column.col-md-8
+      .component-descriptions
+        h3 Description(s)
+        if( component['descriptions'].length > 0)
+          ul
+            each description, index in component['descriptions']
+              li #{index+1}. #{description}
+              br
+        else
+          ul
+            li.no-descriptions No Descriptions Yet
+            br
+        form(role='form', id="addDescription" action="/add-description", method="post", data-idea-doc=idea)
+          h5#new-idea-description Add a New Description:
+          |  
+          input.form-control(name="description", id="description",
+            placeholder='Describe the new component...')
+          |  
+          button.btn.btn-success#submit(type='submit') Submit
+
       .related-components
         h4 Related Components
         each component in relatedComponents
@@ -100,43 +103,43 @@ html
         button(type="button" id="modalButton" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Add New Related Component
 
 
-    .idea-function-column.half-column
-      if(problem != "none")
-        h4 Related Problem
-        .image-block-element
-          .suggestion
-            .suggestion-text
-              p <b>Problem: </b> #{problem['text']}
-              p <b>Problem Area: </b> #{problem['problemArea']}
-              p <b>Suggestion Type: </b> #{component['category']}
+      .idea-function-column.half-column
+        if(problem != "none")
+          h4 Related Problem
+          .image-block-element
+            .suggestion
+              .suggestion-text
+                p <b>Problem: </b> #{problem['text']}
+                p <b>Problem Area: </b> #{problem['problemArea']}
+                p <b>Suggestion Type: </b> #{component['category']}
 
-            .suggestion-category
-              ul
-                li
-                  p <b> Hindsight :</b> #{component['hindsight'] || "No value yet"} 
-                li
-                  p <b> Foresight :</b> #{component['foresight'] || "No value yet"} 
-                li
-                  p <b> Outsight :</b> #{component['outsight'] || "No value yet"} 
-          .suggestion-maker
-            if problemHeadshotURL != ""
-              img(src=problemHeadshotURL height="50" width="50")
-            else
-              img(src="/avatar.png" height="50" width="50")
-            div.userName #{problem['creator'] || "Unknown User"}
+              .suggestion-category
+                ul
+                  li
+                    p <b> Hindsight :</b> #{component['hindsight'] || "No value yet"} 
+                  li
+                    p <b> Foresight :</b> #{component['foresight'] || "No value yet"} 
+                  li
+                    p <b> Outsight :</b> #{component['outsight'] || "No value yet"} 
+            .suggestion-maker
+              if problemHeadshotURL != ""
+                img(src=problemHeadshotURL height="50" width="50")
+              else
+                img(src="/avatar.png" height="50" width="50")
+              div.userName #{problem['creator'] || "Unknown User"}
 
-      .component-variants
-        h4 Included in Variants
-        if variantDates.length > 0
-          each variantDate in variantDates
-            ul.variantDateList
-              li
-                a(href="/variant/"+variantDate[1]) #{variantDate[0]}
-        else 
-          p <i>Not currently part of any variants</i>
-    .return-button
-      a.home-logout.btn.btn-default( href="/idea-summary" ) < Back to Idea Summary
-    br
+        .component-variants
+          h4 Included in Variants
+          if variantDates.length > 0
+            each variantDate in variantDates
+              ul.variantDateList
+                li
+                  a(href="/variant/"+variantDate[1]) #{variantDate[0]}
+          else 
+            p <i>Not currently part of any variants</i>
+      .return-button
+        a.home-logout.btn.btn-default( href="/idea-summary" ) < Back to Idea Summary
+      br
 
     #myModal.modal.fade.annotate-modal(role="dialog")
       .modal-dialog

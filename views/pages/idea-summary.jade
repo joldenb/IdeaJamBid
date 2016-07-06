@@ -20,12 +20,9 @@ html
     a.home-logout.btn.btn-default( href="/logout" ) Log Out
 
   .idea-summary
-    h3 Idea Summary for #{idea.name}
-
     .edit-column.col-md-4
       .imagesList
         if(imageURLs)
-          h4 Uploaded Images
           each imageURL, index in imageURLs
             if index == 0
               .image-summary-image
@@ -34,6 +31,7 @@ html
               img.imageListItems(src=imageURL[1])
           .view-all-images-btn
             a.btn.btn-default( href="/image-upload" ) View All Images
+      h3 Idea Summary for #{idea.name}
       .idea-summary-data#idea-summary-challenge
         h4 Challenge
         p <i>#{idea.problem}</i>
@@ -57,14 +55,14 @@ html
           a(href="#suggestions" aria-controls="suggestions" role="tab" data-toggle="tab") Suggestions
       //
         Tab content
-      .tab-content
+      .tab-content.components-issues-suggestions-block
         .tab-pane.active#components(role="tabpanel")
           .idea-summary-data#idea-summary-components
             h4 Components
             if components
               ul
-                each component in components
-                  if component['text']            
+                each component,index in components
+                  if component['text'] && index < 5
                     if component['identifier']
                       li 
                         a(href="/component-profile/"+component['identifier'])
@@ -72,7 +70,7 @@ html
                     else
                       li 
                         h4 #{component['number']} : #{component['text']}
-                  else if component['descriptions'].length > 0
+                  else if component['descriptions'].length > 0 && index < 5
                     if component['identifier']
                       li
                         a(href="/component-profile/"+component['identifier'])
