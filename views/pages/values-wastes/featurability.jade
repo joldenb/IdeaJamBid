@@ -6,27 +6,28 @@ html
   div.scoreIdea(class='modalContainer')
     h1 Featurability
     h4 
-      | Does #{idea.name} incorporate enough features to effectively solve the challenge of [user-entered challenge]?
+      | Will #{idea.name} provide added benefits?
     br
     form(role='form', id="formFeaturability" action="/featurability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
         .slider-end-labels
-          span.no-way Not Enough Features
-          span.yes-way Sufficient Number of Features
+          span.no-way Few benefits
+          span.yes-way Many benefits
         #featureLabelOne.sliderLabel
         #featureSliderOne
       br
-      h4 Recorded problems for featurability:
-      ul.waste-value-problem-list
-        each problem, index in problems
-          li
-            h4 #{index + 1} : #{problem.text}
-      br
-      h4 Add a new featurability problem:
+      if problems.length > 0
+        h4 Recorded problems for featurability:
+        ul.waste-value-problem-list
+          each problem, index in problems
+            li
+              h4 #{index + 1} : #{problem.text}
+        br
+      h4 What problem associated with #{idea.name} prevents it from providing more benefits?
       textarea.form-control(rows='6', cols="75", name="featureProblem")
         | The problem of 
       br
-      h3 Einstein Points: #{user.einsteinPoints}
+      p (Ex. "The problem of the Delorean not having automatic locks so that Biff can steal a Gray's Sports Almanac out of the back seat.")
 
   include ../../partials/js-includes.jade
   script(type="text/javascript").

@@ -7,25 +7,27 @@ html
     form(role='form', id="formPerformability" action="/performability", method="post", style='max-width: 700px;', data-idea-doc=idea)
       h1 Performability
       h4
-        | Will #{idea.name}, as it is, perform to solve the [user-entered challenge] in an effective way?
+        | Will #{idea.name}, as it is, perform to solve the problem of #{idea.problem} in an effective way?
       br
       .slider-container
         .slider-end-labels
-          span.no-way Low Performability
-          span.yes-way High Performability
+          span.no-way Performs Poorly
+          span.yes-way Performs as Expected
         #perfLabelOne.sliderLabel
         #perfSliderOne(name="perfSliderOne")
       br
-      h4 Recorded problems for Performability:
-      ul.waste-value-problem-list
-        each problem, index in problems
-          li
-            h4 #{index + 1} : #{problem.text}
-      br
-      h4 Add a new performability problem:
+      if problems.length > 0
+        h4 Performability problems associated with #{idea.name}:
+        ul.waste-value-problem-list
+          each problem, index in problems
+            li
+              h4 #{index + 1} : #{problem.text}
+        br
+      h4 What problem prevented you from rating your #{idea.name} better?
       textarea.form-control(rows='6', cols="75", name="performProblem")
           | The problem of 
       br
+      p (Ex. "The problem of Mr. Fusion only works with uranium or lightning strikes.")  
       h3 Einstein Points: #{user.einsteinPoints}
 
   include ../../partials/js-includes.jade

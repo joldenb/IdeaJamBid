@@ -4,22 +4,7 @@ html
     include ../partials/head.jade
   body
   .header
-    span.userName Howdy #{user.username}
-    |  
-    .profile-headshot
-      if headshot
-        img.placeholder(src=headshot height="75" width="75")
-        a.plus-overlay(href="/profile-picture")
-          img(src='/plus-overlay.png' height="75" width="75")
-      else  
-        img.placeholder(src="/avatar.png" height="75" width="75")
-        a.plus-overlay(href="/profile-picture")
-          img(src='/plus-overlay.png' height="75" width="75")
-    a.home-logout.btn.btn-default( href="/begin" ) My Profile
-    | 
-    a.home-login.btn.btn-success( href="/view-all-ideas" ) View All Ideas
-    | 
-    a.home-logout.btn.btn-default( href="/logout" ) Log Out
+    include ../partials/header.jade
 
   .idea-summary    
     if !currentlyReviewing
@@ -31,7 +16,7 @@ html
         if(imageURLs)
           each imageURL, index in imageURLs
             if index < 3
-              img.imageListItems(src=imageURL[1])
+              img.imageListItems(src=imageURL[1] style=imageURL[2])
           h4
             a.btn.btn-default( href="/image-upload" ) View All Images
       h3 Idea Summary for #{idea.name}

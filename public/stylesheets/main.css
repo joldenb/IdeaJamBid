@@ -581,3 +581,7 @@ form#addDescription #submit{
   padding-top: 2em;
   padding-left:1em;
 }
+
+img {
+    image-orientation: from-image;
+}

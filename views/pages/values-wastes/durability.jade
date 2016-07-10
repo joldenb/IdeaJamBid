@@ -6,7 +6,7 @@ html
   div.scoreIdea(class='modalContainer')
     h1 Durability
     h4 
-      | How well will #{idea.name} withstand abuse and changes in the enviornment? How long will it last? 
+      | Is #{idea.name} robust enough to withstand abuse?
     br
     form(role='form', id="formDurability" action="/durability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
@@ -16,17 +16,18 @@ html
         #durabilityLabelOne.sliderLabel
         #durabilitySliderOne
       br
-      h4 Recorded problems for durability:
-      ul.waste-value-problem-list
-        each problem, index in problems
-          li
-            h4 #{index + 1} : #{problem.text}
+      if problems.length > 0
+        h4 Recorded problems for durability:
+        ul.waste-value-problem-list
+          each problem, index in problems
+            li
+              h4 #{index + 1} : #{problem.text}
       br
-      h4 Add a new durability problem:
+      h4 What prevents #{idea.name} from being robust enough to withstand abuse?
       textarea.form-control(rows='6', cols="75", name="durabilityProblem")
         | The problem of 
       br
-      h3 Einstein Points: #{user.einsteinPoints}
+      p (Ex. "The problem of the Delorean's shocks were not designed to withstand the terrain of the wild west desert.")
 
   include ../../partials/js-includes.jade
   script(type="text/javascript").

@@ -4,21 +4,7 @@ html
     include ../partials/head.jade
   body()
   .header
-    span.userName Howdy #{user.username}
-    |  
-    .profile-headshot
-      if headshot
-        img.placeholder(src=headshot height="75" width="75")
-        a.plus-overlay(href="/profile-picture")
-          img(src='/plus-overlay.png' height="75" width="75")
-      else  
-        img.placeholder(src="/avatar.png" height="75" width="75")
-        a.plus-overlay(href="/profile-picture")
-          img(src='/plus-overlay.png' height="75" width="75")
-    a.home-logout.btn.btn-default( href="/begin" ) My Profile
-    | 
-    a.home-logout.btn.btn-default( href="/logout" ) Log Out
-
+    include ../partials/header.jade
   
     #myModal.modal.fade.annotate-modal(role="dialog")
       .modal-dialog
@@ -43,7 +29,7 @@ html
   .container.annotate-image-container
       if (imgURL)
         canvas(id="myCanvas", width="1000", height="700", style="border:1px solid #d3d3d3;")
-        img.summary-image(id="scream", src=imgURL, data-original="http://www.example.com/my-dummy-image-path", style="display:none;")
+        img.summary-image(id="scream", src=imgURL, data-original="http://www.example.com/my-dummy-image-path", style="display:none;" + imageStyle)
       each value in comps
         canvas.component(id="component-#{value['number']}", width="1000", height="700", style="border:1px solid #d3d3d3;")
     #componentList
@@ -72,7 +58,19 @@ html
 
     window.onload = function() {
         var img = document.getElementById("scream");
-        ctx.drawImage(img, 200, 150, 600, 400);
+        ctx.translate(500, 350);
+        if('!{imageStyle}'.indexOf("rotate(90deg)") > -1){
+          ctx.rotate(90*Math.PI/180);
+        }
+        if('!{imageStyle}'.indexOf("rotate(180deg)") > -1){
+          ctx.rotate(180*Math.PI/180);
+        }
+        if('!{imageStyle}'.indexOf("rotate(270deg)") > -1){
+          ctx.rotate(270*Math.PI/180);
+        }
+        
+        ctx.drawImage(img, -300, -200, 600, 400);
+
         var textCoordX, textCoordY;
 
         var firstX, firstY, secondX, secondY;

@@ -6,27 +6,28 @@ html
   div.scoreIdea(class='modalContainer')
     h1 Useability
     h4 
-      | How easy is #{idea.name} to use?
+      | Can #{idea.name} be quickly and easily learned and implemented?
     br
     form(role='form', id="formUseability" action="/useability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
         .slider-end-labels
-          span.no-way Difficult to Use
-          span.yes-way Easy to Use
+          span.no-way Difficult to Learn
+          span.yes-way Easy to Implement
         #useabilityLabelOne.sliderLabel
         #useabilitySliderOne
       br
-      h4 Recorded problems for useability:
-      ul.waste-value-problem-list
-        each problem, index in problems
-          li
-            h4 #{index + 1} : #{problem.text}
+      if problems.length > 0
+        h4 Recorded problems for useability:
+        ul.waste-value-problem-list
+          each problem, index in problems
+            li
+              h4 #{index + 1} : #{problem.text}
       br
-      h4 Add a new useability problem:
+      h4 What ease-of-use problem associated with #{idea.name} prevented you from scoring it higher?
       textarea.form-control(rows='6', cols="75", name="useabilityProblem")
         | The problem of 
       br
-      h3 Einstein Points: #{user.einsteinPoints}
+      p (Ex. "The problem of the Delorean's doors not having any easy to find handles to enable Jennifer to open the door.")
 
   include ../../partials/js-includes.jade
   script(type="text/javascript").

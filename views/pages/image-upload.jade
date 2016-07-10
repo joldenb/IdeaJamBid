@@ -4,20 +4,7 @@ html
     include ../partials/head.jade
   body
   .header
-    span.userName Howdy #{user.username}
-    |  
-    .profile-headshot
-      if headshot
-        img.placeholder(src=headshot height="75" width="75")
-        a.plus-overlay(href="/profile-picture")
-          img(src='/plus-overlay.png' height="75" width="75")
-      else  
-        img.placeholder(src="/avatar.png" height="75" width="75")
-        a.plus-overlay(href="/profile-picture")
-          img(src='/plus-overlay.png' height="75" width="75")
-    a.home-logout.btn.btn-default( href="/begin" ) My Profile
-    | 
-    a.home-logout.btn.btn-default( href="/logout" ) Log Out
+    include ../partials/header.jade
 
   .container
     h1 Visualize Your Concept
@@ -47,7 +34,7 @@ html
       each imageURL in imageURLs
         if imageURL[2] == user.username
           a(href="/annotate-image/"+imageURL[0])
-            img.imageListItems(src=imageURL[1])
+            img.imageListItems(src=imageURL[1] style=imageURL[3])
 
   .imagesList.other-images
     if(imageURLs)
@@ -55,11 +42,12 @@ html
       h5 (Cannot Annotate)
       each imageURL in imageURLs
         if imageURL[2] != user.username
-          img.imageListItems(src=imageURL[1])            
+          img.imageListItems(src=imageURL[1] style=imageURL[3])
 
 
 
   include ../partials/js-includes.jade
+  script(src='/exif.js')
   script(type="text/javascript").
     if($(".my-images img").length == 0){
       $(".my-images").append("<h4> No images uploaded yet.</h4>");
@@ -73,23 +61,35 @@ html
       if(file == null){
         return alert('No file selected.');
       }
+      var fr   = new FileReader;
+      
+      fr.onloadend = function() {
+        // get EXIF data
+        var exif = EXIF.readFromBinaryFile(this.result);
 
-      if(file.size < 3000000){
-        getSignedRequest(file);
-      } else if (file.size > 3000000){
-        alert('Please choose an image smaller than 3 MB.')
-      } else {
-        alert('An error ocurred with this image.')
-      }
+        if(file.size < 3000000){
+          getSignedRequest(file, exif);
+        } else if (file.size > 3000000){
+          alert('Please choose an image smaller than 3 MB.')
+        } else {
+          alert('An error ocurred with this image.')
+        }
+
+      };
+
+      fr.readAsArrayBuffer(file); // read the file
+
+
     };
 
-    function uploadFile(file, signedRequest, url){
+    function uploadFile(file, signedRequest, url, exif){
       const xhr = new XMLHttpRequest();
       xhr.open('PUT', signedRequest);
       xhr.onreadystatechange = function() {
         if(xhr.readyState === 4){
           if(xhr.status === 200 && (file.type=="image/jpeg" || file.type=="image/png")){
-            var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type };
+            var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type,
+              exif : exif };
             $.post('/image-upload', data , function(response, status){
               window.location.replace(response["redirectURL"]);
             });
@@ -102,14 +102,14 @@ html
       xhr.send(file);
     }
 
-    function getSignedRequest(file){
+    function getSignedRequest(file, exif){
       const xhr = new XMLHttpRequest();
       xhr.open('GET', '/sign-s3?file-name='+file.name + '&file-type='+ file.type);
       xhr.onreadystatechange = function() {
         if(xhr.readyState === 4){
           if(xhr.status === 200){
             const response = JSON.parse(xhr.responseText);
-            uploadFile(file, response.signedRequest, response.url);
+            uploadFile(file, response.signedRequest, response.url, exif);
           }
           else{
             alert('Could not get signed URL.');

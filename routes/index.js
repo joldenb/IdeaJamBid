@@ -144,6 +144,21 @@ router.get('/begin', function(req, res) {
         IdeaImage.findById(req.user.headshots[0], function(err, headshot){
           if(headshot){
             var headshotURL = headshot["amazonURL"];
+            var headshotStyle = "";
+            switch (headshot["orientation"]) {
+              case 1 :
+                headshotStyle = "";
+                break;
+              case 2 :
+                headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                break;
+              case 3 :
+                headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                break;
+              case 4 :
+                headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                break;
+            }
           }
           if(req.user.ideaSeeds && req.user.ideaSeeds.length > 0){
             var ideaNames = [],
@@ -165,6 +180,7 @@ router.get('/begin', function(req, res) {
                             return res.render('pages/begin', {
                               reviewNames : reviewNames,
                               headshot : headshotURL,
+                              headshotStyle : headshotStyle,
                               user : req.user,
                               myAptitudes : myAptitudes,
                               mySchoolNetwork : mySchoolNetwork,
@@ -190,6 +206,7 @@ router.get('/begin', function(req, res) {
                               reviewNames : reviewNames,
                               myAptitudes : myAptitudes,
                               headshot : headshotURL,
+                              headshotStyle : headshotStyle,
                               mySchoolNetwork : mySchoolNetwork,
                               myLocationNetwork : myLocationNetwork,
                               myCompanyNetwork : myCompanyNetwork,
@@ -209,6 +226,7 @@ router.get('/begin', function(req, res) {
               user : req.user,
               myAptitudes : myAptitudes,
               headshot : headshotURL,
+              headshotStyle : headshotStyle,
               mySchoolNetwork : mySchoolNetwork,
               myLocationNetwork : myLocationNetwork,
               myCompanyNetwork : myCompanyNetwork,
@@ -238,7 +256,7 @@ router.get('/profile-picture', function(req, res){
     IdeaImage.findById(req.user.headshots[0], function(err, headshot){
       if(headshot){
         var headshotURL = headshot["amazonURL"];
-      }
+w      }
 
 
       var headshotIDs = _.map(req.user.headshots, function(image){
@@ -251,6 +269,21 @@ router.get('/profile-picture', function(req, res){
         var profilePictureFilename = "";
         if(images && images.length > 0){
           for(var i=0; i < images.length; i++){
+            var imageStyle = "";
+            switch (images[i]["orientation"]) {
+              case 1 :
+                imageStyle = "";
+                break;
+              case 2 :
+                imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                break;
+              case 3 :
+                imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                break;
+              case 4 :
+                imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                break;
+            }
             //get the first image listed in the accounts headshots, use this as the
             // primary one to display in the header bar
             if(images[i].id.toString() == req.user.headshots[0]){
@@ -262,7 +295,8 @@ router.get('/profile-picture', function(req, res){
             } else {
               imageURLs.push([
                 filename,
-                images[i]._doc["amazonURL"]
+                images[i]._doc["amazonURL"],
+                imageStyle
               ]);
             }
           }
@@ -270,6 +304,7 @@ router.get('/profile-picture', function(req, res){
           res.render('pages/profile-picture', {
             user : req.user,
             imageURLs : imageURLs,
+            headshotStyle : headshotStyle,
             headshot : headshotURL,
             profilePictureFilename : profilePictureFilename
           });
@@ -277,6 +312,7 @@ router.get('/profile-picture', function(req, res){
           res.render('pages/profile-picture', {
             user : req.user,
             headshot : headshotURL,
+            headshotStyle : headshotStyle,
             imageURLs : [],
             profilePictureFilename : ""
           });
@@ -305,6 +341,21 @@ router.get('/view-all-ideas', function(req, res){
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
       var headshotURL = headshot["amazonURL"];
+      var headshotStyle = "";
+      switch (headshot["orientation"]) {
+        case 1 :
+          headshotStyle = "";
+          break;
+        case 2 :
+          headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+          break;
+        case 3 :
+          headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+          break;
+        case 4 :
+          headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+          break;
+      }
     } else {
       var headshotURL = "";
     }
@@ -375,6 +426,22 @@ router.get('/view-all-ideas', function(req, res){
                             if(profilePictures[n]["id"].toString() == accounts[k].headshots[0].toString()
                               && profilePictures[n]["amazonURL"]){
                               ideaList[j].push(profilePictures[n]["amazonURL"]);
+                              var creatorHeadshotStyle = "";
+                              switch (profilePictures[n]["orientation"]) {
+                                case 1 :
+                                  ideaList[j].push("");
+                                  break;
+                                case 2 :
+                                  ideaList[j].push("-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);");
+                                  break;
+                                case 3 :
+                                  ideaList[j].push("-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);");
+                                  break;
+                                case 4 :
+                                  ideaList[j].push("-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);");
+                                  break;
+                              }
+
                             }
                           }
                         }
@@ -386,12 +453,14 @@ router.get('/view-all-ideas', function(req, res){
                   res.render('pages/view-all-ideas', {
                     user : req.user,
                     headshot : headshotURL,
+                    headshotStyle : headshotStyle,
                     ideas : ideaList
                   });
                 } else {
                   res.render('pages/view-all-ideas', {
                     user : req.user,
                     headshot : headshotURL,
+                    headshotStyle : headshotStyle,
                     ideas : ideaList
                   });
                 }
@@ -421,6 +490,21 @@ router.get('/introduce-idea', function(req, res) {
       IdeaImage.findById(req.user.headshots[0], function(err, headshot){
         if(headshot){
           var headshotURL = headshot["amazonURL"];
+          var headshotStyle = "";
+          switch (headshot["orientation"]) {
+            case 1 :
+              headshotStyle = "";
+              break;
+            case 2 :
+              headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+              break;
+            case 3 :
+              headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+              break;
+            case 4 :
+              headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+              break;
+          }
         }
         if(!req.session.idea) {
           var newIdea = new IdeaSeed({inventorName : req.user.username});
@@ -439,6 +523,7 @@ router.get('/introduce-idea', function(req, res) {
             currentIdea = idea._doc;
             res.render('pages/introduce-idea', { user : req.user,
               headshot : headshotURL,
+              headshotStyle : headshotStyle,
               idea : currentIdea });
           });
         }
@@ -486,12 +571,28 @@ router.get('/accomplish', function(req, res) {
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
       var headshotURL = headshot["amazonURL"];
+      var headshotStyle = "";
+      switch (headshot["orientation"]) {
+        case 1 :
+          headshotStyle = "";
+          break;
+        case 2 :
+          headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+          break;
+        case 3 :
+          headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+          break;
+        case 4 :
+          headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+          break;
+      }
     }
 
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
       res.render('pages/accomplish', { user : req.user,
         headshot: headshotURL,
+        headshotStyle : headshotStyle,
         idea : currentIdea });
     });
   });
@@ -751,6 +852,21 @@ router.get('/image-upload', function(req, res){
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
       var headshotURL = headshot["amazonURL"];
+      var headshotStyle = "";
+      switch (headshot["orientation"]) {
+        case 1 :
+          headshotStyle = "";
+          break;
+        case 2 :
+          headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+          break;
+        case 3 :
+          headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+          break;
+        case 4 :
+          headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+          break;
+      }
     }
 
     IdeaSeed.findById(req.session.idea,function(err, idea){
@@ -763,10 +879,26 @@ router.get('/image-upload', function(req, res){
             j++;
             if(image && image._doc && image._doc.amazonURL){
               var filename = image._doc["filename"];
+              var imageStyle = "";
+              switch (image["orientation"]) {
+                case 1 :
+                  imageStyle = "";
+                  break;
+                case 2 :
+                  imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                  break;
+                case 3 :
+                  imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                  break;
+                case 4 :
+                  imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                  break;
+              }
               imageURLs.push([
                 filename,
                 image["amazonURL"],
-                image._doc["uploader"]
+                image._doc["uploader"],
+                imageStyle
               ]);
             }
             if (j == idea._doc.images.length){
@@ -775,6 +907,7 @@ router.get('/image-upload', function(req, res){
               res.render('pages/image-upload', {
                 user : req.user,
                 headshot: headshotURL,
+                headshotStyle : headshotStyle,
                 idea : currentIdea,
                 imageURLs : imageURLs,
                 reviewing: reviewing
@@ -788,6 +921,7 @@ router.get('/image-upload', function(req, res){
 
         res.render('pages/image-upload', { user : req.user,
           headshot: headshotURL,
+          headshotStyle : headshotStyle,
           idea : currentIdea, imageURLs : [], reviewing: reviewing });
       }
     });
@@ -809,6 +943,11 @@ router.post('/image-upload', function(req, res) {
 
       var image = new IdeaImage({ imageMimetype : req.body.type,
         filename : newFileName, uploader : req.user.username, amazonURL : req.body.fileUrl });
+
+      if(req.body["exif[Orientation]"]){
+        image.orientation = parseInt(req.body["exif[Orientation]"]);
+      }
+
       image.save(function(err, newImage){
         if (err) {
           console.log(err);
@@ -876,6 +1015,21 @@ router.get('/suggestion-summary', function(req, res){
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
       var headshotURL = headshot["amazonURL"];
+      var headshotStyle = "";
+      switch (headshot["orientation"]) {
+        case 1 :
+          headshotStyle = "";
+          break;
+        case 2 :
+          headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+          break;
+        case 3 :
+          headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+          break;
+        case 4 :
+          headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+          break;
+      }
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
@@ -915,6 +1069,7 @@ router.get('/suggestion-summary', function(req, res){
             res.render('pages/suggestion-summary', { user : req.user, idea : currentIdea,
               problems : sortedProblems, categoryPoints : categoryPointValues,
               headshot : headshotURL,
+              headshotStyle : headshotStyle,
               firstProblemText : firstProblemText, reviewing : reviewing
             });
           });
@@ -923,6 +1078,7 @@ router.get('/suggestion-summary', function(req, res){
           else { var reviewing = false; }
           res.render('pages/suggestion-summary', { user : req.user, idea : currentIdea,
             problems : [], categoryPoints : {}, headshot : headshotURL,
+            headshotStyle : headshotStyle,
             firstProblemText : "", reviewing : reviewing
           });
         }
@@ -946,6 +1102,21 @@ router.get('/view-idea-suggestions', function(req, res){
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
       var headshotURL = headshot["amazonURL"];
+      var headshotStyle = "";
+      switch (headshot["orientation"]) {
+        case 1 :
+          headshotStyle = "";
+          break;
+        case 2 :
+          headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+          break;
+        case 3 :
+          headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+          break;
+        case 4 :
+          headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+          break;
+      }
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       
@@ -1023,6 +1194,7 @@ router.get('/view-idea-suggestions', function(req, res){
                 idea : currentIdea, //document
                 images : imageList, //[[imagename, uploader, objectid, [componentNumber, componentText  ]]]
                 headshotURLs : headshotURLs,
+                headshotStyle : headshotStyle,
                 categorizedSuggestions : categorizedSuggestions, //special structure
                 imagesAndComponents : imagesAndComponents,
                 headshot : headshotURL,
@@ -1051,6 +1223,21 @@ router.get('/sort-problems', function(req, res){
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
       var headshotURL = headshot["amazonURL"];
+      var headshotStyle = "";
+      switch (headshot["orientation"]) {
+        case 1 :
+          headshotStyle = "";
+          break;
+        case 2 :
+          headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+          break;
+        case 3 :
+          headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+          break;
+        case 4 :
+          headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+          break;
+      }
     }
     
     IdeaSeed.findById(req.session.idea,function(err, idea){
@@ -1068,7 +1255,7 @@ router.get('/sort-problems', function(req, res){
 
 
         res.render('pages/sort-problems', { user : req.user, idea : idea._doc,
-          headshot : headshotURL,
+          headshot : headshotURL, headshotStyle : headshotStyle,
           problems : sortedProblems });
       });
     });
@@ -1218,6 +1405,21 @@ router.get('/contributor-idea-summary', function(req, res){
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
       var headshotURL = headshot["amazonURL"];
+      var headshotStyle = "";
+      switch (headshot["orientation"]) {
+        case 1 :
+          headshotStyle = "";
+          break;
+        case 2 :
+          headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+          break;
+        case 3 :
+          headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+          break;
+        case 4 :
+          headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+          break;
+      }
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       var imageURLs = [];
@@ -1241,9 +1443,25 @@ router.get('/contributor-idea-summary', function(req, res){
                         for(var j = 0; j < images.length; j++){
                           if(images[j] && images[j].amazonURL){
                             var filename = images[j]["filename"];
+                            var imageStyle = "";
+                            switch (images[j]["orientation"]) {
+                              case 1 :
+                                imageStyle = "";
+                                break;
+                              case 2 :
+                                imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                                break;
+                              case 3 :
+                                imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                                break;
+                              case 4 :
+                                imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                                break;
+                            }
                             imageURLs.push([
                               filename,
-                              images[j]["amazonURL"]
+                              images[j]["amazonURL"],
+                              imageStyle
                             ]);
                           }
                         } // end of loop of images
@@ -1251,6 +1469,7 @@ router.get('/contributor-idea-summary', function(req, res){
                           user : req.user, idea : currentIdea,
                           currentReview : currentReview,
                           headshot : headshotURL,
+                          headshotStyle : headshotStyle,
                           imageURLs : imageURLs,
                           components : components,
                           currentlyReviewing : currentlyReviewing
@@ -1261,6 +1480,7 @@ router.get('/contributor-idea-summary', function(req, res){
                       user : req.user, idea : currentIdea,
                       currentReview : currentReview,
                       headshot : headshotURL,
+                      headshotStyle : headshotStyle,
                       imageURLs : [],
                       components : components,
                       currentlyReviewing : currentlyReviewing
@@ -1289,9 +1509,25 @@ router.get('/contributor-idea-summary', function(req, res){
                     j++;
                     if(image && image._doc && image._doc.amazonURL){
                       var filename = image._doc["filename"];
+                      var imageStyle = "";
+                      switch (image["orientation"]) {
+                        case 1 :
+                          imageStyle = "";
+                          break;
+                        case 2 :
+                          imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                          break;
+                        case 3 :
+                          imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                          break;
+                        case 4 :
+                          imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                          break;
+                      }
                       imageURLs.push([
                         filename,
-                        image["amazonURL"]
+                        image["amazonURL"],
+                        imageStyle
                       ]);
                     }
                     if (j == idea._doc.images.length){
@@ -1299,6 +1535,7 @@ router.get('/contributor-idea-summary', function(req, res){
                         user : req.user, idea : currentIdea,
                         imageURLs : imageURLs,
                         headshot : headshotURL,
+                        headshotStyle :  headshotStyle,
                         components : components,
                         currentlyReviewing : currentlyReviewing
                       });
@@ -1310,6 +1547,7 @@ router.get('/contributor-idea-summary', function(req, res){
                   user : req.user, idea : currentIdea,
                   imageURLs : [],
                   headshot : headshotURL,
+                  headshotStyle : headshotStyle,
                   components : components,
                   currentlyReviewing : currentlyReviewing
                 });
@@ -1352,6 +1590,21 @@ router.get('/idea-summary', function(req, res){
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
       var headshotURL = headshot["amazonURL"];
+      var headshotStyle = "";
+      switch (headshot["orientation"]) {
+        case 1 :
+          headshotStyle = "";
+          break;
+        case 2 :
+          headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+          break;
+        case 3 :
+          headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+          break;
+        case 4 :
+          headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+          break;
+      }
     }
 
     delete req.session.ideaReview;
@@ -1427,9 +1680,25 @@ router.get('/idea-summary', function(req, res){
                   j++;
                   if(image && image._doc && image.amazonURL){
                     var filename = image._doc["filename"];
+                    var imageStyle = "";
+                    switch (image["orientation"]) {
+                      case 1 :
+                        imageStyle = "";
+                        break;
+                      case 2 :
+                        imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                        break;
+                      case 3 :
+                        imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                        break;
+                      case 4 :
+                        imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                        break;
+                    }
                     imageURLs.push([
                       filename,
-                      image["amazonURL"]
+                      image["amazonURL"],
+                      imageStyle
                     ]);
                   }
                   if (j == idea._doc.images.length){
@@ -1437,6 +1706,7 @@ router.get('/idea-summary', function(req, res){
                       variantDates : variantDates,
                       problemAreas  : problemAreas,
                       headshot : headshotURL,
+                      headshotStyle : headshotStyle,
                       imageURLs : imageURLs,
                       problems : problems,
                       components : components,
@@ -1450,6 +1720,7 @@ router.get('/idea-summary', function(req, res){
                       problemAreas  : problemAreas,
                       imageURLs : [],
                       headshot : headshotURL,
+                      headshotStyle : headshotStyle,
                       problems : problems,
                       components : components,
                       listOfProblems : listOfProblems });
@@ -1508,6 +1779,21 @@ router.get('/variant/:variantname', function(req, res){
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
       var headshotURL = headshot["amazonURL"];
+      var headshotStyle = "";
+      switch (headshot["orientation"]) {
+        case 1 :
+          headshotStyle = "";
+          break;
+        case 2 :
+          headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+          break;
+        case 3 :
+          headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+          break;
+        case 4 :
+          headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+          break;
+      }
     }
 
     IdeaSeed.findById(req.session.idea,function(err, idea){
@@ -1606,6 +1892,7 @@ router.get('/variant/:variantname', function(req, res){
                   categorizedSuggestions : categorizedSuggestions,
                   images : imageList,
                   headshotURLs : headshotURLs,
+                  headshotStyle : headshotStyle,
                   headshot : headshotURL,
                   imagesAndComponents : imagesAndComponents,
                   problemType : req.session.problemType });
@@ -1632,6 +1919,21 @@ router.get('/annotate-image/:image', function(req, res){
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
       var headshotURL = headshot["amazonURL"];
+      var headshotStyle = "";
+      switch (headshot["orientation"]) {
+        case 1 :
+          headshotStyle = "";
+          break;
+        case 2 :
+          headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+          break;
+        case 3 :
+          headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+          break;
+        case 4 :
+          headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+          break;
+      }
     }
 
     IdeaImage.findOne({"filename": req.params.image} ,function(err, image){
@@ -1639,6 +1941,22 @@ router.get('/annotate-image/:image', function(req, res){
       var annotations = [];
       if(currentImage.amazonURL){
         imageURL = currentImage.amazonURL;
+        var imageStyle = "";
+        switch (currentImage["orientation"]) {
+          case 1 :
+            imageStyle = "";
+            break;
+          case 2 :
+            imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+            break;
+          case 3 :
+            imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+            break;
+          case 4 :
+            imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+            break;
+        }
+
         Component.find({"images.imageID" : image.id}, function(err, comps){
           var compArray = [], masterComponentList = [];
           for(var i = 0; i < comps.length; i++){
@@ -1671,7 +1989,9 @@ router.get('/annotate-image/:image', function(req, res){
               res.render('pages/annotate-image', {
                 user : req.user,
                 imgURL : imageURL,
+                imageStyle : imageStyle,
                 headshot : headshotURL,
+                headshotStyle : headshotStyle,
                 imageName : currentImage.filename,
                 annotations : JSON.stringify(annotations),
                 masterComponentList : masterComponentList,
@@ -1740,11 +2060,26 @@ router.get('/image-modal/:image', function(req, res){
   }
   IdeaImage.findOne({"filename": req.params.image} ,function(err, image){
     currentImage = image._doc;
-    if(currentImage.image){
+    if(currentImage["amazonURL"]){
       imageURL = currentImage["amazonURL"];
+      var imageStyle = "";
+      switch (currentImage["orientation"]) {
+        case 1 :
+          imageStyle = "";
+          break;
+        case 2 :
+          imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+          break;
+        case 3 :
+          imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+          break;
+        case 4 :
+          imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+          break;
+      }
 
       res.json({
-        imgURL : imageURL
+        imgURL : imageURL, imageStyle : imageStyle
       });
 
     } else {
@@ -2121,6 +2456,21 @@ router.get('/component-profile/:identifier', function(req, res){
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
       var headshotURL = headshot["amazonURL"];
+      var headshotStyle = "";
+      switch (headshot["orientation"]) {
+        case 1 :
+          headshotStyle = "";
+          break;
+        case 2 :
+          headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+          break;
+        case 3 :
+          headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+          break;
+        case 4 :
+          headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+          break;
+      }
     }
 
     Component.findOne({"identifier" : req.params.identifier}, function(err, component){
@@ -2189,20 +2539,37 @@ router.get('/component-profile/:identifier', function(req, res){
                     var imageURLs = [];
                     for(var i = 0; i < images.length; i++){
                       if(images[i] && images[i]['amazonURL']){
+                        var imageStyle = "";
+                        switch (images[i]["orientation"]) {
+                          case 1 :
+                            imageStyle = "";
+                            break;
+                          case 2 :
+                            imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                            break;
+                          case 3 :
+                            imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                            break;
+                          case 4 :
+                            imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                            break;
+                        }
                         var filename = images[i]["filename"];
                         //if it's the main component image, put in the first spot of the array so it's big on 
                         // the component profile page
                         if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
                           imageURLs.unshift([
                             filename,
-                            images[i]["amazonURL"]
+                            images[i]["amazonURL"],
+                            imageStyle
                           ]);
                         } else if( images[i].id.toString() == problemCreator['headshots'][0]){
                           problemHeadshotURL = images[i]["amazonURL"];
                         } else {
                           imageURLs.push([
                             filename,
-                            images[i]["amazonURL"]
+                            images[i]["amazonURL"],
+                            imageStyle
                           ]);
                         }
                       }
@@ -2210,6 +2577,7 @@ router.get('/component-profile/:identifier', function(req, res){
                     res.render('pages/component-profile', {
                       user : req.user,
                       headshot : headshotURL,
+                      headshotStyle : headshotStyle,
                       idea : idea._doc,
                       problemHeadshotURL : problemHeadshotURL,
                       component : component,
@@ -2228,6 +2596,7 @@ router.get('/component-profile/:identifier', function(req, res){
                       res.render('pages/component-profile', {
                         user : req.user,
                         headshot : headshotURL,
+                        headshotStyle : headshotStyle,
                         problemHeadshotURL : problemHeadshotURL,
                         idea : idea._doc,
                         components : components,
@@ -2256,6 +2625,21 @@ router.get('/component-profile/:identifier', function(req, res){
                 IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
                   var imageURLs = [];
                   for(var i = 0; i < images.length; i++){
+                    var imageStyle = "";
+                    switch (images[i]["orientation"]) {
+                      case 1 :
+                        imageStyle = "";
+                        break;
+                      case 2 :
+                        imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                        break;
+                      case 3 :
+                        imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                        break;
+                      case 4 :
+                        imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                        break;
+                    }
                     if(images[i] && images[i]["amazonURL"]){
                       var filename = images[i]["filename"];
                       //if it's the main component image, put in the first spot of the array so it's big on 
@@ -2263,12 +2647,14 @@ router.get('/component-profile/:identifier', function(req, res){
                       if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
                         imageURLs.unshift([
                           filename,
-                          images[i]["amazonURL"]
+                          images[i]["amazonURL"],
+                          imageStyle
                         ]);
                       } else {
                         imageURLs.push([
                           filename,
-                          images[i]["amazonURL"]
+                          images[i]["amazonURL"],
+                          imageStyle
                         ]);
                       }
                     }
@@ -2276,6 +2662,7 @@ router.get('/component-profile/:identifier', function(req, res){
                   res.render('pages/component-profile', {
                     user : req.user,
                     headshot : headshotURL,
+                    headshotStyle : headshotStyle,
                     idea : idea._doc,
                     components : components,
                     component : component,
@@ -2294,6 +2681,7 @@ router.get('/component-profile/:identifier', function(req, res){
                     res.render('pages/component-profile', {
                       user : req.user,
                       headshot : headshotURL,
+                      headshotStyle : headshotStyle,
                       idea : idea._doc,
                       components : components,
                       component : component,
@@ -2301,9 +2689,6 @@ router.get('/component-profile/:identifier', function(req, res){
                       problem : "none",
                       relatedComponents : relatedComponents,
                       imageURLs : []
-                      //problems : problems,
-                      //components : components,
-                      //listOfProblems : listOfProblems 
                     });
               }
           }

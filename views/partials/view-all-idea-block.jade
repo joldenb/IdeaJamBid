@@ -11,7 +11,7 @@
 			p <b>Viability: </b>#{suggestionProblem} <b>Description: </b>#{problemCategory}
 	.suggestion-maker
 		if(inventorImage)
-			img(src=inventorImage height="50" width="50")
+			img(src=inventorImage height="50" width="50" style=inventorImageStyle)
 		else
 			img(src="/avatar.png" height="50" width="50")
 		div.userName #{accountName || user.username}

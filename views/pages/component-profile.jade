@@ -4,20 +4,7 @@ html
     include ../partials/head.jade
   body
   .header
-    span.userName Howdy #{user.username}
-    |  
-    .profile-headshot
-      if headshot
-        img.placeholder(src=headshot height="75" width="75")
-        a.plus-overlay(href="/profile-picture")
-          img(src='/plus-overlay.png' height="75" width="75")
-      else  
-        img.placeholder(src="/avatar.png" height="75" width="75")
-        a.plus-overlay(href="/profile-picture")
-          img(src='/plus-overlay.png' height="75" width="75")
-    a.home-logout.btn.btn-default( href="/begin" ) My Profile
-    | 
-    a.home-logout.btn.btn-default( href="/logout" ) Log Out
+    include ../partials/header.jade
 
   .component-summary
     .col-md-4
@@ -48,7 +35,7 @@ html
                 img(src=imageURL[1] height="300" width="400")
                 p(style="margin-top:1em;") Other images containing this component
             if index < 3 && index > 0
-              img.imageListItems(src=imageURL[1])
+              img.imageListItems(src=imageURL[1] style=imageURL[2])
           .view-all-images-btn
             a.btn.btn-default( href="/image-upload" ) View All Images
 

@@ -7,26 +7,28 @@ html
   div.scoreIdea(class='modalContainer')
     h1 Affordability
     h4 
-      | Can users afford to buy and can you afford to produce [user-entered product]?
+      | Will #{idea.name} be within cost expectations?
     br
     form(role='form', id="formAffordability" action="/affordability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
         .slider-end-labels
           span.no-way Expensive
-          span.yes-way Affordable 
+          span.yes-way Affordable
         #affordLabelOne.sliderLabel
         #affordSliderOne
       br
-      h4 Recorded problems for Affordability:
-      ul.waste-value-problem-list
-        each problem, index in problems
-          li
-            h4 #{index + 1} : #{problem.text}
+      if problems.length > 0    
+        h4 Recorded problems for Affordability:
+        ul.waste-value-problem-list
+          each problem, index in problems
+            li
+              h4 #{index + 1} : #{problem.text}
       br
-      h4 Add a new affordability problem:
+      h4 What cost-related problem prevented you from giving #{idea.name} a better score?
       textarea.form-control(rows='6', cols="75", name="affordProblem")
         | The problem of 
       br
+      p (Ex. "The problem of uranium requires you to pay Libyan terrorists millions of dollars to acquire.")
       h3 Einstein Points: #{user.einsteinPoints}
 
 

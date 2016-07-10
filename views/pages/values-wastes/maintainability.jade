@@ -6,27 +6,28 @@ html
   div.scoreIdea(class='modalContainer')
     h1 Maintainability
     h4 
-      | How easy is #{idea.name} to keep and maintain?
+      | How easy will #{idea.name} be to keep in service?
     br
     form(role='form', id="formMaintainability" action="/maintainability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
         .slider-end-labels
-          span.no-way Difficult to Maintain
-          span.yes-way Easy to Maintain
+          span.no-way Unsustainable
+          span.yes-way Highly Maintainable
         #maintainabilityLabelOne.sliderLabel
         #maintainabilitySliderOne
       br
-      h4 Recorded problems for maintainability:
-      ul.waste-value-problem-list
-        each problem, index in problems
-          li
-            h4 #{index + 1} : #{problem.text}
+      if problems.length > 0
+        h4 Recorded problems for maintainability:
+        ul.waste-value-problem-list
+          each problem, index in problems
+            li
+              h4 #{index + 1} : #{problem.text}
       br
-      h4 Add a new maintainability problem:
+      h4 What problem associated with #{idea.name} makes it unsustainable?
       textarea.form-control(rows='6', cols="75", name="maintainProblem")
         | The problem of 
       br
-      h3 Einstein Points: #{user.einsteinPoints}
+      p (Ex. "The problem of the Delorean requiring finite amounts of gasoline in addition to a power source generating 1.21 gigawatts to function as a time machine.")
 
   include ../../partials/js-includes.jade
   script(type="text/javascript").

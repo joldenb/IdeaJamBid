@@ -123,6 +123,11 @@ router.post('/add-profile-headshot',  function(req, res) {
 
       var image = new IdeaImage({ imageMimetype : req.body.type,
         filename : newFileName, uploader : req.user.username, amazonURL : req.body.fileUrl });
+
+      if(req.body["exif[Orientation]"]){
+        image.orientation = parseInt(req.body["exif[Orientation]"]);
+      }
+      
       image.save(function(err, newImage){
         if (err) {
           console.log(err);

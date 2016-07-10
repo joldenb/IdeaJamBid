@@ -6,27 +6,28 @@ html
   div.scoreIdea(class='modalContainer')
     h1 Imageability
     h4 
-      | Will #{idea.name} present an appealing image, style, look and feel?
+      | Will #{idea.name} convey an image of quality and prestige?
     br
     form(role='form', id="formImageability" action="/imageability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
         .slider-end-labels
-          span.no-way Undesirable, Ugly
+          span.no-way Undesirable
           span.yes-way Appealing
         #imageabilityLabelOne.sliderLabel
         #imageabilitySliderOne
       br
-      h4 Recorded problems for imageability:
-      ul.waste-value-problem-list
-        each problem, index in problems
-          li
-            h4 #{index + 1} : #{problem.text}
+      if problems.length > 0
+        h4 Recorded problems for imageability:
+        ul.waste-value-problem-list
+          each problem, index in problems
+            li
+              h4 #{index + 1} : #{problem.text}
       br
-      h4 Add a new imageability problem:
+      h4 What about the image of quality and prestige of #{idea.name} prevented you from scoring it higher?
       textarea.form-control(rows='6', cols="75", name="imageProblem")
         | The problem of 
       br
-      h3 Einstein Points: #{user.einsteinPoints}
+      p (Ex. "The problem of the two massive exhaust protrusions extending from the back of the Delorean.")
 
   include ../../partials/js-includes.jade
   script(type="text/javascript").

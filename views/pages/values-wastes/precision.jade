@@ -7,7 +7,7 @@ html
   div.scoreIdea(class='modalContainer')
     h1 Precision
     h4 
-      | Will #{idea.name} require specific timing, precise sequence or much practice to effectively solve [user-entered challenge]?
+      | Will #{idea.name} require specific timing, precise sequence or much practice to effectively solve the problem of #{idea.problem}?
     br
     form(role='form', id="formPrecision" action="/precision", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
@@ -23,7 +23,7 @@ html
           li
             h4 #{index + 1} : #{problem.text}
       br
-      h4 Add a new precision problem:
+      h4 What problem prevented you from rating your #{idea.name} better?
       textarea.form-control(rows='6', cols="75", name="precisionProblem")
         | The problem of 
       br

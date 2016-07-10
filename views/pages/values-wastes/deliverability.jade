@@ -7,27 +7,29 @@ html
   div.scoreIdea(class='modalContainer')
     h1 Deliverability
     h4 
-      | Can #{idea.name} arrive for use at the right time and place to solve [user-entered challenge]?
+      | Will #{idea.name} be ready on demand?
     br
     form(role='form', id="formDeliverability" action="/deliverability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
         .slider-end-labels
-          span.no-way Diffucult to Deliver
-          span.yes-way Highly Deliverable 
+          span.no-way Unavailable
+          span.yes-way Ready on Demand 
         #deliverLabelOne.sliderLabel
         #deliverSliderOne
       br
-      h4 Recorded problems for deliverability:
-      ul.waste-value-problem-list
-        each problem, index in problems
-          li
-            h4 #{index + 1} : #{problem.text}
+      if problems.length > 0
+        h4 Recorded problems for deliverability:
+        ul.waste-value-problem-list
+          each problem, index in problems
+            li
+              h4 #{index + 1} : #{problem.text}
       br
-      h4 Add a new deliverability problem:
+      h4 What problem prevents #{idea.name} from being fully ready on demand?
       textarea.form-control(rows='6', cols="75", name="deliverProblem")
         | The problem of 
       br
-      h3 Einstein Points: #{user.einsteinPoints}
+      p (Ex. "The problem of the Delorean's faulty time circuitry changing the date so that Marty arrives in the old wild west instead of the demanded date.")
+
 
   include ../../partials/js-includes.jade
   script(type="text/javascript").
