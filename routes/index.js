@@ -256,7 +256,22 @@ router.get('/profile-picture', function(req, res){
     IdeaImage.findById(req.user.headshots[0], function(err, headshot){
       if(headshot){
         var headshotURL = headshot["amazonURL"];
-w      }
+        var headshotStyle = "";
+        switch (headshot["orientation"]) {
+          case 1 :
+            headshotStyle = "";
+            break;
+          case 2 :
+            headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+            break;
+          case 3 :
+            headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+            break;
+          case 4 :
+            headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+            break;
+        }
+      }
 
 
       var headshotIDs = _.map(req.user.headshots, function(image){
@@ -902,7 +917,7 @@ router.get('/image-upload', function(req, res){
               ]);
             }
             if (j == idea._doc.images.length){
-              if(req.session.ideaReview){ var reviewing = true; }
+              if(req.session.ideaReview && idea.inventorName != req.user.username){ var reviewing = true; }
               else { var reviewing = false; }
               res.render('pages/image-upload', {
                 user : req.user,
@@ -916,7 +931,7 @@ router.get('/image-upload', function(req, res){
           });
         }
       } else {
-        if(req.session.ideaReview){ var reviewing = true; }
+        if(req.session.ideaReview && idea.inventorName != req.user.username){ var reviewing = true; }
         else { var reviewing = false; }
 
         res.render('pages/image-upload', { user : req.user,
@@ -1430,7 +1445,7 @@ router.get('/contributor-idea-summary', function(req, res){
           var reviewsChecked = 0;
             IdeaReview.find({"_id" : {$in : idea.ideaReviews } }, function(err, reviews){
               var k = 0;
-              var currentReview;
+              var currentReview = {};
               while(k < reviews.length && !currentlyReviewing) {
                 if(reviews[k] && reviews[k].reviewer == req.user.username){
                   currentlyReviewing = true;
@@ -1537,6 +1552,7 @@ router.get('/contributor-idea-summary', function(req, res){
                         headshot : headshotURL,
                         headshotStyle :  headshotStyle,
                         components : components,
+                        currentReview : {},
                         currentlyReviewing : currentlyReviewing
                       });
                     }
@@ -1549,6 +1565,7 @@ router.get('/contributor-idea-summary', function(req, res){
                   headshot : headshotURL,
                   headshotStyle : headshotStyle,
                   components : components,
+                  currentReview : {},
                   currentlyReviewing : currentlyReviewing
                 });
               }
