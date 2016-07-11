@@ -139,7 +139,7 @@ div#begin-info-aptitudes {
   padding-bottom: 1em;
 }
 
-.ui-slider-range {
+.value-entered .ui-slider-range {
   background: #00A550; /* For browsers that do not support gradients */
   background: -webkit-linear-gradient(left, #EAE8DE , #00A550); /* For Safari 5.1 to 6.0 */
   background: -o-linear-gradient(right, #EAE8DE, #00A550); /* For Opera 11.1 to 12.0 */

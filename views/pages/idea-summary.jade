@@ -224,52 +224,99 @@ html
         "#skills"
       ]
 
+      
       for(var i = 0; i < viabilitySliders.length; i++){      
+        valueEntered = false;
         switch (viabilitySliders[i]){
           case "#perf" : 
             initialValue = idea.performOne || '#{idea.performOne}' || 50;
+            if(idea.performOne || '#{idea.performOne}'!=""){
+              valueEntered = true;
+            }
             break;
           case "#afford" : 
             initialValue = idea.affordOne || '#{idea.affordOne}' || 50;
+            if(idea.affordOne || '#{idea.affordOne}'!=""){
+              valueEntered = true;
+            }
             break;
           case "#feature" : 
             initialValue = idea.featureOne || '#{idea.featureOne}' || 50;
+            if(idea.featureOne || '#{idea.featureOne}'!=""){
+              valueEntered = true;
+            }
             break;
           case "#deliver" : 
             initialValue = idea.deliverOne || '#{idea.deliverOne}' || 50;
+            if(idea.deliverOne || '#{idea.deliverOne}'!=""){
+              valueEntered = true;
+            }
             break;
           case "#useability" : 
             initialValue = idea.useabilityOne || '#{idea.useabilityOne}' || 50;
+            if(idea.useabilityOne || '#{idea.useabilityOne}'!=""){
+              valueEntered = true;
+            }
             break;
           case "#maintain" : 
             initialValue = idea.maintainOne || '#{idea.maintainOne}' || 50;
+            if(idea.maintainOne || '#{idea.maintainOne}'!=""){
+              valueEntered = true;
+            }
             break;
           case "#danger" : 
             initialValue = idea.dangerOne || '#{idea.dangerOne}' || 50;
+            if(idea.dangerOne || '#{idea.dangerOne}'!=""){
+              valueEntered = true;
+            }
             break;
           case "#durability" : 
             initialValue = idea.durabilityOne || '#{idea.durabilityOne}' || 50;
+            if(idea.durabilityOne || '#{idea.durabilityOne}'!=""){
+              valueEntered = true;
+            }
             break;
           case "#image" : 
             initialValue = idea.imageOne || '#{idea.imageOne}' || 50;
+            if(idea.imageOne || '#{idea.imageOne}'!=""){
+              valueEntered = true;
+            }
             break;
           case "#complex" : 
             initialValue = idea.complexOne || '#{idea.complexOne}' || 50;
+            if(idea.complexOne || '#{idea.complexOne}'!=""){
+              valueEntered = true;
+            }
             break;
           case "#precision" : 
             initialValue = idea.precisionOne || '#{idea.precisionOne}' || 50;
+            if(idea.precisionOne || '#{idea.precisionOne}'!=""){
+              valueEntered = true;
+            }
             break;
           case "#variability" : 
             initialValue = idea.variabilityOne || '#{idea.variabilityOne}' || 50;
+            if(idea.variabilityOne || '#{idea.variabilityOne}'!=""){
+              valueEntered = true;
+            }
             break;
           case "#sensitivity" : 
             initialValue = idea.sensitivityOne || '#{idea.sensitivityOne}' || 50;
+            if(idea.sensitivityOne || '#{idea.sensitivityOne}'!=""){
+              valueEntered = true;
+            }
             break;
           case "#immature" : 
             initialValue = idea.immatureOne || '#{idea.immatureOne}' || 50;
+            if(idea.immatureOne || '#{idea.immatureOne}'!=""){
+              valueEntered = true;
+            }
             break;
           case "#skills" : 
             initialValue = idea.skillsOne || '#{idea.skillsOne}' || 50;
+            if(idea.skillsOne || '#{idea.skillsOne}'!=""){
+              valueEntered = true;
+            }
             break;
         }
 
@@ -285,8 +332,13 @@ html
           step: 1,
           slide: function( event, ui ) {
               valueEntered = true;
+              $(this).addClass("value-entered");
           }
         });
+
+        if(valueEntered){
+          $(viabilitySliders[i]+ "Slider").addClass("value-entered");
+        }
 
       }
 
@@ -303,49 +355,79 @@ html
         $(".ui-slider").each(function(index, element){
           switch ($(this).attr("id")){
             case "perfSlider" : 
-              data["performOne"] = $(element).slider("value");
+              if($(element).hasClass("value-entered")){
+                data["performOne"] = $(element).slider("value");
+              }
               break;
             case "affordSlider" : 
-              data["affordOne"] = $(element).slider("value");
+              if($(element).hasClass("value-entered")){
+                data["affordOne"] = $(element).slider("value");
+              }
               break;
             case "featureSlider" : 
-              data["featureOne"] = $(element).slider("value");
+              if($(element).hasClass("value-entered")){
+                data["featureOne"] = $(element).slider("value");
+              }
               break;
             case "deliverSlider" : 
-              data["deliverOne"] = $(element).slider("value");
+              if($(element).hasClass("value-entered")){
+                data["deliverOne"] = $(element).slider("value");
+              }
               break;
             case "useabilitySlider" : 
-              data["useabilityOne"] = $(element).slider("value");
+              if($(element).hasClass("value-entered")){
+                data["useabilityOne"] = $(element).slider("value");
+              }
               break;
             case "maintainSlider" : 
-              data["maintainOne"] = $(element).slider("value");
+              if($(element).hasClass("value-entered")){
+                data["maintainOne"] = $(element).slider("value");
+              }
               break;
             case "dangerSlider" : 
-              data["dangerOne"] = $(element).slider("value");
+              if($(element).hasClass("value-entered")){
+                data["dangerOne"] = $(element).slider("value");
+              }
               break;
             case "durabilitySlider" : 
-              data["durabilityOne"] = $(element).slider("value");
+              if($(element).hasClass("value-entered")){
+                data["durabilityOne"] = $(element).slider("value");
+              }
               break;
             case "imageSlider" : 
-              data["imageOne"] = $(element).slider("value");
+              if($(element).hasClass("value-entered")){
+                data["imageOne"] = $(element).slider("value");
+              }
               break;
             case "complexSlider" : 
-              data["complexOne"] = $(element).slider("value");
+              if($(element).hasClass("value-entered")){
+                data["complexOne"] = $(element).slider("value");
+              }
               break;
             case "precisionSlider" : 
-              data["precisionOne"] = $(element).slider("value");
+              if($(element).hasClass("value-entered")){
+                data["precisionOne"] = $(element).slider("value");
+              }
               break;
             case "variabilitySlider" : 
-              data["variabilityOne"] = $(element).slider("value");
+              if($(element).hasClass("value-entered")){
+                data["variabilityOne"] = $(element).slider("value");
+              }
               break;
             case "sensitivitySlider" : 
-              data["sensitivityOne"] = $(element).slider("value");
+              if($(element).hasClass("value-entered")){
+                data["sensitivityOne"] = $(element).slider("value");
+              }
               break;
             case "immatureSlider" : 
-              data["immatureOne"] = $(element).slider("value");
+              if($(element).hasClass("value-entered")){
+                data["immatureOne"] = $(element).slider("value");
+              }
               break;
             case "skillsSlider" : 
-              data["skillsOne"] = $(element).slider("value");
+              if($(element).hasClass("value-entered")){
+                data["skillsOne"] = $(element).slider("value");
+              }
               break;
           }
         });
@@ -493,6 +575,7 @@ html
         slide: function( event, ui ) {
             valueEntered = true;
             uiValue = ui.value;
+            $(this).addClass("value-entered");
             $("#" + labelName).text(labelArr[ui.value]);
             $("#" + labelName).css("margin-left", (ui.value-min)/(max-min)*100+"%");
             $("#" + labelName).css("left", "-50px");
@@ -511,9 +594,7 @@ html
       $("<button class='btn btn-success' id='viabilitySubmit'>Save</button>")
       .appendTo("#viabilityModal .modal-footer.view-all-button")
       .click(function(event){
-        var data = {
-          isModal : true
-        };
+        var data = {};
         if(valueEntered){
           data[sliderName+"Value"] = uiValue;
           
