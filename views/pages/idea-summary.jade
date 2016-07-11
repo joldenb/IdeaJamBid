@@ -131,7 +131,7 @@ html
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#submit(type='submit') Save
 
-  #viabilityModal.modal.fade.annotate-modal(role="dialog")
+  #viabilityModal.modal.fade(role="dialog")
     .modal-dialog
       .modal-content
         .modal-header
@@ -279,6 +279,8 @@ html
         $(viabilitySliders[i]+ "Slider").slider({
           value:initialValue,
           min: min,
+          orientation : "horizontal",
+          range : "min",
           max: max,
           step: 1,
           slide: function( event, ui ) {
@@ -483,6 +485,8 @@ html
       
       $("#"+ sliderName).slider({
         value:initialValue,
+        orientation : "horizontal",
+        range : "min",
         min: min,
         max: max,
         step: 1,
