@@ -1,7 +1,7 @@
 .suggestion-element.view-all-ideas-block
 	.idea-image.view-all-ideas(style="background-image : url('" + '#{ideaImage || "/lightbulb.png"}' + "');"+ideaImageStyle)
 	.title-description.view-all-ideas
-		if ideaLink
+		if ideaLink && ideaName
 			h3 <b></b> #[a(href=ideaLink) #{ideaName || 'No Idea Name'}]
 		else
 			h3 <b></b>#{ideaName || 'No Idea Name'}
