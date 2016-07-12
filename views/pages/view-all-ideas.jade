@@ -8,25 +8,56 @@ html
 
   .view-idea-suggestions
     h1 Contribute to an Idea
-    br
     
-
-    table.suggestion-table
-      tr
-        th.left-column Latest Idea Seeds
+    .container
       each idea, index in ideas
-        if idea[0] 
-          tr
-            td
-              - var ideaName = idea[0]
-              - var ideaLink = "/contributor-idea-summary/"+ idea[0]
-              - var problemCategory = idea[1]
-              - var suggestionProblem = "W: "+ idea[2][0] +" V: "+idea[2][1]
-              - var accountName = idea[3]
-              - var ideaImage = idea[4]
-              - var inventorImage = idea[5]
-              - var inventorImageStyle = idea[6]
-              include ../partials/view-all-idea-block.jade
+        - var ideaName
+        - var ideaLink
+        - var problemCategory
+        - var suggestionProblem
+        - var accountName
+        - var ideaImage
+        - var ideaImageStyle
+        - var inventorImage
+        - var inventorImageStyle
+        if index % 3 == 0 
+          .row
+            .col-md-4
+              if(ideas[index])
+                - ideaName = ideas[index][0]
+                - ideaLink = "/contributor-idea-summary/"+ ideas[index][0]
+                - problemCategory = ideas[index][1]
+                - suggestionProblem = "W: "+ ideas[index][2][0] +" V: "+ideas[index][2][1]
+                - accountName = ideas[index][3]
+                - ideaImage = ideas[index][4]
+                - ideaImageStyle = ideas[index][5]
+                - inventorImage = ideas[index][6]
+                - inventorImageStyle = ideas[index][7]
+                include ../partials/view-all-idea-block.jade
+            .col-md-4
+              if(ideas[index + 1])
+                - ideaName = ideas[index + 1][0]
+                - ideaLink = "/contributor-idea-summary/"+ ideas[index + 1][0]
+                - problemCategory = ideas[index + 1][1]
+                - suggestionProblem = "W: "+ ideas[index + 1][2][0] +" V: "+ideas[index + 1][2][1]
+                - accountName = ideas[index + 1][3]
+                - ideaImage = ideas[index + 1][4]
+                - ideaImageStyle = ideas[index + 1][5]
+                - inventorImage = ideas[index + 1][6]
+                - inventorImageStyle = ideas[index + 1 ][7]
+                include ../partials/view-all-idea-block.jade
+            .col-md-4
+                if(ideas[index + 2 ])
+                  - ideaName = ideas[index + 2 ][0]
+                  - ideaLink = "/contributor-idea-summary/"+ ideas[index + 2 ][0]
+                  - problemCategory = ideas[index + 2 ][1]
+                  - suggestionProblem = "W: "+ ideas[index + 2 ][2][0] +" V: "+ideas[index + 2 ][2][1]
+                  - accountName = ideas[index + 2 ][3]
+                  - ideaImage = ideas[index + 2 ][4]
+                  - ideaImageStyle = ideas[index + 2][5]
+                  - inventorImage = ideas[index + 2 ][6]
+                  - inventorImageStyle = ideas[index + 2 ][7]
+                  include ../partials/view-all-idea-block.jade
     br
 
     br

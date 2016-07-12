@@ -375,8 +375,8 @@ router.get('/view-all-ideas', function(req, res){
       var headshotURL = "";
     }
 
-      IdeaSeed.find({}).
-        exec(function(err, ideas){
+      IdeaSeed.find({}).sort({$natural: -1})
+        .exec(function(err, ideas){
         var wasteValueScores = [0, 0];
 
         //get the first image for each idea for now
@@ -397,6 +397,21 @@ router.get('/view-all-ideas', function(req, res){
               if(idea.images.length > 0 &&
                 idea.images[0].toString() == images[i].id.toString()){
                 currentImage = images[i]._doc["amazonURL"] || "";
+                var currentImageStyle = "";
+                switch (images[i]._doc["orientation"]) {
+                  case 1 :
+                    currentImageStyle = "";
+                    break;
+                  case 2 :
+                    currentImageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                    break;
+                  case 3 :
+                    currentImageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                    break;
+                  case 4 :
+                    currentImageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                    break;
+                }
                 break;
               }
             }
@@ -406,7 +421,8 @@ router.get('/view-all-ideas', function(req, res){
               idea['description'], //String
               wasteValueScores, //array of two numbers
               idea['inventorName'],
-              currentImage
+              currentImage,
+              currentImageStyle
             ];
           });
 

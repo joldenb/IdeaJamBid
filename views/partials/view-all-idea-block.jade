@@ -1,17 +1,16 @@
 .suggestion-element.view-all-ideas-block
-	.idea-image
-		img(src='#{ideaImage || "/lightbulb.png"}' height="50" width="50")
-	.suggestion.view-all-ideas
-		.suggestion-text
-			if ideaLink
-				p <b>Idea Name: </b> #[a(href=ideaLink) #{ideaName || 'No Idea Name'}]
-			else
-				p <b>Idea Name: </b>#{ideaName || 'No Idea Name'}
-		.suggestion-category
-			p <b>Viability: </b>#{suggestionProblem} <b>Description: </b>#{problemCategory}
-	.suggestion-maker
+	.idea-image.view-all-ideas(style="background-image : url('" + '#{ideaImage || "/lightbulb.png"}' + "');"+ideaImageStyle)
+	.title-description.view-all-ideas
+		if ideaLink
+			h3 <b></b> #[a(href=ideaLink) #{ideaName || 'No Idea Name'}]
+		else
+			h3 <b></b>#{ideaName || 'No Idea Name'}
 		if(inventorImage)
 			img(src=inventorImage height="50" width="50" style=inventorImageStyle)
 		else
 			img(src="/avatar.png" height="50" width="50")
-		div.userName #{accountName || user.username}
+		.userName #{accountName || user.username}
+		.suggestion-category
+			p <b>Viability: </b>#{suggestionProblem} <b>Description: </b>#{problemCategory}
+	.footer.view-all-ideas
+		.btn.btn-default IMPROVE THIS IDEA!

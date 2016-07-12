@@ -185,7 +185,7 @@ form {
 }
 
 .suggestion-element {
-  min-height: 5.5em;
+  height: 5.5em;
 }
 
 .image-block-element {
@@ -200,15 +200,31 @@ form {
   min-height:5.5em;
 }
 
-.idea-image{
-  display: inline-block;
-  float: left;
-  width: 10%;
+table.suggestion-table .col-md-4 {
+  padding: 2em;
 }
 
-.idea-image img {
-  height:100%;
-  width:100%;
+.idea-image.view-all-ideas{
+  height: 50%;
+  background-size: cover;
+  background-position: 50%;  
+}
+
+.title-description.view-all-ideas {
+  height : 35%;
+  padding-left: 1em;
+}
+
+.footer.view-all-ideas { 
+  height: 15%;
+  background-color: #414142; /*dark gray */
+  position: relative;
+}
+
+.footer.view-all-ideas .btn {
+  position: absolute;
+  top: 25%;
+  transform: translate(5%,0%);
 }
 
 .suggestion.view-all-ideas {
@@ -216,6 +232,9 @@ form {
 }
 
 .suggestion-element.view-all-ideas-block {
+  height:32em;
+  border: 1px solid #B4B4B4;
+  background-color: white;
 }
 
 .suggestion-maker {
@@ -249,6 +268,19 @@ form {
 
 .container.suggestion-summary {
   width:80%;
+}
+
+.view-idea-suggestions .container { 
+  width: 100%;
+}
+
+.view-idea-suggestions .container .row {
+  padding: 2.5em;
+}
+
+.view-idea-suggestions .container .row .col-md-4 {
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .suggestion-summary h1, .suggestion-summary h3 {
@@ -605,7 +637,7 @@ form#addDescription #submit{
   margin: 1em 0;
 }
 
-.col-md-4, .col-md-8 {
+.idea-summary.col-md-4, .idea-summary.col-md-8, .component-summary.col-md-8,  .component-summary.col-md-4 {
   padding-top: 2em;
   padding-left:1em;
 }
