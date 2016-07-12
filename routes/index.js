@@ -388,6 +388,7 @@ router.get('/view-all-ideas', function(req, res){
         IdeaImage.find({"_id" : { $in : imageList}}, function(err, images){
           if(err){ console.log("error is " + err)}
           var currentImage;
+          var currentImageStyle;
           var ideaList = _.map(ideas, function(idea){
             wasteValueScores = IdeaSeed.getWasteValueScores(idea);
 
@@ -397,7 +398,7 @@ router.get('/view-all-ideas', function(req, res){
               if(idea.images.length > 0 &&
                 idea.images[0].toString() == images[i].id.toString()){
                 currentImage = images[i]._doc["amazonURL"] || "";
-                var currentImageStyle = "";
+                currentImageStyle = "";
                 switch (images[i]._doc["orientation"]) {
                   case 1 :
                     currentImageStyle = "";
