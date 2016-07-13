@@ -1157,7 +1157,7 @@ router.get('/view-idea-suggestions', function(req, res){
       
       Component.find({"ideaSeed" : idea.id}, function(err, components){
 
-        var categorizedSuggestions = {}; //build components by category
+        var suggestionsList = []; //build components by category
         var imagesAndComponents = {}; //build list of components within each imageID key
         //not sure about components with no image or category yet
         var headshotNames = [];
@@ -1165,16 +1165,7 @@ router.get('/view-idea-suggestions', function(req, res){
         for(var i = 0; i < components.length; i++){
           //break into two lists, one for components with no images, and on for those with
           if(components[i].images.length == 0){
-            if(components[i].category && categorizedSuggestions[components[i].category]){
-              categorizedSuggestions[components[i].category].push(components[i]);
-            } else if (components[i].category && !categorizedSuggestions[components[i].category]){
-              categorizedSuggestions[components[i].category] = [components[i]];
-            } else if (categorizedSuggestions["other"]){
-              categorizedSuggestions["other"].push(components[i]);
-            } else {
-              categorizedSuggestions["other"] = [components[i]];
-            }
-
+            suggestionsList.push(components[i]);
           } else {
             for(var k=0; k < components[i].images.length; k++){
               if(imagesAndComponents[components[i].images[k]['imageID'].toString()]){
@@ -1189,15 +1180,28 @@ router.get('/view-idea-suggestions', function(req, res){
           }
         }
 
-        // after categorizedSuggestions is completed, replace the abbreviated 
-        // categories with the full names
-        categorizedSuggestions = IdeaSeed.getCategoryDisplayNames(categorizedSuggestions);
-
         if(req.session.ideaReview){ var reviewing = true; }
         else { var reviewing = false; }
 
         IdeaImage.find({"_id" : {$in : Object.keys(imagesAndComponents)}}, function(err, images){
-          var imageList = _.map(images, function(image){return [image["filename"], image["uploader"], image["id"], []]});
+          var imageList = _.map(images, function(image){
+            var imageStyle = "";
+            switch (image["orientation"]) {
+              case 1 :
+                imageStyle = "";
+                break;
+              case 2 :
+                imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                break;
+              case 3 :
+                imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                break;
+              case 4 :
+                imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                break;
+            }
+            return [image["filename"], image["uploader"], image["id"], [], image["amazonURL"], imageStyle];
+          });
 
           for(var i = 0; i < imageList.length; i++){
             imageList[i][3] = _.map(imagesAndComponents[imageList[i][2]], function(component){
@@ -1220,7 +1224,22 @@ router.get('/view-idea-suggestions', function(req, res){
             IdeaImage.find({"_id" : {$in : headshotIDs}}, function(err, headshots){
               var headshotURLs = {};
               for(var j = 0; j < headshots.length; j++){
-                headshotURLs[headshots[j]['uploader']] = headshots[j]["amazonURL"];
+                headshotURLs[headshots[j]['uploader']] = [headshots[j]["amazonURL"]];
+                switch (headshots[j]["orientation"]) {
+                  case 1 :
+                    headshotURLs[headshots[j]['uploader']].push("");
+                    break;
+                  case 2 :
+                    headshotURLs[headshots[j]['uploader']].push("-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);");
+                    break;
+                  case 3 :
+                    headshotURLs[headshots[j]['uploader']].push("-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);");
+                    break;
+                  case 4 :
+                    headshotURLs[headshots[j]['uploader']].push("-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);");
+                    break;
+                }
+
               }
 
               currentIdea = idea._doc;
@@ -1230,7 +1249,7 @@ router.get('/view-idea-suggestions', function(req, res){
                 images : imageList, //[[imagename, uploader, objectid, [componentNumber, componentText  ]]]
                 headshotURLs : headshotURLs,
                 headshotStyle : headshotStyle,
-                categorizedSuggestions : categorizedSuggestions, //special structure
+                suggestionsList : suggestionsList, //special structure
                 imagesAndComponents : imagesAndComponents,
                 headshot : headshotURL,
                 reviewing : reviewing
@@ -1851,7 +1870,7 @@ router.get('/variant/:variantname', function(req, res){
           return;
         }
 
-        var categorizedSuggestions = {}; //build components by category
+        var suggestionsList = []; //build components by category
         var imagesAndComponents = {}; //build list of components within each imageID key
         //not sure about components with no image or category yet
         var currentImageID;
@@ -1861,17 +1880,7 @@ router.get('/variant/:variantname', function(req, res){
         for(var i = 0; i < components.length; i++){
           //break into two lists, one for components with no images, and on for those with
           if(components[i].images.length == 0){
-            if(currentVariant.components.indexOf(components[i]['id'].toString()) > -1){
-              if(components[i].category && categorizedSuggestions[components[i].category]){
-                categorizedSuggestions[components[i].category].push(components[i]);
-              } else if (components[i].category && !categorizedSuggestions[components[i].category]){
-                categorizedSuggestions[components[i].category] = [components[i]];
-              } else if (categorizedSuggestions["other"]){
-                categorizedSuggestions["other"].push(components[i]);
-              } else {
-                categorizedSuggestions["other"] = [components[i]];
-              }
-            }
+            suggestionsList.push(components[i]);
           } else {
             for(var k=0; k < components[i].images.length; k++){
               currentImageID = components[i].images[k]['imageID'].toString();
@@ -1889,15 +1898,28 @@ router.get('/variant/:variantname', function(req, res){
           }
         }
 
-        // after categorizedSuggestions is completed, replace the abbreviated 
-        // categories with the full names
-        categorizedSuggestions = IdeaSeed.getCategoryDisplayNames(categorizedSuggestions);
-
         if(req.session.ideaReview){ var reviewing = true; }
         else { var reviewing = false; }
 
         IdeaImage.find({"_id" : {$in : Object.keys(imagesAndComponents)}}, function(err, images){
-          var imageList = _.map(images, function(image){return [image["filename"], image["uploader"], image["id"], []]});
+          var imageList = _.map(images, function(image){
+            var imageStyle = "";
+            switch (image["orientation"]) {
+              case 1 :
+                imageStyle = "";
+                break;
+              case 2 :
+                imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                break;
+              case 3 :
+                imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                break;
+              case 4 :
+                imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                break;
+            }
+            return [image["filename"], image["uploader"], image["id"], [], image["amazonURL"], imageStyle]
+          });
 
             for(var i = 0; i < imageList.length; i++){
               imageList[i][3] = _.map(imagesAndComponents[imageList[i][2]], function(component){
@@ -1920,14 +1942,30 @@ router.get('/variant/:variantname', function(req, res){
               IdeaImage.find({"_id" : {$in : headshotIDs}}, function(err, headshots){
                 var headshotURLs = {};
                 for(var j = 0; j < headshots.length; j++){
-                  headshotURLs[headshots[j]['uploader']] = headshots[j]["amazonURL"];
+                  headshotURLs[headshots[j]['uploader']] = [headshots[j]["amazonURL"]];
+                  switch (headshots[j]["orientation"]) {
+                    case 1 :
+                      headshotURLs[headshots[j]['uploader']].push("");
+                      break;
+                    case 2 :
+                      headshotURLs[headshots[j]['uploader']].push("-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);");
+                      break;
+                    case 3 :
+                      headshotURLs[headshots[j]['uploader']].push("-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);");
+                      break;
+                    case 4 :
+                      headshotURLs[headshots[j]['uploader']].push("-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);");
+                      break;
+                  }
+
                 }
 
                 currentIdea = idea._doc;
 
                 res.render('pages/variant', { user : req.user, idea : currentIdea,
-                  categorizedSuggestions : categorizedSuggestions,
+                  suggestionsList : suggestionsList,
                   images : imageList,
+                  variantSummary : true,
                   headshotURLs : headshotURLs,
                   headshotStyle : headshotStyle,
                   headshot : headshotURL,

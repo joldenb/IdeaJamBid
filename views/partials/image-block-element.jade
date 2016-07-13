@@ -1,16 +1,22 @@
-.image-block-element
-	.suggestion
-		.suggestion-text
-			p <b>Image Name: </b><a class="image-modal-link" data-toggle="modal" data-target="#myModal">#{imageName || 'No suggestion text'}</a>
-
+.suggestion-element.variant-suggestion-block.image-block
+	.idea-image.variant-suggestion.image-block(style="background-image : url('" + '#{imageURL || "/lightbulb.png"}' + "');" + compImageStyle)
+	.title-description.variant-suggestion
+		p <b>Image Name: </b>#{imageName || 'No suggestion text'}
+		if(compHeadshot)
+			img(src=compHeadshot height="50" width="50" style=compHeadshotStyle)
+		else
+			img(src="/avatar.png" height="50" width="50")
+		.userName #{accountName || user.username}
 		.suggestion-category
 			ul
 				each component in componentList
 					li 
 						p <b> Component #{component[0]}</b> : #{component[1]}
-	.suggestion-maker
-		if compHeadshot
-			img(src=compHeadshot height="50" width="50" style=compHeadStyle)
-		else
-			img(src="/avatar.png" height="50" width="50")
-		div.userName #{accountName || "Unknown User"}
+	if !variantSummary
+		.footer.variant-suggestion.image-block
+			.radio
+				input(type='radio', name='image-'+image[2], value="incorporate")
+				|  Incorporate
+			.radio
+				input(type='radio', name='image-'+image[2], value="notIncorporate")
+				|  Don't Incorporate

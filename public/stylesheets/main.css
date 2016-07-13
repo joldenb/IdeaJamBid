@@ -42,6 +42,7 @@ h1, h2, h3, h4 {
   color: white;
   background-color: #414142;
   font-size: large;
+  margin-bottom: 3em;
 }
 
 .header .home-logout {
@@ -122,6 +123,24 @@ div#begin-info-aptitudes {
 .existingIdeas ul, .contributedIdeas ul {
   list-style: none;
   padding: 0;
+}
+
+/* for the view all viability modal */
+.view-all-viabilities .ui-slider {
+  display: inline-block;
+  width: 75%;
+  float: right;
+  margin-top: 1em;
+}
+
+.view-all-viabilities .viability-icon {
+  display: inline-block;
+  max-width: 20%;
+}
+
+.view-all-viabilities .viability-icon img {
+  height: 100%;
+  width: 100%;
 }
 
 .slider-container {width : 80%; margin: 0px auto;}
@@ -614,13 +633,9 @@ form#addDescription #submit{
 
 #viabilityModal label {
   color : #EAE7DE;
-  padding: .3em;
-  margin: .6em;
+  padding: .3em 0;
+  margin: .6em 0;
   border-radius: 5px;
-}
-#viabilityModal label:hover {
-  cursor: pointer;
-  border: 1px solid gray;
 }
 
 .components-issues-suggestions-block {
@@ -644,4 +659,48 @@ form#addDescription #submit{
 
 img {
     image-orientation: from-image;
+}
+
+/* These are the styles for the suggestion blocks on the variant creation page */
+
+.idea-image.variant-suggestion{
+  height: 15em;
+  background-size: cover;
+  background-position: 50%;  
+}
+
+.title-description.variant-suggestion {
+  height : 35%;
+  padding-left: 1em;
+}
+
+.footer.variant-suggestion { 
+  height: 4em;
+  background-color: #414142; /*dark gray */
+  position: relative;
+}
+
+.footer.variant-suggestion .radio {
+  position: absolute;
+  top: 25%;
+  left: 10%;
+  color: white;
+}
+
+.suggestion-element.variant-suggestion-block {
+  height:auto;
+  border: 1px solid #B4B4B4;
+  background-color: white;
+}
+
+.footer.variant-suggestion.image-block {
+  height:4em;
+}
+
+.idea-image.variant-suggestion.image-block {
+  min-height: 15em;
+}
+
+.suggestion-element.variant-suggestion-block.image-block {
+  height: auto;
 }

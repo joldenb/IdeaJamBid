@@ -8,58 +8,88 @@ html
 
   .view-idea-suggestions
     h2 Name : #{idea.name}
-    h3 Einstein Points Earned : #{user.einsteinPoints}
-    br
     
+    .container
+      h2 Suggestions
+      - var suggestionText
+      - var problemCategory
+      - var accountName
+      - var compHeadshot
+      - var compHeadshotStyle
+      each component, i in suggestionsList
+        if(i % 3 === 0 )
+          .row
+            if (suggestionsList[i])
+              .col-md-4
+                - suggestionText = suggestionsList[i]['descriptions'][0]
+                - accountName = suggestionsList[i]['creator']
+                - compHeadshot = headshotURLs[suggestionsList[i]['creator']][0]
+                - compHeadshotStyle = headshotURLs[suggestionsList[i]['creator']][1]
+                include ../partials/suggestion-element.jade
+            if (suggestionsList[i + 1])
+              .col-md-4
+                - suggestionText = suggestionsList[i + 1]['descriptions'][0]
+                - accountName = suggestionsList[i + 1]['creator']
+                - compHeadshot = headshotURLs[suggestionsList[i + 1]['creator']][0]
+                - compHeadshotStyle = headshotURLs[suggestionsList[i + 1]['creator']][1]
+                include ../partials/suggestion-element.jade
+            if (suggestionsList[i + 2])
+              .col-md-4
+                - suggestionText = suggestionsList[i + 2]['descriptions'][0]
+                - accountName = suggestionsList[i + 2]['creator']
+                - compHeadshot = headshotURLs[suggestionsList[i + 2]['creator']][0]
+                - compHeadshotStyle = headshotURLs[suggestionsList[i + 2]['creator']][1]
+                include ../partials/suggestion-element.jade
+       
+      h2 Images with Components
+      each image, i in images
+        - var imageName
+        - var imageURL
+        - var compImageStyle
+        - var componentList
+        - var accountName
+        - var compHeadshot
+        - var compHeadshotStyle
+        if(i % 3 === 0 )
+          .row
+            .col-md-4
+              if(images[i])
+                - imageName = images[i][0]
+                - imageURL = images[i][4]
+                - compImageStyle = images[i][5]
+                - componentList = images[i][3]
+                - accountName = images[i][1]
+                - compHeadshot = headshotURLs[images[i][1]][0]
+                - compHeadshotStyle = headshotURLs[images[i][1]][1]
+                include ../partials/image-block-element.jade
+            .col-md-4
+              if(images[i + 1])
+                - imageName = images[i + 1][0]
+                - imageURL = images[i + 1][4]
+                - compImageStyle = images[i + 1][5]
+                - componentList = images[i + 1][3]
+                - accountName = images[i + 1][1]
+                - compHeadshot = headshotURLs[images[i + 1][1]][0]
+                - compHeadshotStyle = headshotURLs[images[i + 1][1]][1]
+                include ../partials/image-block-element.jade
+            .col-md-4
+              if(images[i + 2])
+                - imageName = images[i + 2][0]
+                - imageURL = images[i + 2][4]
+                - compImageStyle = images[i + 2][5]
+                - componentList = images[i + 2][3]
+                - accountName = images[i + 2][1]
+                - compHeadshot = headshotURLs[images[i + 2][1]][0]
+                - compHeadshotStyle = headshotURLs[images[i + 2][1]][1]
+                include ../partials/image-block-element.jade
 
-    table.suggestion-table
-      tr
-        th.left-column Suggestion Type
-      each components, category in categorizedSuggestions
-        each component, i in components
-          tr
-          tr
-            td.left-column 
-              - var suggestionText = component['descriptions'][0]
-              - var problemCategory = category
-              - var accountName = component['creator']
-              - var compHeadshot = headshotURLs[component['creator']]
-              include ../partials/suggestion-element.jade
-    br
-    h2 Images
-    table.suggestion-table
-      tr
-        th.left-column
-      each image, index in images
-        tr
-        tr
-          td.left-column 
-            - var imageName = image[0]
-            - var componentList = image[3]
-            - var accountName = image[1]
-            - var compHeadshot = headshotURLs[image[1]]
-            include ../partials/image-block-element.jade
-
-    #myModal.modal.fade.annotate-modal(role="dialog")
-      .modal-dialog
-        .modal-content
-          .modal-header
-            button(type="button", class="close" data-dismiss="modal") &times;
-            .modal-title
-          .modal-body
-
-          .modal-footer
-            button.btn.btn-info(data-dismiss="modal") OK
-
-
-
+      br
+      button.btn.btn-success#submit(type='submit') Create Variant >
 
     br
     br
     a.home-logout.btn.btn-default( href="/idea-summary" ) < Back to Idea Summary
-    br
-    br
-    br
+
 
   include ../partials/js-includes.jade
   script(type="text/javascript").

@@ -1,12 +1,19 @@
-.suggestion-element
-	.suggestion
-		.suggestion-text
-			p <b>Suggestion: </b>#{suggestionText || 'No suggestion text'}
-		.suggestion-category
-			p <b>Problem: </b>#{suggestionProblem} <b>Category: </b>#{problemCategory}
-	.suggestion-maker
-		if compHeadshot
-			img(src=compHeadshot height="50" width="50" style=compHeadStyle)
+.suggestion-element.variant-suggestion-block
+	.title-description.variant-suggestion
+		if compLink && suggestionText
+			h3 <b></b> #[a(href=ideaLink) #{suggestionText || 'No Component Name'}]
+		else
+			h3 <b></b>#{suggestionText || 'No Component Name'}
+		if(compHeadshot)
+			img(src=compHeadshot height="50" width="50" style=compHeadshotStyle)
 		else
 			img(src="/avatar.png" height="50" width="50")
-		div.userName #{accountName || user.username}
+		.userName #{accountName || user.username}
+	if !variantSummary
+		.footer.variant-suggestion
+			.radio
+				input(type='radio', name=component['id'], value="incorporate") 
+				|  Incorporate
+			.radio
+				input(type='radio', name=component['id'], value="notIncorporate") 
+				|  Don't Incorporate
