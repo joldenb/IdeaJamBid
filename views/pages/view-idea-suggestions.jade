@@ -16,6 +16,7 @@ html
         - var accountName
         - var compHeadshot
         - var compHeadshotStyle
+        - var compId
         each component, i in suggestionsList
           if(i % 3 === 0 )
             .row
@@ -25,6 +26,7 @@ html
                   - accountName = suggestionsList[i]['creator']
                   - compHeadshot = headshotURLs[suggestionsList[i]['creator']][0]
                   - compHeadshotStyle = headshotURLs[suggestionsList[i]['creator']][1]
+                  - compId = suggestionsList[i]['id']
                   include ../partials/suggestion-element.jade
               if (suggestionsList[i + 1])
                 .col-md-4
@@ -32,6 +34,7 @@ html
                   - accountName = suggestionsList[i + 1]['creator']
                   - compHeadshot = headshotURLs[suggestionsList[i + 1]['creator']][0]
                   - compHeadshotStyle = headshotURLs[suggestionsList[i + 1]['creator']][1]
+                  - compId = suggestionsList[i + 1]['id']
                   include ../partials/suggestion-element.jade
               if (suggestionsList[i + 2])
                 .col-md-4
@@ -39,6 +42,7 @@ html
                   - accountName = suggestionsList[i + 2]['creator']
                   - compHeadshot = headshotURLs[suggestionsList[i + 2]['creator']][0]
                   - compHeadshotStyle = headshotURLs[suggestionsList[i + 2]['creator']][1]
+                  - compId = suggestionsList[i + 2]['id']
                   include ../partials/suggestion-element.jade
          
         h2 Images with Components
@@ -50,6 +54,7 @@ html
           - var accountName
           - var compHeadshot
           - var compHeadshotStyle
+          - var imageID
           if(i % 3 === 0 )
             .row
               .col-md-4
@@ -61,6 +66,7 @@ html
                   - accountName = images[i][1]
                   - compHeadshot = headshotURLs[images[i][1]][0]
                   - compHeadshotStyle = headshotURLs[images[i][1]][1]
+                  - imageID = images[i][2]
                   include ../partials/image-block-element.jade
               .col-md-4
                 if(images[i + 1])
@@ -71,6 +77,7 @@ html
                   - accountName = images[i + 1][1]
                   - compHeadshot = headshotURLs[images[i + 1][1]][0]
                   - compHeadshotStyle = headshotURLs[images[i + 1][1]][1]
+                  - imageID = images[i + 1][2]
                   include ../partials/image-block-element.jade
               .col-md-4
                 if(images[i + 2])
@@ -81,6 +88,7 @@ html
                   - accountName = images[i + 2][1]
                   - compHeadshot = headshotURLs[images[i + 2][1]][0]
                   - compHeadshotStyle = headshotURLs[images[i + 2][1]][1]
+                  - imageID = images[i + 2][2]
                   include ../partials/image-block-element.jade
 
       br
