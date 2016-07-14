@@ -1,5 +1,6 @@
 var cool = require('cool-ascii-faces');
 var express = require('express');
+var helmet = require('helmet')
 var mongodb = require('mongodb');
 var aws = require('aws-sdk');
 var cookieParser = require('cookie-parser');
@@ -25,6 +26,8 @@ require('./config/passport')(passport);
 
 var app = express();
 
+app.use(helmet());
+
 // not sure about this one
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
@@ -41,7 +44,7 @@ app.use(cookieParser());
 // Setting up the database connection and session storage
 var mongodbUri = process.env.MONGOLAB_URI || 'localhost:27017/nodetest1';
 
-console.log("SEEANNNNN:" + mongodbUri);
+console.log("mongodbUri:" + mongodbUri);
 
 mongoose.connect(mongodbUri);
 var db = mongoose.connection;

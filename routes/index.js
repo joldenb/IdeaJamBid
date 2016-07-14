@@ -63,7 +63,8 @@ router.post('/register', function(req, res) {
     Account.register(new Account({ username : req.body.username,
       einsteinPoints: 0, rupees: 0, ideaSeeds: [] }), req.body.password, function(err, account) {
         if (err) {
-            return res.render('pages/register', { account : account });
+            console.log("err.message:" + err.message);
+            return res.render('pages/register', { account : account, message : err.message });
         }
 
         passport.authenticate('local')(req, res, function () {
@@ -105,7 +106,7 @@ router.get('/begin', function(req, res) {
             myCompanyNetwork = "",
             masterLocationNetworkList = [],
             myLocationNetwork = "";
-        
+
         _.each(networks, function(element, index, list){
           if(element['type'] == 'school'){
             masterSchoolNetworkList.push(element);
@@ -280,7 +281,7 @@ router.get('/profile-picture', function(req, res){
       })
 
       IdeaImage.find({"_id" : { $in : headshotIDs}}, function(err, images){
-        
+
         var imageURLs = [];
         var profilePictureFilename = "";
         if(images && images.length > 0){
@@ -305,7 +306,7 @@ router.get('/profile-picture', function(req, res){
             if(images[i].id.toString() == req.user.headshots[0]){
               profilePictureFilename = images[i].filename;
             }
-            
+
             var filename = images[i]._doc["filename"];
             if(images[i]._doc["image"]){
             } else {
@@ -481,7 +482,7 @@ router.get('/view-all-ideas', function(req, res){
                             }
                           }
                         }
-                      } 
+                      }
 
                     }
                   }
@@ -515,7 +516,7 @@ router.get('/view-all-ideas', function(req, res){
 /*****************************************************************
 ******************************************************************
 ******************************************************************
-* Route for the first page of starting a new idea seed. This is 
+* Route for the first page of starting a new idea seed. This is
 * the first page the user sees when they click the button to
 * begin a new idea
 ******************************************************************
@@ -572,7 +573,7 @@ router.get('/introduce-idea', function(req, res) {
 /*****************************************************************
 ******************************************************************
 ******************************************************************
-* Route for saving data from the initial idea seed page. This is 
+* Route for saving data from the initial idea seed page. This is
 * the first page the user sees when they click the button to
 * begin a new idea
 ******************************************************************
@@ -637,7 +638,7 @@ router.get('/accomplish', function(req, res) {
 /*****************************************************************
 ******************************************************************
 ******************************************************************
-* Route for the second page of starting a new idea seed. This 
+* Route for the second page of starting a new idea seed. This
 * saves the information entered by the user.
 ******************************************************************
 ******************************************************************
@@ -684,7 +685,7 @@ router.post('/suggestion-submit', function(req, res) {
         problemID : problem.id,
         identifier : "comp-"+Date.now()
       };
-      
+
       Account.findById( req.user.id,
         function (err, account) {
           var points = parseInt(req.body.pointValue.slice(1));
@@ -719,13 +720,13 @@ router.get('/update-suggestion-points/:problemAuthor', function(req, res){
   var problemArea = req.params.problemAuthor.split("-")[0];
   var contributor = req.params.problemAuthor.split("-")[1];
   var problemText = req.params.problemAuthor.split("-")[2];
-  
+
   IdeaProblem.findOne({
     "problemArea" : problemArea,
     "creator"     : contributor,
     "text"        : problemText
   }, function(err, problem){
-    
+
     Component.find({
       "ideaSeed" : req.session.idea,
       "problemID" :  problem.id
@@ -792,7 +793,7 @@ router.post('/save-idea-name', function(req, res) {
 /*****************************************************************
 ******************************************************************
 ******************************************************************
-* Route for updating the slider values in the modal to view all 
+* Route for updating the slider values in the modal to view all
 * sliders
 ******************************************************************
 ******************************************************************
@@ -972,7 +973,7 @@ router.get('/image-upload', function(req, res){
 ******************************************************************
 *****************************************************************/
 router.post('/image-upload', function(req, res) {
-    
+
     IdeaImage.find({"filename" : {$regex : ".*"+req.body.filename+".*"}}, function(err, images){
 
       var newFileName = req.body.filename + "-" + (images.length + 1).toString();
@@ -1017,7 +1018,7 @@ router.post('/save-annotations', function(req, res){
   var annotations = req.body;
 
   IdeaImage.update({"filename" : req.body.imageName}, { $set : { annotations : [] }} , {multi:true});
-  
+
   while ( annotations["annotations[" + i + "][src]"] ) {
     newAnno["text"] = annotations["annotations[" + i + "][text]"];
     newAnno["xCoord"] = annotations["annotations[" + i + "][shapes][0][geometry][x]"];
@@ -1069,7 +1070,7 @@ router.get('/suggestion-summary', function(req, res){
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
-      
+
       IdeaProblem.find({"_id" : { $in : idea.problemPriorities}}, function(err, problems){
 
         if (problems.length > 0) {
@@ -1155,7 +1156,7 @@ router.get('/view-idea-suggestions', function(req, res){
       }
     }
     IdeaSeed.findById(req.session.idea,function(err, idea){
-      
+
       Component.find({"ideaSeed" : idea.id}, function(err, components){
 
         var suggestionsList = []; //build components by category
@@ -1294,7 +1295,7 @@ router.get('/sort-problems', function(req, res){
           break;
       }
     }
-    
+
     IdeaSeed.findById(req.session.idea,function(err, idea){
       IdeaProblem.find({"_id" : { $in : idea.problemPriorities}}, function(err, problems){
 
@@ -1326,7 +1327,7 @@ router.get('/sort-problems', function(req, res){
 *****************************************************************/
 router.post('/order-problems', function(req, res) {
   IdeaSeed.findById(req.session.idea, function(err, idea){
-    
+
     var length = Object.keys(req.body).length;
     var problemTexts = [];
     var problemAreas = [];
@@ -1340,7 +1341,7 @@ router.post('/order-problems', function(req, res) {
 
       IdeaProblem.find({"ideaSeed" : idea.id},
         function(err, problems){
-          
+
           idea.problemPriorities = [];
 
           for(var i = 0; i < problems.length; i++){
@@ -1427,8 +1428,8 @@ router.post('/login', passport.authenticate('local'), function(req,res){
 /*****************************************************************
 ******************************************************************
 ******************************************************************
-* Route for getting the contributor summary page, that sets the 
-* session info and redirects to /contributor-idea-summary 
+* Route for getting the contributor summary page, that sets the
+* session info and redirects to /contributor-idea-summary
 * so the idea isn't in the URL
 ******************************************************************
 ******************************************************************
@@ -1782,7 +1783,7 @@ router.get('/idea-summary', function(req, res){
                       components : components,
                       listOfProblems : listOfProblems });
             }
-          
+
         }); //end of components query
       }); // end of idea problems query
     });
@@ -1793,7 +1794,7 @@ router.get('/idea-summary', function(req, res){
 /*****************************************************************
 ******************************************************************
 ******************************************************************
-* Gets called when the user clicks the button to create a new 
+* Gets called when the user clicks the button to create a new
 * application
 ******************************************************************
 ******************************************************************
@@ -1854,7 +1855,7 @@ router.get('/variant/:variantname', function(req, res){
     }
 
     IdeaSeed.findById(req.session.idea,function(err, idea){
-      
+
       var currentIdea = idea._doc;
       var currentVariant;
 
@@ -2112,7 +2113,7 @@ router.get('/get-last-component-description', function(req, res){
         "title"       : component.text,
         "identifier"  : component.identifier
       });
-    } else { 
+    } else {
       res.json({
         "title"       : component.text,
         "identifier"  : component.identifier
@@ -2208,7 +2209,7 @@ router.post('/save-component', function(req, res) {
       } else {
         var newComp = new Component({
           text : req.body.component,
-          number : req.body.number,          
+          number : req.body.number,
           images : [{
             imageID   : image.id,
             firstX    : req.body.firstX,
@@ -2280,8 +2281,8 @@ router.get('/view-all-viabilities', function(req, res) {
 ******************************************************************
 ******************************************************************
 * Route for deleting image components.
-* Note : this only removes a component from a particular image, not 
-* entirely from the database.  
+* Note : this only removes a component from a particular image, not
+* entirely from the database.
 
 ******************************************************************
 ******************************************************************
@@ -2438,11 +2439,11 @@ router.get('/component-profile/:identifier', function(req, res){
 
           if(component['problemID']){
             IdeaProblem.findOne({"_id" : component['problemID']}, function(err, problem){
-              
+
               //Get problem creator picture
               Account.findOne({"username": problem['creator']}, function(err, problemCreator){
 
-                //assumes the first headshot in the user's array of headshots is their 
+                //assumes the first headshot in the user's array of headshots is their
                 // primary one for display
                 var problemHeadshotID = problemCreator['headshots'][0];
                 var problemHeadshotURL = '';
@@ -2479,7 +2480,7 @@ router.get('/component-profile/:identifier', function(req, res){
                             break;
                         }
                         var filename = images[i]["filename"];
-                        //if it's the main component image, put in the first spot of the array so it's big on 
+                        //if it's the main component image, put in the first spot of the array so it's big on
                         // the component profile page
                         if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
                           imageURLs.unshift([
@@ -2511,7 +2512,7 @@ router.get('/component-profile/:identifier', function(req, res){
                       components : components,
                       relatedComponents : relatedComponents
                       //components : components,
-                      //listOfProblems : listOfProblems 
+                      //listOfProblems : listOfProblems
                     });
                   });//end of image query
 
@@ -2531,7 +2532,7 @@ router.get('/component-profile/:identifier', function(req, res){
                         imageURLs : [],
                         relatedComponents : relatedComponents
                         //components : components,
-                        //listOfProblems : listOfProblems 
+                        //listOfProblems : listOfProblems
                       });
                 }
               }); // end of problem creator query
@@ -2566,7 +2567,7 @@ router.get('/component-profile/:identifier', function(req, res){
                     }
                     if(images[i] && images[i]["amazonURL"]){
                       var filename = images[i]["filename"];
-                      //if it's the main component image, put in the first spot of the array so it's big on 
+                      //if it's the main component image, put in the first spot of the array so it's big on
                       // the component profile page
                       if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
                         imageURLs.unshift([
@@ -2595,7 +2596,7 @@ router.get('/component-profile/:identifier', function(req, res){
                     imageURLs : imageURLs,
                     relatedComponents : relatedComponents
                     //components : components,
-                    //listOfProblems : listOfProblems 
+                    //listOfProblems : listOfProblems
                   });
 
                 });//end of image query
@@ -2637,7 +2638,7 @@ router.post('/add-related-component', function(req, res) {
 
     Component.findOne({"identifier" : compIdentifier}, function(err, thisComponent){
       Component.findOne({"identifier" : relatedCompIdentifier}, function(err, otherComponent){
-        
+
         // add other component to this component
         if(thisComponent.relatedComps.length > 0){
           thisComponent.relatedComps.push({
