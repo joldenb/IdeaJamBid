@@ -97,6 +97,7 @@ router.get('/begin', function(req, res) {
         req.session.idea = null;
       }
 
+      /* oh, this is a find all. this should change at some point */
       Network.find({}, function(err, networks){
         var masterSchoolNetworkList = [],
             mySchoolNetwork = "",
@@ -2086,7 +2087,7 @@ router.get('/annotate-image/:image', function(req, res){
 
         });
       } else {
-        res.redirect('/idea-seed-summary');
+        res.redirect('/');
       }
     });
   });
@@ -2258,80 +2259,6 @@ router.post('/edit-component', function(req, res) {
     });
 });
 
-/*****************************************************************
-******************************************************************
-******************************************************************
-* Route for saving a school
-******************************************************************
-******************************************************************
-*****************************************************************/
-router.post('/save-school-network', function(req, res) {
-  Network.findOne({"name" : req.body.schoolNetwork}, function(err, schoolNetwork){
-      if(err){
-        res.json({error: err});
-      }
-
-      if(schoolNetwork){
-        Account.findById( req.user.id,
-          function (err, account) {
-            account.networks['school'] = schoolNetwork.id;
-            account.save(function (err) {});
-        });
-        res.redirect('/begin');
-      } else {
-        var newSchool = new Network({
-          name : req.body.schoolNetwork,
-          type : 'school',
-        });
-        newSchool.save(function(err, newSchool){
-          Account.findById( req.user.id,
-            function (err, account) {
-              account.networks['school'] = newSchool.id;
-              account.save(function (err) {});
-          });
-        });
-        res.redirect('/begin');
-      }
-  });
-});
-
-/*****************************************************************
-******************************************************************
-******************************************************************
-* Route for saving a company
-******************************************************************
-******************************************************************
-*****************************************************************/
-router.post('/save-company-network', function(req, res) {
-  Network.findOne({"name" : req.body.companyNetwork}, function(err, companyNetwork){
-      if(err){
-        res.json({error: err});
-      }
-
-      if(companyNetwork){
-        Account.findById( req.user.id,
-          function (err, account) {
-            account.networks['company'] = companyNetwork.id;
-            account.save(function (err) {});
-        });
-        res.redirect('/begin');
-      } else {
-        var newCompany = new Network({
-          name : req.body.companyNetwork,
-          type : 'company',
-        });
-        newCompany.save(function(err, newCompany){
-          Account.findById( req.user.id,
-            function (err, account) {
-              account.networks['company'] = newCompany.id;
-              account.save(function (err) {});
-          });
-        });
-        res.redirect('/begin');
-      }
-  });
-});
-
 
 /*****************************************************************
 ******************************************************************
@@ -2346,84 +2273,6 @@ router.get('/view-all-viabilities', function(req, res) {
   );
 });
 
-
-/*****************************************************************
-******************************************************************
-******************************************************************
-* Route for saving a profile location
-******************************************************************
-******************************************************************
-*****************************************************************/
-router.post('/save-location-network', function(req, res) {
-  //need to add validation to make sure these both exist.
-  var cityAndState = req.body.locationCity + ", " + req.body.locationState;
-  Network.findOne({"name" : cityAndState}, function(err, locationNetwork){
-      if(err){
-        res.json({error: err});
-      }
-
-      if(locationNetwork){
-        Account.findById( req.user.id,
-          function (err, account) {
-            account.networks['location'] = locationNetwork.id;
-            account.save(function (err) {});
-        });
-        res.sendStatus(200);
-      } else {
-        var newLocation = new Network({
-          name : cityAndState,
-          type : 'location',
-        });
-        newLocation.save(function(err, newLocation){
-          Account.findById( req.user.id,
-            function (err, account) {
-              account.networks['location'] = newLocation.id;
-              account.save(function (err) {});
-          });
-        });
-        res.sendStatus(200);
-      }
-  });
-});
-
-/*****************************************************************
-******************************************************************
-******************************************************************
-* Route for saving a new aptitude
-******************************************************************
-******************************************************************
-*****************************************************************/
-router.post('/save-aptitude', function(req, res) {
-  var aptitudeTitle = req.body.aptitudeTitle;
-  Aptitude.find({"title" : aptitudeTitle}, function(err, existingAptitudes){
-    if(err){
-      res.json({error: err})
-    }
-
-    if(existingAptitudes.length > 0){
-      Account.findById( req.user.id,
-        function (err, account) {
-          account.aptitudes.push(existingAptitudes[0].id); //use the first existing record
-          account.save(function (err) {});
-      });
-      console.log
-      res.sendStatus(200);
-    } else {
-      var newAptitude = new Aptitude({
-        title : aptitudeTitle,
-        identifier : "aptitude-"+Date.now()
-      });
-      newAptitude.save(function(err, newSavedAptitude){
-        Account.findById( req.user.id,
-          function (err, account) {
-            account.aptitudes.push(newSavedAptitude.id);
-            account.save(function (err) {});
-        });
-      });
-      res.sendStatus(200);
-    }
-  });
-});
 
 
 

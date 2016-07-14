@@ -655,18 +655,6 @@ html
         if("!{idea.name}" == ""){
           $('#titleModal').modal('show');
         }
-        if("!{idea.alternatives.length}" == "0"){
-          $("#idea-summary-alternatives")
-            .addClass("incomplete-data");
-          $("#idea-summary-alternatives a")
-            .before("<h4><i>No data entered</i></h4>");
-        }
-        if("!{idea.images.length}" == "0"){
-          $("#idea-summary-annotate")
-            .addClass("incomplete-data");
-          $("#idea-summary-annotate a")
-            .before("<h4><i>No data entered</i></h4>");
-        }
         if("!{idea.description}" == ""){
           $("#idea-summary-accomplish")
             .addClass("incomplete-data");

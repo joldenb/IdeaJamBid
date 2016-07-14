@@ -4,10 +4,9 @@ var passportLocalMongoose = require('passport-local-mongoose');
 
 var IdeaImage = new Schema({
 	filename		: String,
-	image			: Buffer,
-	amazonURL : String,
 	orientation : { type: Number, default: 1 },
 	imageMimetype	: String,
+	amazonURL : String,
 	uploader		: String //should match the username field of an account
 
 });

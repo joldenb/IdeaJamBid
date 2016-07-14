@@ -233,7 +233,7 @@ table.suggestion-table .col-md-4 {
   background-position: 50%;  
 }
 
-.title-description.view-all-ideas {
+.title-description.view-all-ideas, .title-description.inventor-block {
   height : 35%;
   padding-left: 1em;
 }
@@ -244,10 +244,10 @@ table.suggestion-table .col-md-4 {
   position: relative;
 }
 
-.footer.view-all-ideas .btn {
+.footer.view-all-ideas .btn, .footer.inventor-block .btn {
   position: absolute;
   top: 25%;
-  transform: translate(5%,0%);
+  transform: translate(10%,0%);
 }
 
 .suggestion.view-all-ideas {
@@ -258,6 +258,20 @@ table.suggestion-table .col-md-4 {
   height:32em;
   border: 1px solid #B4B4B4;
   background-color: white;
+}
+
+
+.suggestion-element.inventor-block {
+  height: auto;
+  border: 1px solid #B4B4B4;
+  background-color: white;
+}
+
+.idea-image.inventor-block.image-block {
+  height:15em;
+  background-size: cover;
+  background-position: 50%;  
+
 }
 
 .suggestion-maker {
@@ -293,15 +307,19 @@ table.suggestion-table .col-md-4 {
   width:80%;
 }
 
-.view-idea-suggestions .container { 
+.container.network-profile {
+  width:80%;
+}
+
+.view-idea-suggestions .container{ 
   width: 100%;
 }
 
-.view-idea-suggestions .container .row {
+.view-idea-suggestions .container .row, .container.network-profile .row {
   padding: 2.5em;
 }
 
-.view-idea-suggestions .container .row .col-md-4 {
+.view-idea-suggestions .container .row .col-md-4, .container.network-profile .row .col-md-4 {
   padding-left: 15px;
   padding-right: 15px;
 }
@@ -678,7 +696,7 @@ img {
   padding-left: 1em;
 }
 
-.footer.variant-suggestion { 
+.footer.variant-suggestion, .footer.inventor-block { 
   height: 4em;
   background-color: #414142; /*dark gray */
   position: relative;
@@ -707,4 +725,9 @@ img {
 
 .suggestion-element.variant-suggestion-block.image-block {
   height: auto;
+}
+
+a.network-link:hover {
+  cursor: pointer;
+  cursor: hand;
 }

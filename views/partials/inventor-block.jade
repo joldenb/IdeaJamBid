@@ -1,0 +1,16 @@
+.suggestion-element.inventor-block.image-block
+	.idea-image.inventor-block.image-block(style="background-image : url('" + '#{inventorImage || "/avatar.png"}' + "');" + inventorImageStyle)
+	.title-description.inventor-block
+		p <b>Inventor Name: </b>#{inventorName || 'No Inventor Name'}
+		.suggestion-category
+			p <b>Einstein Points: </b>#{inventorPoints || 'No Einstein Points'}
+		if inventorAptitudeIds.length > 0
+			p <b>Aptitudes: </b>
+		else
+			p No current Aptitudes
+		ul
+			each aptitude, index in aptitudes
+				if inventorAptitudeIds.indexOf(aptitude.id) > -1
+					li #{aptitude.title}
+	.footer.inventor-block
+		.btn.btn-default View Profile

@@ -12,17 +12,20 @@ html
     div#begin-info-right
       .profileSchool
         if mySchoolNetwork
-          h4 My School :  #[a(href="#" id="schoolModalButton" data-toggle="modal" data-target="#schoolModal") #{mySchoolNetwork}]
+          h4 My School :  #[a(class="network-link") #{mySchoolNetwork}]
+          a(class="btn btn-default" href="#" id="schoolModalButton" data-toggle="modal" data-target="#schoolModal") Edit Network
         else
-          button(type="button" id="schoolModalButton"  class="btn btn-default" data-toggle="modal" data-target="#schoolModal") Add your School
+          button(type="button" id="schoolModalButton" class="btn btn-default" data-toggle="modal" data-target="#schoolModal") Add your School
       .profileCompany
         if myCompanyNetwork
-          h4 My Company :  #[a(href="#" id="companyModalButton" data-toggle="modal" data-target="#companyModal") #{myCompanyNetwork}]
+          h4 My Company :  #[a(class="network-link") #{myCompanyNetwork}]
+          a(class="btn btn-default" href="#" id="companyModalButton" data-toggle="modal" data-target="#companyModal") Edit Network
         else
-          button(type="button" id="companyModalButton"  class="btn btn-default" data-toggle="modal" data-target="#companyModal") Add your Company
+          button(type="button" id="companyModalButton" class="btn btn-default" data-toggle="modal" data-target="#companyModal") Add your Company
       .profileLocation
         if myLocationNetwork
-          h4 My Location : #[a(href="#" id="locationModalButton" data-toggle="modal" data-target="#companyModal") #{myLocationNetwork}]
+          h4 My Location : #[a(class="network-link") #{myLocationNetwork}]
+          a(class="btn btn-default" href="#" id="locationModalButton" data-toggle="modal" data-target="#companyModal") Edit Network
         else
           button(type="button" id="locationModalButton" class="btn btn-default" ) Add your Location
     div#begin-info-aptitudes
@@ -206,6 +209,11 @@ html
           });
         });
       });
+    });
+
+    $("a.network-link").click(function(event){
+      var urlPath = $(this).text().split(" ").join("-")
+      window.location.pathname = "/networks/" + urlPath;
     });
 
     $("#locationSubmit").click(function(event){
