@@ -1,5 +1,6 @@
 var cool = require('cool-ascii-faces');
 var express = require('express');
+var helmet = require('helmet')
 var mongodb = require('mongodb');
 var aws = require('aws-sdk');
 var cookieParser = require('cookie-parser');
@@ -23,6 +24,8 @@ var Account = require('./models/account');
 require('./config/passport')(passport);
 
 var app = express();
+
+app.use(helmet());
 
 // not sure about this one
 app.set('port', (process.env.PORT || 5000));
