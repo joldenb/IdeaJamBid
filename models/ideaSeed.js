@@ -40,85 +40,53 @@ var IdeaSeed = new Schema({
 		images			: [ String ] // filenames of images
 	}],
 
-	alternatives	: [{
-		name					: String,
-		description		: String,
-		failureReason	: String,
-		differsBy			: String
-	}],
-
-	industries			:[{
-		name					: String
-	}],
-
-	unmetNeed				: String,
-
-	desireableCharacteristics	: [{
-		characteristic		: String
-	}],
-
 	ideaReviews		: [ObjectId],
 
 	problemPriorities : [ ObjectId ], //order of this array is priority of problem
 
 	performOne		: Number,
-	performProblem		: String,
 	performPriority		: { type: Number, default: 1 },
 
 	affordOne		: Number,
-	affordProblem		: String,
 	affordPriority		: { type: Number, default: 2 },
 
 	featureOne		: Number,
-	featureProblem		: String,
 	featurePriority		: { type: Number, default: 3 },
 
 	deliverOne		: Number,
-	deliverProblem		: String,
 	deliverPriority		: { type: Number, default: 4 },
 
 	useabilityOne	: Number,
-	useabilityProblem	: String,
 	useabilityPriority		: { type: Number, default: 5 },
 
 	maintainOne		: Number,
-	maintainProblem		: String,
 	maintainPriority		: { type: Number, default: 6 },
 
 	durabilityOne	: Number,
-	durabilityProblem	: String,
 	durabilityPriority		: { type: Number, default: 7 },
 
 	imageOne		: Number,
-	imageProblem		: String,
 	imagePriority		: { type: Number, default: 8 },
 
 	complexOne		: Number,
-	complexProblem		: String,
 	complexPriority		: { type: Number, default: 9 },
 
 	precisionOne	: Number,
-	precisionProblem	: String,
 	precisionPriority		: { type: Number, default: 10 },
 
 	variabilityOne	: Number,
-	variabilityProblem	: String,
 	variabilityPriority		: { type: Number, default: 11 },
 
 	sensitivityOne	: Number,
-	sensitivityProblem	: String,
 	sensitivityPriority		: { type: Number, default: 12 },
 
 	immatureOne		: Number,
-	immatureProblem		: String,
 	immaturePriority		: { type: Number, default: 13 },
 
 	dangerOne		: Number,
-	dangerProblem		: String,
 	dangerPriority		: { type: Number, default: 14 },
 
 	skillsOne		: Number,
-	skillsProblem		: String,
 	skillsPriority		: { type: Number, default: 15 }
 });
 
