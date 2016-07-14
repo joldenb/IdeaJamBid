@@ -40,7 +40,7 @@ app.use(cookieParser());
 // Setting up the database connection and session storage
 var mongodbUri = process.env.MONGOLAB_URI || 'localhost:27017/nodetest1';
 
-console.log("SEEANNNNN:" + mongodbUri);
+console.log("mongodbUri:" + mongodbUri);
 
 mongoose.connect(mongodbUri);
 var db = mongoose.connection;
