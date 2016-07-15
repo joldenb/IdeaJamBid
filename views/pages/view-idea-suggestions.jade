@@ -24,24 +24,27 @@ html
                 .col-md-4
                   - suggestionText = suggestionsList[i]['descriptions'][0]
                   - accountName = suggestionsList[i]['creator']
-                  - compHeadshot = headshotURLs[suggestionsList[i]['creator']][0]
-                  - compHeadshotStyle = headshotURLs[suggestionsList[i]['creator']][1]
+                  if (headshotURLs[suggestionsList[i]['creator']])
+                    - compHeadshot = headshotURLs[suggestionsList[i]['creator']][0]
+                    - compHeadshotStyle = headshotURLs[suggestionsList[i]['creator']][1]
                   - compId = suggestionsList[i]['id']
                   include ../partials/suggestion-element.jade
               if (suggestionsList[i + 1])
                 .col-md-4
                   - suggestionText = suggestionsList[i + 1]['descriptions'][0]
                   - accountName = suggestionsList[i + 1]['creator']
-                  - compHeadshot = headshotURLs[suggestionsList[i + 1]['creator']][0]
-                  - compHeadshotStyle = headshotURLs[suggestionsList[i + 1]['creator']][1]
+                  if (headshotURLs[suggestionsList[i + 1]['creator']])
+                    - compHeadshot = headshotURLs[suggestionsList[i + 1]['creator']][0]
+                    - compHeadshotStyle = headshotURLs[suggestionsList[i + 1]['creator']][1]
                   - compId = suggestionsList[i + 1]['id']
                   include ../partials/suggestion-element.jade
               if (suggestionsList[i + 2])
                 .col-md-4
                   - suggestionText = suggestionsList[i + 2]['descriptions'][0]
                   - accountName = suggestionsList[i + 2]['creator']
-                  - compHeadshot = headshotURLs[suggestionsList[i + 2]['creator']][0]
-                  - compHeadshotStyle = headshotURLs[suggestionsList[i + 2]['creator']][1]
+                  if (headshotURLs[suggestionsList[i + 2]['creator']])
+                    - compHeadshot = headshotURLs[suggestionsList[i + 2]['creator']][0]
+                    - compHeadshotStyle = headshotURLs[suggestionsList[i + 2]['creator']][1]
                   - compId = suggestionsList[i + 2]['id']
                   include ../partials/suggestion-element.jade
          
@@ -64,8 +67,9 @@ html
                   - compImageStyle = images[i][5]
                   - componentList = images[i][3]
                   - accountName = images[i][1]
-                  - compHeadshot = headshotURLs[images[i][1]][0]
-                  - compHeadshotStyle = headshotURLs[images[i][1]][1]
+                  if headshotURLs[images[i][1]]
+                    - compHeadshot = headshotURLs[images[i][1]][0]
+                    - compHeadshotStyle = headshotURLs[images[i][1]][1]
                   - imageID = images[i][2]
                   include ../partials/image-block-element.jade
               .col-md-4
@@ -75,8 +79,9 @@ html
                   - compImageStyle = images[i + 1][5]
                   - componentList = images[i + 1][3]
                   - accountName = images[i + 1][1]
-                  - compHeadshot = headshotURLs[images[i + 1][1]][0]
-                  - compHeadshotStyle = headshotURLs[images[i + 1][1]][1]
+                  if headshotURLs[images[i + 1][1]]
+                    - compHeadshot = headshotURLs[images[i + 1][1]][0]
+                    - compHeadshotStyle = headshotURLs[images[i + 1][1]][1]
                   - imageID = images[i + 1][2]
                   include ../partials/image-block-element.jade
               .col-md-4
@@ -86,8 +91,9 @@ html
                   - compImageStyle = images[i + 2][5]
                   - componentList = images[i + 2][3]
                   - accountName = images[i + 2][1]
-                  - compHeadshot = headshotURLs[images[i + 2][1]][0]
-                  - compHeadshotStyle = headshotURLs[images[i + 2][1]][1]
+                  if headshotURLs[images[i + 2][1]]
+                    - compHeadshot = headshotURLs[images[i + 2][1]][0]
+                    - compHeadshotStyle = headshotURLs[images[i + 2][1]][1]
                   - imageID = images[i + 2][2]
                   include ../partials/image-block-element.jade
 
