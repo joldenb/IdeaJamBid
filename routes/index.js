@@ -176,9 +176,19 @@ router.get('/profile/:username', function(req, res) {
                     j = 0;
                     IdeaReview.find({"reviewer" : account.username}, function(err, reviews){
                       var ideaSeedIDs = _.map(reviews, function(item){return item["ideaSeedId"];});
+                      
+
+                      console.log('reviewIDs' + ideaSeedIDs.toString());
+                      
+
                       ideaSeedIDs = _.filter(ideaSeedIDs, Boolean);
                       IdeaSeed.find({_id : {$in : ideaSeedIDs}}, function(err, reviewedIdeas){
                         var reviewedIdeaNames = _.map(reviewedIdeas, function(item){return item["name"];});
+
+
+                        console.log('reviewIDs' + reviewedIdeaNames.toString());
+                        
+
                         var context = {"reviewedNames" : reviewedIdeaNames};
                         _.each(account.ideaSeeds, function(element, index,  list){
                           reviewNames = this["reviewedNames"];
