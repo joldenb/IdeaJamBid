@@ -46,7 +46,7 @@ router.post('/save-school-network', function(req, res) {
             account.networks['school'] = schoolNetwork.id;
             account.save(function (err) {});
         });
-        res.redirect('/begin');
+        res.redirect('/profile/' + req.user.username);
       } else {
         var newSchool = new Network({
           name : req.body.schoolNetwork,
@@ -59,7 +59,7 @@ router.post('/save-school-network', function(req, res) {
               account.save(function (err) {});
           });
         });
-        res.redirect('/begin');
+        res.redirect('/profile/' + req.user.username);
       }
   });
 });
@@ -96,7 +96,7 @@ router.post('/save-company-network', function(req, res) {
               account.save(function (err) {});
           });
         });
-        res.redirect('/begin');
+        res.redirect('/profile/' + req.user.username);
       }
   });
 });
@@ -226,7 +226,7 @@ router.get('/networks/:networkName', function(req, res){
         {'networks.location' : network['id']}
 
       ]}).sort({einsteinPoints : -1})
-      .limit(2)
+      .limit(3)
       .exec(function(err, accounts){
 
         accountHeadshotIDs = {};

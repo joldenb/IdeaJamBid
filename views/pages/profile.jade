@@ -11,29 +11,29 @@ html
       h4 Einstein Points: #{user.einsteinPoints}
     div#begin-info-right
       .profileSchool
-        if mySchoolNetwork
-          h4 My School :  #[a(class="network-link") #{mySchoolNetwork}]
+        if schoolNetwork
+          h4 School :  #[a(class="network-link") #{schoolNetwork}]
           a(class="btn btn-default" href="#" id="schoolModalButton" data-toggle="modal" data-target="#schoolModal") Edit Network
         else
           button(type="button" id="schoolModalButton" class="btn btn-default" data-toggle="modal" data-target="#schoolModal") Add your School
       .profileCompany
-        if myCompanyNetwork
-          h4 My Company :  #[a(class="network-link") #{myCompanyNetwork}]
+        if companyNetwork
+          h4 Company :  #[a(class="network-link") #{companyNetwork}]
           a(class="btn btn-default" href="#" id="companyModalButton" data-toggle="modal" data-target="#companyModal") Edit Network
         else
           button(type="button" id="companyModalButton" class="btn btn-default" data-toggle="modal" data-target="#companyModal") Add your Company
       .profileLocation
-        if myLocationNetwork
-          h4 My Location : #[a(class="network-link") #{myLocationNetwork}]
+        if locationNetwork
+          h4 Location : #[a(class="network-link") #{locationNetwork}]
           a(class="btn btn-default" href="#" id="locationModalButton" data-toggle="modal" data-target="#companyModal") Edit Network
         else
           button(type="button" id="locationModalButton" class="btn btn-default" ) Add your Location
     div#begin-info-aptitudes
       .profileAptitudes
-        if myAptitudes
-          h3 My aptitudes : 
+        if aptitudes
+          h3 aptitudes : 
           ul
-            each aptitude in myAptitudes
+            each aptitude in aptitudes
               li(data-apt-id="#{aptitude.identifier}") #{aptitude.title}
         form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
           .form-group

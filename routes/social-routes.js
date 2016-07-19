@@ -17,7 +17,7 @@ router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 
 
 router.get('/auth/google/callback',
   passport.authenticate('google',{
-    successRedirect: '/begin',
+    successRedirect: '/',
     failureRedirect: '/'
 }));
 
@@ -31,7 +31,7 @@ router.get('/auth/facebook', passport.authenticate('facebook', { scope:  'email'
 
 router.get('/auth/facebook/callback',
   passport.authenticate('facebook',{
-    successRedirect: '/begin',
+    successRedirect: '/',
     failureRedirect: '/'
 }));
 
@@ -45,7 +45,7 @@ router.get('/auth/linkedin', passport.authenticate('linkedin'));
 
 router.get('/auth/linkedin/callback', 
   passport.authenticate('linkedin',{
-    successRedirect: '/begin',
+    successRedirect: '/',
     failureRedirect: '/'
 }));
 

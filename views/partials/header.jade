@@ -9,6 +9,6 @@ span.userName Howdy #{user.username}
     img.placeholder(src="/avatar.png" height="75" width="75")
     a.plus-overlay(href="/profile-picture")
       img(src='/plus-overlay.png' height="75" width="75")
-a.home-logout.btn.btn-default( href="/begin" ) My Profile
+a.home-logout.btn.btn-default( href="/profile/" + user.username ) My Profile
 | 
 a.home-logout.btn.btn-default( href="/logout" ) Log Out
