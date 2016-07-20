@@ -203,10 +203,11 @@ router.get('/profile/:username', function(req, res) {
                                   headshot : headshotURL,
                                   headshotStyle : headshotStyle,
                                   user : req.user,
-                                  myAptitudes : myAptitudes,
-                                  mySchoolNetwork : schoolNetwork,
-                                  myLocationNetwork : locationNetwork,
-                                  myCompanyNetwork : companyNetwork,
+                                  profileAccount: account,
+                                  aptitudes : myAptitudes,
+                                  schoolNetwork : schoolNetwork,
+                                  locationNetwork : locationNetwork,
+                                  companyNetwork : companyNetwork,
                                   accountIdeaSeeds : ideaNames,
                                   masterSchoolNetworkList : masterSchoolNetworkList,
                                   masterSchoolNetworkString : JSON.stringify(masterSchoolNetworkList)
@@ -228,10 +229,11 @@ router.get('/profile/:username', function(req, res) {
                                   myAptitudes : myAptitudes,
                                   headshot : headshotURL,
                                   headshotStyle : headshotStyle,
-                                  mySchoolNetwork : schoolNetwork,
-                                  myLocationNetwork : locationNetwork,
-                                  myCompanyNetwork : companyNetwork,
+                                  schoolNetwork : schoolNetwork,
+                                  locationNetwork : locationNetwork,
+                                  companyNetwork : companyNetwork,
                                   user : req.user,
+                                  profileAccount: account,
                                   accountIdeaSeeds : ideaNames
                                 });
                               }
@@ -245,12 +247,13 @@ router.get('/profile/:username', function(req, res) {
               else {
                 return res.render('pages/profile', {
                   user : req.user,
-                  myAptitudes : myAptitudes,
+                  profileAccount: account,
+                  aptitudes : myAptitudes,
                   headshot : headshotURL,
                   headshotStyle : headshotStyle,
-                  mySchoolNetwork : schoolNetwork,
-                  myLocationNetwork : locationNetwork,
-                  myCompanyNetwork : companyNetwork,
+                  schoolNetwork : schoolNetwork,
+                  locationNetwork : locationNetwork,
+                  companyNetwork : companyNetwork,
                   accountIdeaSeeds : []
                 });
               }

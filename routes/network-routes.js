@@ -83,7 +83,7 @@ router.post('/save-company-network', function(req, res) {
             account.networks['company'] = companyNetwork.id;
             account.save(function (err) {});
         });
-        res.redirect('/begin');
+        res.redirect('/profile/' + req.user.username);
       } else {
         var newCompany = new Network({
           name : req.body.companyNetwork,

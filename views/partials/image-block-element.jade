@@ -3,9 +3,11 @@
 	.title-description.variant-suggestion
 		p <b>Image Name: </b>#{imageName || 'No suggestion text'}
 		if(compHeadshot)
-			img(src=compHeadshot height="50" width="50" style=compHeadshotStyle)
+			a(href='/profile/' + accountName)
+				img(src=compHeadshot height="50" width="50" style=compHeadshotStyle)
 		else
-			img(src="/avatar.png" height="50" width="50")
+			a(href='/profile/' + accountName)
+				img(src="/avatar.png" height="50" width="50")
 		.userName #{accountName || user.username}
 		.suggestion-category
 			ul
