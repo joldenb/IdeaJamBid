@@ -147,11 +147,7 @@ router.get('/profile/:username', function(req, res) {
               }
             }
           });
-
-
           Aptitude.find({"_id" : {$in : account.aptitudes}}, function(err, myAptitudes){
-
-
             IdeaImage.findById(account.headshots[0], function(err, headshot){
               if(headshot){
                 var headshotURL = headshot["amazonURL"];
@@ -807,12 +803,14 @@ router.post('/save-idea-name', function(req, res) {
     res.redirect('/');
     return;
   }
-  IdeaSeed.update({_id : req.session.idea}, {
+  IdeaSeed.findOneAndUpdate({_id : req.session.idea}, {
     name : req.body.inventionName.slice(17)},
-    { multi: false }, function (err, raw) {
-      console.log('The raw response from Mongo was ', raw);
+    // options, this gets the new updated record
+    { multi: false, new : true },
+    function (err, idea) {
+      console.log('The raw response from Mongo was ', idea);
+      res.redirect('/idea-summary/' + idea.name);
   });
-  res.redirect('/idea-summary');
 });
 
 /*****************************************************************
@@ -1431,7 +1429,7 @@ router.post('/incorporate-suggestions', function(req, res) {
 
       currentIdea.variants.push(newVariant);
       idea.save(function(data){
-        res.redirect('/idea-summary');
+        res.redirect('/idea-summary/' + idea.name);
       });
     });
   });
@@ -1461,12 +1459,174 @@ router.post('/login', passport.authenticate('local'), function(req,res){
 *****************************************************************/
 router.get('/contributor-idea-summary/:ideaName', function(req, res){
   IdeaSeed.findOne({ "name" : req.params.ideaName },function(err, idea){
-    req.session.idea = idea._doc._id.toHexString();
+    
+    if(err || !idea){
+      res.redirect('/');
+      return;
+    }
+
+    // store this idea in the session
+    req.session.idea = idea.id;
+
+    // If the visitor is the owner of the idea, route to the inventor
+    // idea summary view
     if(idea.inventorName == req.user.username){
       delete req.session.ideaReview;
       res.redirect('/idea-summary/'+req.params.ideaName);
+
+
     } else {
-      res.redirect('/contributor-idea-summary');
+      if(!req.session.idea){
+        res.redirect('/');
+        return;
+      }
+      IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+        if(headshot){
+          var headshotURL = headshot["amazonURL"];
+          var headshotStyle = "";
+          switch (headshot["orientation"]) {
+            case 1 :
+              headshotStyle = "";
+              break;
+            case 2 :
+              headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+              break;
+            case 3 :
+              headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+              break;
+            case 4 :
+              headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+              break;
+          }
+        }
+        IdeaSeed.findById(req.session.idea,function(err, idea){
+          var imageURLs = [];
+          currentIdea = idea._doc;
+          var currentlyReviewing = false;
+          Component.find({"ideaSeed" : idea.id}, function(err, components){
+            if(idea.ideaReviews.length > 0){
+              var reviewsChecked = 0;
+                IdeaReview.find({"_id" : {$in : idea.ideaReviews } }, function(err, reviews){
+                  var k = 0;
+                  var currentReview = {};
+                  while(k < reviews.length && !currentlyReviewing) {
+                    if(reviews[k] && reviews[k].reviewer == req.user.username){
+                      currentlyReviewing = true;
+                      currentReview = reviews[k];
+                      req.session.ideaReview = reviews[k].id;
+                    }
+                    if(reviewsChecked >= (reviews.length - 1) || currentlyReviewing){
+                      if (idea.images.length > 0){
+                          IdeaImage.find({"_id" : {$in : idea.images } } , function(err, images){
+                            for(var j = 0; j < images.length; j++){
+                              if(images[j] && images[j].amazonURL){
+                                var filename = images[j]["filename"];
+                                var imageStyle = "";
+                                switch (images[j]["orientation"]) {
+                                  case 1 :
+                                    imageStyle = "";
+                                    break;
+                                  case 2 :
+                                    imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                                    break;
+                                  case 3 :
+                                    imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                                    break;
+                                  case 4 :
+                                    imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                                    break;
+                                }
+                                imageURLs.push([
+                                  filename,
+                                  images[j]["amazonURL"],
+                                  imageStyle
+                                ]);
+                              }
+                            } // end of loop of images
+                            res.render('pages/contributor-idea-summary', {
+                              user : req.user, idea : currentIdea,
+                              currentReview : currentReview,
+                              headshot : headshotURL,
+                              headshotStyle : headshotStyle,
+                              imageURLs : imageURLs,
+                              components : components,
+                              currentlyReviewing : currentlyReviewing
+                            });
+                          }); //end of images query
+                      } else {
+                        res.render('pages/contributor-idea-summary', {
+                          user : req.user, idea : currentIdea,
+                          currentReview : currentReview,
+                          headshot : headshotURL,
+                          headshotStyle : headshotStyle,
+                          imageURLs : [],
+                          components : components,
+                          currentlyReviewing : currentlyReviewing
+                        });
+                        return;
+                      }
+                    }
+                    k++;
+                    reviewsChecked++;
+                  }
+                }); //end of review query
+            } else {
+                  if (idea._doc.images.length != 0){
+                    for (var i =0; i < idea._doc.images.length; i++){
+                      var j = 0;
+                      IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
+                        j++;
+                        if(image && image._doc && image._doc.amazonURL){
+                          var filename = image._doc["filename"];
+                          var imageStyle = "";
+                          switch (image["orientation"]) {
+                            case 1 :
+                              imageStyle = "";
+                              break;
+                            case 2 :
+                              imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                              break;
+                            case 3 :
+                              imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                              break;
+                            case 4 :
+                              imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                              break;
+                          }
+                          imageURLs.push([
+                            filename,
+                            image["amazonURL"],
+                            imageStyle
+                          ]);
+                        }
+                        if (j == idea._doc.images.length){
+                          res.render('pages/contributor-idea-summary', {
+                            user : req.user, idea : currentIdea,
+                            imageURLs : imageURLs,
+                            headshot : headshotURL,
+                            headshotStyle :  headshotStyle,
+                            components : components,
+                            currentReview : {},
+                            currentlyReviewing : currentlyReviewing
+                          });
+                        }
+                      });
+                    }
+                  } else {
+                    res.render('pages/contributor-idea-summary', {
+                      user : req.user, idea : currentIdea,
+                      imageURLs : [],
+                      headshot : headshotURL,
+                      headshotStyle : headshotStyle,
+                      components : components,
+                      currentReview : {},
+                      currentlyReviewing : currentlyReviewing
+                    });
+                  }
+            }
+          });//end of component query
+        });
+      });
     }
   });
 });
@@ -1479,116 +1639,127 @@ router.get('/contributor-idea-summary/:ideaName', function(req, res){
 ******************************************************************
 *****************************************************************/
 router.get('/contributor-idea-summary', function(req, res){
-  if(!req.session.idea){
-    res.redirect('/');
-    return;
-  }
-  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-    if(headshot){
-      var headshotURL = headshot["amazonURL"];
-      var headshotStyle = "";
-      switch (headshot["orientation"]) {
-        case 1 :
-          headshotStyle = "";
-          break;
-        case 2 :
-          headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-          break;
-        case 3 :
-          headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-          break;
-        case 4 :
-          headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-          break;
-      }
-    }
-    IdeaSeed.findById(req.session.idea,function(err, idea){
-      var imageURLs = [];
-      currentIdea = idea._doc;
-      var currentlyReviewing = false;
-      Component.find({"ideaSeed" : idea.id}, function(err, components){
-        if(idea.ideaReviews.length > 0){
-          var reviewsChecked = 0;
-            IdeaReview.find({"_id" : {$in : idea.ideaReviews } }, function(err, reviews){
-              var k = 0;
-              var currentReview = {};
-              while(k < reviews.length && !currentlyReviewing) {
-                if(reviews[k] && reviews[k].reviewer == req.user.username){
-                  currentlyReviewing = true;
-                  currentReview = reviews[k];
-                  req.session.ideaReview = reviews[k].id;
+});
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for saving session info for an idea seed, then redirecting
+* to the /idea-summary pathname
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/idea-summary/:ideaName', function(req, res){
+  
+  // potentially fragile logic here. all ideas should have
+  // a name after the initial visit to this path. but on the first 
+  // visit, we'll rely on the session to grab the idea id that was
+  // created on the introductory ideaseed creation pages, coming
+  // from the image upload page
+  
+  IdeaSeed.findOne({ $or : [
+    {"_id" : req.session.idea},
+    {"name" : req.params.ideaName}
+    ]},
+    function(err, idea){
+
+    if(err || !idea){
+      res.redirect('/');
+      return;
+    } 
+
+
+    // If the visitor is the owner of the idea, route to the inventor
+    // idea summary view
+    if(idea.inventorName != req.user.username){
+      res.redirect('/contributor-idea-summary/'+req.params.ideaName);
+    } else {
+      req.session.idea = idea.id;
+
+      IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+        if(headshot){
+          var headshotURL = headshot["amazonURL"];
+          var headshotStyle = "";
+          switch (headshot["orientation"]) {
+            case 1 :
+              headshotStyle = "";
+              break;
+            case 2 :
+              headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+              break;
+            case 3 :
+              headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+              break;
+            case 4 :
+              headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+              break;
+          }
+        }
+
+        delete req.session.ideaReview;
+
+
+        IdeaSeed.findById(req.session.idea,function(err, idea){
+          currentIdea = idea._doc;
+
+          IdeaProblem.find({"ideaSeed" : currentIdea._id, date : {$exists : true}}, null,
+            {sort: '-date'}, function(err, problems){
+            Component.find({"ideaSeed" : idea.id}, function(err, components){
+              var variantDates = [],
+                  sortedProblems = [];
+              var imageURLs = [];
+              var componentsList = [];
+              componentsList = _.map(components, function(item){return "Component : "+item['text'];});
+              componentsList = componentsList.filter(function(item){
+                if(item == "Component : undefined"){
+                  return false;
+                } else {
+                  return true;
                 }
-                if(reviewsChecked >= (reviews.length - 1) || currentlyReviewing){
-                  if (idea.images.length > 0){
-                      IdeaImage.find({"_id" : {$in : idea.images } } , function(err, images){
-                        for(var j = 0; j < images.length; j++){
-                          if(images[j] && images[j].amazonURL){
-                            var filename = images[j]["filename"];
-                            var imageStyle = "";
-                            switch (images[j]["orientation"]) {
-                              case 1 :
-                                imageStyle = "";
-                                break;
-                              case 2 :
-                                imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                                break;
-                              case 3 :
-                                imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                                break;
-                              case 4 :
-                                imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                                break;
-                            }
-                            imageURLs.push([
-                              filename,
-                              images[j]["amazonURL"],
-                              imageStyle
-                            ]);
-                          }
-                        } // end of loop of images
-                        res.render('pages/contributor-idea-summary', {
-                          user : req.user, idea : currentIdea,
-                          currentReview : currentReview,
-                          headshot : headshotURL,
-                          headshotStyle : headshotStyle,
-                          imageURLs : imageURLs,
-                          components : components,
-                          currentlyReviewing : currentlyReviewing
-                        });
-                      }); //end of images query
-                  } else {
-                    res.render('pages/contributor-idea-summary', {
-                      user : req.user, idea : currentIdea,
-                      currentReview : currentReview,
-                      headshot : headshotURL,
-                      headshotStyle : headshotStyle,
-                      imageURLs : [],
-                      components : components,
-                      currentlyReviewing : currentlyReviewing
-                    });
-                    return;
-                  }
-                }
-                k++;
-                reviewsChecked++;
+              });
+              var problemAreas = componentsList.concat([
+                "Area : Performability",
+                "Area : Affordability",
+                "Area : Featurability",
+                "Area : Deliverability",
+                "Area : Useability",
+                "Area : Maintainability",
+                "Area : Durability",
+                "Area : Imageability",
+                "Area : Complexity",
+                "Area : Precision",
+                "Area : Variability",
+                "Area : Sensitivity",
+                "Area : Immaturity",
+                "Area : Danger",
+                "Area : Skills"
+              ]);
+              if(idea.inventorName != req.user.username){
+                res.redirect('/contributor-idea-summary');
+                return;
               }
-            }); //end of review query
-
-
-
-
-
-
-
-
-
-        } else {
-              if (idea._doc.images.length != 0){
-                for (var i =0; i < idea._doc.images.length; i++){
+              var listOfProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
+              var typeOfProblem, rankingOfProblem;
+              for(var i = 0; i < listOfProblems.length; i++){
+                typeOfProblem = _.invert(currentIdea)[listOfProblems[i][1]];
+                rankingOfProblem = idea[typeOfProblem.slice(0, -7) + "Priority"];
+                listOfProblems[i].push(rankingOfProblem);
+              }
+              listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
+              if(currentIdea.variants.length > 0){
+                for(var i = 0; i < currentIdea.variants.length; i++){
+                  variantDates.push([
+                    new Date(parseInt(currentIdea.variants[i].name.substr(-13))).toString(),
+                    currentIdea.variants[i].name
+                  ]);
+                }
+              }
+              if (idea._doc.images.length !== 0){
+                for (i =0; i < idea._doc.images.length; i++){
                   var j = 0;
                   IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
                     j++;
-                    if(image && image._doc && image._doc.amazonURL){
+                    if(image && image._doc && image.amazonURL){
                       var filename = image._doc["filename"];
                       var imageStyle = "";
                       switch (image["orientation"]) {
@@ -1612,48 +1783,36 @@ router.get('/contributor-idea-summary', function(req, res){
                       ]);
                     }
                     if (j == idea._doc.images.length){
-                      res.render('pages/contributor-idea-summary', {
-                        user : req.user, idea : currentIdea,
-                        imageURLs : imageURLs,
+                      res.render('pages/idea-summary', { user : req.user, idea : currentIdea,
+                        variantDates : variantDates,
+                        problemAreas  : problemAreas,
                         headshot : headshotURL,
-                        headshotStyle :  headshotStyle,
+                        headshotStyle : headshotStyle,
+                        imageURLs : imageURLs,
+                        problems : problems,
                         components : components,
-                        currentReview : {},
-                        currentlyReviewing : currentlyReviewing
-                      });
+                        listOfProblems : listOfProblems });
                     }
                   });
                 }
               } else {
-                res.render('pages/contributor-idea-summary', {
-                  user : req.user, idea : currentIdea,
-                  imageURLs : [],
-                  headshot : headshotURL,
-                  headshotStyle : headshotStyle,
-                  components : components,
-                  currentReview : {},
-                  currentlyReviewing : currentlyReviewing
-                });
+                      res.render('pages/idea-summary', { user : req.user, idea : currentIdea,
+                        variantDates : variantDates,
+                        problemAreas  : problemAreas,
+                        imageURLs : [],
+                        headshot : headshotURL,
+                        headshotStyle : headshotStyle,
+                        problems : problems,
+                        components : components,
+                        listOfProblems : listOfProblems });
               }
-        }
-      });//end of component query
-    });
-  });
-});
+            }); //end of components query
+          }); // end of idea problems query
+        });
+      });
+    
 
-/*****************************************************************
-******************************************************************
-******************************************************************
-* Route for saving session info for an idea seed, then redirecting
-* to the /idea-summary pathname
-******************************************************************
-******************************************************************
-*****************************************************************/
-router.get('/idea-summary/:ideaName', function(req, res){
-  IdeaSeed.findOne({ "name" : req.params.ideaName },function(err, idea){
-    req.session.idea = idea._doc._id.toHexString();
-    delete req.session.ideaReview;
-    res.redirect('/idea-summary');
+    }
   });
 });
 
@@ -1665,154 +1824,6 @@ router.get('/idea-summary/:ideaName', function(req, res){
 ******************************************************************
 *****************************************************************/
 router.get('/idea-summary', function(req, res){
-  if(!req.session.idea){
-    res.redirect('/');
-    return;
-  }
-
-  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-    if(headshot){
-      var headshotURL = headshot["amazonURL"];
-      var headshotStyle = "";
-      switch (headshot["orientation"]) {
-        case 1 :
-          headshotStyle = "";
-          break;
-        case 2 :
-          headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-          break;
-        case 3 :
-          headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-          break;
-        case 4 :
-          headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-          break;
-      }
-    }
-
-    delete req.session.ideaReview;
-
-
-    IdeaSeed.findById(req.session.idea,function(err, idea){
-      currentIdea = idea._doc;
-
-      IdeaProblem.find({"ideaSeed" : currentIdea._id, date : {$exists : true}}, null,
-        {sort: '-date'}, function(err, problems){
-        Component.find({"ideaSeed" : idea.id}, function(err, components){
-          var variantDates = [],
-              sortedProblems = [];
-          var imageURLs = [];
-          var componentsList = [];
-
-          componentsList = _.map(components, function(item){return "Component : "+item['text'];});
-          componentsList = componentsList.filter(function(item){
-            if(item == "Component : undefined"){
-              return false;
-            } else {
-              return true;
-            }
-          });
-
-          var problemAreas = componentsList.concat([
-            "Area : Performability",
-            "Area : Affordability",
-            "Area : Featurability",
-            "Area : Deliverability",
-            "Area : Useability",
-            "Area : Maintainability",
-            "Area : Durability",
-            "Area : Imageability",
-            "Area : Complexity",
-            "Area : Precision",
-            "Area : Variability",
-            "Area : Sensitivity",
-            "Area : Immaturity",
-            "Area : Danger",
-            "Area : Skills"
-          ]);
-
-          if(idea.inventorName != req.user.username){
-            res.redirect('/contributor-idea-summary');
-            return;
-          }
-
-          var listOfProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
-          var typeOfProblem, rankingOfProblem;
-          for(var i = 0; i < listOfProblems.length; i++){
-            typeOfProblem = _.invert(currentIdea)[listOfProblems[i][1]];
-            rankingOfProblem = idea[typeOfProblem.slice(0, -7) + "Priority"];
-            listOfProblems[i].push(rankingOfProblem);
-          }
-
-
-          listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
-
-          if(currentIdea.variants.length > 0){
-            for(var i = 0; i < currentIdea.variants.length; i++){
-              variantDates.push([
-                new Date(parseInt(currentIdea.variants[i].name.substr(-13))).toString(),
-                currentIdea.variants[i].name
-              ]);
-            }
-          }
-
-            if (idea._doc.images.length !== 0){
-              for (i =0; i < idea._doc.images.length; i++){
-                var j = 0;
-                IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
-                  j++;
-                  if(image && image._doc && image.amazonURL){
-                    var filename = image._doc["filename"];
-                    var imageStyle = "";
-                    switch (image["orientation"]) {
-                      case 1 :
-                        imageStyle = "";
-                        break;
-                      case 2 :
-                        imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                        break;
-                      case 3 :
-                        imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                        break;
-                      case 4 :
-                        imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                        break;
-                    }
-                    imageURLs.push([
-                      filename,
-                      image["amazonURL"],
-                      imageStyle
-                    ]);
-                  }
-                  if (j == idea._doc.images.length){
-                    res.render('pages/idea-summary', { user : req.user, idea : currentIdea,
-                      variantDates : variantDates,
-                      problemAreas  : problemAreas,
-                      headshot : headshotURL,
-                      headshotStyle : headshotStyle,
-                      imageURLs : imageURLs,
-                      problems : problems,
-                      components : components,
-                      listOfProblems : listOfProblems });
-                  }
-                });
-              }
-            } else {
-                    res.render('pages/idea-summary', { user : req.user, idea : currentIdea,
-                      variantDates : variantDates,
-                      problemAreas  : problemAreas,
-                      imageURLs : [],
-                      headshot : headshotURL,
-                      headshotStyle : headshotStyle,
-                      problems : problems,
-                      components : components,
-                      listOfProblems : listOfProblems });
-            }
-
-        }); //end of components query
-      }); // end of idea problems query
-    });
-  });
 });
 
 
@@ -1893,7 +1904,7 @@ router.get('/variant/:variantname', function(req, res){
         }
 
         if(!currentVariant){
-          res.redirect('/idea-summary');
+          res.redirect('/idea-summary/' + currentIdea['name']);
           return;
         }
 
@@ -2375,13 +2386,13 @@ router.get('/begin-contributor-review', function(req, res){
       if (err) {
         console.log(err);
       } else {
-        IdeaSeed.update(
+        IdeaSeed.findOneAndUpdate(
             { _id : req.session.idea },
             { $push : { ideaReviews : newReview.id } },
-            function(err, raw){
-              console.log('The raw response from Mongo was ', raw);
+            function(err, idea){
+              console.log('The raw response from Mongo was ', idea);
               req.session.ideaReview = newReview.id;
-              res.redirect('/contributor-idea-summary');
+              res.redirect('/contributor-idea-summary/' + idea.name);
             }
         );
       }

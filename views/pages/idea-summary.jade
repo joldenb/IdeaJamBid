@@ -191,6 +191,7 @@ html
               |  
               input#fileInput(type="file", name="picture")
               input(type="hidden" id="image-component" name="imageComponent")
+              input(type="hidden" id="component-idea-name" name="componentIdeaName" value="#{idea.name}")
             .modal-footer
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#componentSubmit(type='submit') Save
@@ -693,6 +694,7 @@ html
         function(data, response) {
           if(document.getElementById("fileInput").files.length != 0){
             $("#image-component").val( data['identifier'] );
+            // This doesnt work for some reason....
             document.getElementById("formImageUpload").submit();
           }
           $("#idea-summary-components ul")

@@ -1903,7 +1903,7 @@ router.post('/skills', function(req, res) {
           account.einsteinPoints = account.einsteinPoints + 10;
         }
         account.save(function (err) {
-          res.redirect('/idea-summary');
+          res.redirect('/idea-summary/' + thisIdea.name);
         });
     });
   } else {
@@ -1949,7 +1949,7 @@ router.post('/skills', function(req, res) {
             account.einsteinPoints = account.einsteinPoints + 10;
           }
           account.save(function (err) {
-            res.redirect('/idea-summary');
+            res.redirect('/idea-summary/' + thisIdea.name);
           });
       });
 

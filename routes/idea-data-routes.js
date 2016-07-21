@@ -69,6 +69,8 @@ router.post('/add-component-image', function(req, res) {
               if(req.body.componentProfilePage ){
                 res.json({"redirectURL" : '/component-profile/'+req.body.imageComponent});
               } else {
+                // I need to figure out how this should behave. The form is not being submitted
+                // correctly
                 res.json({"redirectURL" : '/idea-summary'});
               }
             }

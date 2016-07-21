@@ -163,9 +163,9 @@ html
     br
     br
     if reviewing
-      a(href="/contributor-idea-summary").btn.btn-info < Back to Idea Summary
+      a(href="/contributor-idea-summary/" + idea.name).btn.btn-info < Back to Idea Summary
     else
-      a(href="/idea-summary").btn.btn-info < Back to Idea Summary
+      a(href="/idea-summary/" + idea.name).btn.btn-info < Back to Idea Summary
     br
     br
     br
