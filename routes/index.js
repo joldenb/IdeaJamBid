@@ -16,7 +16,7 @@ var Account = require('../models/account');
 var router = express.Router();
 var multer = require('multer');
 var fs = require('fs');
-
+var sanitizer = require('sanitizer');
 
 var S3_BUCKET = process.env.S3_BUCKET;
 
@@ -24,6 +24,13 @@ var storage = multer.memoryStorage();
 var uploading = multer({
   storage: storage,
   dest: '../uploads/'
+});
+
+router.use(function (req, res, next) {
+  req.body = JSON.parse(sanitizer.sanitize(JSON.stringify(req.body)));
+  req.params = JSON.parse(sanitizer.sanitize(JSON.stringify(req.params)));
+  req.query = JSON.parse(sanitizer.sanitize(JSON.stringify(req.query)));
+  next();
 });
 
 /*****************************************************************
