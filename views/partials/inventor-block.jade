@@ -14,4 +14,5 @@
 				if inventorAptitudeIds.indexOf(aptitude.id) > -1
 					li #{aptitude.title}
 	.footer.inventor-block
-		.btn.btn-default View Profile
+		a(href='/profile/' + inventorName)
+			.btn.btn-default View Profile

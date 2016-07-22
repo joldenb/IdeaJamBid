@@ -11,8 +11,14 @@
 		else
 			a(href='/profile/' + accountName)
 				img(src="/avatar.png" height="50" width="50")
-		.userName #{accountName || user.username}
+		.userName 
+			p #{accountName || user.username}
 		.suggestion-category
-			p <b>Viability: </b>#{suggestionProblem} <b>Description: </b>#{problemCategory}
+			p <b>Viability: </b>#{suggestionProblem} 
+			p <b>Description: </b>#{problemCategory}
 	.footer.view-all-ideas
-		.btn.btn-default IMPROVE THIS IDEA!
+		if ideaLink
+			a(href=ideaLink)
+				.btn.btn-default IMPROVE THIS IDEA!
+		else
+			.btn.btn-default IMPROVE THIS IDEA!

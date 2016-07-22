@@ -446,6 +446,7 @@ router.get('/view-all-ideas', function(req, res){
                 break;
               } else if (idea.images.length == 0){
                 currentImage = "";
+                currentImageStyle = "";
                 break;
               }
             }

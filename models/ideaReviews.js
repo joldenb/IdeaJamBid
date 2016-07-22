@@ -116,6 +116,71 @@ IdeaReview.statics.getListOfReviewerProblems = function(reviews) {
 };
 
 
+IdeaReview.statics.averageViabilityScores = function(reviewObjects){
+	/*average the value scores of each review, then average the waste scores, then
+		subtract the waste from the value, then average that number across all the objects
+	*/
+
+	var reviewAverages = [];
+	_.each(reviewObjects, function(review, index, list){
+		var reviewValueSum = 0, reviewWasteSum = 0,
+				totalValueScores = 0, totalWasteScores = 0,
+				reviewValueAve = 0, reviewWasteAve = 0,
+				reviewAveScore = 0;
+			
+			_.each(["performOne",
+				"affordOne",
+				"featureOne",
+				"deliverOne",
+				"useabilityOne",
+				"maintainOne",
+				"durabilityOne",
+				"imageOne"], function(field, fieldIndex, fieldList){
+					if(review[field]){
+						reviewValueSum += review[field];
+						totalValueScores++;
+					}
+			});
+			if(reviewValueSum > 0){
+				reviewValueAve = reviewValueSum / totalValueScores;
+			} else {
+				reviewValueAve = 0;
+			}
+
+			_.each(["complexOne",
+				"precisionOne",
+				"variabilityOne",
+				"sensitivityOne",
+				"immatureOne",
+				"dangerOne",
+				"skillsOne"], function(field, fieldIndex, fieldList){
+					if(review[field]){
+						reviewWasteSum += review[field];
+						totalWasteScores++;
+					}
+			});
+			if(reviewWasteSum){
+				reviewWasteAve = reviewWasteSum / totalWasteScores;
+			} else {
+				reviewWasteAve = 0;
+			}
+
+			reviewAveScore = reviewValueAve - reviewWasteAve;
+
+			reviewAverages.push(reviewAveScore);
+	});
+
+	var overallAverage = 0, total = 0;
+	_.each(reviewAverages, function(score, index){
+		total += score;
+	});
+	if(total > 0){
+		overallAverage = total / (reviewAverages.length);
+	}
+
+	return overallAverage;
+};
+
 IdeaReview.plugin(passportLocalMongoose);
 
 module.exports = mongoose.model('IdeaReview', IdeaReview);
