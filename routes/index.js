@@ -1512,126 +1512,132 @@ router.get('/contributor-idea-summary/:ideaName', function(req, res){
           currentIdea = idea._doc;
           var currentlyReviewing = false;
           Component.find({"ideaSeed" : idea.id}, function(err, components){
-            if(idea.ideaReviews.length > 0){
-              var reviewsChecked = 0;
-                IdeaReview.find({"_id" : {$in : idea.ideaReviews } }, function(err, reviews){
-                  var k = 0;
-                  var currentReview = {};
-                  while(k < reviews.length && !currentlyReviewing) {
-                    if(reviews[k] && reviews[k].reviewer == req.user.username){
-                      currentlyReviewing = true;
-                      currentReview = reviews[k];
-                      req.session.ideaReview = reviews[k].id;
-                    }
-                    if(reviewsChecked >= (reviews.length - 1) || currentlyReviewing){
-                      if (idea.images.length > 0){
-                          IdeaImage.find({"_id" : {$in : idea.images } } , function(err, images){
-                            for(var j = 0; j < images.length; j++){
-                              if(images[j] && images[j].amazonURL){
-                                var filename = images[j]["filename"];
-                                var imageStyle = "";
-                                switch (images[j]["orientation"]) {
-                                  case 1 :
-                                    imageStyle = "";
-                                    break;
-                                  case 2 :
-                                    imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                                    break;
-                                  case 3 :
-                                    imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                                    break;
-                                  case 4 :
-                                    imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                                    break;
-                                }
-                                imageURLs.push([
-                                  filename,
-                                  images[j]["amazonURL"],
-                                  imageStyle
-                                ]);
-                              }
-                            } // end of loop of images
-                            res.render('pages/contributor-idea-summary', {
-                              user : req.user, idea : currentIdea,
-                              currentReview : currentReview,
-                              headshot : headshotURL,
-                              headshotStyle : headshotStyle,
-                              imageURLs : imageURLs,
-                              components : components,
-                              currentlyReviewing : currentlyReviewing
-                            });
-                          }); //end of images query
-                      } else {
-                        res.render('pages/contributor-idea-summary', {
-                          user : req.user, idea : currentIdea,
-                          currentReview : currentReview,
-                          headshot : headshotURL,
-                          headshotStyle : headshotStyle,
-                          imageURLs : [],
-                          components : components,
-                          currentlyReviewing : currentlyReviewing
-                        });
-                        return;
+            Aptitude.find({"_id" : {$in : idea.aptitudes}}, function(err, myAptitudes){
+              if(idea.ideaReviews.length > 0){
+                var reviewsChecked = 0;
+                  IdeaReview.find({"_id" : {$in : idea.ideaReviews } }, function(err, reviews){
+                    var k = 0;
+                    var currentReview = {};
+                    while(k < reviews.length && !currentlyReviewing) {
+                      if(reviews[k] && reviews[k].reviewer == req.user.username){
+                        currentlyReviewing = true;
+                        currentReview = reviews[k];
+                        req.session.ideaReview = reviews[k].id;
                       }
-                    }
-                    k++;
-                    reviewsChecked++;
-                  }
-                }); //end of review query
-            } else {
-                  if (idea._doc.images.length != 0){
-                    for (var i =0; i < idea._doc.images.length; i++){
-                      var j = 0;
-                      IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
-                        j++;
-                        if(image && image._doc && image._doc.amazonURL){
-                          var filename = image._doc["filename"];
-                          var imageStyle = "";
-                          switch (image["orientation"]) {
-                            case 1 :
-                              imageStyle = "";
-                              break;
-                            case 2 :
-                              imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                              break;
-                            case 3 :
-                              imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                              break;
-                            case 4 :
-                              imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                              break;
-                          }
-                          imageURLs.push([
-                            filename,
-                            image["amazonURL"],
-                            imageStyle
-                          ]);
-                        }
-                        if (j == idea._doc.images.length){
+                      if(reviewsChecked >= (reviews.length - 1) || currentlyReviewing){
+                        if (idea.images.length > 0){
+                            IdeaImage.find({"_id" : {$in : idea.images } } , function(err, images){
+                              for(var j = 0; j < images.length; j++){
+                                if(images[j] && images[j].amazonURL){
+                                  var filename = images[j]["filename"];
+                                  var imageStyle = "";
+                                  switch (images[j]["orientation"]) {
+                                    case 1 :
+                                      imageStyle = "";
+                                      break;
+                                    case 2 :
+                                      imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                                      break;
+                                    case 3 :
+                                      imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                                      break;
+                                    case 4 :
+                                      imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                                      break;
+                                  }
+                                  imageURLs.push([
+                                    filename,
+                                    images[j]["amazonURL"],
+                                    imageStyle
+                                  ]);
+                                }
+                              } // end of loop of images
+                              res.render('pages/contributor-idea-summary', {
+                                user : req.user, idea : currentIdea,
+                                currentReview : currentReview,
+                                aptitudes : myAptitudes,
+                                headshot : headshotURL,
+                                headshotStyle : headshotStyle,
+                                imageURLs : imageURLs,
+                                components : components,
+                                currentlyReviewing : currentlyReviewing
+                              });
+                            }); //end of images query
+                        } else {
                           res.render('pages/contributor-idea-summary', {
                             user : req.user, idea : currentIdea,
-                            imageURLs : imageURLs,
+                            currentReview : currentReview,
+                            aptitudes : myAptitudes,
                             headshot : headshotURL,
-                            headshotStyle :  headshotStyle,
+                            headshotStyle : headshotStyle,
+                            imageURLs : [],
                             components : components,
-                            currentReview : {},
                             currentlyReviewing : currentlyReviewing
                           });
+                          return;
                         }
+                      }
+                      k++;
+                      reviewsChecked++;
+                    }
+                  }); //end of review query
+              } else {
+                    if (idea._doc.images.length != 0){
+                      for (var i =0; i < idea._doc.images.length; i++){
+                        var j = 0;
+                        IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
+                          j++;
+                          if(image && image._doc && image._doc.amazonURL){
+                            var filename = image._doc["filename"];
+                            var imageStyle = "";
+                            switch (image["orientation"]) {
+                              case 1 :
+                                imageStyle = "";
+                                break;
+                              case 2 :
+                                imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                                break;
+                              case 3 :
+                                imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                                break;
+                              case 4 :
+                                imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                                break;
+                            }
+                            imageURLs.push([
+                              filename,
+                              image["amazonURL"],
+                              imageStyle
+                            ]);
+                          }
+                          if (j == idea._doc.images.length){
+                            res.render('pages/contributor-idea-summary', {
+                              user : req.user, idea : currentIdea,
+                              imageURLs : imageURLs,
+                              headshot : headshotURL,
+                              aptitudes : myAptitudes,
+                              headshotStyle :  headshotStyle,
+                              components : components,
+                              currentReview : {},
+                              currentlyReviewing : currentlyReviewing
+                            });
+                          }
+                        });
+                      }
+                    } else {
+                      res.render('pages/contributor-idea-summary', {
+                        user : req.user, idea : currentIdea,
+                        imageURLs : [],
+                        headshot : headshotURL,
+                        headshotStyle : headshotStyle,
+                        aptitudes : myAptitudes,
+                        components : components,
+                        currentReview : {},
+                        currentlyReviewing : currentlyReviewing
                       });
                     }
-                  } else {
-                    res.render('pages/contributor-idea-summary', {
-                      user : req.user, idea : currentIdea,
-                      imageURLs : [],
-                      headshot : headshotURL,
-                      headshotStyle : headshotStyle,
-                      components : components,
-                      currentReview : {},
-                      currentlyReviewing : currentlyReviewing
-                    });
-                  }
-            }
+              }
+            }); //end of aptitude query
           });//end of component query
         });
       });
@@ -1762,58 +1768,62 @@ router.get('/idea-summary/:ideaName', function(req, res){
                   ]);
                 }
               }
-              if (idea._doc.images.length !== 0){
-                for (i =0; i < idea._doc.images.length; i++){
-                  var j = 0;
-                  IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
-                    j++;
-                    if(image && image._doc && image.amazonURL){
-                      var filename = image._doc["filename"];
-                      var imageStyle = "";
-                      switch (image["orientation"]) {
-                        case 1 :
-                          imageStyle = "";
-                          break;
-                        case 2 :
-                          imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                          break;
-                        case 3 :
-                          imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                          break;
-                        case 4 :
-                          imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                          break;
+              Aptitude.find({"_id" : {$in : idea.aptitudes}}, function(err, myAptitudes){
+                if (idea._doc.images.length !== 0){
+                  for (i =0; i < idea._doc.images.length; i++){
+                    var j = 0;
+                    IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
+                      j++;
+                      if(image && image._doc && image.amazonURL){
+                        var filename = image._doc["filename"];
+                        var imageStyle = "";
+                        switch (image["orientation"]) {
+                          case 1 :
+                            imageStyle = "";
+                            break;
+                          case 2 :
+                            imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                            break;
+                          case 3 :
+                            imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                            break;
+                          case 4 :
+                            imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                            break;
+                        }
+                        imageURLs.push([
+                          filename,
+                          image["amazonURL"],
+                          imageStyle
+                        ]);
                       }
-                      imageURLs.push([
-                        filename,
-                        image["amazonURL"],
-                        imageStyle
-                      ]);
-                    }
-                    if (j == idea._doc.images.length){
-                      res.render('pages/idea-summary', { user : req.user, idea : currentIdea,
-                        variantDates : variantDates,
-                        problemAreas  : problemAreas,
-                        headshot : headshotURL,
-                        headshotStyle : headshotStyle,
-                        imageURLs : imageURLs,
-                        problems : problems,
-                        components : components,
-                        listOfProblems : listOfProblems });
-                    }
-                  });
+                      if (j == idea._doc.images.length){
+                        res.render('pages/idea-summary', { user : req.user, idea : currentIdea,
+                          variantDates : variantDates,
+                          problemAreas  : problemAreas,
+                          aptitudes : myAptitudes,
+                          headshot : headshotURL,
+                          headshotStyle : headshotStyle,
+                          imageURLs : imageURLs,
+                          problems : problems,
+                          components : components,
+                          listOfProblems : listOfProblems });
+                      }
+                    });
+                  }
+                } else {
+                        res.render('pages/idea-summary', { user : req.user, idea : currentIdea,
+                          variantDates : variantDates,
+                          problemAreas  : problemAreas,
+                          aptitudes : myAptitudes,
+                          imageURLs : [],
+                          headshot : headshotURL,
+                          headshotStyle : headshotStyle,
+                          problems : problems,
+                          components : components,
+                          listOfProblems : listOfProblems });
                 }
-              } else {
-                      res.render('pages/idea-summary', { user : req.user, idea : currentIdea,
-                        variantDates : variantDates,
-                        problemAreas  : problemAreas,
-                        imageURLs : [],
-                        headshot : headshotURL,
-                        headshotStyle : headshotStyle,
-                        problems : problems,
-                        components : components,
-                        listOfProblems : listOfProblems });
-              }
+              }); //end of aptitude query
             }); //end of components query
           }); // end of idea problems query
         });

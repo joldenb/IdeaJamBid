@@ -20,6 +20,13 @@ html
       h3 Idea Summary for #{idea.name}
       if !currentlyReviewing
         a.btn.btn-default( href="/begin-contributor-review" ) Start Review
+      #contributor-idea-summary-aptitudes.aptitudeList
+        .profileAptitudes
+          if aptitudes
+            h3 Aptitudes : 
+            ul
+              each aptitude in aptitudes
+                li(data-apt-id="#{aptitude.identifier}") #{aptitude.title}
 
     .col-md-8
       //

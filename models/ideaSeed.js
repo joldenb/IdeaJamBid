@@ -21,6 +21,7 @@ var IdeaSeed = new Schema({
 	firstFeature	: String,
 	secondFeature	: String,
 	thirdFeature	: String,
+  aptitudes       : [ObjectId],
 
 	suggestions		: [{
 		suggestionID	: String, /* used in creating a variant */

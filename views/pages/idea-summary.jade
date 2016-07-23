@@ -29,6 +29,20 @@ html
         p <i>#{idea.description}</i>
         a.btn.btn-default( href="/accomplish" ) Edit >
         br
+      #idea-summary-aptitudes.aptitudeList
+        .profileAptitudes
+          if aptitudes
+            h3 Aptitudes : 
+            ul
+              each aptitude in aptitudes
+                li(data-apt-id="#{aptitude.identifier}") #{aptitude.title}
+          form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            .form-group
+              |  
+              input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
+            .modal-footer
+              button.btn.btn-success#aptitudeSubmit(type='submit') Save
+
 
     .idea-function-column.col-md-8
       //
@@ -804,3 +818,19 @@ html
         $("#addIdeaComponent .compDescrCharRemaining").text((200 + requiredCompTextTwo.length - $(this).val().length) + " characters remaining");
       });
     }, false);
+
+    $("#aptitudeSubmit").click(function(event){
+      event.preventDefault();
+      if($("#aptitudeTitle").val() != ""){
+        $.post('/save-aptitude', 
+          {
+            ideaName : "!{idea.name}",
+            aptitudeTitle : $("#aptitudeTitle").val()
+          },
+          function(resp) {
+            window.location.reload(true);
+          });
+      } else {
+        alert("Please enter a valid aptitude.");
+      }
+    });

@@ -148,35 +148,74 @@ router.post('/save-location-network', function(req, res) {
 ******************************************************************
 *****************************************************************/
 router.post('/save-aptitude', function(req, res) {
-  var aptitudeTitle = req.body.aptitudeTitle;
-  Aptitude.find({"title" : aptitudeTitle}, function(err, existingAptitudes){
-    if(err){
-      res.json({error: err})
-    }
 
-    if(existingAptitudes.length > 0){
-      Account.findById( req.user.id,
-        function (err, account) {
-          account.aptitudes.push(existingAptitudes[0].id); //use the first existing record
-          account.save(function (err) {});
-      });
-      console.log
-      res.sendStatus(200);
-    } else {
-      var newAptitude = new Aptitude({
-        title : aptitudeTitle,
-        identifier : "aptitude-"+Date.now()
-      });
-      newAptitude.save(function(err, newSavedAptitude){
+  //if form got submitted from the idea summary page, it will have 
+  // an idea name attached to it. otherwise, it gets updated to the 
+  // current user and it was entered on the user profile page
+  if(req.body.ideaName){
+
+    var aptitudeTitle = req.body.aptitudeTitle;
+    Aptitude.find({"title" : aptitudeTitle}, function(err, existingAptitudes){
+      if(err){
+        res.json({error: err});
+      }
+
+      if(existingAptitudes.length > 0){
+        IdeaSeed.findOne( {"name" : req.body.ideaName},
+          function (err, idea) {
+            idea.aptitudes.push(existingAptitudes[0].id); //use the first existing record
+            idea.save(function (err) {});
+        });
+        console.log
+        res.sendStatus(200);
+      } else {
+        var newAptitude = new Aptitude({
+          title : aptitudeTitle,
+          identifier : "aptitude-"+Date.now()
+        });
+        newAptitude.save(function(err, newSavedAptitude){
+          IdeaSeed.findOne( {"name" : req.body.ideaName},
+            function (err, idea) {
+              idea.aptitudes.push(newSavedAptitude.id);
+              idea.save(function (err) {});
+          });
+        });
+        res.sendStatus(200);
+      }
+    });
+
+  } else {
+
+    var aptitudeTitle = req.body.aptitudeTitle;
+    Aptitude.find({"title" : aptitudeTitle}, function(err, existingAptitudes){
+      if(err){
+        res.json({error: err})
+      }
+
+      if(existingAptitudes.length > 0){
         Account.findById( req.user.id,
           function (err, account) {
-            account.aptitudes.push(newSavedAptitude.id);
+            account.aptitudes.push(existingAptitudes[0].id); //use the first existing record
             account.save(function (err) {});
         });
-      });
-      res.sendStatus(200);
-    }
-  });
+        console.log
+        res.sendStatus(200);
+      } else {
+        var newAptitude = new Aptitude({
+          title : aptitudeTitle,
+          identifier : "aptitude-"+Date.now()
+        });
+        newAptitude.save(function(err, newSavedAptitude){
+          Account.findById( req.user.id,
+            function (err, account) {
+              account.aptitudes.push(newSavedAptitude.id);
+              account.save(function (err) {});
+          });
+        });
+        res.sendStatus(200);
+      }
+    });
+  } // end of the user profile update portion
 });
 
 /*****************************************************************

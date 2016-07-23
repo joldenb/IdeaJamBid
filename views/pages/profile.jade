@@ -28,10 +28,10 @@ html
           a(class="btn btn-default" href="#" id="locationModalButton" data-toggle="modal" data-target="#companyModal") Edit Network
         else
           button(type="button" id="locationModalButton" class="btn btn-default" ) Add your Location
-    div#begin-info-aptitudes
+    div#begin-info-aptitudes.aptitudeList
       .profileAptitudes
         if aptitudes
-          h3 aptitudes : 
+          h3 Aptitudes : 
           ul
             each aptitude in aptitudes
               li(data-apt-id="#{aptitude.identifier}") #{aptitude.title}
@@ -230,11 +230,15 @@ html
 
     $("#aptitudeSubmit").click(function(event){
       event.preventDefault();
-      $.post('/save-aptitude', 
-        {
-          aptitudeTitle : $("#aptitudeTitle").val(),
-        },
-        function(resp) {
-          window.location.reload(true);
-        });      
+      if($("#aptitudeTitle").val() != ""){
+        $.post('/save-aptitude', 
+          {
+            aptitudeTitle : $("#aptitudeTitle").val(),
+          },
+          function(resp) {
+            window.location.reload(true);
+          });
+      } else {
+        alert("Please enter a valid aptitude.");  
+      }
     });

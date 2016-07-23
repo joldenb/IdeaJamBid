@@ -89,13 +89,21 @@ div#begin-info-right {
   display:inline-block;
 }
 
-div#begin-info-aptitudes {
-  width:30%;
+.aptitudeList {
   text-align:left;
   vertical-align: top;
   display:inline-block;
 }
- div#begin-info-right button {
+
+#begin-info-aptitudes {
+  width:30%;
+}
+
+#contributor-idea-summary-aptitudes, #idea-summary-aptitudes {
+  width:100%;
+}
+
+div#begin-info-right button {
   margin:.3em 0;
 }
 
