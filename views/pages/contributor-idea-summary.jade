@@ -26,7 +26,8 @@ html
             h3 Aptitudes : 
             ul
               each aptitude in aptitudes
-                li(data-apt-id="#{aptitude.identifier}") #{aptitude.title}
+                li(data-apt-id="#{aptitude.identifier}") 
+                  a(href="/aptitudes/" + aptitude.title) #{aptitude.title}
 
     .col-md-8
       //

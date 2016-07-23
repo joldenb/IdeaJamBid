@@ -34,7 +34,8 @@ html
           h3 Aptitudes : 
           ul
             each aptitude in aptitudes
-              li(data-apt-id="#{aptitude.identifier}") #{aptitude.title}
+              li(data-apt-id="#{aptitude.identifier}")
+                a(href="/aptitudes/" + aptitude.title) #{aptitude.title}
         form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
           .form-group
             |  

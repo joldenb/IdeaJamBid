@@ -268,6 +268,9 @@ table.suggestion-table .col-md-4 {
   background-color: white;
 }
 
+.container.network-profile .suggestion-element.view-all-ideas-block {
+  height: 22em;
+}
 
 .suggestion-element.inventor-block {
   height: auto;
@@ -330,6 +333,11 @@ table.suggestion-table .col-md-4 {
 .view-idea-suggestions .container .row .col-md-4, .container.network-profile .row .col-md-4 {
   padding-left: 15px;
   padding-right: 15px;
+}
+
+.container.network-profile.aptitude-profile p {
+  font-size : 14px;
+  margin: 1em;
 }
 
 .suggestion-summary h1, .suggestion-summary h3 {
