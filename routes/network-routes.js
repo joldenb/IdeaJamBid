@@ -149,8 +149,8 @@ router.post('/save-location-network', function(req, res) {
 *****************************************************************/
 router.post('/save-aptitude', function(req, res) {
 
-  //if form got submitted from the idea summary page, it will have 
-  // an idea name attached to it. otherwise, it gets updated to the 
+  //if form got submitted from the idea summary page, it will have
+  // an idea name attached to it. otherwise, it gets updated to the
   // current user and it was entered on the user profile page
   if(req.body.ideaName){
 
@@ -300,7 +300,7 @@ router.get('/networks/:networkName', function(req, res){
               }
             }
           }
-          /* First, make a list of all the aptitude IDs for everyone, then query the database for them, 
+          /* First, make a list of all the aptitude IDs for everyone, then query the database for them,
           then figure out who has what aptitudes. */
           var listOfAllAptitudes = [];
           for(i = 0; i < topAccountsToDisplay.length; i++){
@@ -310,7 +310,7 @@ router.get('/networks/:networkName', function(req, res){
           listOfAllAptitudes = listOfAllAptitudes.filter(function(n){ return n != undefined });
           listOfAllAptitudes = _.uniq(listOfAllAptitudes);
           Aptitude.find({"_id" : { $in : listOfAllAptitudes}}, function(err, aptitudes){
-            
+
             /* This chunk of code is to build the top accounts' profile blocks */
             var allIdeas = [],
                 totalReviewList = [];
@@ -324,7 +324,7 @@ router.get('/networks/:networkName', function(req, res){
 
 
             IdeaSeed.find({"_id" : { $in : allIdeas}}, function(err, ideas){
-            
+
             _.each(ideas, function(idea){
                 totalReviewList = totalReviewList.concat(idea.ideaReviews);
             });
@@ -333,8 +333,8 @@ router.get('/networks/:networkName', function(req, res){
               /* This will be an object of idea seed id's and average review scores*/
               var reviewScores = {};
               _.each(reviews, function(review, index, list){
-                //group reviews by idea seed id, then hand each list of reviews to the 
-                // idea review function to average the scores, and hand back an average 
+                //group reviews by idea seed id, then hand each list of reviews to the
+                // idea review function to average the scores, and hand back an average
                 // for that idea seed. reviewScores will be an object with the keys being
                 // object id's and the values being a list of review objects
                 if(reviewScores[review.ideaSeedId.toString()]){
@@ -352,10 +352,10 @@ router.get('/networks/:networkName', function(req, res){
                 reviewScores[key] = IdeaReview.averageViabilityScores(value);
               });
 
-              // reviewScores is an object with idea seed ids as the keys and 
+              // reviewScores is an object with idea seed ids as the keys and
               // the average review score as the value. we need to sort them,
               // take the highest 6 or so, then set the corresponding idea objects
-              // into the 'ideas' variable in order for the rest of the code to 
+              // into the 'ideas' variable in order for the rest of the code to
               // build the blocks to display on the page
               var topIdeas = Array(6);
               _.each(topIdeas, function(element, index, list){
@@ -383,7 +383,7 @@ router.get('/networks/:networkName', function(req, res){
                   });
                 });
               });
-              
+
               ideas = _.filter(topIdeas, Boolean);
 
 
@@ -395,7 +395,7 @@ router.get('/networks/:networkName', function(req, res){
                   return false;
                 }
               });
-              /* 
+              /*
                 This builds the idea blocks from a finite list of ideas sorted by
                 the sum of values minus the sum of wastes.
               */
@@ -549,7 +549,7 @@ router.get('/networks/:networkName', function(req, res){
 /*****************************************************************
 ******************************************************************
 ******************************************************************
-* Route for rendering the aptitude profile page. 
+* Route for rendering the aptitude profile page.
 ******************************************************************
 ******************************************************************
 *****************************************************************/
@@ -624,7 +624,7 @@ router.get('/aptitudes/:aptitudeName', function(req, res){
               }
             }
           }
-          /* First, make a list of all the aptitude IDs for everyone, then query the database for them, 
+          /* First, make a list of all the aptitude IDs for everyone, then query the database for them,
           then figure out who has what aptitudes. */
           var listOfAllAptitudes = [];
           for(i = 0; i < topAccountsToDisplay.length; i++){
@@ -634,7 +634,7 @@ router.get('/aptitudes/:aptitudeName', function(req, res){
           listOfAllAptitudes = listOfAllAptitudes.filter(function(n){ return n != undefined });
           listOfAllAptitudes = _.uniq(listOfAllAptitudes);
           Aptitude.find({"_id" : { $in : listOfAllAptitudes}}, function(err, aptitudes){
-            
+
             IdeaSeed.find({ "aptitudes" : aptitude.id}, function(err, ideas){
 
               var totalReviewList = [];
@@ -648,8 +648,8 @@ router.get('/aptitudes/:aptitudeName', function(req, res){
               /* This will be an object of idea seed id's and average review scores*/
               var reviewScores = {};
               _.each(reviews, function(review, index, list){
-                //group reviews by idea seed id, then hand each list of reviews to the 
-                // idea review function to average the scores, and hand back an average 
+                //group reviews by idea seed id, then hand each list of reviews to the
+                // idea review function to average the scores, and hand back an average
                 // for that idea seed. reviewScores will be an object with the keys being
                 // object id's and the values being a list of review objects
                 if(reviewScores[review.ideaSeedId.toString()]){
@@ -667,10 +667,10 @@ router.get('/aptitudes/:aptitudeName', function(req, res){
                 reviewScores[key] = IdeaReview.averageViabilityScores(value);
               });
 
-              // reviewScores is an object with idea seed ids as the keys and 
+              // reviewScores is an object with idea seed ids as the keys and
               // the average review score as the value. we need to sort them,
               // take the highest 6 or so, then set the corresponding idea objects
-              // into the 'ideas' variable in order for the rest of the code to 
+              // into the 'ideas' variable in order for the rest of the code to
               // build the blocks to display on the page
               var topIdeas = Array(6);
               _.each(topIdeas, function(element, index, list){
@@ -698,7 +698,7 @@ router.get('/aptitudes/:aptitudeName', function(req, res){
                   });
                 });
               });
-              
+
               ideas = _.filter(topIdeas, Boolean);
 
 
@@ -711,7 +711,7 @@ router.get('/aptitudes/:aptitudeName', function(req, res){
                   return false;
                 }
               });
-              /* 
+              /*
                 This builds the idea blocks from a finite list of ideas sorted by
                 the sum of values minus the sum of wastes.
               */
@@ -841,7 +841,7 @@ router.get('/aptitudes/:aptitudeName', function(req, res){
                         inventorAptitudes :  aptitudes,
                         thisAptitude : aptitude,
                         accountNameAndURLs : accountNameAndURLs
-                        
+
                       });
 
 
