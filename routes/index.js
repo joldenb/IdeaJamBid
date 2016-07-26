@@ -17,6 +17,7 @@ var router = express.Router();
 var multer = require('multer');
 var fs = require('fs');
 var sanitizer = require('sanitizer');
+var mongoSanitize = require('mongo-sanitize');
 
 var S3_BUCKET = process.env.S3_BUCKET;
 
@@ -27,9 +28,9 @@ var uploading = multer({
 });
 
 router.use(function (req, res, next) {
-  req.body = JSON.parse(sanitizer.sanitize(JSON.stringify(req.body)));
-  req.params = JSON.parse(sanitizer.sanitize(JSON.stringify(req.params)));
-  req.query = JSON.parse(sanitizer.sanitize(JSON.stringify(req.query)));
+  req.body = JSON.parse(sanitizer.sanitize(JSON.stringify(mongoSanitize(req.body))));
+  req.params = JSON.parse(sanitizer.sanitize(JSON.stringify(mongoSanitize(req.params))));
+  req.query = JSON.parse(sanitizer.sanitize(JSON.stringify(mongoSanitize(req.query))));
   next();
 });
 
@@ -1468,7 +1469,7 @@ router.post('/login', passport.authenticate('local'), function(req,res){
 *****************************************************************/
 router.get('/contributor-idea-summary/:ideaName', function(req, res){
   IdeaSeed.findOne({ "name" : req.params.ideaName },function(err, idea){
-    
+
     if(err || !idea){
       res.redirect('/');
       return;
@@ -1665,13 +1666,13 @@ router.get('/contributor-idea-summary', function(req, res){
 ******************************************************************
 *****************************************************************/
 router.get('/idea-summary/:ideaName', function(req, res){
-  
+
   // potentially fragile logic here. all ideas should have
-  // a name after the initial visit to this path. but on the first 
+  // a name after the initial visit to this path. but on the first
   // visit, we'll rely on the session to grab the idea id that was
   // created on the introductory ideaseed creation pages, coming
   // from the image upload page
-  
+
   IdeaSeed.findOne({ $or : [
     {"_id" : req.session.idea},
     {"name" : req.params.ideaName}
@@ -1681,7 +1682,7 @@ router.get('/idea-summary/:ideaName', function(req, res){
     if(err || !idea){
       res.redirect('/');
       return;
-    } 
+    }
 
 
     // If the visitor is the owner of the idea, route to the inventor
@@ -1829,7 +1830,7 @@ router.get('/idea-summary/:ideaName', function(req, res){
           }); // end of idea problems query
         });
       });
-    
+
 
     }
   });
