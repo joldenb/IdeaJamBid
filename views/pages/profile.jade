@@ -5,69 +5,74 @@ html
   body
   .header
     include ../partials/header.jade
-  div.profile-info
-    div#begin-info
-      h3 Welcome #{profileAccount.username}
-      h4 Einstein Points: #{profileAccount.einsteinPoints}
-    div#begin-info-right
-      .profileSchool
-        if schoolNetwork
-          h4 School :  #[a(class="network-link") #{schoolNetwork}]
-          a(class="btn btn-default" href="#" id="schoolModalButton" data-toggle="modal" data-target="#schoolModal") Edit Network
-        else
-          button(type="button" id="schoolModalButton" class="btn btn-default" data-toggle="modal" data-target="#schoolModal") Add your School
-      .profileCompany
-        if companyNetwork
-          h4 Company :  #[a(class="network-link") #{companyNetwork}]
-          a(class="btn btn-default" href="#" id="companyModalButton" data-toggle="modal" data-target="#companyModal") Edit Network
-        else
-          button(type="button" id="companyModalButton" class="btn btn-default" data-toggle="modal" data-target="#companyModal") Add your Company
-      .profileLocation
-        if locationNetwork
-          h4 Location : #[a(class="network-link") #{locationNetwork}]
-          a(class="btn btn-default" href="#" id="locationModalButton" data-toggle="modal" data-target="#companyModal") Edit Network
-        else
-          button(type="button" id="locationModalButton" class="btn btn-default" ) Add your Location
-    div#begin-info-aptitudes.aptitudeList
-      .profileAptitudes
-        if aptitudes
-          h3 Aptitudes : 
+  div.profile-info.container
+    .col-md-4.profile-left-column
+      div#begin-info
+        h3 Welcome #{profileAccount.username}
+        h4 Einstein Points: #{profileAccount.einsteinPoints}
+      div#begin-info-right
+        .profileSchool
+          if schoolNetwork
+            h4 School :  #[a(class="network-link") #{schoolNetwork}]
+            a(class="btn btn-default" href="#" id="schoolModalButton" data-toggle="modal" data-target="#schoolModal") Edit Network
+          else
+            button(type="button" id="schoolModalButton" class="btn btn-default" data-toggle="modal" data-target="#schoolModal") Add your School
+        .profileCompany
+          if companyNetwork
+            h4 Company :  #[a(class="network-link") #{companyNetwork}]
+            a(class="btn btn-default" href="#" id="companyModalButton" data-toggle="modal" data-target="#companyModal") Edit Network
+          else
+            button(type="button" id="companyModalButton" class="btn btn-default" data-toggle="modal" data-target="#companyModal") Add your Company
+        .profileLocation
+          if locationNetwork
+            h4 Location : #[a(class="network-link") #{locationNetwork}]
+            a(class="btn btn-default" href="#" id="locationModalButton" data-toggle="modal" data-target="#companyModal") Edit Network
+          else
+            button(type="button" id="locationModalButton" class="btn btn-default" ) Add your Location
+      div#begin-info-aptitudes.aptitudeList
+        .profileAptitudes
+          if aptitudes
+            h3 Aptitudes : 
+            ul
+              each aptitude in aptitudes
+                li(data-apt-id="#{aptitude.identifier}")
+                  a(href="/aptitudes/" + aptitude.title) #{aptitude.title}
+          form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            .form-group
+              |  
+              input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
+            .modal-footer
+              button.btn.btn-success#aptitudeSubmit(type='submit') Save
+          
+
+    .col-md-8.user-ideas
+      .existingIdeas
+        h2 #{profileAccount.username}'s Ideas:
+        if accountIdeaSeeds
           ul
-            each aptitude in aptitudes
-              li(data-apt-id="#{aptitude.identifier}")
-                a(href="/aptitudes/" + aptitude.title) #{aptitude.title}
-        form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
-          .form-group
-            |  
-            input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
-          .modal-footer
-            button.btn.btn-success#aptitudeSubmit(type='submit') Save
-        
+            each val, index in accountIdeaSeeds
+              if val[0]
+                li
+                  a(href="/idea-summary/" + val)
+                    h4.idea-text-name= val[0]
+                  span.idea-text-date= val[1]
+        else
+          h4 None so far.
+        a.home-login.btn.btn-success( href="/introduce-idea" ) Begin a New Idea > 
 
-
-  .existingIdeas
-    h2 #{profileAccount.username}'s Ideas:
-    if accountIdeaSeeds
-      ul
-        each val, index in accountIdeaSeeds
-          li
-            a(href="/idea-summary/" + val)
-              h4= val
-    else
-      h4 None so far.
-    a.home-login.btn.btn-success( href="/introduce-idea" ) Begin a New Idea > 
-
-  .container.contributedIdeas
-    h2 #{profileAccount.username}'s Contributions
-    if reviewNames
-      ul
-        each val, index in reviewNames
-          li
-            a(href="/contributor-idea-summary/" + val)
-              h4= val
-    else
-      h4 None so far.
-    a.home-login.btn.btn-success( href="/view-all-ideas" ) View All Ideas
+      .contributedIdeas
+        h2 #{profileAccount.username}'s Contributions
+        if reviewNames
+          ul
+            each val, index in reviewNames
+              if val[0]
+                li
+                  a(href="/contributor-idea-summary/" + val[0])
+                    h4.idea-text-name= val[0]
+                  span.idea-text-date= val[1]
+        else
+          h4 None so far.
+        a.home-login.btn.btn-success( href="/view-all-ideas" ) View All Ideas
 
   #schoolModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog

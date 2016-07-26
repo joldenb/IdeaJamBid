@@ -68,35 +68,34 @@ h1, h2, h3, h4 {
 }
 
 .profile-info {
-  background-color: #AFDDD1; /* Vision */
-  text-align:center;
   padding:1em;
-  padding-left: 3em;
+  width: 100%;
   margin-bottom: 2em;
+  margin-top: 0;
 }
 
-div#begin-info {
-  width:20%;
-  display:inline-block;
-  text-align: center;
-  vertical-align: top;
+.col-md-4.profile-left-column {
+  border-right: 1px solid gray;
 }
 
-div#begin-info-right {
-  width:30%;
-  text-align:left;
-  vertical-align: top;
-  display:inline-block;
+.col-md-8.user-ideas {
+  padding : 0;
+}
+
+span.idea-text-date {
+  margin-left : 1em;
+  color: gray;
+}
+
+h4.idea-text-name {
+  display: inline;
+  line-height: 1.5em;
 }
 
 .aptitudeList {
   text-align:left;
   vertical-align: top;
   display:inline-block;
-}
-
-#begin-info-aptitudes {
-  width:30%;
 }
 
 #contributor-idea-summary-aptitudes, #idea-summary-aptitudes {
@@ -118,17 +117,15 @@ div#begin-info-right button {
 }
 
 .existingIdeas {
-  padding:2em;
+  padding:0 2em;
   width:50%;
-  text-align: center;
   float: left;
   border-right: 1px solid gray;
 }
 .contributedIdeas {
   margin-top: 0;
-  padding:2em;
+  padding:0 2em;
   width:50%;
-  text-align: center;
   float:left;
 }
 
