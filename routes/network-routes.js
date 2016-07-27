@@ -16,7 +16,8 @@ var Account = require('../models/account');
 var router = express.Router();
 var multer = require('multer');
 var fs = require('fs');
-
+var csrf = require('csurf');
+var csrfProtection = csrf({ cookie: true });
 
 var S3_BUCKET = process.env.S3_BUCKET;
 
@@ -34,7 +35,7 @@ var uploading = multer({
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.post('/save-school-network', function(req, res) {
+router.post('/save-school-network', csrfProtection, function(req, res) {
   Network.findOne({"name" : req.body.schoolNetwork}, function(err, schoolNetwork){
       if(err){
         res.json({error: err});
@@ -71,7 +72,7 @@ router.post('/save-school-network', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.post('/save-company-network', function(req, res) {
+router.post('/save-company-network', csrfProtection, function(req, res) {
   Network.findOne({"name" : req.body.companyNetwork}, function(err, companyNetwork){
       if(err){
         res.json({error: err});
@@ -108,7 +109,7 @@ router.post('/save-company-network', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.post('/save-location-network', function(req, res) {
+router.post('/save-location-network', csrfProtection, function(req, res) {
   //need to add validation to make sure these both exist.
   var cityAndState = req.body.locationCity + ", " + req.body.locationState;
   Network.findOne({"name" : cityAndState}, function(err, locationNetwork){
@@ -147,13 +148,12 @@ router.post('/save-location-network', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.post('/save-aptitude', function(req, res) {
+router.post('/save-aptitude', csrfProtection, function(req, res) {
 
   //if form got submitted from the idea summary page, it will have
   // an idea name attached to it. otherwise, it gets updated to the
   // current user and it was entered on the user profile page
   if(req.body.ideaName){
-
     var aptitudeTitle = req.body.aptitudeTitle;
     Aptitude.find({"title" : aptitudeTitle}, function(err, existingAptitudes){
       if(err){
@@ -226,7 +226,7 @@ router.post('/save-aptitude', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/networks/:networkName', function(req, res){
+router.get('/networks/:networkName', csrfProtection, function(req, res){
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
       var headshotURL = headshot["amazonURL"];
@@ -519,6 +519,7 @@ router.get('/networks/:networkName', function(req, res){
 
 
                       return res.render('pages/network-profile', {
+                        csrfToken: req.csrfToken(),
                         user : req.user,
                         ideas : ideaList,
                         topInventors : topAccountsToDisplay,
@@ -553,7 +554,7 @@ router.get('/networks/:networkName', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/aptitudes/:aptitudeName', function(req, res){
+router.get('/aptitudes/:aptitudeName', csrfProtection, function(req, res){
   IdeaImage.findById(req.user.headshots[0], function(err, headshot){
     if(headshot){
       var headshotURL = headshot["amazonURL"];
@@ -835,6 +836,7 @@ router.get('/aptitudes/:aptitudeName', function(req, res){
 
 
                       return res.render('pages/aptitude-profile', {
+                        csrfToken: req.csrfToken(),
                         user : req.user,
                         ideas : ideaList,
                         topInventors : topAccountsToDisplay,

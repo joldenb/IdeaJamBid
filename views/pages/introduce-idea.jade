@@ -10,6 +10,7 @@ html
     form(role='form', id="formIntroduceIdea" action="/introduce-idea", method="post", style='max-width: 300px;', data-idea-doc=idea)
       .form-group
         h3 What challenge does your idea solve?
+        input(type="hidden", name="_csrf", value="#{csrfToken}")
         input.form-control(type="text",name="purposeFor", value='The problem of ', id="challenge")
         p (ex. "time travel")
         p#charactersRemaining

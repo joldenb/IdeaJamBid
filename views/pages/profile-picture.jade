@@ -26,6 +26,7 @@ html
         h3 Upload a new User Profile Picture
         |  
         input#headshotButton(type="file", name="picture")
+        input(type="hidden", name="_csrf", value="#{csrfToken}")
         br
     a.home-logout.btn.btn-default( href="/profile/" + user.username) User Profile
           
@@ -70,7 +71,7 @@ html
         if(xhr.readyState === 4){
           if(xhr.status === 200 && (file.type=="image/jpeg" || file.type=="image/png")){
             var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type,
-            exif : exif };
+            exif : exif , "_csrf" : $('[name="_csrf"]').val()};
             $(".image-summary-image img").attr("src", url);
             $.post('/add-profile-headshot', data , function(response, status){
               window.location.reload();
@@ -109,6 +110,7 @@ html
 
     $("#resetPicture").click(function(event){
       var data = {
+        "_csrf" : $('[name="_csrf"]').val(),
         "newPictureFilename" : $(".selectedProfilePic").attr("id")
       };
 

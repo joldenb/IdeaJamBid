@@ -19,6 +19,7 @@ html
                 |  
                 input.form-control.ui-front(type='text', name="component", id="componentName", value='The solution of ', autocomplete="on")
                 p.example-text (Example: The solution of a flux capacitor.)
+                input(type="hidden", name="_csrf", value="#{csrfToken}")
                 input(type="hidden" id="previous-title" name="previousTitle")
           .modal-footer
             // button.btn.btn-info(data-dismiss="modal") Cancel
@@ -146,6 +147,7 @@ html
       if($("#previous-title").val() && $("#previous-title").val() != ""){
         // if there is a previous title, then the user is editing an already existing component.
         var data = {
+          _csrf : $('[name="_csrf"]').val(),
           previousTitle : $("#previous-title").val(),
           newTitle      : $("#componentName").val(),
           previousDescription : $("#previous-description").val(),
@@ -161,6 +163,7 @@ html
 
         var textCoordX, textCoordY;
           var data = {
+            _csrf : $('[name="_csrf"]').val(),
             component : $("#componentName").val(),
             firstX    : firstClickX,
             firstY    : firstClickY,
@@ -277,6 +280,7 @@ html
 
     $('body').on('click', 'img.delete-component', function() {
       var data = {
+        _csrf : $('[name="_csrf"]').val(),
         componentName : $(this)[0].dataset.component,
         imageName : "#{imageName}"
       }

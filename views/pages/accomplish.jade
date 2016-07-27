@@ -10,6 +10,7 @@ html
     form(role='form', id="formAccomplish" action="/accomplish", method="post", style='max-width: 300px;', data-idea-doc=idea)
       .form-group
         h3 Your idea is described as
+        input(type="hidden", name="_csrf", value="#{csrfToken}")
         input.form-control(type="text" name="purposeHow", value='The solution of ', id="accomplish")
         p (ex. "The solution of channelling 1.21 jigawatts")
         p#charactersRemaining

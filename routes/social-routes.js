@@ -5,7 +5,8 @@ var _ = require('underscore');
 var IdeaSeed = require('../models/ideaSeed');
 var Account = require('../models/account');
 var router = express.Router();
-
+var csrf = require('csurf');
+var csrfProtection = csrf({ cookie: true });
 
 // =====================================
 // Google ROUTES =====================
@@ -13,9 +14,9 @@ var router = express.Router();
 // send to google to do the authentication
 // profile gets us their basic information including their name
 // email gets their emails
-router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/auth/google', csrfProtection, passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-router.get('/auth/google/callback',
+router.get('/auth/google/callback', csrfProtection, 
   passport.authenticate('google',{
     successRedirect: '/',
     failureRedirect: '/'
@@ -27,9 +28,9 @@ router.get('/auth/google/callback',
 // send to google to do the authentication
 // profile gets us their basic information including their name
 // email gets their emails
-router.get('/auth/facebook', passport.authenticate('facebook', { scope:  'email' }));
+router.get('/auth/facebook', csrfProtection, passport.authenticate('facebook', { scope:  'email' }));
 
-router.get('/auth/facebook/callback',
+router.get('/auth/facebook/callback', csrfProtection,
   passport.authenticate('facebook',{
     successRedirect: '/',
     failureRedirect: '/'
@@ -41,9 +42,9 @@ router.get('/auth/facebook/callback',
 // send to google to do the authentication
 // profile gets us their basic information including their name
 // email gets their emails
-router.get('/auth/linkedin', passport.authenticate('linkedin'));
+router.get('/auth/linkedin', csrfProtection, passport.authenticate('linkedin'));
 
-router.get('/auth/linkedin/callback', 
+router.get('/auth/linkedin/callback', csrfProtection, 
   passport.authenticate('linkedin',{
     successRedirect: '/',
     failureRedirect: '/'

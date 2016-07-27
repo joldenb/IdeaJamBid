@@ -18,6 +18,8 @@ var multer = require('multer');
 var fs = require('fs');
 var sanitizer = require('sanitizer');
 var mongoSanitize = require('mongo-sanitize');
+var csrf = require('csurf');
+var csrfProtection = csrf({ cookie: true });
 
 var S3_BUCKET = process.env.S3_BUCKET;
 
@@ -41,11 +43,11 @@ router.use(function (req, res, next) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/', function (req, res) {
+router.get('/', csrfProtection, function (req, res) {
     if(req.user){
       res.redirect('/profile/' + req.user.username);
     } else {
-      res.render('index', { user : req.user });
+      res.render('index', { user : req.user, csrfToken: req.csrfToken() });
     }
 });
 
@@ -56,8 +58,8 @@ router.get('/', function (req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/register', function(req, res) {
-    res.render('pages/register', { });
+router.get('/register', csrfProtection, function(req, res) {
+    res.render('pages/register', {csrfToken: req.csrfToken()});
 });
 
 /*****************************************************************
@@ -67,12 +69,12 @@ router.get('/register', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.post('/register', function(req, res) {
+router.post('/register', csrfProtection, function(req, res) {
     Account.register(new Account({ username : req.body.username,
       einsteinPoints: 0, rupees: 0, ideaSeeds: [] }), req.body.password, function(err, account) {
         if (err) {
             console.log("err.message:" + err.message);
-            return res.render('pages/register', { account : account, message : err.message });
+            return res.render('pages/register', { account : account, message : err.message, csrfToken: req.csrfToken() });
         }
 
         passport.authenticate('local')(req, res, function () {
@@ -88,8 +90,8 @@ router.post('/register', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/login', function(req, res) {
-    res.render('pages/login', { user : req.user });
+router.get('/login', csrfProtection, function(req, res) {
+    res.render('pages/login', { user : req.user, csrfToken: req.csrfToken() });
 });
 
 
@@ -100,7 +102,7 @@ router.get('/login', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/profile/:username', function(req, res) {
+router.get('/profile/:username', csrfProtection, function(req, res) {
   if(req.user){
     if (req.session.idea){
       req.session.idea = null;
@@ -204,6 +206,7 @@ router.get('/profile/:username', function(req, res) {
                           ideaNames.push([document.name, formattedDate]);
                           if(j == account.ideaSeeds.length){
                             return res.render('pages/profile', {
+                              csrfToken: req.csrfToken(),
                               reviewNames : reviewNames,
                               headshot : headshotURL,
                               headshotStyle : headshotStyle,
@@ -230,6 +233,7 @@ router.get('/profile/:username', function(req, res) {
                         } else {
                           if(j == account.ideaSeeds.length){
                             return res.render('pages/profile', {
+                              csrfToken: req.csrfToken(),
                               reviewNames : reviewNames,
                               myAptitudes : myAptitudes,
                               headshot : headshotURL,
@@ -251,6 +255,7 @@ router.get('/profile/:username', function(req, res) {
             }
             else {
               return res.render('pages/profile', {
+                csrfToken: req.csrfToken(),
                 user : req.user,
                 profileAccount: account,
                 aptitudes : myAptitudes,
@@ -282,7 +287,7 @@ router.get('/profile/:username', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/profile-picture', function(req, res){
+router.get('/profile-picture', csrfProtection, function(req, res){
   if(req.user){
 
     IdeaImage.findById(req.user.headshots[0], function(err, headshot){
@@ -349,6 +354,7 @@ router.get('/profile-picture', function(req, res){
           }
 
           res.render('pages/profile-picture', {
+            csrfToken: req.csrfToken(),
             user : req.user,
             imageURLs : imageURLs,
             headshotStyle : headshotStyle,
@@ -357,6 +363,7 @@ router.get('/profile-picture', function(req, res){
           });
         } else {
           res.render('pages/profile-picture', {
+            csrfToken: req.csrfToken(),
             user : req.user,
             headshot : headshotURL,
             headshotStyle : headshotStyle,
@@ -380,7 +387,7 @@ router.get('/profile-picture', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/view-all-ideas', function(req, res){
+router.get('/view-all-ideas', csrfProtection, function(req, res){
   //workaround for a second
   //if(req){ res.redirect('/begin');} else{
   if(req.user){
@@ -519,6 +526,7 @@ router.get('/view-all-ideas', function(req, res){
                   }
 
                   res.render('pages/view-all-ideas', {
+                    csrfToken: req.csrfToken(),
                     user : req.user,
                     headshot : headshotURL,
                     headshotStyle : headshotStyle,
@@ -526,6 +534,7 @@ router.get('/view-all-ideas', function(req, res){
                   });
                 } else {
                   res.render('pages/view-all-ideas', {
+                    csrfToken: req.csrfToken(),
                     user : req.user,
                     headshot : headshotURL,
                     headshotStyle : headshotStyle,
@@ -553,7 +562,7 @@ router.get('/view-all-ideas', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/introduce-idea', function(req, res) {
+router.get('/introduce-idea', csrfProtection, function(req, res) {
     if(req.user){
       IdeaImage.findById(req.user.headshots[0], function(err, headshot){
         if(headshot){
@@ -585,11 +594,12 @@ router.get('/introduce-idea', function(req, res) {
             }
           );
           req.session.idea = newIdea._doc._id.toHexString();
-          res.render('pages/introduce-idea', { user : req.user, idea : req.session.idea });
+          res.render('pages/introduce-idea', { user : req.user, idea : req.session.idea, csrfToken: req.csrfToken() });
         } else {
           IdeaSeed.findById(req.session.idea,function(err, idea){
             currentIdea = idea._doc;
             res.render('pages/introduce-idea', { user : req.user,
+              csrfToken: req.csrfToken(),
               headshot : headshotURL,
               headshotStyle : headshotStyle,
               idea : currentIdea });
@@ -610,7 +620,7 @@ router.get('/introduce-idea', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.post('/introduce-idea', function(req, res) {
+router.post('/introduce-idea', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -631,7 +641,7 @@ router.post('/introduce-idea', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/accomplish', function(req, res) {
+router.get('/accomplish', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -659,6 +669,7 @@ router.get('/accomplish', function(req, res) {
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
       res.render('pages/accomplish', { user : req.user,
+        csrfToken: req.csrfToken(),
         headshot: headshotURL,
         headshotStyle : headshotStyle,
         idea : currentIdea });
@@ -674,7 +685,7 @@ router.get('/accomplish', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.post('/accomplish', function(req, res) {
+router.post('/accomplish', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
   }
@@ -694,7 +705,7 @@ router.post('/accomplish', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.post('/suggestion-submit', function(req, res) {
+router.post('/suggestion-submit', csrfProtection, function(req, res) {
     var problemArea = req.body.problemType.split("-")[0];
     var contributor = req.body.problemType.split("-")[1];
     var problemText = req.body.problemType.split("-")[2];
@@ -742,7 +753,7 @@ router.post('/suggestion-submit', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/update-suggestion-points/:problemAuthor', function(req, res){
+router.get('/update-suggestion-points/:problemAuthor', csrfProtection, function(req, res){
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -791,7 +802,7 @@ router.get('/update-suggestion-points/:problemAuthor', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/update-suggestion-list/:problem', function(req, res){
+router.get('/update-suggestion-list/:problem', csrfProtection, function(req, res){
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -808,7 +819,7 @@ router.get('/update-suggestion-list/:problem', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.post('/save-idea-name', function(req, res) {
+router.post('/save-idea-name', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -831,7 +842,7 @@ router.post('/save-idea-name', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/update-viability-scores', function(req, res) {
+router.get('/update-viability-scores', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -864,7 +875,7 @@ router.get('/update-viability-scores', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.post('/update-all-viabilities', function(req, res) {
+router.post('/update-all-viabilities', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -914,7 +925,7 @@ router.post('/update-all-viabilities', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/image-upload', function(req, res){
+router.get('/image-upload', csrfProtection, function(req, res){
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -975,6 +986,7 @@ router.get('/image-upload', function(req, res){
               if(req.session.ideaReview && idea.inventorName != req.user.username){ var reviewing = true; }
               else { var reviewing = false; }
               res.render('pages/image-upload', {
+                csrfToken: req.csrfToken(),
                 user : req.user,
                 headshot: headshotURL,
                 headshotStyle : headshotStyle,
@@ -990,6 +1002,7 @@ router.get('/image-upload', function(req, res){
         else { var reviewing = false; }
 
         res.render('pages/image-upload', { user : req.user,
+          csrfToken: req.csrfToken(),
           headshot: headshotURL,
           headshotStyle : headshotStyle,
           idea : currentIdea, imageURLs : [], reviewing: reviewing });
@@ -1005,7 +1018,7 @@ router.get('/image-upload', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.post('/image-upload', function(req, res) {
+router.post('/image-upload', csrfProtection, function(req, res) {
 
     IdeaImage.find({"filename" : {$regex : ".*"+req.body.filename+".*"}}, function(err, images){
 
@@ -1044,7 +1057,7 @@ router.post('/image-upload', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.post('/save-annotations', function(req, res){
+router.post('/save-annotations', csrfProtection, function(req, res){
   var newAnno = {},
       i = 0;
 
@@ -1077,7 +1090,7 @@ router.post('/save-annotations', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/suggestion-summary', function(req, res){
+router.get('/suggestion-summary', csrfProtection, function(req, res){
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -1137,6 +1150,7 @@ router.get('/suggestion-summary', function(req, res){
 
 
             res.render('pages/suggestion-summary', { user : req.user, idea : currentIdea,
+              csrfToken: req.csrfToken(),
               problems : sortedProblems, categoryPoints : categoryPointValues,
               headshot : headshotURL,
               headshotStyle : headshotStyle,
@@ -1147,6 +1161,7 @@ router.get('/suggestion-summary', function(req, res){
           if(req.session.ideaReview){ var reviewing = true; }
           else { var reviewing = false; }
           res.render('pages/suggestion-summary', { user : req.user, idea : currentIdea,
+            csrfToken: req.csrfToken(),
             problems : [], categoryPoints : {}, headshot : headshotURL,
             headshotStyle : headshotStyle,
             firstProblemText : "", reviewing : reviewing
@@ -1164,7 +1179,7 @@ router.get('/suggestion-summary', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/view-idea-suggestions', function(req, res){
+router.get('/view-idea-suggestions', csrfProtection, function(req, res){
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -1279,6 +1294,7 @@ router.get('/view-idea-suggestions', function(req, res){
 
               currentIdea = idea._doc;
               res.render('pages/view-idea-suggestions', {
+                csrfToken: req.csrfToken(),
                 user : req.user, //user document
                 idea : currentIdea, //document
                 images : imageList, //[[imagename, uploader, objectid, [componentNumber, componentText  ]]]
@@ -1304,7 +1320,7 @@ router.get('/view-idea-suggestions', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/sort-problems', function(req, res){
+router.get('/sort-problems', csrfProtection, function(req, res){
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -1344,6 +1360,7 @@ router.get('/sort-problems', function(req, res){
 
 
         res.render('pages/sort-problems', { user : req.user, idea : idea._doc,
+          csrfToken: req.csrfToken(),
           headshot : headshotURL, headshotStyle : headshotStyle,
           problems : sortedProblems });
       });
@@ -1358,7 +1375,7 @@ router.get('/sort-problems', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.post('/order-problems', function(req, res) {
+router.post('/order-problems', csrfProtection, function(req, res) {
   IdeaSeed.findById(req.session.idea, function(err, idea){
 
     var length = Object.keys(req.body).length;
@@ -1399,7 +1416,7 @@ router.post('/order-problems', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.post('/incorporate-suggestions', function(req, res) {
+router.post('/incorporate-suggestions', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -1453,7 +1470,7 @@ router.post('/incorporate-suggestions', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.post('/login', passport.authenticate('local'), function(req,res){
+router.post('/login', csrfProtection, passport.authenticate('local'), function(req,res){
     res.redirect('/profile/' + req.user.username);
 });
 
@@ -1467,7 +1484,7 @@ router.post('/login', passport.authenticate('local'), function(req,res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/contributor-idea-summary/:ideaName', function(req, res){
+router.get('/contributor-idea-summary/:ideaName', csrfProtection, function(req, res){
   IdeaSeed.findOne({ "name" : req.params.ideaName },function(err, idea){
 
     if(err || !idea){
@@ -1555,6 +1572,7 @@ router.get('/contributor-idea-summary/:ideaName', function(req, res){
                                 }
                               } // end of loop of images
                               res.render('pages/contributor-idea-summary', {
+                                csrfToken: req.csrfToken(),
                                 user : req.user, idea : currentIdea,
                                 currentReview : currentReview,
                                 aptitudes : myAptitudes,
@@ -1567,6 +1585,7 @@ router.get('/contributor-idea-summary/:ideaName', function(req, res){
                             }); //end of images query
                         } else {
                           res.render('pages/contributor-idea-summary', {
+                            csrfToken: req.csrfToken(),
                             user : req.user, idea : currentIdea,
                             currentReview : currentReview,
                             aptitudes : myAptitudes,
@@ -1614,6 +1633,7 @@ router.get('/contributor-idea-summary/:ideaName', function(req, res){
                           }
                           if (j == idea._doc.images.length){
                             res.render('pages/contributor-idea-summary', {
+                              csrfToken: req.csrfToken(),
                               user : req.user, idea : currentIdea,
                               imageURLs : imageURLs,
                               headshot : headshotURL,
@@ -1628,6 +1648,7 @@ router.get('/contributor-idea-summary/:ideaName', function(req, res){
                       }
                     } else {
                       res.render('pages/contributor-idea-summary', {
+                        csrfToken: req.csrfToken(),
                         user : req.user, idea : currentIdea,
                         imageURLs : [],
                         headshot : headshotURL,
@@ -1654,7 +1675,7 @@ router.get('/contributor-idea-summary/:ideaName', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/contributor-idea-summary', function(req, res){
+router.get('/contributor-idea-summary', csrfProtection, function(req, res){
 });
 
 /*****************************************************************
@@ -1665,7 +1686,7 @@ router.get('/contributor-idea-summary', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/idea-summary/:ideaName', function(req, res){
+router.get('/idea-summary/:ideaName', csrfProtection, function(req, res){
 
   // potentially fragile logic here. all ideas should have
   // a name after the initial visit to this path. but on the first
@@ -1801,6 +1822,7 @@ router.get('/idea-summary/:ideaName', function(req, res){
                       }
                       if (j == idea._doc.images.length){
                         res.render('pages/idea-summary', { user : req.user, idea : currentIdea,
+                          csrfToken: req.csrfToken(),
                           variantDates : variantDates,
                           problemAreas  : problemAreas,
                           aptitudes : myAptitudes,
@@ -1815,6 +1837,7 @@ router.get('/idea-summary/:ideaName', function(req, res){
                   }
                 } else {
                         res.render('pages/idea-summary', { user : req.user, idea : currentIdea,
+                          csrfToken: req.csrfToken(),
                           variantDates : variantDates,
                           problemAreas  : problemAreas,
                           aptitudes : myAptitudes,
@@ -1843,7 +1866,7 @@ router.get('/idea-summary/:ideaName', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/idea-summary', function(req, res){
+router.get('/idea-summary', csrfProtection, function(req, res){
 });
 
 
@@ -1855,7 +1878,7 @@ router.get('/idea-summary', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/create-application', function(req, res){
+router.get('/create-application', csrfProtection, function(req, res){
   var currentAccount;
   Account.findById( req.user.id,
     function (err, account) {
@@ -1884,7 +1907,7 @@ router.get('/create-application', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/variant/:variantname', function(req, res){
+router.get('/variant/:variantname', csrfProtection, function(req, res){
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -2021,6 +2044,7 @@ router.get('/variant/:variantname', function(req, res){
                 currentIdea = idea._doc;
 
                 res.render('pages/variant', { user : req.user, idea : currentIdea,
+                  csrfToken: req.csrfToken(),
                   suggestionsList : suggestionsList,
                   images : imageList,
                   variantSummary : true,
@@ -2044,7 +2068,7 @@ router.get('/variant/:variantname', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/annotate-image/:image', function(req, res){
+router.get('/annotate-image/:image', csrfProtection, function(req, res){
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -2120,6 +2144,7 @@ router.get('/annotate-image/:image', function(req, res){
               compArray = _.sortBy(compArray, 'number');
               masterComponentList = _.sortBy(masterComponentList, 'number');
               res.render('pages/annotate-image', {
+                csrfToken: req.csrfToken(),
                 user : req.user,
                 imgURL : imageURL,
                 imageStyle : imageStyle,
@@ -2157,7 +2182,7 @@ router.get('/annotate-image/:image', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/get-last-component-description', function(req, res){
+router.get('/get-last-component-description', csrfProtection, function(req, res){
   Component.findOne({"text" : req.query.component}, function(err, component){
     if(err || !component){
       res.sendStatus(404);
@@ -2186,7 +2211,7 @@ router.get('/get-last-component-description', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/image-modal/:image', function(req, res){
+router.get('/image-modal/:image', csrfProtection, function(req, res){
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -2230,7 +2255,7 @@ router.get('/image-modal/:image', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.post('/save-component', function(req, res) {
+router.post('/save-component', csrfProtection, function(req, res) {
   IdeaImage.findOne({"filename" : req.body.imageName}, function(err, image){
 
     if(err){
@@ -2293,7 +2318,7 @@ router.post('/save-component', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.post('/edit-component', function(req, res) {
+router.post('/edit-component', csrfProtection, function(req, res) {
     Component.findOne({"text" : req.body.previousTitle}, function(err, component){
       if(err){
         res.json({error: err});
@@ -2324,9 +2349,9 @@ router.post('/edit-component', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/view-all-viabilities', function(req, res) {
+router.get('/view-all-viabilities', csrfProtection, function(req, res) {
   res.render('partials/viability-overview-modal',
-    { user : req.user, headshot : headshotURL, idea : req.session.idea }
+    { user : req.user, headshot : headshotURL, idea : req.session.idea, csrfToken: req.csrfToken() }
   );
 });
 
@@ -2343,7 +2368,7 @@ router.get('/view-all-viabilities', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.post('/delete-image-component', function(req, res) {
+router.post('/delete-image-component', csrfProtection, function(req, res) {
   IdeaImage.findOne({"filename" : req.body.imageName}, function(err, image){
     var imageID = image.id;
     Component.findOne({"text" : req.body.componentName}, function(err, component){
@@ -2368,7 +2393,7 @@ router.post('/delete-image-component', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/logout', function(req, res) {
+router.get('/logout', csrfProtection, function(req, res) {
     req.session.idea = null;
     req.logout();
     res.redirect('/');
@@ -2381,7 +2406,7 @@ router.get('/logout', function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/clear-session-idea', function(req, res){
+router.get('/clear-session-idea', csrfProtection, function(req, res){
   if(req.session.idea){
     req.session.idea = null;
     req.session.save();
@@ -2396,7 +2421,7 @@ router.get('/clear-session-idea', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/begin-contributor-review', function(req, res){
+router.get('/begin-contributor-review', csrfProtection, function(req, res){
   if(req.session.idea){
     var ideaReview = new IdeaReview({
       reviewer : req.user.username,
@@ -2428,7 +2453,7 @@ router.get('/begin-contributor-review', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/component-profile/:identifier', function(req, res){
+router.get('/component-profile/:identifier', csrfProtection, function(req, res){
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -2556,6 +2581,7 @@ router.get('/component-profile/:identifier', function(req, res){
                       }
                     }
                     res.render('pages/component-profile', {
+                      csrfToken: req.csrfToken(),
                       user : req.user,
                       headshot : headshotURL,
                       headshotStyle : headshotStyle,
@@ -2575,6 +2601,7 @@ router.get('/component-profile/:identifier', function(req, res){
                 // in case theres no images
                 } else {
                       res.render('pages/component-profile', {
+                        csrfToken: req.csrfToken(),
                         user : req.user,
                         headshot : headshotURL,
                         headshotStyle : headshotStyle,
@@ -2641,6 +2668,7 @@ router.get('/component-profile/:identifier', function(req, res){
                     }
                   }
                   res.render('pages/component-profile', {
+                    csrfToken: req.csrfToken(),
                     user : req.user,
                     headshot : headshotURL,
                     headshotStyle : headshotStyle,
@@ -2660,6 +2688,7 @@ router.get('/component-profile/:identifier', function(req, res){
               // in case theres no images
               } else {
                     res.render('pages/component-profile', {
+                      csrfToken: req.csrfToken(),
                       user : req.user,
                       headshot : headshotURL,
                       headshotStyle : headshotStyle,
@@ -2687,7 +2716,7 @@ router.get('/component-profile/:identifier', function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.post('/add-related-component', function(req, res) {
+router.post('/add-related-component', csrfProtection, function(req, res) {
     var compIdentifier = req.body['component-identifier'];
     var relatedCompIdentifier = req.body['addRelatedComponent'];
     var relatedCompDescription = req.body['newRelatedComponentDesc'];
@@ -2732,7 +2761,7 @@ router.post('/add-related-component', function(req, res) {
     });
 });
 
-router.get('/sign-s3', function(req, res) {
+router.get('/sign-s3', csrfProtection, function(req, res) {
   var s3 = new aws.S3({
       accessKeyId : process.env.accessKeyId,
       secretAccessKey : process.env.secretAccessKey
