@@ -9,7 +9,8 @@ var IdeaReview = require('../models/ideaReviews');
 var Account = require('../models/account');
 var router = express.Router();
 var multer = require('multer');
-
+var csrf = require('csurf');
+var csrfProtection = csrf({ cookie: true });
 
 var storage = multer.memoryStorage();
 var uploading = multer({
@@ -20,7 +21,7 @@ var uploading = multer({
 ////////////////////////////////////////////////
 // Waste Value Summary
 ////////////////////////////////////////////////
-router.get('/waste-values-summary', function(req, res) {
+router.get('/waste-values-summary', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -34,6 +35,7 @@ router.get('/waste-values-summary', function(req, res) {
       if(req.session.ideaReview){ var reviewing = true; }
       else { var reviewing = false; }
       res.render('pages/waste-values', {
+        csrfToken: req.csrfToken(),
         user : req.user, idea : currentIdea,
         headshot : headshotURL,
         reviewing :  reviewing});
@@ -44,7 +46,7 @@ router.get('/waste-values-summary', function(req, res) {
 ////////////////////////////////////////////////
 // Performability
 ////////////////////////////////////////////////
-router.get('/performability', function(req, res) {
+router.get('/performability', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -58,6 +60,7 @@ router.get('/performability', function(req, res) {
         if(req.session.ideaReview){
           var reviewing = true;
           res.render('pages/values-wastes/performability', {
+            csrfToken: req.csrfToken(),
             user : req.user, idea : currentIdea,
             problems : problems,
             reviewing :  reviewing
@@ -65,6 +68,7 @@ router.get('/performability', function(req, res) {
         } else {
           var reviewing = false;
           res.render('pages/values-wastes/performability', {
+            csrfToken: req.csrfToken(),
             user : req.user, idea : currentIdea,
             problems : problems,
             reviewing :  reviewing
@@ -74,7 +78,7 @@ router.get('/performability', function(req, res) {
     });
 });
 
-router.post('/performability', function(req, res) {
+router.post('/performability', csrfProtection, function(req, res) {
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
   // this is if the inventor is the same as the session user
   // enters info into the ideaSeed model vs the ideaReview model
@@ -178,7 +182,7 @@ router.post('/performability', function(req, res) {
 ////////////////////////////////////////////////
 // Affordability
 ////////////////////////////////////////////////
-router.get('/affordability', function(req, res) {
+router.get('/affordability', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -192,6 +196,7 @@ router.get('/affordability', function(req, res) {
           $regex: /.*Affordability.*/, $options: 'i' }},
         function (err, problems){
         res.render('pages/values-wastes/affordability', { user : req.user,
+          csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
           reviewing : reviewing });
@@ -199,7 +204,7 @@ router.get('/affordability', function(req, res) {
     });
 });
 
-router.post('/affordability', function(req, res) {
+router.post('/affordability', csrfProtection, function(req, res) {
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
   // this is if the inventor is the same as the session user
@@ -305,7 +310,7 @@ router.post('/affordability', function(req, res) {
 ////////////////////////////////////////////////
 // Featurability
 ////////////////////////////////////////////////
-router.get('/featurability', function(req, res) {
+router.get('/featurability', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -319,6 +324,7 @@ router.get('/featurability', function(req, res) {
           $regex: /.*Featurability.*/, $options: 'i' }},
         function (err, problems){
         res.render('pages/values-wastes/featurability', { user : req.user,
+          csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
           reviewing : reviewing });
@@ -326,7 +332,7 @@ router.get('/featurability', function(req, res) {
     });
 });
 
-router.post('/featurability', function(req, res) {
+router.post('/featurability', csrfProtection, function(req, res) {
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
   // this is if the inventor is the same as the session user
@@ -430,7 +436,7 @@ router.post('/featurability', function(req, res) {
 ////////////////////////////////////////////////
 // Deliverability
 ////////////////////////////////////////////////
-router.get('/deliverability', function(req, res) {
+router.get('/deliverability', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -444,6 +450,7 @@ router.get('/deliverability', function(req, res) {
           $regex: /.*Deliverability.*/, $options: 'i' }},
         function (err, problems){
         res.render('pages/values-wastes/deliverability', { user : req.user,
+          csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
           reviewing : reviewing });
@@ -451,7 +458,7 @@ router.get('/deliverability', function(req, res) {
     });
 });
 
-router.post('/deliverability', function(req, res) {
+router.post('/deliverability', csrfProtection, function(req, res) {
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
   // this is if the inventor is the same as the session user
@@ -557,7 +564,7 @@ router.post('/deliverability', function(req, res) {
 ////////////////////////////////////////////////
 // Useability
 ////////////////////////////////////////////////
-router.get('/useability', function(req, res) {
+router.get('/useability', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -571,6 +578,7 @@ router.get('/useability', function(req, res) {
           $regex: /.*Useability.*/, $options: 'i' }},
         function (err, problems){
         res.render('pages/values-wastes/useability', { user : req.user,
+          csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
           reviewing : reviewing });
@@ -578,7 +586,7 @@ router.get('/useability', function(req, res) {
     });
 });
 
-router.post('/useability', function(req, res) {
+router.post('/useability', csrfProtection, function(req, res) {
 
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
@@ -687,7 +695,7 @@ router.post('/useability', function(req, res) {
 ////////////////////////////////////////////////
 // Maintainability
 ////////////////////////////////////////////////
-router.get('/maintainability', function(req, res) {
+router.get('/maintainability', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -701,6 +709,7 @@ router.get('/maintainability', function(req, res) {
           $regex: /.*Maintainability.*/, $options: 'i' }},
         function (err, problems){
         res.render('pages/values-wastes/maintainability', { user : req.user,
+          csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
           reviewing : reviewing });
@@ -708,7 +717,7 @@ router.get('/maintainability', function(req, res) {
     });
 });
 
-router.post('/maintainability', function(req, res) {
+router.post('/maintainability', csrfProtection, function(req, res) {
 
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
@@ -815,7 +824,7 @@ router.post('/maintainability', function(req, res) {
 ////////////////////////////////////////////////
 // Durability
 ////////////////////////////////////////////////
-router.get('/durability', function(req, res) {
+router.get('/durability', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -829,6 +838,7 @@ router.get('/durability', function(req, res) {
           $regex: /.*Durability.*/, $options: 'i' }},
         function (err, problems){
         res.render('pages/values-wastes/durability', { user : req.user,
+          csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
           reviewing : reviewing });
@@ -836,7 +846,7 @@ router.get('/durability', function(req, res) {
     });
 });
 
-router.post('/durability', function(req, res) {
+router.post('/durability', csrfProtection, function(req, res) {
 
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
@@ -943,7 +953,7 @@ router.post('/durability', function(req, res) {
 ////////////////////////////////////////////////
 // Imageability
 ////////////////////////////////////////////////
-router.get('/imageability', function(req, res) {
+router.get('/imageability', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -957,6 +967,7 @@ router.get('/imageability', function(req, res) {
           $regex: /.*Imageability.*/, $options: 'i' }},
         function (err, problems){
         res.render('pages/values-wastes/imageability', { user : req.user,
+          csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
           reviewing : reviewing });
@@ -964,7 +975,7 @@ router.get('/imageability', function(req, res) {
     });
 });
 
-router.post('/imageability', function(req, res) {
+router.post('/imageability', csrfProtection, function(req, res) {
 
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
@@ -1071,7 +1082,7 @@ router.post('/imageability', function(req, res) {
 ////////////////////////////////////////////////
 // Complexity
 ////////////////////////////////////////////////
-router.get('/complexity', function(req, res) {
+router.get('/complexity', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -1085,6 +1096,7 @@ router.get('/complexity', function(req, res) {
           $regex: /.*Complexity.*/, $options: 'i' }},
         function (err, problems){
         res.render('pages/values-wastes/complexity', { user : req.user,
+          csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
           reviewing : reviewing });
@@ -1092,7 +1104,7 @@ router.get('/complexity', function(req, res) {
     });
 });
 
-router.post('/complexity', function(req, res) {
+router.post('/complexity', csrfProtection, function(req, res) {
 
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
@@ -1199,7 +1211,7 @@ router.post('/complexity', function(req, res) {
 ////////////////////////////////////////////////
 // Precision
 ////////////////////////////////////////////////
-router.get('/precision', function(req, res) {
+router.get('/precision', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -1213,6 +1225,7 @@ router.get('/precision', function(req, res) {
           $regex: /.*Precision.*/, $options: 'i' }},
         function (err, problems){
         res.render('pages/values-wastes/precision', { user : req.user,
+          csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
           reviewing : reviewing });
@@ -1220,7 +1233,7 @@ router.get('/precision', function(req, res) {
     });
 });
 
-router.post('/precision', function(req, res) {
+router.post('/precision', csrfProtection, function(req, res) {
 
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
@@ -1326,7 +1339,7 @@ router.post('/precision', function(req, res) {
 ////////////////////////////////////////////////
 // Variability
 ////////////////////////////////////////////////
-router.get('/variability', function(req, res) {
+router.get('/variability', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -1340,6 +1353,7 @@ router.get('/variability', function(req, res) {
           $regex: /.*Variability.*/, $options: 'i' }},
         function (err, problems){
         res.render('pages/values-wastes/variability', { user : req.user,
+          csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
           reviewing : reviewing });
@@ -1347,7 +1361,7 @@ router.get('/variability', function(req, res) {
     });
 });
 
-router.post('/variability', function(req, res) {
+router.post('/variability', csrfProtection, function(req, res) {
 
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
@@ -1453,7 +1467,7 @@ router.post('/variability', function(req, res) {
 ////////////////////////////////////////////////
 // Sensitivity
 ////////////////////////////////////////////////
-router.get('/sensitivity', function(req, res) {
+router.get('/sensitivity', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -1467,6 +1481,7 @@ router.get('/sensitivity', function(req, res) {
           $regex: /.*Sensitivity.*/, $options: 'i' }},
         function (err, problems){
         res.render('pages/values-wastes/sensitivity', {
+          csrfToken: req.csrfToken(),
           user : req.user,
           idea : currentIdea,
           problems : problems,
@@ -1476,7 +1491,7 @@ router.get('/sensitivity', function(req, res) {
     });
 });
 
-router.post('/sensitivity', function(req, res) {
+router.post('/sensitivity', csrfProtection, function(req, res) {
 
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
@@ -1582,7 +1597,7 @@ router.post('/sensitivity', function(req, res) {
 ////////////////////////////////////////////////
 // Immaturity
 ////////////////////////////////////////////////
-router.get('/immaturity', function(req, res) {
+router.get('/immaturity', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -1596,6 +1611,7 @@ router.get('/immaturity', function(req, res) {
           $regex: /.*Immaturity.*/, $options: 'i' }},
         function (err, problems){
         res.render('pages/values-wastes/immaturity', { user : req.user,
+          csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
           reviewing : reviewing });
@@ -1603,7 +1619,7 @@ router.get('/immaturity', function(req, res) {
     });
 });
 
-router.post('/immaturity', function(req, res) {
+router.post('/immaturity', csrfProtection, function(req, res) {
 
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
@@ -1709,7 +1725,7 @@ router.post('/immaturity', function(req, res) {
 ////////////////////////////////////////////////
 // Dangerous
 ////////////////////////////////////////////////
-router.get('/dangerous', function(req, res) {
+router.get('/dangerous', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -1723,6 +1739,7 @@ router.get('/dangerous', function(req, res) {
           $regex: /.*Danger.*/, $options: 'i' }},
         function (err, problems){
         res.render('pages/values-wastes/dangerous', { user : req.user,
+          csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
           reviewing : reviewing });
@@ -1730,7 +1747,7 @@ router.get('/dangerous', function(req, res) {
     });
 });
 
-router.post('/dangerous', function(req, res) {
+router.post('/dangerous', csrfProtection, function(req, res) {
 
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
@@ -1836,7 +1853,7 @@ router.post('/dangerous', function(req, res) {
 ////////////////////////////////////////////////
 // Skill Intensive
 ////////////////////////////////////////////////
-router.get('/skills', function(req, res) {
+router.get('/skills', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -1850,6 +1867,7 @@ router.get('/skills', function(req, res) {
           $regex: /.*Skills.*/, $options: 'i' }},
         function (err, problems){
         res.render('pages/values-wastes/skills', {
+          csrfToken: req.csrfToken(),
           user : req.user,
           idea : currentIdea,
           problems : problems,
@@ -1858,7 +1876,7 @@ router.get('/skills', function(req, res) {
     });
 });
 
-router.post('/skills', function(req, res) {
+router.post('/skills', csrfProtection, function(req, res) {
 
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){

@@ -28,6 +28,7 @@ html
                 input#fileInput(type="file", name="picture")
                 input(type="hidden" id="image-component-identifier" name="imageComponent", value="#{component['identifier']}")
                 input(type="hidden" id="image-component" name="componentProfilePage", value="true")
+                input(type="hidden", name="_csrf", value="#{csrfToken}")
 
           each imageURL, index in imageURLs
             if index == 0
@@ -57,6 +58,7 @@ html
           |  
           input.form-control(name="description", id="description",
             placeholder='Describe the new component...')
+          input(type="hidden", name="_csrf", value="#{csrfToken}")
           |  
           button.btn.btn-success#submit(type='submit') Submit
 
@@ -140,6 +142,7 @@ html
               .form-group
                 h4 Select another component of the invention that #{component['text']} relates to:
                 |  
+                input(type="hidden", name="_csrf", value="#{csrfToken}")
                 select(name="addRelatedComponent").form-control#relatedComponents
                   option(value="None Selected") None Selected
                   each thisComponent in components
@@ -259,7 +262,7 @@ html
       xhr.onreadystatechange = function() {
         if(xhr.readyState === 4){
           if(xhr.status === 200 && (file.type=="image/jpeg" || file.type=="image/png")){
-            var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type,
+            var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type, "_csrf" : $('[name="_csrf"]').val(),
             "componentProfilePage" : true, imageComponent : $("#image-component-identifier").val() };
             $.post('/add-component-image', data , function(response, status){
               window.location.replace(response["redirectURL"]);
@@ -294,6 +297,7 @@ html
     $("#addDescription #submit").click(function(event){
       event.preventDefault();
       var data = {
+        "_csrf" : $('[name="_csrf"]').val(),
         "description" : $("#description").val(),
         "component-identifier" :  "!{component['identifier']}"
       }

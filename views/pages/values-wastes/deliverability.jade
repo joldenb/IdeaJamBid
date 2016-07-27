@@ -25,6 +25,7 @@ html
               h4 #{index + 1} : #{problem.text}
       br
       h4 What problem prevents #{idea.name} from being fully ready on demand?
+      input(type="hidden", name="_csrf", value="#{csrfToken}")
       textarea.form-control(rows='6', cols="75", name="deliverProblem")
         | The problem of 
       br

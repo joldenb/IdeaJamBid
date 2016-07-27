@@ -41,6 +41,7 @@ html
             .form-group
               |  
               input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
             .modal-footer
               button.btn.btn-success#aptitudeSubmit(type='submit') Save
           
@@ -86,6 +87,7 @@ html
             .form-group
               |  
               input.form-control.ui-front(type='text', id="schoolNetwork", name="schoolNetwork", placeholder='My school is called... ', autocomplete="on")
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
             .modal-footer
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#submit(type='submit') Save
@@ -101,6 +103,7 @@ html
             .form-group
               |  
               input.form-control.ui-front(type='text', id="companyNetwork", name="companyNetwork", placeholder='My company is called... ', autocomplete="on")
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
             .modal-footer
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#submit(type='submit') Save
@@ -119,7 +122,7 @@ html
               select.form-control#locationState
               h4.locationCity(style="display:none;") Select City
               select.form-control.locationCity(style="display:none;")
-
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
 
             .modal-footer
               button.btn.btn-info(data-dismiss="modal") Cancel

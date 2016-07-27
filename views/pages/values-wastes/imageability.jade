@@ -24,6 +24,7 @@ html
               h4 #{index + 1} : #{problem.text}
       br
       h4 What about the image of quality and prestige of #{idea.name} prevented you from scoring it higher?
+      input(type="hidden", name="_csrf", value="#{csrfToken}")
       textarea.form-control(rows='6', cols="75", name="imageProblem")
         | The problem of 
       br

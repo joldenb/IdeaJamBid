@@ -50,6 +50,7 @@ html
                     input(type="hidden" id="suggestion-category" name="suggestionCategory")
                     input(type="hidden" id="point-value" name="pointValue")
                     input(type="hidden" id="problem-type" name="problemType")
+                    input(type="hidden", name="_csrf", value="#{csrfToken}")
               .modal-footer
                 button.btn.btn-info(data-dismiss="modal") Cancel
                 button.btn.btn-success#submit(type='submit') Submit >

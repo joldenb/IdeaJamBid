@@ -24,6 +24,7 @@ html
               h4 #{index + 1} : #{problem.text}
       br
       h4 What problem associated with #{idea.name} makes it unsustainable?
+      input(type="hidden", name="_csrf", value="#{csrfToken}")
       textarea.form-control(rows='6', cols="75", name="maintainProblem")
         | The problem of 
       br

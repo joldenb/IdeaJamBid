@@ -12,6 +12,7 @@ html
       .form-group
         h3 Use a pen and paper to sketch out your idea, take a photo of your sketch, and save it here. You can also save additional diagrams or photographs of your invention.
         |  
+        input(type="hidden", name="_csrf", value="#{csrfToken}")
         input#fileInput(type="file", name="picture")
         br
         |  

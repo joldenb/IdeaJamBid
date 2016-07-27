@@ -20,7 +20,7 @@ var networkRoutes = require('./routes/network-routes');
 var valueWasteRoutes = require('./routes/value-waste-routes');
 var ideaDataRoutes = require('./routes/idea-data-routes');
 var Account = require('./models/account');
-
+var csrf = require('csurf');
 
 require('./config/passport')(passport);
 
@@ -31,7 +31,6 @@ app.use(helmet());
 // not sure about this one
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
-
 
 // views is directory for all template files
 app.set('views', __dirname + '/views');
@@ -56,6 +55,8 @@ db.once('open', console.error.bind(console, 'Connected to MongDB'));
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(csrf({ cookie: true }));
 
 app.use('/', routes);
 app.use('/', networkRoutes);

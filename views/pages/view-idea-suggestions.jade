@@ -98,6 +98,7 @@ html
                   include ../partials/image-block-element.jade
 
       br
+      input(type="hidden", name="_csrf", value="#{csrfToken}")
       button.btn.btn-success#submit(type='submit') Create Variant >
 
     br

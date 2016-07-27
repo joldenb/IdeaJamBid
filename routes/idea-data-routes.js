@@ -10,7 +10,8 @@ var IdeaProblem = require('../models/ideaProblem');
 var Account = require('../models/account');
 var router = express.Router();
 var multer = require('multer');
-
+var csrf = require('csurf');
+var csrfProtection = csrf({ cookie: true });
 
 var storage = multer.memoryStorage();
 var uploading = multer({
@@ -22,7 +23,7 @@ var uploading = multer({
 ////////////////////////////////////////////////
 // Add a problem to an idea seed
 ////////////////////////////////////////////////
-router.post('/add-idea-problem', function(req, res) {
+router.post('/add-idea-problem', csrfProtection, function(req, res) {
   var newProblem = {
     text          : req.body.problemStatement,
     date          : new Date(),
@@ -49,7 +50,7 @@ router.post('/add-idea-problem', function(req, res) {
 ////////////////////////////////////////////////
 // Add a component to an idea seed
 ////////////////////////////////////////////////
-router.post('/add-component-image', function(req, res) {
+router.post('/add-component-image', csrfProtection, function(req, res) {
   
   IdeaImage.find({"filename" : {$regex : ".*"+req.body.filename+".*"}}, function(err, images){
 
@@ -86,7 +87,7 @@ router.post('/add-component-image', function(req, res) {
 ////////////////////////////////////////////////
 // Add a component to an idea seed
 ////////////////////////////////////////////////
-router.post('/add-idea-component', function(req, res) {
+router.post('/add-idea-component', csrfProtection, function(req, res) {
   
   Component.count({"ideaSeed" : req.session.idea}, function(err, count){
 
@@ -113,7 +114,7 @@ router.post('/add-idea-component', function(req, res) {
 ////////////////////////////////////////////////
 // Add a profile headshot
 ////////////////////////////////////////////////
-router.post('/add-profile-headshot',  function(req, res) {
+router.post('/add-profile-headshot', csrfProtection,  function(req, res) {
   
   if(!req.user){
     res.redirect('/');
@@ -155,7 +156,7 @@ router.post('/add-profile-headshot',  function(req, res) {
 ////////////////////////////////////////////////
 // Resetting profile picture
 ////////////////////////////////////////////////
-router.post('/set-existing-profile-pic', function(req, res) {
+router.post('/set-existing-profile-pic', csrfProtection, function(req, res) {
   
   if(!req.user){
     res.redirect('/');
@@ -180,7 +181,7 @@ router.post('/set-existing-profile-pic', function(req, res) {
 ////////////////////////////////////////////////
 // Add a description to a component
 ////////////////////////////////////////////////
-router.post('/add-description', function(req, res) {
+router.post('/add-description', csrfProtection, function(req, res) {
 
 
     Component.findOne({"identifier" : req.body["component-identifier"]}, function(err, component){

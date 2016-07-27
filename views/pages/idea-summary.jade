@@ -40,6 +40,7 @@ html
           form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
               |  
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
               input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
             .modal-footer
               button.btn.btn-success#aptitudeSubmit(type='submit') Save
@@ -142,6 +143,7 @@ html
         .modal-body
           form(role='form', id="saveIdeaName" action="/save-idea-name", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
               input.form-control(type="text", name="inventionName", value='My idea is named ')
               p (ex. "Flux Capacitor")
               p.charactersRemaining
@@ -175,6 +177,7 @@ html
         .modal-body
           form(role='form', id="addIdeaProblem" action="/add-idea-problem", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
               input#problemStatement.form-control(type="text", name="problemStatement", value='The problem is ')
               p (ex. "It draws too much power")
               p.charactersRemaining
@@ -198,6 +201,7 @@ html
           form(role='form', id="addIdeaComponent" action="/add-idea-component", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
               input#componentName.form-control(type="text", name="componentName", value='The component is called ')
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
               p (ex. "The Start Button")
               p.compNameCharRemaining
               input#componentDescription.form-control(type="text", name="componentDescription", value='The way it works is ')
@@ -210,6 +214,7 @@ html
               input#fileInput(type="file", name="picture")
               input(type="hidden" id="image-component" name="imageComponent")
               input(type="hidden" id="component-idea-name" name="componentIdeaName" value="#{idea.name}")
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
             .modal-footer
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#componentSubmit(type='submit') Save
@@ -370,7 +375,7 @@ html
       .appendTo("#viabilityModal .modal-footer.view-all-button")
       .click(function(event){
 
-        var data = {};
+        var data = {_csrf : $('[name="_csrf"]').val()};
         $(".ui-slider").each(function(index, element){
           switch ($(this).attr("id")){
             case "perfSlider" : 
@@ -613,7 +618,7 @@ html
       $("<button class='btn btn-success' id='viabilitySubmit'>Save</button>")
       .appendTo("#viabilityModal .modal-footer.view-all-button")
       .click(function(event){
-        var data = {};
+        var data = {_csrf : $('[name="_csrf"]').val()};
         if(valueEntered){
           data[sliderName+"Value"] = uiValue;
           
@@ -692,6 +697,7 @@ html
       event.preventDefault();
       $.post('/add-idea-problem', 
         {
+          _csrf : $('[name="_csrf"]').val(),
           problemStatement : $("#problemStatement").val().slice(15),
           problemArea : $("#problemArea option:selected").text(),
         },
@@ -706,6 +712,7 @@ html
 
       $.post('/add-idea-component', 
         {
+          _csrf : $('[name="_csrf"]').val(),
           componentName : $("#componentName").val().slice(24),
           componentDescription : $("#componentDescription").val().slice(20)
         },
@@ -828,6 +835,7 @@ html
       if($("#aptitudeTitle").val() != ""){
         $.post('/save-aptitude', 
           {
+            _csrf : $('[name="_csrf"]').val(),
             ideaName : "!{idea.name}",
             aptitudeTitle : $("#aptitudeTitle").val()
           },
