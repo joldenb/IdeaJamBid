@@ -116,6 +116,32 @@ div#begin-info-right button {
   padding: 0;
 }
 
+.app-strength-bar {
+  width: 100%;
+  height: 3em;
+  border: 1px solid gray;
+  margin-bottom: 1.5em;
+}
+
+.app-strength {
+  text-align: center;
+  line-height: 3em; /* matches height of parent div to center text*/
+  color : white;
+  height:100%;
+}
+
+.app-strength.not-yet {
+  background-color: #C64143; /* tomato red */
+}
+
+.app-strength.almost {
+  background-color: #D6DE26; /* Electric yellow */
+}
+
+.app-strength.yes {
+  background-color: #00A550; /* Go green */
+}
+
 .existingIdeas {
   padding:0 2em;
   width:50%;

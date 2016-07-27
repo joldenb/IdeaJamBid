@@ -175,6 +175,7 @@ router.get('/profile/:username', function(req, res) {
                   break;
               }
             }
+
             if(account.ideaSeeds && account.ideaSeeds.length > 0){
               var ideaNames = [],
                   j = 0;
