@@ -18,6 +18,7 @@
     "csurf": "^1.9.0",
     "ejs": "2.3.3",
     "express": "^4.14.0",
+    "express-rate-limit": "^2.4.0",
     "express-session": "^1.13.0",
     "fs": "0.0.2",
     "helmet": "^2.1.1",
