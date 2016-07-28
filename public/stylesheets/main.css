@@ -11,8 +11,9 @@ h1, h2, h3, h4, p {
     font-weight:200 !important;
 }
 
-p {
+p, div {
   font-family: Roboto;
+  letter-spacing: 1px;
 }
 
 h1, h2, h3, h4 {
@@ -125,8 +126,9 @@ div#begin-info-right button {
 
 .app-strength {
   text-align: center;
-  line-height: 3em; /* matches height of parent div to center text*/
+  line-height: 2.3em; /* matches height of parent div to center text*/
   color : white;
+  font-size: 18px;
   height:100%;
 }
 
@@ -143,16 +145,10 @@ div#begin-info-right button {
 }
 
 .existingIdeas {
-  padding:0 2em;
-  width:50%;
-  float: left;
   border-right: 1px solid gray;
 }
 .contributedIdeas {
   margin-top: 0;
-  padding:0 2em;
-  width:50%;
-  float:left;
 }
 
 .existingIdeas ul, .contributedIdeas ul {

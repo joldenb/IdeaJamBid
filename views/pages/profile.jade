@@ -8,7 +8,7 @@ html
   div.profile-info.container
     .col-md-4.profile-left-column
       div#begin-info
-        h3 Welcome #{profileAccount.username}
+        h2 Welcome #{profileAccount.username}
         h4 Einstein Points: #{profileAccount.einsteinPoints}
       div#begin-info-right
         .profileSchool
@@ -46,34 +46,33 @@ html
               button.btn.btn-success#aptitudeSubmit(type='submit') Save
           
 
-    .col-md-8.user-ideas
-      .existingIdeas
-        h2 #{profileAccount.username}'s Ideas:
-        if accountIdeaSeeds
-          ul
-            each val, index in accountIdeaSeeds
-              if val[0]
-                li
-                  a(href="/idea-summary/" + val[0])
-                    h4.idea-text-name= val[0]
-                  span.idea-text-date= val[1]
-        else
-          h4 None so far.
-        a.home-login.btn.btn-success( href="/introduce-idea" ) Begin a New Idea > 
+    .col-md-4.existingIdeas
+      h3 #{profileAccount.username}'s Ideas:
+      if accountIdeaSeeds
+        ul
+          each val, index in accountIdeaSeeds
+            if val[0]
+              li
+                a(href="/idea-summary/" + val[0])
+                  h4.idea-text-name= val[0]
+                span.idea-text-date= val[1]
+      else
+        h4 None so far.
+      a.home-login.btn.btn-success( href="/introduce-idea" ) Begin a New Idea > 
 
-      .contributedIdeas
-        h2 #{profileAccount.username}'s Contributions
-        if reviewNames
-          ul
-            each val, index in reviewNames
-              if val[0]
-                li
-                  a(href="/contributor-idea-summary/" + val[0])
-                    h4.idea-text-name= val[0]
-                  span.idea-text-date= val[1]
-        else
-          h4 None so far.
-        a.home-login.btn.btn-success( href="/view-all-ideas" ) View All Ideas
+    .col-md-4.contributedIdeas
+      h3 #{profileAccount.username}'s Contributions
+      if reviewNames
+        ul
+          each val, index in reviewNames
+            if val[0]
+              li
+                a(href="/contributor-idea-summary/" + val[0])
+                  h4.idea-text-name= val[0]
+                span.idea-text-date= val[1]
+      else
+        h4 None so far.
+      a.home-login.btn.btn-success( href="/view-all-ideas" ) View All Ideas
 
   #schoolModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
