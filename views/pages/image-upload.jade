@@ -65,6 +65,7 @@ html
     document.getElementById("fileInput").onchange = function(event) {
       const files = document.getElementById('fileInput').files;
       const file = files[0];
+      const csrf = $("input[name='_csrf']").val();
       if(file == null){
         return alert('No file selected.');
       }
@@ -75,7 +76,7 @@ html
         var exif = EXIF.readFromBinaryFile(this.result);
 
         if(file.size < 3000000){
-          getSignedRequest(file, exif);
+          getSignedRequest(file, exif, csrf);
         } else if (file.size > 3000000){
           alert('Please choose an image smaller than 3 MB.')
         } else {
@@ -89,14 +90,14 @@ html
 
     };
 
-    function uploadFile(file, signedRequest, url, exif){
+    function uploadFile(file, signedRequest, url, exif, csrf){
       const xhr = new XMLHttpRequest();
       xhr.open('PUT', signedRequest);
       xhr.onreadystatechange = function() {
         if(xhr.readyState === 4){
           if(xhr.status === 200 && (file.type=="image/jpeg" || file.type=="image/png")){
             var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type,
-              exif : exif };
+              exif : exif, "_csrf" : csrf };
             $.post('/image-upload', data , function(response, status){
               window.location.replace(response["redirectURL"]);
             });
@@ -109,14 +110,14 @@ html
       xhr.send(file);
     }
 
-    function getSignedRequest(file, exif){
+    function getSignedRequest(file, exif, csrf){
       const xhr = new XMLHttpRequest();
       xhr.open('GET', '/sign-s3?file-name='+file.name + '&file-type='+ file.type);
       xhr.onreadystatechange = function() {
         if(xhr.readyState === 4){
           if(xhr.status === 200){
             const response = JSON.parse(xhr.responseText);
-            uploadFile(file, response.signedRequest, response.url, exif);
+            uploadFile(file, response.signedRequest, response.url, exif, csrf);
           }
           else{
             alert('Could not get signed URL.');
