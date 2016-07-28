@@ -1701,11 +1701,14 @@ router.get('/idea-summary/:ideaName', csrfProtection, function(req, res){
   // created on the introductory ideaseed creation pages, coming
   // from the image upload page
 
-  IdeaSeed.findOne({ $or : [
-    {"_id" : req.session.idea},
-    {"name" : req.params.ideaName}
-    ]},
-    function(err, idea){
+
+  if(req.params && req.params.ideaName){
+    var query = IdeaSeed.findOne({"name" : req.params.ideaName});
+  } else {
+    var query = IdeaSeed.findOne({"_id" : req.session.idea});
+  }
+
+  query.exec(function(err, idea){
 
     if(err || !idea){
       res.redirect('/');
@@ -1834,6 +1837,7 @@ router.get('/idea-summary/:ideaName', csrfProtection, function(req, res){
                             res.render('pages/idea-summary', { user : req.user, idea : currentIdea,
                               csrfToken: req.csrfToken(),
                               variantDates : variantDates,
+                              strengthResponse : strengthResponse,
                               appStrengthText : strengthResponse['appStrengthText'],
                               appStrengthClass : strengthResponse['appStrengthClass'],
                               problemAreas  : problemAreas,
@@ -1853,6 +1857,7 @@ router.get('/idea-summary/:ideaName', csrfProtection, function(req, res){
                               variantDates : variantDates,
                               problemAreas  : problemAreas,
                               aptitudes : myAptitudes,
+                              strengthResponse : strengthResponse,
                               appStrengthText : strengthResponse['appStrengthText'],
                               appStrengthClass : strengthResponse['appStrengthClass'],
                               imageURLs : [],

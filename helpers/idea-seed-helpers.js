@@ -30,7 +30,7 @@ var getApplicationStrength = function getApplicationStrength(ideaSeedID){
 			the strength and readiness of the application to submit to the USPTO 
 		*/
 		getStrengthData(ideaSeedID).then(function(strengthData){
-			var strengthResponse = {};
+			var strengthResponse = strengthData;
 			var almostReqsFulfilled = 0; //must be at least 3 to meet the middle rung of app strength 'almost'
 
 			if(strengthData['description'] != '' &&
@@ -281,3 +281,4 @@ var getStrengthData = function getStrengthData(ideaSeedID){
 }
 
 exports.getApplicationStrength = getApplicationStrength;
+exports.getStrengthData = getStrengthData;

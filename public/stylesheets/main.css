@@ -151,6 +151,24 @@ div#begin-info-right button {
   margin-top: 0;
 }
 
+.whats-left-button{
+  float:right;
+}
+
+#whatsLeftModal li {
+  padding-top: 1em;
+  line-height: 2.5em;
+  padding-bottom: 1em;
+  border-bottom: 1px solid lightgray;
+}
+
+#whatsLeftModal li:last-of-type {
+  border-bottom: none; 
+}
+
+#whatsLeftModal li a {
+  margin-right : 1em;
+}
 .existingIdeas ul, .contributedIdeas ul {
   list-style: none;
   padding: 0;
