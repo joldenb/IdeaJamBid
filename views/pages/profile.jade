@@ -60,9 +60,15 @@ html
           each val, index in accountIdeaSeeds
             if val[0]
               li
-                a(href="/idea-summary/" + val[0])
-                  h4.idea-text-name= val[0]
-                span.idea-text-date= val[1]
+                if Object.keys(user).length != 0
+                  a(href="/idea-summary/" + val[0])
+                    h4.idea-text-name= val[0]
+                  span.idea-text-date= val[1]
+                else
+                  a(href="/contributor-idea-summary/" + val[0])
+                    h4.idea-text-name= val[0]
+                  span.idea-text-date= val[1]
+
       else
         h4 None so far.
       if Object.keys(user).length != 0
