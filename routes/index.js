@@ -48,7 +48,7 @@ router.get('/', csrfProtection, function (req, res) {
     if(req.user){
       res.redirect('/profile/' + req.user.username);
     } else {
-      res.render('index', { user : req.user || {}, csrfToken: req.csrfToken() });
+      res.render('index', { csrfToken: req.csrfToken() });
     }
 });
 
