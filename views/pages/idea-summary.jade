@@ -44,7 +44,10 @@ html
               input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
             .modal-footer
               button.btn.btn-success#aptitudeSubmit(type='submit') Save
-
+      #sharing
+        h3 Crowd Improve : 
+          p
+            a.btn.btn-default#shareIdea Share
 
     .idea-function-column.col-md-8
       h4 Is my idea ready to file?
@@ -924,4 +927,16 @@ html
       } else {
         alert("Please enter a valid aptitude.");
       }
+    });
+
+    $("#shareIdea").click(function(event){
+      console.log("#shareIdea clicked");
+      event.preventDefault();
+      $.post('/share-idea', 
+        {
+          _csrf : $('[name="_csrf"]').val()
+        },
+        function(resp) {
+          window.location.reload(true);
+        });
     });
