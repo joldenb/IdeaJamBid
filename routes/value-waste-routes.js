@@ -11,6 +11,7 @@ var router = express.Router();
 var multer = require('multer');
 var csrf = require('csurf');
 var csrfProtection = csrf({ cookie: true });
+var ideaSeedHelpers = require('../helpers/idea-seed-helpers');
 
 var storage = multer.memoryStorage();
 var uploading = multer({
@@ -22,21 +23,21 @@ var uploading = multer({
 // Waste Value Summary
 ////////////////////////////////////////////////
 router.get('/waste-values-summary', csrfProtection, function(req, res) {
+
   if(!req.session.idea){
     res.redirect('/');
     return;
   }
-  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-    if(headshot){
-      var headshotURL = headshot["amazonURL"];
-    }
+  ideaSeedHelpers.getUserHeadshot(req).then(function(headshotData){
+    var headshotURL = headshotData['headshotURL'];
+    var headshotStyle = headshotData['headshotStyle'];
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
       if(req.session.ideaReview){ var reviewing = true; }
       else { var reviewing = false; }
       res.render('pages/waste-values', {
         csrfToken: req.csrfToken(),
-        user : req.user, idea : currentIdea,
+        user : req.user || {}, idea : currentIdea,
         headshot : headshotURL,
         reviewing :  reviewing});
     });
@@ -61,7 +62,7 @@ router.get('/performability', csrfProtection, function(req, res) {
           var reviewing = true;
           res.render('pages/values-wastes/performability', {
             csrfToken: req.csrfToken(),
-            user : req.user, idea : currentIdea,
+            user : req.user || {}, idea : currentIdea,
             problems : problems,
             reviewing :  reviewing
           });
@@ -69,7 +70,7 @@ router.get('/performability', csrfProtection, function(req, res) {
           var reviewing = false;
           res.render('pages/values-wastes/performability', {
             csrfToken: req.csrfToken(),
-            user : req.user, idea : currentIdea,
+            user : req.user || {}, idea : currentIdea,
             problems : problems,
             reviewing :  reviewing
           });
@@ -79,6 +80,10 @@ router.get('/performability', csrfProtection, function(req, res) {
 });
 
 router.post('/performability', csrfProtection, function(req, res) {
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
   // this is if the inventor is the same as the session user
   // enters info into the ideaSeed model vs the ideaReview model
@@ -195,7 +200,7 @@ router.get('/affordability', csrfProtection, function(req, res) {
         'problemArea' : { 
           $regex: /.*Affordability.*/, $options: 'i' }},
         function (err, problems){
-        res.render('pages/values-wastes/affordability', { user : req.user,
+        res.render('pages/values-wastes/affordability', { user : req.user || {},
           csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
@@ -205,6 +210,10 @@ router.get('/affordability', csrfProtection, function(req, res) {
 });
 
 router.post('/affordability', csrfProtection, function(req, res) {
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
   // this is if the inventor is the same as the session user
@@ -323,7 +332,7 @@ router.get('/featurability', csrfProtection, function(req, res) {
         'problemArea' : { 
           $regex: /.*Featurability.*/, $options: 'i' }},
         function (err, problems){
-        res.render('pages/values-wastes/featurability', { user : req.user,
+        res.render('pages/values-wastes/featurability', { user : req.user || {},
           csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
@@ -333,6 +342,14 @@ router.get('/featurability', csrfProtection, function(req, res) {
 });
 
 router.post('/featurability', csrfProtection, function(req, res) {
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
   // this is if the inventor is the same as the session user
@@ -449,7 +466,7 @@ router.get('/deliverability', csrfProtection, function(req, res) {
         'problemArea' : { 
           $regex: /.*Deliverability.*/, $options: 'i' }},
         function (err, problems){
-        res.render('pages/values-wastes/deliverability', { user : req.user,
+        res.render('pages/values-wastes/deliverability', { user : req.user || {},
           csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
@@ -459,6 +476,10 @@ router.get('/deliverability', csrfProtection, function(req, res) {
 });
 
 router.post('/deliverability', csrfProtection, function(req, res) {
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
   // this is if the inventor is the same as the session user
@@ -577,7 +598,7 @@ router.get('/useability', csrfProtection, function(req, res) {
         'problemArea' : { 
           $regex: /.*Useability.*/, $options: 'i' }},
         function (err, problems){
-        res.render('pages/values-wastes/useability', { user : req.user,
+        res.render('pages/values-wastes/useability', { user : req.user || {},
           csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
@@ -588,6 +609,10 @@ router.get('/useability', csrfProtection, function(req, res) {
 
 router.post('/useability', csrfProtection, function(req, res) {
 
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
   // this is if the inventor is the same as the session user
@@ -708,7 +733,7 @@ router.get('/maintainability', csrfProtection, function(req, res) {
         'problemArea' : { 
           $regex: /.*Maintainability.*/, $options: 'i' }},
         function (err, problems){
-        res.render('pages/values-wastes/maintainability', { user : req.user,
+        res.render('pages/values-wastes/maintainability', { user : req.user || {},
           csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
@@ -719,6 +744,10 @@ router.get('/maintainability', csrfProtection, function(req, res) {
 
 router.post('/maintainability', csrfProtection, function(req, res) {
 
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
   // this is if the inventor is the same as the session user
@@ -837,7 +866,7 @@ router.get('/durability', csrfProtection, function(req, res) {
         'problemArea' : { 
           $regex: /.*Durability.*/, $options: 'i' }},
         function (err, problems){
-        res.render('pages/values-wastes/durability', { user : req.user,
+        res.render('pages/values-wastes/durability', { user : req.user || {},
           csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
@@ -848,6 +877,10 @@ router.get('/durability', csrfProtection, function(req, res) {
 
 router.post('/durability', csrfProtection, function(req, res) {
 
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
   // this is if the inventor is the same as the session user
@@ -966,7 +999,7 @@ router.get('/imageability', csrfProtection, function(req, res) {
         'problemArea' : { 
           $regex: /.*Imageability.*/, $options: 'i' }},
         function (err, problems){
-        res.render('pages/values-wastes/imageability', { user : req.user,
+        res.render('pages/values-wastes/imageability', { user : req.user || {},
           csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
@@ -977,6 +1010,10 @@ router.get('/imageability', csrfProtection, function(req, res) {
 
 router.post('/imageability', csrfProtection, function(req, res) {
 
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
   // this is if the inventor is the same as the session user
@@ -1095,7 +1132,7 @@ router.get('/complexity', csrfProtection, function(req, res) {
         'problemArea' : { 
           $regex: /.*Complexity.*/, $options: 'i' }},
         function (err, problems){
-        res.render('pages/values-wastes/complexity', { user : req.user,
+        res.render('pages/values-wastes/complexity', { user : req.user || {},
           csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
@@ -1106,6 +1143,10 @@ router.get('/complexity', csrfProtection, function(req, res) {
 
 router.post('/complexity', csrfProtection, function(req, res) {
 
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
   // this is if the inventor is the same as the session user
@@ -1224,7 +1265,7 @@ router.get('/precision', csrfProtection, function(req, res) {
         'problemArea' : { 
           $regex: /.*Precision.*/, $options: 'i' }},
         function (err, problems){
-        res.render('pages/values-wastes/precision', { user : req.user,
+        res.render('pages/values-wastes/precision', { user : req.user || {},
           csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
@@ -1235,6 +1276,10 @@ router.get('/precision', csrfProtection, function(req, res) {
 
 router.post('/precision', csrfProtection, function(req, res) {
 
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
   // this is if the inventor is the same as the session user
@@ -1352,7 +1397,7 @@ router.get('/variability', csrfProtection, function(req, res) {
         'problemArea' : { 
           $regex: /.*Variability.*/, $options: 'i' }},
         function (err, problems){
-        res.render('pages/values-wastes/variability', { user : req.user,
+        res.render('pages/values-wastes/variability', { user : req.user || {},
           csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
@@ -1363,6 +1408,14 @@ router.get('/variability', csrfProtection, function(req, res) {
 
 router.post('/variability', csrfProtection, function(req, res) {
 
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
   // this is if the inventor is the same as the session user
@@ -1482,7 +1535,7 @@ router.get('/sensitivity', csrfProtection, function(req, res) {
         function (err, problems){
         res.render('pages/values-wastes/sensitivity', {
           csrfToken: req.csrfToken(),
-          user : req.user,
+          user : req.user || {},
           idea : currentIdea,
           problems : problems,
           reviewing : reviewing
@@ -1493,6 +1546,10 @@ router.get('/sensitivity', csrfProtection, function(req, res) {
 
 router.post('/sensitivity', csrfProtection, function(req, res) {
 
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
   // this is if the inventor is the same as the session user
@@ -1610,7 +1667,7 @@ router.get('/immaturity', csrfProtection, function(req, res) {
         'problemArea' : { 
           $regex: /.*Immaturity.*/, $options: 'i' }},
         function (err, problems){
-        res.render('pages/values-wastes/immaturity', { user : req.user,
+        res.render('pages/values-wastes/immaturity', { user : req.user || {},
           csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
@@ -1621,6 +1678,14 @@ router.get('/immaturity', csrfProtection, function(req, res) {
 
 router.post('/immaturity', csrfProtection, function(req, res) {
 
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
   // this is if the inventor is the same as the session user
@@ -1738,7 +1803,7 @@ router.get('/dangerous', csrfProtection, function(req, res) {
         'problemArea' : { 
           $regex: /.*Danger.*/, $options: 'i' }},
         function (err, problems){
-        res.render('pages/values-wastes/dangerous', { user : req.user,
+        res.render('pages/values-wastes/dangerous', { user : req.user || {},
           csrfToken: req.csrfToken(),
           idea : currentIdea,
           problems : problems,
@@ -1749,6 +1814,10 @@ router.get('/dangerous', csrfProtection, function(req, res) {
 
 router.post('/dangerous', csrfProtection, function(req, res) {
 
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
   // this is if the inventor is the same as the session user
@@ -1868,7 +1937,7 @@ router.get('/skills', csrfProtection, function(req, res) {
         function (err, problems){
         res.render('pages/values-wastes/skills', {
           csrfToken: req.csrfToken(),
-          user : req.user,
+          user : req.user || {},
           idea : currentIdea,
           problems : problems,
           reviewing : reviewing });
@@ -1878,6 +1947,10 @@ router.get('/skills', csrfProtection, function(req, res) {
 
 router.post('/skills', csrfProtection, function(req, res) {
 
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
   // this is if the inventor is the same as the session user
@@ -1975,7 +2048,6 @@ router.post('/skills', csrfProtection, function(req, res) {
   }
   });
 
-  
 });
 
 module.exports = router;

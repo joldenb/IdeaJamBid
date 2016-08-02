@@ -18,6 +18,7 @@ var multer = require('multer');
 var fs = require('fs');
 var csrf = require('csurf');
 var csrfProtection = csrf({ cookie: true });
+var ideaSeedHelpers = require('../helpers/idea-seed-helpers');
 
 var S3_BUCKET = process.env.S3_BUCKET;
 
@@ -36,6 +37,11 @@ var uploading = multer({
 ******************************************************************
 *****************************************************************/
 router.post('/save-school-network', csrfProtection, function(req, res) {
+  if( !(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
+  
   Network.findOne({"name" : req.body.schoolNetwork}, function(err, schoolNetwork){
       if(err){
         res.json({error: err});
@@ -73,6 +79,10 @@ router.post('/save-school-network', csrfProtection, function(req, res) {
 ******************************************************************
 *****************************************************************/
 router.post('/save-company-network', csrfProtection, function(req, res) {
+  if( !(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
   Network.findOne({"name" : req.body.companyNetwork}, function(err, companyNetwork){
       if(err){
         res.json({error: err});
@@ -110,6 +120,10 @@ router.post('/save-company-network', csrfProtection, function(req, res) {
 ******************************************************************
 *****************************************************************/
 router.post('/save-location-network', csrfProtection, function(req, res) {
+  if( !(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
   //need to add validation to make sure these both exist.
   var cityAndState = req.body.locationCity + ", " + req.body.locationState;
   Network.findOne({"name" : cityAndState}, function(err, locationNetwork){
@@ -149,6 +163,10 @@ router.post('/save-location-network', csrfProtection, function(req, res) {
 ******************************************************************
 *****************************************************************/
 router.post('/save-aptitude', csrfProtection, function(req, res) {
+  if( !(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
 
   //if form got submitted from the idea summary page, it will have
   // an idea name attached to it. otherwise, it gets updated to the
@@ -227,25 +245,9 @@ router.post('/save-aptitude', csrfProtection, function(req, res) {
 ******************************************************************
 *****************************************************************/
 router.get('/networks/:networkName', csrfProtection, function(req, res){
-  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-    if(headshot){
-      var headshotURL = headshot["amazonURL"];
-      var headshotStyle = "";
-      switch (headshot["orientation"]) {
-        case 1 :
-          headshotStyle = "";
-          break;
-        case 2 :
-          headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-          break;
-        case 3 :
-          headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-          break;
-        case 4 :
-          headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-          break;
-      }
-    }
+  ideaSeedHelpers.getUserHeadshot(req).then(function(headshotData){
+    var headshotURL = headshotData['headshotURL'];
+    var headshotStyle = headshotData['headshotStyle'];
 
     var networkName = req.params
       .networkName
@@ -254,7 +256,7 @@ router.get('/networks/:networkName', csrfProtection, function(req, res){
 
     Network.findOne({"name" : {$regex : ".*"+networkName+".*"}}, function(err, network){
       //if theres no matching name or logged in user
-      if(!network || !req.user){
+      if(!network ){
         return res.redirect('/');
       }
 
@@ -513,26 +515,15 @@ router.get('/networks/:networkName', csrfProtection, function(req, res){
                           }
                         }
                       }
-
-
-
-
-
                       return res.render('pages/network-profile', {
                         csrfToken: req.csrfToken(),
-                        user : req.user,
+                        user : req.user || {},
                         ideas : ideaList,
                         topInventors : topAccountsToDisplay,
                         inventorAptitudes :  aptitudes,
                         accountNameAndURLs : accountNameAndURLs,
                         networkName : network.name
                       });
-
-
-
-
-
-
 
                     });
                   }); //end of account lookup
@@ -555,25 +546,9 @@ router.get('/networks/:networkName', csrfProtection, function(req, res){
 ******************************************************************
 *****************************************************************/
 router.get('/aptitudes/:aptitudeName', csrfProtection, function(req, res){
-  IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-    if(headshot){
-      var headshotURL = headshot["amazonURL"];
-      var headshotStyle = "";
-      switch (headshot["orientation"]) {
-        case 1 :
-          headshotStyle = "";
-          break;
-        case 2 :
-          headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-          break;
-        case 3 :
-          headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-          break;
-        case 4 :
-          headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-          break;
-      }
-    }
+  ideaSeedHelpers.getUserHeadshot(req).then(function(headshotData){
+    var headshotURL = headshotData['headshotURL'];
+    var headshotStyle = headshotData['headshotStyle'];
 
     var aptitudeName = req.params
       .aptitudeName
@@ -582,7 +557,7 @@ router.get('/aptitudes/:aptitudeName', csrfProtection, function(req, res){
 
     Aptitude.findOne({"title" : {$regex : ".*"+aptitudeName+".*"}}, function(err, aptitude){
       //if theres no matching name or logged in user
-      if(!aptitude || !req.user){
+      if(!aptitude ){
         return res.redirect('/');
       }
 
@@ -830,14 +805,9 @@ router.get('/aptitudes/:aptitudeName', csrfProtection, function(req, res){
                           }
                         }
                       }
-
-
-
-
-
                       return res.render('pages/aptitude-profile', {
                         csrfToken: req.csrfToken(),
-                        user : req.user,
+                        user : req.user || {},
                         ideas : ideaList,
                         topInventors : topAccountsToDisplay,
                         inventorAptitudes :  aptitudes,
@@ -845,13 +815,6 @@ router.get('/aptitudes/:aptitudeName', csrfProtection, function(req, res){
                         accountNameAndURLs : accountNameAndURLs
 
                       });
-
-
-
-
-
-
-
                     });
                   }); //end of account lookup
                 });

@@ -12,6 +12,8 @@ var router = express.Router();
 var multer = require('multer');
 var csrf = require('csurf');
 var csrfProtection = csrf({ cookie: true });
+var ideaSeedHelpers = require('../helpers/idea-seed-helpers');
+
 
 var storage = multer.memoryStorage();
 var uploading = multer({
@@ -24,6 +26,10 @@ var uploading = multer({
 // Add a problem to an idea seed
 ////////////////////////////////////////////////
 router.post('/add-idea-problem', csrfProtection, function(req, res) {
+  if( !(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
   var newProblem = {
     text          : req.body.problemStatement,
     date          : new Date(),
@@ -52,6 +58,11 @@ router.post('/add-idea-problem', csrfProtection, function(req, res) {
 ////////////////////////////////////////////////
 router.post('/add-component-image', csrfProtection, function(req, res) {
   
+  if( !(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
+
   IdeaImage.find({"filename" : {$regex : ".*"+req.body.filename+".*"}}, function(err, images){
 
     var newFileName = req.body.filename + "-" + (images.length + 1).toString();
@@ -89,6 +100,10 @@ router.post('/add-component-image', csrfProtection, function(req, res) {
 ////////////////////////////////////////////////
 router.post('/add-idea-component', csrfProtection, function(req, res) {
   
+  if( !(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
   Component.count({"ideaSeed" : req.session.idea}, function(err, count){
 
     var newCompNumber = count + 1;
@@ -183,6 +198,10 @@ router.post('/set-existing-profile-pic', csrfProtection, function(req, res) {
 ////////////////////////////////////////////////
 router.post('/add-description', csrfProtection, function(req, res) {
 
+  if( !(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
 
     Component.findOne({"identifier" : req.body["component-identifier"]}, function(err, component){
       if(err){

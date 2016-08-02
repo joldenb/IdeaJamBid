@@ -1,14 +1,21 @@
-span.userName Howdy #{user.username}
+if Object.keys(user).length != 0
+  span.userName Howdy #{user.username)}
+else
+  span.userName Howdy Guest
 |  
 .profile-headshot
-  if headshot
+  if headshot && Object.keys(user).length != 0
     img.placeholder(src=headshot height="75" width="75" style=headshotStyle)
     a.plus-overlay(href="/profile-picture")
       img(src='/plus-overlay.png' height="75" width="75")
   else  
     img.placeholder(src="/avatar.png" height="75" width="75")
-    a.plus-overlay(href="/profile-picture")
-      img(src='/plus-overlay.png' height="75" width="75")
-a.home-logout.btn.btn-default( href="/profile/" + user.username ) My Profile
-| 
-a.home-logout.btn.btn-default( href="/logout" ) Log Out
+    if Object.keys(user).length != 0
+      a.plus-overlay(href="/profile-picture")
+        img(src='/plus-overlay.png' height="75" width="75")
+if Object.keys(user).length != 0
+  a.home-logout.btn.btn-default( href="/profile/" + user.username ) My Profile
+  | 
+  a.home-logout.btn.btn-default( href="/logout" ) Log Out
+else 
+  a.home-logout.btn.btn-default( href="/" ) Log In

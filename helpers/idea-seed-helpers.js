@@ -280,5 +280,48 @@ var getStrengthData = function getStrengthData(ideaSeedID){
 	}); //end of promise
 }
 
+var getUserHeadshot = function getUserHeadshot(req){
+	return new Promise(
+	function (resolve, reject) {
+		if(req.user){
+			IdeaImage.findById(req.user.headshots[0], function(err, headshot){
+				var headshotURL;
+				var headshotStyle = "";
+				if(headshot){
+					headshotURL = headshot["amazonURL"];
+					headshotStyle;
+					switch (headshot["orientation"]) {
+						case 1 :
+							headshotStyle = "";
+							break;
+						case 2 :
+							headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+							break;
+						case 3 :
+							headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+							break;
+						case 4 :
+							headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+							break;
+					}
+				} else {
+					headshotURL = "";
+					headshotStyle = "";
+				}
+				resolve({
+					"headshotURL" : headshotURL,
+					"headshotStyle" : headshotStyle
+				}); // success
+			});
+		} else {
+			resolve({
+				"headshotURL" : "",
+				"headshotStyle" : ""
+			}); // success
+		}
+	}); //end of promise
+}
+
+exports.getUserHeadshot = getUserHeadshot;
 exports.getApplicationStrength = getApplicationStrength;
 exports.getStrengthData = getStrengthData;
