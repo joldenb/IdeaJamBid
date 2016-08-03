@@ -1,0 +1,927 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body
+  .header
+    include ../partials/header.jade
+
+  .idea-summary
+    .edit-column.col-md-4
+      .imagesList
+        if(imageURLs)
+          each imageURL, index in imageURLs
+            if index == 0
+              .image-summary-image
+                img(src=imageURL[1] height="300" width="400" style=imageURL[2])
+            if index < 3 && index > 0
+              img.imageListItems(src=imageURL[1]  style=imageURL[2])
+          .view-all-images-btn
+            a.btn.btn-default( href="/image-upload" ) View All Images
+      h3 Idea Summary for #{idea.name}
+      .idea-summary-data#idea-summary-challenge
+        h4 Challenge
+        p <i>#{idea.problem}</i>
+        a.btn.btn-default( href="/introduce-idea" ) Edit > 
+        br
+      .idea-summary-data#idea-summary-accomplish
+        h4 Description
+        p <i>#{idea.description}</i>
+        a.btn.btn-default( href="/accomplish" ) Edit >
+        br
+      #idea-summary-aptitudes.aptitudeList
+        .profileAptitudes
+          if aptitudes
+            h3 Aptitudes : 
+            ul
+              each aptitude in aptitudes
+                li(data-apt-id="#{aptitude.identifier}") 
+                  a(href="/aptitudes/" + aptitude.title) #{aptitude.title}
+          form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            .form-group
+              |  
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+              input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
+            .modal-footer
+              button.btn.btn-success#aptitudeSubmit(type='submit') Save
+
+
+    .idea-function-column.col-md-8
+      h4 Is my idea ready to file?
+        a#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal")  What's Left?
+      .app-strength-bar
+        .app-strength(class="#{appStrengthClass}") #{appStrengthText}
+
+
+      //
+        Navigation tabs
+      ul.nav.nav-tabs(role="tablist")
+        li.active(role="presention")
+          a(href="#components" aria-controls="components" role="tab" data-toggle="tab") Components
+        li(role="presention")
+          a(href="#issues" aria-controls="issues" role="tab" data-toggle="tab") Issues
+        li(role="presention")
+          a(href="#suggestions" aria-controls="suggestions" role="tab" data-toggle="tab") Suggestions
+      //
+        Tab content
+      .tab-content.components-issues-suggestions-block
+        .tab-pane.active#components(role="tabpanel")
+          .idea-summary-data#idea-summary-components
+            h4 Components
+            if components
+              ul
+                each component,index in components
+                  if component['text'] && index < 5
+                    if component['identifier']
+                      li 
+                        a(href="/component-profile/"+component['identifier'])
+                          h4 #{component['number']} : #{component['text']}
+                    else
+                      li 
+                        h4 #{component['number']} : #{component['text']}
+                  else if component['descriptions'].length > 0 && index < 5
+                    if component['identifier']
+                      li
+                        a(href="/component-profile/"+component['identifier'])
+                          h4 #{component['descriptions'][0]}
+                    else
+                      li
+                        h4 #{component['descriptions'][0]}
+
+
+            button(type="button" id="componentModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addComponentModal") Add a Component
+
+        .tab-pane#issues(role="tabpanel")
+          .idea-summary-data#idea-summary-problems
+            h4 Idea Problems
+            h5 Recent Problems
+            ul.idea-summary-problem-list
+              each problem, index in problems
+                if(index < 3 && problem.text)
+                  li
+                    p #{index + 1} : #{problem.text}
+            button(type="button" id="problemModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addProblemModal") Add a Problem
+            |  
+            a.btn.btn-default( href="/sort-problems" ) Sort Existing Problems
+        .tab-pane#suggestions(role="tabpanel")
+          h4 Same as components at the moment. Soon to change.
+
+
+
+      .idea-summary-data#idea-summary-waste-values
+        h4 Idea Viability Scores
+        a.btn.btn-default( type="button" id="viabilityModalButton"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") View All
+        br
+
+
+.inventor-only-idea-summary
+  h1 For the Inventor
+  .half-column
+    h4 Suggestions
+    a.btn.btn-default( href="/suggestion-summary" ) Make Suggestions
+    br
+    br
+  .half-column
+    br
+    h4 Application
+    a.btn.btn-default( href="/create-application" ) Download Application
+    br
+    br
+    h4 Variants 
+    each variantDate in variantDates
+      ul.variantDateList
+        li
+          a(href="/variant/"+variantDate[1]) #{variantDate[0]}
+    a.btn.btn-default( href="/view-idea-suggestions" ) Create a New Variant
+    br
+    br
+
+  #titleModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Name Your Idea
+        .modal-body
+          form(role='form', id="saveIdeaName" action="/save-idea-name", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            .form-group
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+              input.form-control(type="text", name="inventionName", value='My idea is named ')
+              p (ex. "Flux Capacitor")
+              p.charactersRemaining
+            .modal-footer
+              button.btn.btn-info(data-dismiss="modal") Cancel
+              button.btn.btn-success#submit(type='submit') Save
+
+  #whatsLeftModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Enter More Information
+        .modal-body
+          ul
+            each object, key in strengthResponse
+              case key
+                when "description"
+                  if object == ""
+                    li Add a brief Description of your idea
+                      a.whats-left-button.btn.btn-default( href="/accomplish" ) Go
+                when "problem"
+                  if object == ""
+                    li Add a Problem your idea is addressing
+                      a.whats-left-button.btn.btn-default( href="/introduce-idea" ) Go
+                when "name"
+                  if object == ""
+                    li Give your idea a name
+                      a.whats-left-button.btn.btn-default#openTitleModal() Go
+                when "images"
+                  if object.length < 2
+                    li Upload more images
+                      a.whats-left-button.btn.btn-default( href="/image-upload" ) Go
+                when "issues"
+                  if object.length < 4
+                    li Enter more issues with your idea
+                      a.whats-left-button.btn.btn-default#openAddProblemModal() Go
+                when "viabilityScores"
+                  if appStrengthText == "NOT YET..." && object.length < 4
+                    li Enter more viability scores
+                      a.whats-left-button.btn.btn-default#openViabilityModal() Go
+                  else if appStrengthText == "ALMOST..." && object.length < 15
+                    li Enter more viability scores
+                      a.whats-left-button.btn.btn-default#openViabilityModal() Go
+                when "imagesWithAnnotations"
+                  if object.length < strengthResponse['images'].length 
+                    li Add at least one annotation to every image
+                      a.whats-left-button.btn.btn-default( href="/image-upload" ) Go
+                when "problemsWithSuggestions"
+                  if object.length < strengthResponse['issues'].length
+                    li Add at least one suggestion per issue
+                      a.whats-left-button.btn.btn-default( href="/suggestion-summary" ) Go
+                when "compsWithRelationships"
+                  if object.length < strengthResponse['allComponents'].length
+                    li Add at least one relationship per component
+                      a.whats-left-button.btn.btn-default#viewComponentsTab() Go
+        .modal-footer
+          button.btn.btn-success(data-dismiss="modal") Ok
+
+
+  #viabilityModal.modal.fade(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Idea Viability Scores
+        .modal-body
+          .view-all-viabilities
+              include ../partials/viability-overview-modal.jade
+          .view-specific-viability
+        .modal-footer.view-all-button
+            button.btn.btn-info.modal-view-all View All
+            button.btn.btn-info.cancel-button(data-dismiss="modal") Cancel
+            button.btn.btn-success#viabilitySubmit(data-viability-category="view-all") Save
+
+  #addProblemModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Record a Current Problem
+        .modal-body
+          form(role='form', id="addIdeaProblem" action="/add-idea-problem", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            .form-group
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+              input#problemStatement.form-control(type="text", name="problemStatement", value='The problem is ')
+              p (ex. "It draws too much power")
+              p.charactersRemaining
+              h3 Select Problem Area:
+              select.form-control#problemArea
+                  option(value="None Selected") None Selected
+                  each value in problemAreas
+                    option(value=value) #{value}
+
+            .modal-footer
+              button.btn.btn-info(data-dismiss="modal") Cancel
+              button.btn.btn-success#problemSubmit(type='submit') Save
+  #addComponentModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Record a New Component
+        .modal-body
+          form(role='form', id="addIdeaComponent" action="/add-idea-component", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            .form-group
+              input#componentName.form-control(type="text", name="componentName", value='The component is called ')
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+              p (ex. "The Start Button")
+              p.compNameCharRemaining
+              input#componentDescription.form-control(type="text", name="componentDescription", value='The way it works is ')
+              p (ex. "it initiates the sequence automatically")
+              p.compDescrCharRemaining
+          form(role='form', id="formImageUpload" action="/add-component-image", method="post", data-idea-doc=idea, enctype="multipart/form-data")
+            .form-group
+              h4 Component Image
+              |  
+              input#fileInput(type="file", name="picture")
+              input(type="hidden" id="image-component" name="imageComponent")
+              input(type="hidden" id="component-idea-name" name="componentIdeaName" value="#{idea.name}")
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+            .modal-footer
+              button.btn.btn-info(data-dismiss="modal") Cancel
+              button.btn.btn-success#componentSubmit(type='submit') Save
+
+  button(type="button" id="titleModalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#titleModal") Go Win Fight
+
+
+  include ../partials/js-includes.jade
+  script(type="text/javascript").
+    
+    function initializeAllSliders(idea){
+      var labelArr = _.range(101).map(function(number){
+        return number.toString();
+      });
+      var initialValue, min=1, max=100, valueEntered = false;
+      var viabilitySliders = [
+        "#perf",
+        "#afford",
+        "#feature",
+        "#deliver",
+        "#useability",
+        "#maintain",
+        "#danger",
+        "#durability",
+        "#image",
+        "#complex",
+        "#precision",
+        "#variability",
+        "#sensitivity",
+        "#immature",
+        "#skills"
+      ]
+
+      
+      for(var i = 0; i < viabilitySliders.length; i++){      
+        valueEntered = false;
+        switch (viabilitySliders[i]){
+          case "#perf" : 
+            initialValue = idea.performOne || '#{idea.performOne}' || 50;
+            if(idea.performOne || '#{idea.performOne}'!=""){
+              valueEntered = true;
+            }
+            break;
+          case "#afford" : 
+            initialValue = idea.affordOne || '#{idea.affordOne}' || 50;
+            if(idea.affordOne || '#{idea.affordOne}'!=""){
+              valueEntered = true;
+            }
+            break;
+          case "#feature" : 
+            initialValue = idea.featureOne || '#{idea.featureOne}' || 50;
+            if(idea.featureOne || '#{idea.featureOne}'!=""){
+              valueEntered = true;
+            }
+            break;
+          case "#deliver" : 
+            initialValue = idea.deliverOne || '#{idea.deliverOne}' || 50;
+            if(idea.deliverOne || '#{idea.deliverOne}'!=""){
+              valueEntered = true;
+            }
+            break;
+          case "#useability" : 
+            initialValue = idea.useabilityOne || '#{idea.useabilityOne}' || 50;
+            if(idea.useabilityOne || '#{idea.useabilityOne}'!=""){
+              valueEntered = true;
+            }
+            break;
+          case "#maintain" : 
+            initialValue = idea.maintainOne || '#{idea.maintainOne}' || 50;
+            if(idea.maintainOne || '#{idea.maintainOne}'!=""){
+              valueEntered = true;
+            }
+            break;
+          case "#danger" : 
+            initialValue = idea.dangerOne || '#{idea.dangerOne}' || 50;
+            if(idea.dangerOne || '#{idea.dangerOne}'!=""){
+              valueEntered = true;
+            }
+            break;
+          case "#durability" : 
+            initialValue = idea.durabilityOne || '#{idea.durabilityOne}' || 50;
+            if(idea.durabilityOne || '#{idea.durabilityOne}'!=""){
+              valueEntered = true;
+            }
+            break;
+          case "#image" : 
+            initialValue = idea.imageOne || '#{idea.imageOne}' || 50;
+            if(idea.imageOne || '#{idea.imageOne}'!=""){
+              valueEntered = true;
+            }
+            break;
+          case "#complex" : 
+            initialValue = idea.complexOne || '#{idea.complexOne}' || 50;
+            if(idea.complexOne || '#{idea.complexOne}'!=""){
+              valueEntered = true;
+            }
+            break;
+          case "#precision" : 
+            initialValue = idea.precisionOne || '#{idea.precisionOne}' || 50;
+            if(idea.precisionOne || '#{idea.precisionOne}'!=""){
+              valueEntered = true;
+            }
+            break;
+          case "#variability" : 
+            initialValue = idea.variabilityOne || '#{idea.variabilityOne}' || 50;
+            if(idea.variabilityOne || '#{idea.variabilityOne}'!=""){
+              valueEntered = true;
+            }
+            break;
+          case "#sensitivity" : 
+            initialValue = idea.sensitivityOne || '#{idea.sensitivityOne}' || 50;
+            if(idea.sensitivityOne || '#{idea.sensitivityOne}'!=""){
+              valueEntered = true;
+            }
+            break;
+          case "#immature" : 
+            initialValue = idea.immatureOne || '#{idea.immatureOne}' || 50;
+            if(idea.immatureOne || '#{idea.immatureOne}'!=""){
+              valueEntered = true;
+            }
+            break;
+          case "#skills" : 
+            initialValue = idea.skillsOne || '#{idea.skillsOne}' || 50;
+            if(idea.skillsOne || '#{idea.skillsOne}'!=""){
+              valueEntered = true;
+            }
+            break;
+        }
+
+        ////////////////////////////////////////////
+        // SET UP SLIDER ONE
+        ////////////////////////////////////////////
+        $(viabilitySliders[i]+ "Slider").slider({
+          value:initialValue,
+          min: min,
+          orientation : "horizontal",
+          range : "min",
+          max: max,
+          step: 1,
+          slide: function( event, ui ) {
+              valueEntered = true;
+              $(this).addClass("value-entered");
+          }
+        });
+
+        if(valueEntered){
+          $(viabilitySliders[i]+ "Slider").addClass("value-entered");
+        }
+
+      }
+
+      //kind of a hack because I couldnt get the previous click event handlers
+      // to detach from the submit button between viability categories
+      // as the user went through more than one in a row. I tried the jquery unbind and off
+      // functions
+      $("#viabilitySubmit").remove();
+      $("<button class='btn btn-success' id='viabilitySubmit'>Save</button>")
+      .appendTo("#viabilityModal .modal-footer.view-all-button")
+      .click(function(event){
+
+        var data = {_csrf : $('[name="_csrf"]').val()};
+        $(".ui-slider").each(function(index, element){
+          switch ($(this).attr("id")){
+            case "perfSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["performOne"] = $(element).slider("value");
+              }
+              break;
+            case "affordSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["affordOne"] = $(element).slider("value");
+              }
+              break;
+            case "featureSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["featureOne"] = $(element).slider("value");
+              }
+              break;
+            case "deliverSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["deliverOne"] = $(element).slider("value");
+              }
+              break;
+            case "useabilitySlider" : 
+              if($(element).hasClass("value-entered")){
+                data["useabilityOne"] = $(element).slider("value");
+              }
+              break;
+            case "maintainSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["maintainOne"] = $(element).slider("value");
+              }
+              break;
+            case "dangerSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["dangerOne"] = $(element).slider("value");
+              }
+              break;
+            case "durabilitySlider" : 
+              if($(element).hasClass("value-entered")){
+                data["durabilityOne"] = $(element).slider("value");
+              }
+              break;
+            case "imageSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["imageOne"] = $(element).slider("value");
+              }
+              break;
+            case "complexSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["complexOne"] = $(element).slider("value");
+              }
+              break;
+            case "precisionSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["precisionOne"] = $(element).slider("value");
+              }
+              break;
+            case "variabilitySlider" : 
+              if($(element).hasClass("value-entered")){
+                data["variabilityOne"] = $(element).slider("value");
+              }
+              break;
+            case "sensitivitySlider" : 
+              if($(element).hasClass("value-entered")){
+                data["sensitivityOne"] = $(element).slider("value");
+              }
+              break;
+            case "immatureSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["immatureOne"] = $(element).slider("value");
+              }
+              break;
+            case "skillsSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["skillsOne"] = $(element).slider("value");
+              }
+              break;
+          }
+        });
+        $.post('/update-all-viabilities', data, function(returnData, status){
+          if(status=="success"){
+            window.location.reload(true);
+          }
+        });
+      });
+
+    } // end of initialize all sliders function
+
+    //actually invoke this method. it will be used later when some one hits the 
+    // view all button
+    initializeAllSliders('#{idea}');
+
+    function getNextSliderConfig(categoryName){
+        switch (categoryName) {
+          case "view-all":
+            break;
+          case "performability" : 
+            var initialValue = '#{idea.performOne}' || 50;
+
+            initiateSlider("perfSliderOne", "perfLabelOne",
+              "formPerformability", initialValue, "performability",
+              "performProblem", "affordability")
+            break;
+
+          case "affordability" : 
+            var initialValue = '#{idea.affordOne}' || 50;
+
+            initiateSlider("affordSliderOne", "affordLabelOne",
+              "formAffordability", initialValue, "affordability",
+              "affordProblem", "featurability")
+            break;
+          case "featurability" : 
+            var initialValue = '#{idea.featureOne}' || 50;
+
+            initiateSlider("featureSliderOne", "featureLabelOne",
+              "formFeaturability", initialValue, "featurability",
+              "featureProblem", "deliverability")
+            break;
+          case "deliverability" : 
+            var initialValue = '#{idea.deliverOne}' || 50;
+
+            initiateSlider("deliverSliderOne", "deliverLabelOne",
+              "formDeliverability", initialValue, "deliverability",
+              "deliverProblem", "useability")
+            break;
+          case "useability" : 
+            var initialValue = '#{idea.useabilityOne}' || 50;
+
+            initiateSlider("useabilitySliderOne", "useabilityLabelOne",
+              "formUseability", initialValue, "useability",
+              "useabilityProblem", "maintainability")
+            break;
+          case "maintainability" : 
+            var initialValue = '#{idea.maintainOne}' || 50;
+
+            initiateSlider("maintainabilitySliderOne", "maintainabilityLabelOne",
+              "formMaintainability", initialValue, "maintainability",
+              "maintainProblem", "durability")
+            break;
+          case "durability" : 
+            var initialValue = '#{idea.durabilityOne}' || 50;
+
+            initiateSlider("durabilitySliderOne", "durabilityLabelOne",
+              "formDurability", initialValue, "durability",
+              "durabilityProblem", "imageability")
+            break;
+          case "imageability" : 
+            var initialValue = '#{idea.durabilityOne}' || 50;
+
+            initiateSlider("imageabilitySliderOne", "imageabilityLabelOne",
+              "formImageability", initialValue, "imageability",
+              "imageProblem", "complexity")
+            break;
+          case "complexity" : 
+            var initialValue = '#{idea.complexOne}' || 50;
+
+            initiateSlider("complexitySliderOne", "complexityLabelOne",
+              "formComplexity", initialValue, "complexity",
+              "complexProblem", "precision")
+            break;
+          case "precision" : 
+            var initialValue = '#{idea.precisionOne}' || 50;
+
+            initiateSlider("precisionSliderOne", "precisionLabelOne",
+              "formPrecision", initialValue, "precision",
+              "precisionProblem", "variability")
+            break;
+          case "variability" : 
+            var initialValue = '#{idea.variabilityOne}' || 50;
+
+            initiateSlider("variabilitySliderOne", "variabilityLabelOne",
+              "formVariability", initialValue, "variability",
+              "variabilityProblem", "sensitivity")
+            break;
+          case "sensitivity" : 
+            var initialValue = '#{idea.sensitivityOne}' || 50;
+
+            initiateSlider("sensitivitySliderOne", "sensitivityLabelOne",
+              "formSensitivity", initialValue, "sensitivity",
+              "sensitivityProblem", "immaturity")
+            break;
+          case "immaturity" : 
+            var initialValue = '#{idea.immatureOne}' || 50;
+
+            initiateSlider("immaturitySliderOne", "immaturityLabelOne",
+              "formImmaturity", initialValue, "immaturity",
+              "immatureProblem", "dangerous")
+            break;
+          case "dangerous" : 
+            var initialValue = '#{idea.dangerOne}' || 50;
+
+            initiateSlider("dangerousSliderOne", "dangerousLabelOne",
+              "formDangerous", initialValue, "dangerous",
+              "dangerProblem", "skills")
+            break;
+          case "skills" : 
+            var initialValue = '#{idea.skillsOne}' || 50;
+
+            initiateSlider("skillsSliderOne", "skillsLabelOne",
+              "formSkills", initialValue, "skills",
+              "skillsProblem", "view-all")
+            break;
+        }
+
+    }
+
+
+    function initiateSlider(sliderName, labelName, formName, initialValue, postPath, problemName, nextCategory){
+      var labelArr = _.range(101).map(function(number){
+        return number.toString();
+      });
+      var min=1, max=100, valueEntered = false, uiValue;
+      
+      $("#"+ sliderName).slider({
+        value:initialValue,
+        orientation : "horizontal",
+        range : "min",
+        min: min,
+        max: max,
+        step: 1,
+        slide: function( event, ui ) {
+            valueEntered = true;
+            uiValue = ui.value;
+            $(this).addClass("value-entered");
+            $("#" + labelName).text(labelArr[ui.value]);
+            $("#" + labelName).css("margin-left", (ui.value-min)/(max-min)*100+"%");
+            $("#" + labelName).css("left", "-50px");
+        }
+      });
+      $("#" + labelName).text(labelArr[initialValue]);
+      $("#" + labelName ).css("margin-left", (initialValue -1)/(max-min)*100+"%");
+      $("#" + labelName).css("left", "-50px");
+
+      
+      //kind of a hack because I couldnt get the previous click event handlers
+      // to detach from the submit button between viability categories
+      // as the user went through more than one in a row. I tried the jquery unbind and off
+      // functions
+      $("#viabilitySubmit").remove();
+      $("<button class='btn btn-success' id='viabilitySubmit'>Save</button>")
+      .appendTo("#viabilityModal .modal-footer.view-all-button")
+      .click(function(event){
+        var data = {_csrf : $('[name="_csrf"]').val()};
+        if(valueEntered){
+          data[sliderName+"Value"] = uiValue;
+          
+        } 
+        if($("#"+formName + " textarea").val() != "The problem of "){
+          data[problemName] = $("#"+formName + " textarea").val();
+        }
+        $.post('/' + postPath, data, function(returnData, status){
+          //dont do anything with this return data, because we need to get the modal version
+          // of the nextCategory page
+          
+          if(nextCategory == "view-all"){
+            window.location.reload(true);
+          } else {
+            $.get("/" + nextCategory, {isModal : true}, function(returnData, status){
+              $("#viabilityModal .modal-body .view-specific-viability").html("")
+              $("#viabilityModal .modal-body .view-specific-viability").append(returnData);
+              getNextSliderConfig(nextCategory);
+            });
+          }
+        });
+
+      });
+    }
+
+    $("a.viabilityLink").click(function(event){
+      event.preventDefault();
+      var data = {
+        "isModal" : true
+      };
+      var pathname = $(this)[0].pathname;
+      $.get(pathname, data, function(returnData, status){
+        $("#viabilityModal .view-all-viabilities").hide();
+        //$("#viabilitySubmit").attr("data-viability-category", pathname.slice(1));
+        $("#viabilityModal .modal-body .view-specific-viability").append(returnData)
+
+        getNextSliderConfig(pathname.slice(1));
+
+      });
+    });
+
+    $("#viabilityModal .modal-view-all").click(function(eventView){
+      //if view all viabilities is not visible, remove contents and show 
+      // the view-all view
+      if(!$(".view-all-viabilities").is(":visible")){
+        $("#viabilityModal .modal-body .view-specific-viability").html("")
+        //$("#viabilitySubmit").attr("data-viability-category", "view-all");
+        $("#viabilityModal .view-all-viabilities").show();
+        
+        $.get('/update-viability-scores', function(returnData, status){
+          $(".view-all-viabilities .ui-slider").html("");
+          initializeAllSliders(returnData);
+        });
+      }
+    });
+
+    $(window).load(function(){
+        if("!{idea.name}" == ""){
+          $('#titleModal').modal('show');
+        }
+        if("!{idea.description}" == ""){
+          $("#idea-summary-accomplish")
+            .addClass("incomplete-data");
+          $("#idea-summary-accomplish a")
+            .before("<h4><i>No data entered</i></h4>");
+        }
+        if("!{idea.problem}" == ""){
+          $("#idea-summary-challenge")
+            .addClass("incomplete-data");
+          $("#idea-summary-challenge a")
+            .before("<h4><i>No data entered</i></h4>");
+        }
+
+        $("#openTitleModal").click(function(event){
+          $("#whatsLeftModal").modal('hide');
+          $('#titleModal').modal('show');
+        })
+
+        $("#openAddProblemModal").click(function(event){
+          $("#whatsLeftModal").modal('hide');
+          $('#addProblemModal').modal('show');
+        })
+
+        $("#openViabilityModal").click(function(event){
+          $("#whatsLeftModal").modal('hide');
+          $('#viabilityModalButton').click();
+        })
+
+        $("#viewComponentsTab").click(function(event){
+          $("#whatsLeftModal").modal('hide');
+          $('a').filter(function(index) { return $(this).text() === "Components"; }).click();
+        })
+
+
+    });
+
+    $("#problemSubmit").click(function(event){
+      event.preventDefault();
+      $.post('/add-idea-problem', 
+        {
+          _csrf : $('[name="_csrf"]').val(),
+          problemStatement : $("#problemStatement").val().slice(15),
+          problemArea : $("#problemArea option:selected").text(),
+        },
+        function(resp) {
+          window.location.reload(true);
+        });      
+    });
+
+    $("#componentSubmit").click(function(event){
+      event.preventDefault();
+
+
+      $.post('/add-idea-component', 
+        {
+          _csrf : $('[name="_csrf"]').val(),
+          componentName : $("#componentName").val().slice(24),
+          componentDescription : $("#componentDescription").val().slice(20)
+        },
+        function(data, response) {
+          if(document.getElementById("fileInput").files.length != 0){
+            $("#image-component").val( data['identifier'] );
+            // This doesnt work for some reason....
+            document.getElementById("formImageUpload").submit();
+          }
+          $("#idea-summary-components ul")
+            .append("<li><a href='/component-profile/"+ data['identifier'] +"'><h4>"+ data['number'] + " : " + data['text'] + "</h4></a></li>");
+          $("#componentName").val('');
+          $("#componentDescription").val('');
+          $("#addComponentModal").modal('hide');
+        });      
+    });
+
+    // This is for the idea name
+    var inputName = $("#saveIdeaName input")[0];
+    var requiredNameText = "My idea is named "
+    $("#saveIdeaName .charactersRemaining").text((30) + " characters remaining");
+    inputName.addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredNameText) == -1) {
+            $(this).val(requiredNameText);
+      }
+      if (this.selectionStart < 17) {
+        this.selectionStart = 17;
+      }
+    }, false);
+
+    inputName.addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredNameText) == -1) {
+            $(this).val(requiredNameText);
+      }
+      if (this.selectionStart < 17) {
+        this.selectionStart = 17;
+      }
+      $("#saveIdeaName input").keyup(function(){
+        $("#saveIdeaName .charactersRemaining").text((30 + requiredNameText.length - $(this).val().length) + " characters remaining");
+      });
+    }, false);
+
+    // This is for the problem input
+    var inputProb = $("#addIdeaProblem input")[0];
+    var requiredProbText = "The problem is "
+    $("#addIdeaProblem .charactersRemaining").text((200) + " characters remaining");
+    inputProb.addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredProbText) == -1) {
+            $(this).val(requiredProbText);
+      }
+      if (this.selectionStart < 17) {
+        this.selectionStart = 17;
+      }
+    }, false);
+
+    inputProb.addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredProbText) == -1) {
+            $(this).val(requiredProbText);
+      }
+      if (this.selectionStart < 17) {
+        this.selectionStart = 17;
+      }
+      $("#addIdeaProblem input").keyup(function(){
+        $("#addIdeaProblem .charactersRemaining").text((200 + requiredProbText.length - $(this).val().length) + " characters remaining");
+      });
+    }, false);
+
+    // This is for the first text input field in the add component modal
+    var inputOne = $("#addIdeaComponent input#componentName")[0];
+    var requiredCompTextOne = "The component is called "
+    $("#addIdeaComponent .compNameCharRemaining").text((200) + " characters remaining");
+    inputOne.addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredCompTextOne) == -1) {
+            $(this).val(requiredCompTextOne);
+      }
+      if (this.selectionStart < 24) {
+        this.selectionStart = 24;
+      }
+    }, false);
+
+    inputOne.addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredCompTextOne) == -1) {
+            $(this).val(requiredCompTextOne);
+      }
+      if (this.selectionStart < 24) {
+        this.selectionStart = 24;
+      }
+      $("#addIdeaComponent input#componentName").keyup(function(){
+        $("#addIdeaComponent .compNameCharRemaining").text((200 + requiredCompTextOne.length - $(this).val().length) + " characters remaining");
+      });
+    }, false);
+
+    // This is for the second text input field in the add component modal
+    var inputTwo = $("#addIdeaComponent input#componentDescription")[0];
+    var requiredCompTextTwo = "The way it works is "
+    $("#addIdeaComponent .compDescrCharRemaining").text((200) + " characters remaining");
+    inputTwo.addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredCompTextTwo) == -1) {
+            $(this).val(requiredCompTextTwo);
+      }
+      if (this.selectionStart < 21) {
+        this.selectionStart = 21;
+      }
+    }, false);
+
+    inputTwo.addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredCompTextTwo) == -1) {
+            $(this).val(requiredCompTextTwo);
+      }
+      if (this.selectionStart < 21) {
+        this.selectionStart = 21;
+      }
+      $("#addIdeaComponent input#componentDescription").keyup(function(){
+        $("#addIdeaComponent .compDescrCharRemaining").text((200 + requiredCompTextTwo.length - $(this).val().length) + " characters remaining");
+      });
+    }, false);
+
+    $("#aptitudeSubmit").click(function(event){
+      event.preventDefault();
+      if($("#aptitudeTitle").val() != ""){
+        $.post('/save-aptitude', 
+          {
+            _csrf : $('[name="_csrf"]').val(),
+            ideaName : "!{idea.name}",
+            aptitudeTitle : $("#aptitudeTitle").val()
+          },
+          function(resp) {
+            window.location.reload(true);
+          });
+      } else {
+        alert("Please enter a valid aptitude.");
+      }
+    });

@@ -8,7 +8,7 @@ html
   div.profile-info.container
     .col-md-4.profile-left-column
       div#begin-info
-        h2 Welcome #{profileAccount.username}
+        h2 #{profileAccount.username}'s Profile
         h4 Einstein Points: #{profileAccount.einsteinPoints}
       div#begin-info-right
         .profileSchool
@@ -61,11 +61,11 @@ html
             if val[0]
               li
                 if Object.keys(user).length != 0
-                  a(href="/idea-summary/" + val[0])
+                  a(href="/inventor-idea-summary/" + val[0])
                     h4.idea-text-name= val[0]
                   span.idea-text-date= val[1]
                 else
-                  a(href="/contributor-idea-summary/" + val[0])
+                  a(href="/idea-summary/" + val[0])
                     h4.idea-text-name= val[0]
                   span.idea-text-date= val[1]
 
@@ -81,7 +81,7 @@ html
           each val, index in reviewNames
             if val[0]
               li
-                a(href="/contributor-idea-summary/" + val[0])
+                a(href="/idea-summary/" + val[0])
                   h4.idea-text-name= val[0]
                 span.idea-text-date= val[1]
       else

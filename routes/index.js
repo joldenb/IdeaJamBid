@@ -766,7 +766,7 @@ router.post('/save-idea-name', csrfProtection, function(req, res) {
     { multi: false, new : true },
     function (err, idea) {
       console.log('The raw response from Mongo was ', idea);
-      res.redirect('/idea-summary/' + idea.name);
+      res.redirect('/inventor-idea-summary/' + idea.name);
   });
 });
 
@@ -1364,7 +1364,7 @@ router.post('/incorporate-suggestions', csrfProtection, function(req, res) {
 
       currentIdea.variants.push(newVariant);
       idea.save(function(data){
-        res.redirect('/idea-summary/' + idea.name);
+        res.redirect('/inventor-idea-summary/' + idea.name);
       });
     });
   });
@@ -1387,12 +1387,12 @@ router.post('/login', csrfProtection, passport.authenticate('local'), function(r
 ******************************************************************
 ******************************************************************
 * Route for getting the contributor summary page, that sets the
-* session info and redirects to /contributor-idea-summary
+* session info and redirects to /idea-summary
 * so the idea isn't in the URL
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/contributor-idea-summary/:ideaName', csrfProtection, function(req, res){
+router.get('/idea-summary/:ideaName', csrfProtection, function(req, res){
 
   if(!req.params.ideaName){
     res.redirect('/');
@@ -1413,7 +1413,7 @@ router.get('/contributor-idea-summary/:ideaName', csrfProtection, function(req, 
     // idea summary view
     if(req.user && idea.inventorName == req.user.username){
       delete req.session.ideaReview;
-      res.redirect('/idea-summary/'+req.params.ideaName);
+      res.redirect('/inventor-idea-summary/'+req.params.ideaName);
 
 
     } else {
@@ -1469,7 +1469,7 @@ router.get('/contributor-idea-summary/:ideaName', csrfProtection, function(req, 
                                   ]);
                                 }
                               } // end of loop of images
-                              res.render('pages/contributor-idea-summary', {
+                              res.render('pages/idea-summary', {
                                 csrfToken: req.csrfToken(),
                                 user : req.user || {}, idea : currentIdea,
                                 currentReview : currentReview,
@@ -1482,7 +1482,7 @@ router.get('/contributor-idea-summary/:ideaName', csrfProtection, function(req, 
                               });
                             }); //end of images query
                         } else {
-                          res.render('pages/contributor-idea-summary', {
+                          res.render('pages/idea-summary', {
                             csrfToken: req.csrfToken(),
                             user : req.user || {}, idea : currentIdea,
                             currentReview : currentReview,
@@ -1530,7 +1530,7 @@ router.get('/contributor-idea-summary/:ideaName', csrfProtection, function(req, 
                             ]);
                           }
                           if (j == idea._doc.images.length){
-                            res.render('pages/contributor-idea-summary', {
+                            res.render('pages/idea-summary', {
                               csrfToken: req.csrfToken(),
                               user : req.user || {}, idea : currentIdea,
                               imageURLs : imageURLs,
@@ -1545,7 +1545,7 @@ router.get('/contributor-idea-summary/:ideaName', csrfProtection, function(req, 
                         });
                       }
                     } else {
-                      res.render('pages/contributor-idea-summary', {
+                      res.render('pages/idea-summary', {
                         csrfToken: req.csrfToken(),
                         user : req.user || {}, idea : currentIdea,
                         imageURLs : [],
@@ -1571,11 +1571,11 @@ router.get('/contributor-idea-summary/:ideaName', csrfProtection, function(req, 
 ******************************************************************
 ******************************************************************
 * Route for saving session info for an idea seed, then redirecting
-* to the /idea-summary pathname
+* to the /inventor-idea-summary pathname
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/idea-summary/:ideaName', csrfProtection, function(req, res){
+router.get('/inventor-idea-summary/:ideaName', csrfProtection, function(req, res){
 
   if(!(req.user && req.user.username)) {
     res.redirect('/');
@@ -1605,7 +1605,7 @@ router.get('/idea-summary/:ideaName', csrfProtection, function(req, res){
     // If the visitor is the owner of the idea, route to the inventor
     // idea summary view
     if(idea.inventorName != req.user.username){
-      res.redirect('/contributor-idea-summary/'+req.params.ideaName);
+      res.redirect('/idea-summary/'+req.params.ideaName);
     } else {
       req.session.idea = idea.id;
 
@@ -1655,7 +1655,7 @@ router.get('/idea-summary/:ideaName', csrfProtection, function(req, res){
                     "Area : Skills"
                   ]);
                   if(idea.inventorName != req.user.username){
-                    res.redirect('/contributor-idea-summary');
+                    res.redirect('/idea-summary');
                     return;
                   }
                   var listOfProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
@@ -1704,7 +1704,7 @@ router.get('/idea-summary/:ideaName', csrfProtection, function(req, res){
                             ]);
                           }
                           if (j == idea._doc.images.length){
-                            res.render('pages/idea-summary', { user : req.user || {}, idea : currentIdea,
+                            res.render('pages/inventor-idea-summary', { user : req.user || {}, idea : currentIdea,
                               csrfToken: req.csrfToken(),
                               variantDates : variantDates,
                               strengthResponse : strengthResponse,
@@ -1722,7 +1722,7 @@ router.get('/idea-summary/:ideaName', csrfProtection, function(req, res){
                         });
                       }
                     } else {
-                            res.render('pages/idea-summary', { user : req.user || {}, idea : currentIdea,
+                            res.render('pages/inventor-idea-summary', { user : req.user || {}, idea : currentIdea,
                               csrfToken: req.csrfToken(),
                               variantDates : variantDates,
                               problemAreas  : problemAreas,
@@ -1818,7 +1818,7 @@ router.get('/variant/:variantname', csrfProtection, function(req, res){
         }
 
         if(!currentVariant){
-          res.redirect('/idea-summary/' + currentIdea['name']);
+          res.redirect('/inventor-idea-summary/' + currentIdea['name']);
           return;
         }
 
@@ -2312,7 +2312,7 @@ router.get('/begin-contributor-review', csrfProtection, function(req, res){
             function(err, idea){
               console.log('The raw response from Mongo was ', idea);
               req.session.ideaReview = newReview.id;
-              res.redirect('/contributor-idea-summary/' + idea.name);
+              res.redirect('/idea-summary/' + idea.name);
             }
         );
       }

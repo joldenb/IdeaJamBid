@@ -3,64 +3,85 @@ form(role='form', id="viability-overview" action="/update-viability-scores", met
     .viability-left-column
       .slider-container
         #perfIcon.viability-icon
-          a.viabilityLink(href="/performability")
+          if Object.keys(user).length != 0
+            a.viabilityLink(href="/performability")
+              img(src="/perfIcon.png" height="75" width="75")
+            a.plus-overlay()
+              img(height="75" width="75")
+          else
             img(src="/perfIcon.png" height="75" width="75")
-          a.plus-overlay()
-            img(height="75" width="75")
         #perfSlider
         label#perfLabel Performability
       br
       .slider-container
         #affordIcon.viability-icon
-          a.viabilityLink(href="/affordability")
+          if Object.keys(user).length != 0
+            a.viabilityLink(href="/affordability")
+              img(src="/affordIcon.png" height="75" width="75")
+            a.plus-overlay()
+              img(height="75" width="75")
+          else
             img(src="/affordIcon.png" height="75" width="75")
-          a.plus-overlay()
-            img(height="75" width="75")
         #affordSlider
         label#affordLabel Affordability
       br
       .slider-container
         #featureIcon.viability-icon
-          a.viabilityLink(href="/featurability")
+          if Object.keys(user).length != 0
+            a.viabilityLink(href="/featurability")
+              img(src="/perfIcon.png" height="75" width="75")
+            a.plus-overlay()
+              img()
+          else
             img(src="/perfIcon.png" height="75" width="75")
-          a.plus-overlay()
-            img()
         #featureSlider
         label#featureLabel Featurability
       br
       .slider-container
         #deliverIcon.viability-icon
-          a.viabilityLink(href="/deliverability")
+          if Object.keys(user).length != 0
+            a.viabilityLink(href="/deliverability")
+              img(src="/deliverabilityIcon.png" height="75" width="75")
+            a.plus-overlay()
+              img(height="75" width="75")
+          else
             img(src="/deliverabilityIcon.png" height="75" width="75")
-          a.plus-overlay()
-            img(height="75" width="75")
         #deliverSlider
         label#deliverLabel Deliverability
       br
       .slider-container
         #useabilityIcon.viability-icon
-          a.viabilityLink(href="/useability")
+          if Object.keys(user).length != 0
+            a.viabilityLink(href="/useability")
+              img(src="/useabilityIcon.png" height="75" width="75")
+            a.plus-overlay()
+              img(height="75" width="75")
+          else
             img(src="/useabilityIcon.png" height="75" width="75")
-          a.plus-overlay()
-            img(height="75" width="75")
         #useabilitySlider
         label#useabilityLabel Useability
       br
       .slider-container
         #maintainIcon.viability-icon
-          a.viabilityLink(href="/maintainability")
+          if Object.keys(user).length != 0
+            a.viabilityLink(href="/maintainability")
+              img(src="/maintainabilityIcon.png" height="75" width="75")
+            a.plus-overlay()
+              img(height="75" width="75")
+          else
             img(src="/maintainabilityIcon.png" height="75" width="75")
-          a.plus-overlay()
-            img(height="75" width="75")
         #maintainSlider
         label#maintainabilityLabel Maintainability
       br
       .slider-container
         #dangerIcon.viability-icon
-          a.viabilityLink(href="/dangerous")
+          if Object.keys(user).length != 0
+            a.viabilityLink(href="/dangerous")
+              img(src="/dangerIcon.png" height="75" width="75")
+            a.plus-overlay()
+              img(height="75" width="75")
+          else
             img(src="/dangerIcon.png" height="75" width="75")
-          a.plus-overlay()
-            img(height="75" width="75")
         #dangerSlider
         label#dangerousLabel Danger
       br
@@ -68,73 +89,98 @@ form(role='form', id="viability-overview" action="/update-viability-scores", met
     .viability-right-column
       .slider-container
         #durabilityIcon.viability-icon      
-          a.viabilityLink(href="/durability")
+          if Object.keys(user).length != 0
+            a.viabilityLink(href="/durability")
+              img(src="/durabilityIcon.png" height="75" width="75")
+            a.plus-overlay()
+              img(height="75" width="75")
+          else
             img(src="/durabilityIcon.png" height="75" width="75")
-          a.plus-overlay()
-            img(height="75" width="75")
         #durabilitySlider
         label#durabilityLabel Durability
       br
       .slider-container
         #imageIcon.viability-icon
-          a.viabilityLink(href="/imageability")
+          if Object.keys(user).length != 0
+            a.viabilityLink(href="/imageability")
+              img(src="/imageabilityIcon.png" height="75" width="75")
+            a.plus-overlay()
+              img(height="75" width="75")
+          else
             img(src="/imageabilityIcon.png" height="75" width="75")
-          a.plus-overlay()
-            img(height="75" width="75")
         #imageSlider
         label#imageabilityLabel Imageability
       br
       .slider-container
         #complexIcon.viability-icon
-          a.viabilityLink(href="/complexity")
+          if Object.keys(user).length != 0
+            a.viabilityLink(href="/complexity")
+              img(src="/complexityIcon.png" height="75" width="75")
+            a.plus-overlay()
+              img(height="75" width="75")
+          else
             img(src="/complexityIcon.png" height="75" width="75")
-          a.plus-overlay()
-            img(height="75" width="75")
         #complexSlider
         label#complexityLabel Complexity
       br
       .slider-container
         #precisionIcon.viability-icon
-          a.viabilityLink(href="/precision")
+          if Object.keys(user).length != 0
+            a.viabilityLink(href="/precision")
+              img(src="/precisionIcon.png" height="75" width="75")
+            a.plus-overlay()
+              img(height="75" width="75")
+          else
             img(src="/precisionIcon.png" height="75" width="75")
-          a.plus-overlay()
-            img(height="75" width="75")
         #precisionSlider
         label#precisionLabel Precision
       br
       .slider-container
         #variabilityIcon.viability-icon
-          a.viabilityLink(href="/variability")
+          if Object.keys(user).length != 0
+            a.viabilityLink(href="/variability")
+              img(src="/variabilityIcon.png" height="75" width="75")
+            a.plus-overlay()
+              img(height="75" width="75")
+          else
             img(src="/variabilityIcon.png" height="75" width="75")
-          a.plus-overlay()
-            img(height="75" width="75")
         #variabilitySlider
         label#variabilityLabel Variability
       br
       .slider-container
         #sensitivityIcon.viability-icon
-          a.viabilityLink(href="/sensitivity")
+          if Object.keys(user).length != 0
+            a.viabilityLink(href="/sensitivity")
+              img(src="/sensitivityIcon.png" height="75" width="75")
+            a.plus-overlay()
+              img(height="75" width="75")
+          else
             img(src="/sensitivityIcon.png" height="75" width="75")
-          a.plus-overlay()
-            img(height="75" width="75")
         #sensitivitySlider
         label#sensitivityLabel Sensitivity
       br
       .slider-container
         #immatureIcon.viability-icon
-          a.viabilityLink(href="/immaturity")
+          if Object.keys(user).length != 0
+            a.viabilityLink(href="/immaturity")
+              img(src="/immaturityIcon.png" height="75" width="75")
+            a.plus-overlay()
+              img(height="75" width="75")
+          else
             img(src="/immaturityIcon.png" height="75" width="75")
-          a.plus-overlay()
-            img(height="75" width="75")
         #immatureSlider
         label#immaturityLabel Immaturity
       br
       .slider-container
         #skillsIcon.viability-icon
-          a.viabilityLink(href="/skills")
+          if Object.keys(user).length != 0
+            a.viabilityLink(href="/skills")
+              img(src="/skillsIcon.png" height="75" width="75")
+            a.plus-overlay()
+              img(height="75" width="75")
+          else
             img(src="/skillsIcon.png" height="75" width="75")
-          a.plus-overlay()
-            img(height="75" width="75")
         #skillsSlider
         label#skillsLabel Skills
       br
+  input(type="hidden", name="_csrf", value="#{csrfToken}")

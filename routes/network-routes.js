@@ -442,9 +442,9 @@ router.get('/networks/:networkName', csrfProtection, function(req, res){
 
                   var ideaLink = "";
                   if(req.user == idea['inventorName']){
-                    ideaLink = "/idea-summary/" + idea['name'];
+                    ideaLink = "/inventor-idea-summary/" + idea['name'];
                   } else if(idea['name']) {
-                    ideaLink = "/contributor-idea-summary/" + idea['name'];
+                    ideaLink = "/idea-summary/" + idea['name'];
                   } else {
                     ideaLink = "";
                   }
@@ -732,9 +732,9 @@ router.get('/aptitudes/:aptitudeName', csrfProtection, function(req, res){
 
                   var ideaLink = "";
                   if(req.user == idea['inventorName']){
-                    ideaLink = "/idea-summary/" + idea['name'];
+                    ideaLink = "/inventor-idea-summary/" + idea['name'];
                   } else if(idea['name']) {
-                    ideaLink = "/contributor-idea-summary/" + idea['name'];
+                    ideaLink = "/idea-summary/" + idea['name'];
                   } else {
                     ideaLink = "";
                   }

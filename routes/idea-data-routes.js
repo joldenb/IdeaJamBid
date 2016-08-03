@@ -83,7 +83,7 @@ router.post('/add-component-image', csrfProtection, function(req, res) {
               } else {
                 // I need to figure out how this should behave. The form is not being submitted
                 // correctly
-                res.json({"redirectURL" : '/idea-summary'});
+                res.json({"redirectURL" : '/inventor-idea-summary'});
               }
             }
           });

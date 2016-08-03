@@ -1994,7 +1994,7 @@ router.post('/skills', csrfProtection, function(req, res) {
           account.einsteinPoints = account.einsteinPoints + 10;
         }
         account.save(function (err) {
-          res.redirect('/idea-summary/' + thisIdea.name);
+          res.redirect('/inventor-idea-summary/' + thisIdea.name);
         });
     });
   } else {
@@ -2040,7 +2040,7 @@ router.post('/skills', csrfProtection, function(req, res) {
             account.einsteinPoints = account.einsteinPoints + 10;
           }
           account.save(function (err) {
-            res.redirect('/idea-summary/' + thisIdea.name);
+            res.redirect('/inventor-idea-summary/' + thisIdea.name);
           });
       });
 
