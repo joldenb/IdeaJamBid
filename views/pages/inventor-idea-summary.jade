@@ -49,6 +49,8 @@ html
     .idea-function-column.col-md-8
       h4 Is my idea ready to file?
         a#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal")  What's Left?
+        button(type="button" id="emailShareButton" class="btn btn-default pull-right clearfix" data-toggle="modal" data-target="#inventorShareModal")
+          span.glyphicon.glyphicon-envelope
       .app-strength-bar
         .app-strength(class="#{appStrengthClass}") #{appStrengthText}
 
@@ -278,6 +280,25 @@ html
 
   button(type="button" id="titleModalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#titleModal") Go Win Fight
 
+  #inventorShareModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Share Your Idea
+        .modal-body
+          form(role='form', id="inventorShareForm" action="/share-idea", method="post", style='max-width: 300px;')
+            .form-group
+              input#toEmailAddress.form-control(type="email", name="toEmailAddress" placeholder="Your friend's email address" value="sean.helvey@gmail.com" required)
+              input#fromEmailAddress.form-control(type="email", name="fromEmailAddress" placeholder="Your email address" value="joseph.oldenburg@gmail.com" required)
+              input#emailSubject.form-control(type="text", name="emailSubject" placeholder="Subject of email" value="test" required)
+              textarea#emailBody.form-control(type="text", name="emailBody" placeholder="The body of your email, possibly including a link to your idea." value="test" required)
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+              button.btn.btn-info(data-dismiss="modal") Cancel
+              button.btn.btn-success#inventorEmailSend(type='submit') Send
+
+  button(type="button" id="titleModalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#titleModal") Go Win Fight
 
   include ../partials/js-includes.jade
   script(type="text/javascript").
@@ -924,4 +945,19 @@ html
       } else {
         alert("Please enter a valid aptitude.");
       }
+    });
+
+    $("#inventorEmailSend").click(function(event){
+      event.preventDefault();
+        $.post('/share-idea', 
+          {
+            _csrf : $('[name="_csrf"]').val(),
+            toEmailAddress : $("#toEmailAddress").val(),
+            fromEmailAddress : $("#fromEmailAddress").val(),
+            emailSubject : $("#emailSubject").val(),
+            emailBody : $("#emailBody").val()
+          },
+          function(resp) {
+            window.location.reload(true);
+          });
     });

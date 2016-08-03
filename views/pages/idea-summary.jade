@@ -33,6 +33,10 @@ html
             a.btn.btn-default#shareIdea Share
 
     .col-md-8
+      h4
+        button(type="button" id="emailShareButton" class="btn btn-default pull-right clearfix" data-toggle="modal" data-target="#shareModal")
+          span.glyphicon.glyphicon-envelope      
+
       //
         Navigation tabs
       ul.nav.nav-tabs(role="tablist")
@@ -116,6 +120,23 @@ html
             else
               button.btn.btn-info.cancel-button(data-dismiss="modal") Close
 
+  #shareModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Share Your Idea
+        .modal-body
+          form(role='form', id="shareForm" action="/share-idea", method="post", style='max-width: 300px;')
+            .form-group
+              input#toEmailAddress.form-control(type="email", name="toEmailAddress" placeholder="Your friend's email address" value="sean.helvey@gmail.com" required)
+              input#fromEmailAddress.form-control(type="email", name="fromEmailAddress" placeholder="Your email address" value="joseph.oldenburg@gmail.com" required)
+              input#emailSubject.form-control(type="text", name="emailSubject" placeholder="Subject of email" value="test" required)
+              textarea#emailBody.form-control(type="text", name="emailBody" placeholder="The body of your email, possibly including a link to your idea." value="test" required)
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+              button.btn.btn-info(data-dismiss="modal") Cancel
+              button.btn.btn-success#emailSend(type='submit') Send
 
   include ../partials/js-includes.jade
   script(type="text/javascript").
@@ -773,14 +794,17 @@ html
       }
     });
 
-    $("#shareIdea").click(function(event){
-      console.log("#shareIdea clicked");
+    $("#emailSend").click(function(event){
       event.preventDefault();
-      $.post('/share-idea', 
-        {
-          _csrf : $('[name="_csrf"]').val()
-        },
-        function(resp) {
-          window.location.reload(true);
-        });
+        $.post('/share-idea', 
+          {
+            _csrf : $('[name="_csrf"]').val(),
+            toEmailAddress : $("#toEmailAddress").val(),
+            fromEmailAddress : $("#fromEmailAddress").val(),
+            emailSubject : $("#emailSubject").val(),
+            emailBody : $("#emailBody").val()
+          },
+          function(resp) {
+            window.location.reload(true);
+          });
     });
