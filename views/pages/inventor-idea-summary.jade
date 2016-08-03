@@ -290,10 +290,10 @@ html
         .modal-body
           form(role='form', id="inventorShareForm" action="/share-idea", method="post", style='max-width: 300px;')
             .form-group
-              input#toEmailAddress.form-control(type="email", name="toEmailAddress" placeholder="Your friend's email address" required)
-              input#fromEmailAddress.form-control(type="email", name="fromEmailAddress" placeholder="Your email address" required)
-              input#emailSubject.form-control(type="text", name="emailSubject" placeholder="Subject of email" required)
-              textarea#emailBody.form-control(type="text", name="emailBody" placeholder="The body of your email, possibly including a link to your idea." required)
+              input#toEmailAddress.form-control(type="email", name="toEmailAddress" placeholder="To:" required)
+              input#fromEmailAddress.form-control(type="email", name="fromEmailAddress" placeholder="From:" required)
+              input#emailSubject.form-control(type="text", name="emailSubject" placeholder="Subject:" required)
+              textarea#emailBody.form-control(type="text", name="emailBody" placeholder="Body: (Include a link here!)" required)
               input(type="hidden", name="_csrf", value="#{csrfToken}")
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#inventorEmailSend(type='submit') Send
