@@ -27,6 +27,10 @@ html
               each aptitude in aptitudes
                 li(data-apt-id="#{aptitude.identifier}") 
                   a(href="/aptitudes/" + aptitude.title) #{aptitude.title}
+      #sharing
+        h3 Crowd Improve : 
+          p
+            a.btn.btn-default#shareIdea Share
 
     .col-md-8
       //
@@ -573,4 +577,210 @@ html
           initializeAllSliders(returnData);
         });
       }
+    });
+
+    $(window).load(function(){
+        if("!{idea.name}" == ""){
+          $('#titleModal').modal('show');
+        }
+        if("!{idea.description}" == ""){
+          $("#idea-summary-accomplish")
+            .addClass("incomplete-data");
+          $("#idea-summary-accomplish a")
+            .before("<h4><i>No data entered</i></h4>");
+        }
+        if("!{idea.problem}" == ""){
+          $("#idea-summary-challenge")
+            .addClass("incomplete-data");
+          $("#idea-summary-challenge a")
+            .before("<h4><i>No data entered</i></h4>");
+        }
+
+        $("#openTitleModal").click(function(event){
+          $("#whatsLeftModal").modal('hide');
+          $('#titleModal').modal('show');
+        })
+
+        $("#openAddProblemModal").click(function(event){
+          $("#whatsLeftModal").modal('hide');
+          $('#addProblemModal').modal('show');
+        })
+
+        $("#openViabilityModal").click(function(event){
+          $("#whatsLeftModal").modal('hide');
+          $('#viabilityModalButton').click();
+        })
+
+        $("#viewComponentsTab").click(function(event){
+          $("#whatsLeftModal").modal('hide');
+          $('a').filter(function(index) { return $(this).text() === "Components"; }).click();
+        })
+
+
+    });
+
+    $("#problemSubmit").click(function(event){
+      event.preventDefault();
+      $.post('/add-idea-problem', 
+        {
+          _csrf : $('[name="_csrf"]').val(),
+          problemStatement : $("#problemStatement").val().slice(15),
+          problemArea : $("#problemArea option:selected").text(),
+        },
+        function(resp) {
+          window.location.reload(true);
+        });      
+    });
+
+    $("#componentSubmit").click(function(event){
+      event.preventDefault();
+
+
+      $.post('/add-idea-component', 
+        {
+          _csrf : $('[name="_csrf"]').val(),
+          componentName : $("#componentName").val().slice(24),
+          componentDescription : $("#componentDescription").val().slice(20)
+        },
+        function(data, response) {
+          if(document.getElementById("fileInput").files.length != 0){
+            $("#image-component").val( data['identifier'] );
+            // This doesnt work for some reason....
+            document.getElementById("formImageUpload").submit();
+          }
+          $("#idea-summary-components ul")
+            .append("<li><a href='/component-profile/"+ data['identifier'] +"'><h4>"+ data['number'] + " : " + data['text'] + "</h4></a></li>");
+          $("#componentName").val('');
+          $("#componentDescription").val('');
+          $("#addComponentModal").modal('hide');
+        });      
+    });
+
+    // This is for the idea name
+    var inputName = $("#saveIdeaName input")[0];
+    var requiredNameText = "My idea is named "
+    $("#saveIdeaName .charactersRemaining").text((30) + " characters remaining");
+    inputName.addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredNameText) == -1) {
+            $(this).val(requiredNameText);
+      }
+      if (this.selectionStart < 17) {
+        this.selectionStart = 17;
+      }
+    }, false);
+
+    inputName.addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredNameText) == -1) {
+            $(this).val(requiredNameText);
+      }
+      if (this.selectionStart < 17) {
+        this.selectionStart = 17;
+      }
+      $("#saveIdeaName input").keyup(function(){
+        $("#saveIdeaName .charactersRemaining").text((30 + requiredNameText.length - $(this).val().length) + " characters remaining");
+      });
+    }, false);
+
+    // This is for the problem input
+    var inputProb = $("#addIdeaProblem input")[0];
+    var requiredProbText = "The problem is "
+    $("#addIdeaProblem .charactersRemaining").text((200) + " characters remaining");
+    inputProb.addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredProbText) == -1) {
+            $(this).val(requiredProbText);
+      }
+      if (this.selectionStart < 17) {
+        this.selectionStart = 17;
+      }
+    }, false);
+
+    inputProb.addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredProbText) == -1) {
+            $(this).val(requiredProbText);
+      }
+      if (this.selectionStart < 17) {
+        this.selectionStart = 17;
+      }
+      $("#addIdeaProblem input").keyup(function(){
+        $("#addIdeaProblem .charactersRemaining").text((200 + requiredProbText.length - $(this).val().length) + " characters remaining");
+      });
+    }, false);
+
+    // This is for the first text input field in the add component modal
+    var inputOne = $("#addIdeaComponent input#componentName")[0];
+    var requiredCompTextOne = "The component is called "
+    $("#addIdeaComponent .compNameCharRemaining").text((200) + " characters remaining");
+    inputOne.addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredCompTextOne) == -1) {
+            $(this).val(requiredCompTextOne);
+      }
+      if (this.selectionStart < 24) {
+        this.selectionStart = 24;
+      }
+    }, false);
+
+    inputOne.addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredCompTextOne) == -1) {
+            $(this).val(requiredCompTextOne);
+      }
+      if (this.selectionStart < 24) {
+        this.selectionStart = 24;
+      }
+      $("#addIdeaComponent input#componentName").keyup(function(){
+        $("#addIdeaComponent .compNameCharRemaining").text((200 + requiredCompTextOne.length - $(this).val().length) + " characters remaining");
+      });
+    }, false);
+
+    // This is for the second text input field in the add component modal
+    var inputTwo = $("#addIdeaComponent input#componentDescription")[0];
+    var requiredCompTextTwo = "The way it works is "
+    $("#addIdeaComponent .compDescrCharRemaining").text((200) + " characters remaining");
+    inputTwo.addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredCompTextTwo) == -1) {
+            $(this).val(requiredCompTextTwo);
+      }
+      if (this.selectionStart < 21) {
+        this.selectionStart = 21;
+      }
+    }, false);
+
+    inputTwo.addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredCompTextTwo) == -1) {
+            $(this).val(requiredCompTextTwo);
+      }
+      if (this.selectionStart < 21) {
+        this.selectionStart = 21;
+      }
+      $("#addIdeaComponent input#componentDescription").keyup(function(){
+        $("#addIdeaComponent .compDescrCharRemaining").text((200 + requiredCompTextTwo.length - $(this).val().length) + " characters remaining");
+      });
+    }, false);
+
+    $("#aptitudeSubmit").click(function(event){
+      event.preventDefault();
+      if($("#aptitudeTitle").val() != ""){
+        $.post('/save-aptitude', 
+          {
+            _csrf : $('[name="_csrf"]').val(),
+            ideaName : "!{idea.name}",
+            aptitudeTitle : $("#aptitudeTitle").val()
+          },
+          function(resp) {
+            window.location.reload(true);
+          });
+      } else {
+        alert("Please enter a valid aptitude.");
+      }
+    });
+
+    $("#shareIdea").click(function(event){
+      console.log("#shareIdea clicked");
+      event.preventDefault();
+      $.post('/share-idea', 
+        {
+          _csrf : $('[name="_csrf"]').val()
+        },
+        function(resp) {
+          window.location.reload(true);
+        });
     });

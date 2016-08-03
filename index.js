@@ -16,6 +16,7 @@ var LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
 var configAuth = require('./config/auth');
 var routes = require('./routes/index');
 var socialRoutes = require('./routes/social-routes');
+var emailRoutes = require('./routes/email-routes');
 var networkRoutes = require('./routes/network-routes');
 var valueWasteRoutes = require('./routes/value-waste-routes');
 var ideaDataRoutes = require('./routes/idea-data-routes');
@@ -62,6 +63,7 @@ app.use(csrf({ cookie: true }));
 app.use('/', routes);
 app.use('/', networkRoutes);
 app.use('/', socialRoutes);
+app.use('/', emailRoutes);
 app.use('/', valueWasteRoutes);
 app.use('/', ideaDataRoutes);
 
