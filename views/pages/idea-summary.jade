@@ -130,10 +130,10 @@ html
         .modal-body
           form(role='form', id="shareForm" action="/share-idea", method="post", style='max-width: 300px;')
             .form-group
-              input#toEmailAddress.form-control(type="email", name="toEmailAddress" placeholder="Your friend's email address" value="sean.helvey@gmail.com" required)
-              input#fromEmailAddress.form-control(type="email", name="fromEmailAddress" placeholder="Your email address" value="joseph.oldenburg@gmail.com" required)
-              input#emailSubject.form-control(type="text", name="emailSubject" placeholder="Subject of email" value="test" required)
-              textarea#emailBody.form-control(type="text", name="emailBody" placeholder="The body of your email, possibly including a link to your idea." value="test" required)
+              input#toEmailAddress.form-control(type="email", name="toEmailAddress" placeholder="Your friend's email address" required)
+              input#fromEmailAddress.form-control(type="email", name="fromEmailAddress" placeholder="Your email address" required)
+              input#emailSubject.form-control(type="text", name="emailSubject" placeholder="Subject of email" required)
+              textarea#emailBody.form-control(type="text", name="emailBody" placeholder="The body of your email, possibly including a link to your idea." required)
               input(type="hidden", name="_csrf", value="#{csrfToken}")
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#emailSend(type='submit') Send
