@@ -1588,10 +1588,10 @@ router.get('/inventor-idea-summary/:ideaName', csrfProtection, function(req, res
   // created on the introductory ideaseed creation pages, coming
   // from the image upload page
 
-  if(req.params && req.params.ideaName){
+  if(req.params && req.params.ideaName && (req.params.ideaName != "yet-to-be-named")){
     var query = IdeaSeed.findOne({"name" : req.params.ideaName});
   } else {
-    var query = IdeaSeed.findOne({"_id" : req.session.idea});
+    var query = IdeaSeed.findById(req.session.idea);
   }
 
   query.exec(function(err, idea){
