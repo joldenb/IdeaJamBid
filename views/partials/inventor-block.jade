@@ -1,5 +1,5 @@
 .suggestion-element.inventor-block.image-block
-	a(href='/profile/' + inventorName)
+	a(href='/imagineer/' + inventorName)
 		.idea-image.inventor-block.image-block(style="background-image : url('" + '#{inventorImage || "/avatar.png"}' + "');" + inventorImageStyle)
 	.title-description.inventor-block
 		p <b>Inventor Name: </b>#{inventorName || 'No Inventor Name'}
@@ -14,5 +14,5 @@
 				if inventorAptitudeIds.indexOf(aptitude.id) > -1
 					li #{aptitude.title}
 	.footer.inventor-block
-		a(href='/profile/' + inventorName)
+		a(href='/imagineer/' + inventorName)
 			.btn.btn-default View Profile

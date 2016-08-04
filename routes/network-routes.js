@@ -53,7 +53,7 @@ router.post('/save-school-network', csrfProtection, function(req, res) {
             account.networks['school'] = schoolNetwork.id;
             account.save(function (err) {});
         });
-        res.redirect('/profile/' + req.user.username);
+        res.redirect('/imagineer/' + req.user.username);
       } else {
         var newSchool = new Network({
           name : req.body.schoolNetwork,
@@ -66,7 +66,7 @@ router.post('/save-school-network', csrfProtection, function(req, res) {
               account.save(function (err) {});
           });
         });
-        res.redirect('/profile/' + req.user.username);
+        res.redirect('/imagineer/' + req.user.username);
       }
   });
 });
@@ -94,7 +94,7 @@ router.post('/save-company-network', csrfProtection, function(req, res) {
             account.networks['company'] = companyNetwork.id;
             account.save(function (err) {});
         });
-        res.redirect('/profile/' + req.user.username);
+        res.redirect('/imagineer/' + req.user.username);
       } else {
         var newCompany = new Network({
           name : req.body.companyNetwork,
@@ -107,7 +107,7 @@ router.post('/save-company-network', csrfProtection, function(req, res) {
               account.save(function (err) {});
           });
         });
-        res.redirect('/profile/' + req.user.username);
+        res.redirect('/imagineer/' + req.user.username);
       }
   });
 });
@@ -244,7 +244,7 @@ router.post('/save-aptitude', csrfProtection, function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/networks/:networkName', csrfProtection, function(req, res){
+router.get('/jam/:networkName', csrfProtection, function(req, res){
   ideaSeedHelpers.getUserHeadshot(req).then(function(headshotData){
     var headshotURL = headshotData['headshotURL'];
     var headshotStyle = headshotData['headshotStyle'];
@@ -444,7 +444,7 @@ router.get('/networks/:networkName', csrfProtection, function(req, res){
                   if(req.user == idea['inventorName']){
                     ideaLink = "/inventor-idea-summary/" + idea['name'];
                   } else if(idea['name']) {
-                    ideaLink = "/idea-summary/" + idea['name'];
+                    ideaLink = "/ideas/" + idea['name'];
                   } else {
                     ideaLink = "";
                   }
@@ -734,7 +734,7 @@ router.get('/aptitudes/:aptitudeName', csrfProtection, function(req, res){
                   if(req.user == idea['inventorName']){
                     ideaLink = "/inventor-idea-summary/" + idea['name'];
                   } else if(idea['name']) {
-                    ideaLink = "/idea-summary/" + idea['name'];
+                    ideaLink = "/ideas/" + idea['name'];
                   } else {
                     ideaLink = "";
                   }

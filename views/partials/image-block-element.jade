@@ -3,10 +3,10 @@
 	.title-description.variant-suggestion
 		p <b>Image Name: </b>#{imageName || 'No suggestion text'}
 		if(compHeadshot)
-			a(href='/profile/' + accountName)
+			a(href='/imagineer/' + accountName)
 				img(src=compHeadshot height="50" width="50" style=compHeadshotStyle)
 		else
-			a(href='/profile/' + accountName)
+			a(href='/imagineer/' + accountName)
 				img(src="/avatar.png" height="50" width="50")
 		.userName #{accountName || user.username}
 		.suggestion-category

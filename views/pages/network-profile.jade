@@ -9,7 +9,7 @@ html
 
 		.container.network-profile
 			h2 #{networkName}
-			h3 Network Leaders
+			h3 Jam Leaders
 			each inventor, index in topInventors
 				- var inventorImage
 				- var inventorImageStyle
@@ -54,7 +54,7 @@ html
 								- inventorAptitudeIds = topInventors[index + 2].aptitudes
 								include ../partials/inventor-block.jade
 
-			h3 Top Network Ideas
+			h3 Top Jam Ideas
 				if ideas.length > 0
 					each idea, index in ideas
 						- var ideaName

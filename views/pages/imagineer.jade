@@ -15,7 +15,7 @@ html
           if schoolNetwork
             h4 School :  #[a(class="network-link") #{schoolNetwork}]
             if Object.keys(user).length != 0
-              a(class="btn btn-default" href="#" id="schoolModalButton" data-toggle="modal" data-target="#schoolModal") Edit Network
+              a(class="btn btn-default" href="#" id="schoolModalButton" data-toggle="modal" data-target="#schoolModal") Edit Jam
           else
             if Object.keys(user).length != 0
               button(type="button" id="schoolModalButton" class="btn btn-default" data-toggle="modal" data-target="#schoolModal") Add your School
@@ -23,7 +23,7 @@ html
           if companyNetwork
             h4 Company :  #[a(class="network-link") #{companyNetwork}]
             if Object.keys(user).length != 0
-              a(class="btn btn-default" href="#" id="companyModalButton" data-toggle="modal" data-target="#companyModal") Edit Network
+              a(class="btn btn-default" href="#" id="companyModalButton" data-toggle="modal" data-target="#companyModal") Edit Jam
           else
             if Object.keys(user).length != 0
               button(type="button" id="companyModalButton" class="btn btn-default" data-toggle="modal" data-target="#companyModal") Add your Company
@@ -31,7 +31,7 @@ html
           if locationNetwork
             h4 Location : #[a(class="network-link") #{locationNetwork}]
             if Object.keys(user).length != 0
-              a(class="btn btn-default" href="#" id="locationModalButton" data-toggle="modal" data-target="#companyModal") Edit Network
+              a(class="btn btn-default" href="#" id="locationModalButton" data-toggle="modal" data-target="#companyModal") Edit Jam
           else
             if Object.keys(user).length != 0
               button(type="button" id="locationModalButton" class="btn btn-default" ) Add your Location
@@ -65,7 +65,7 @@ html
                     h4.idea-text-name= val[0]
                   span.idea-text-date= val[1]
                 else
-                  a(href="/idea-summary/" + val[0])
+                  a(href="/ideas/" + val[0])
                     h4.idea-text-name= val[0]
                   span.idea-text-date= val[1]
 
@@ -81,12 +81,12 @@ html
           each val, index in reviewNames
             if val[0]
               li
-                a(href="/idea-summary/" + val[0])
+                a(href="/ideas/" + val[0])
                   h4.idea-text-name= val[0]
                 span.idea-text-date= val[1]
       else
         h4 None so far.
-      a.home-login.btn.btn-success( href="/view-all-ideas" ) View All Ideas
+      a.home-login.btn.btn-success( href="/ideas" ) View All Ideas
 
   #schoolModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -94,7 +94,7 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 School Network
+            h2 School Jam
         .modal-body
           form(role='form', id="saveSchool" action="/save-school-network", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
@@ -110,7 +110,7 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 Company Network
+            h2 Company Jam
         .modal-body
           form(role='form', id="saveCompany" action="/save-company-network", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
@@ -126,7 +126,7 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 Location Network
+            h2 Location Jam
         .modal-body
           form(role='form', id="saveLocation" action="/save-location-network", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
@@ -235,7 +235,7 @@ html
 
     $("a.network-link").click(function(event){
       var urlPath = $(this).text().split(" ").join("-")
-      window.location.pathname = "/networks/" + urlPath;
+      window.location.pathname = "/jam/" + urlPath;
     });
 
     $("#locationSubmit").click(function(event){

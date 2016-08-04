@@ -5,10 +5,10 @@
 		else
 			h3 <b></b>#{suggestionText || 'No Component Name'}
 		if(compHeadshot)
-			a(href='/profile/' + accountName)
+			a(href='/imagineer/' + accountName)
 				img(src=compHeadshot height="50" width="50" style=compHeadshotStyle)
 		else
-			a(href='/profile/' + accountName)
+			a(href='/imagineer/' + accountName)
 				img(src="/avatar.png" height="50" width="50")
 		.userName #{accountName || user.username}
 	if !variantSummary

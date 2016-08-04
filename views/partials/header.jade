@@ -6,18 +6,18 @@ else
 .profile-headshot
   if headshot && Object.keys(user).length != 0
     img.placeholder(src=headshot height="75" width="75" style=headshotStyle)
-    a.plus-overlay(href="/profile-picture")
+    a.plus-overlay(href="/imagineer-picture")
       img(src='/plus-overlay.png' height="75" width="75")
   else  
     img.placeholder(src="/avatar.png" height="75" width="75")
     if Object.keys(user).length != 0
-      a.plus-overlay(href="/profile-picture")
+      a.plus-overlay(href="/imagineer-picture")
         img(src='/plus-overlay.png' height="75" width="75")
 if Object.keys(user).length != 0
-  a.home-logout.btn.btn-default( href="/profile/" + user.username ) My Profile
+  a.home-logout.btn.btn-default( href="/imagineer/" + user.username ) My Profile
   | 
   a.home-logout.btn.btn-default( href="/logout" ) Log Out
 else 
-  a.home-login.btn.btn-success( href="/view-all-ideas" ) View All Ideas
+  a.home-login.btn.btn-success( href="/ideas" ) View All Ideas
   |  
   a.home-logout.btn.btn-default( href="/" ) Log In
