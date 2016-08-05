@@ -18,11 +18,10 @@ html
               img.imageListItems(src=imageURL[1]  style=imageURL[2])
           span.view-all-images-btn
             a.btn.secondary-btn.btn-default( href="/image-upload" )
-              span.glyphicon.glyphicon-plus  
-      h3 Idea Summary for #{idea.name}
+              span.glyphicon.glyphicon-plus
 
-      .idea-summary-left#idea-summary-challenge
-        h4 Components
+      .idea-summary-left
+        h4.underline Components
         .row 
           .col-xs-10        
             if components
@@ -49,7 +48,7 @@ html
               span.glyphicon.glyphicon-plus
 
       .idea-summary-left#idea-summary-challenge
-        h4 Challenge
+        h4.underline Challenge
         .row 
           .col-xs-10
             <i>#{idea.problem}</i>
@@ -59,7 +58,7 @@ html
                 span.glyphicon.glyphicon-pencil
 
       .idea-summary-left#idea-summary-accomplish
-        h4 Description
+        h4.underline Description
         .row
           .col-xs-10
             <i>#{idea.description}</i>
@@ -92,7 +91,7 @@ html
 
       if inventorName == user.username
         .row.patent-strength-row
-          h4 Is my idea ready to file?
+          h4 Is #{idea.name} ready to file?
             a#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal")  What's Left?
 
           .app-strength-bar.col-md-8
@@ -112,7 +111,7 @@ html
         Tab content
       .tab-content.components-issues-suggestions-block
 
-        .tab-pane#issues(role="tabpanel")
+        .tab-pane.active#issues(role="tabpanel")
           .idea-summary-data#idea-summary-problems
             h4 Idea Problems
             h5 Recent Problems

@@ -23,6 +23,10 @@ h1, h2, h3, h4 {
   font-family: Roboto Slab, serif;
 }
 
+.underline {
+  text-decoration: underline;
+}
+
 .btn {
   background-color: #00A550;
   color: white;
@@ -601,7 +605,7 @@ canvas {
 }
 
 .idea-summary-left {
-  padding:1em;
+  padding: 0em 1em;
 }
 
 .idea-summary-data.incomplete-data {
