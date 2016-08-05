@@ -16,21 +16,30 @@ html
                 img(src=imageURL[1] height="300" width="400" style=imageURL[2])
             if index < 3 && index > 0
               img.imageListItems(src=imageURL[1]  style=imageURL[2])
-          .view-all-images-btn
-            a.btn.btn-default( href="/image-upload" ) View All Images
+          span.view-all-images-btn
+            a.btn.secondary-btn.btn-default( href="/image-upload" )
+              span.glyphicon.glyphicon-plus  
       h3 Idea Summary for #{idea.name}
-      .idea-summary-data#idea-summary-challenge
+      .idea-summary-left#idea-summary-challenge
         h4 Challenge
-        p <i>#{idea.problem}</i>
-        if inventorName == user.username
-          a.btn.btn-default( href="/introduce-idea" ) Edit > 
-          br
-      .idea-summary-data#idea-summary-accomplish
+        .row 
+          .col-xs-10
+            <i>#{idea.problem}</i>
+          .col-xs-2
+            if inventorName == user.username
+              a.btn.secondary-btn.btn-default( href="/introduce-idea" )
+                span.glyphicon.glyphicon-pencil
+
+      .idea-summary-left#idea-summary-accomplish
         h4 Description
-        p <i>#{idea.description}</i>
-        if inventorName == user.username
-          a.btn.btn-default( href="/accomplish" ) Edit >
-          br
+        .row
+          .col-xs-10
+            <i>#{idea.description}</i>
+          .col-xs-2
+            if inventorName == user.username
+              a.btn.secondary-btn.btn-default( href="/accomplish" )
+                span.glyphicon.glyphicon-pencil
+
       #idea-summary-aptitudes.aptitudeList
         .profileAptitudes
           if aptitudes
@@ -50,7 +59,7 @@ html
 
 
     .idea-function-column.col-md-8
-      button(type="button" id="emailShareButton" class="btn btn-default pull-right clearfix" data-toggle="modal" data-target="#shareModal")
+      button(type="button" id="emailShareButton" class="btn secondary-btn btn-default pull-right clearfix" data-toggle="modal" data-target="#shareModal")
         span.glyphicon.glyphicon-envelope   
 
       if inventorName == user.username

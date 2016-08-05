@@ -1546,14 +1546,14 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
                             image["amazonURL"],
                             imageStyle
                           ]);
-                        }
+                        }           
                         if (j == idea._doc.images.length){
                           res.render('pages/ideas-single', { user : req.user || {}, idea : currentIdea,
                             csrfToken: req.csrfToken(),
                             variantDates : variantDates,
                             strengthResponse : strengthResponse,
-                            appStrengthText : strengthResponse['appStrengthText'],
-                            appStrengthClass : strengthResponse['appStrengthClass'],
+                            appStrengthText : strengthResponse['appStrengthText'] || "" ,
+                            appStrengthClass : strengthResponse['appStrengthClass'] || "" ,
                             problemAreas  : problemAreas,
                             aptitudes : myAptitudes,
                             headshot : headshotURL,
