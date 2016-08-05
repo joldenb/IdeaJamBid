@@ -16,69 +16,14 @@ html
                 img(src=imageURL[1] height="300" width="400" style=imageURL[2])
             if index < 3 && index > 0
               img.imageListItems(src=imageURL[1]  style=imageURL[2])
-          .view-all-images-btn
-            a.btn.btn-default( href="/image-upload" ) View All Images
-      h3 Idea Summary for #{idea.name}
-      .idea-summary-data#idea-summary-challenge
-        h4 Challenge
-        p <i>#{idea.problem}</i>
-        if inventorName == user.username
-          a.btn.btn-default( href="/introduce-idea" ) Edit > 
-          br
-      .idea-summary-data#idea-summary-accomplish
-        h4 Description
-        p <i>#{idea.description}</i>
-        if inventorName == user.username
-          a.btn.btn-default( href="/accomplish" ) Edit >
-          br
-      #idea-summary-aptitudes.aptitudeList
-        .profileAptitudes
-          if aptitudes
-            h3 Aptitudes : 
-            ul
-              each aptitude in aptitudes
-                li(data-apt-id="#{aptitude.identifier}") 
-                  a(href="/aptitudes/" + aptitude.title) #{aptitude.title}
-          if inventorName == user.username
-            form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
-              .form-group
-                |  
-                input(type="hidden", name="_csrf", value="#{csrfToken}")
-                input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
-              .modal-footer
-                button.btn.btn-success#aptitudeSubmit(type='submit') Save
+          span.view-all-images-btn
+            a.btn.secondary-btn.btn-default( href="/image-upload" )
+              span.glyphicon.glyphicon-plus
 
-
-    .idea-function-column.col-md-8
-      button(type="button" id="emailShareButton" class="btn btn-default pull-right clearfix" data-toggle="modal" data-target="#shareModal")
-        span.glyphicon.glyphicon-envelope   
-
-      if inventorName == user.username
-        .row.patent-strength-row
-          h4 Is my idea ready to file?
-            a#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal")  What's Left?
-
-          .app-strength-bar.col-md-8
-            .app-strength(class="#{appStrengthClass}") #{appStrengthText}
-          .col-md-4
-            a.btn.btn-default#file-patent(data-toggle="modal" data-target="#filePatentModal") File My Patent
-
-
-      //
-        Navigation tabs
-      ul.nav.nav-tabs(role="tablist")
-        li.active(role="presention")
-          a(href="#components" aria-controls="components" role="tab" data-toggle="tab") Components
-        li(role="presention")
-          a(href="#issues" aria-controls="issues" role="tab" data-toggle="tab") Issues
-        li(role="presention")
-          a(href="#suggestions" aria-controls="suggestions" role="tab" data-toggle="tab") Suggestions
-      //
-        Tab content
-      .tab-content.components-issues-suggestions-block
-        .tab-pane.active#components(role="tabpanel")
-          .idea-summary-data#idea-summary-components
-            h4 Components
+      .idea-summary-left
+        h4.underline Components
+        .row 
+          .col-xs-10        
             if components
               ul
                 each component,index in components
@@ -98,11 +43,75 @@ html
                     else
                       li
                         h4 #{component['descriptions'][0]}
+          .col-xs-2
+            button(type="button" id="componentModalButton"  class="btn secondary-btn btn-default" data-toggle="modal" data-target="#addComponentModal")
+              span.glyphicon.glyphicon-plus
+
+      .idea-summary-left#idea-summary-challenge
+        h4.underline Challenge
+        .row 
+          .col-xs-10
+            <i>#{idea.problem}</i>
+          .col-xs-2
+            if inventorName == user.username
+              a.btn.secondary-btn.btn-default( href="/introduce-idea" )
+                span.glyphicon.glyphicon-pencil
+
+      .idea-summary-left#idea-summary-accomplish
+        h4.underline Description
+        .row
+          .col-xs-10
+            <i>#{idea.description}</i>
+          .col-xs-2
+            if inventorName == user.username
+              a.btn.secondary-btn.btn-default( href="/accomplish" )
+                span.glyphicon.glyphicon-pencil
+
+      #idea-summary-aptitudes.aptitudeList
+        .profileAptitudes
+          if aptitudes
+            h3 Aptitudes : 
+            ul
+              each aptitude in aptitudes
+                li(data-apt-id="#{aptitude.identifier}") 
+                  a(href="/aptitudes/" + aptitude.title) #{aptitude.title}
+          if inventorName == user.username
+            form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
+              .form-group
+                |  
+                input(type="hidden", name="_csrf", value="#{csrfToken}")
+                input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
+              .modal-footer
+                button.btn.btn-success#aptitudeSubmit(type='submit') Save
 
 
-            button(type="button" id="componentModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addComponentModal") Add a Component
+    .idea-function-column.col-md-8
+      button(type="button" id="emailShareButton" class="btn secondary-btn btn-default pull-right clearfix" data-toggle="modal" data-target="#shareModal")
+        span.glyphicon.glyphicon-envelope   
 
-        .tab-pane#issues(role="tabpanel")
+      if inventorName == user.username
+        .row.patent-strength-row
+          h4 Is #{idea.name} ready to file?
+            a#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal")  What's Left?
+
+          .app-strength-bar.col-md-8
+            .app-strength(class="#{appStrengthClass}") #{appStrengthText}
+          .col-md-4
+            a.btn.btn-default#file-patent(data-toggle="modal" data-target="#filePatentModal") File My Patent
+
+
+      //
+        Navigation tabs
+      ul.nav.nav-tabs(role="tablist")
+        li.active(role="presention")
+          a(href="#issues" aria-controls="issues" role="tab" data-toggle="tab") Issues
+        li(role="presention")
+          a(href="#suggestions" aria-controls="suggestions" role="tab" data-toggle="tab") Suggestions
+      //
+        Tab content
+      .tab-content.components-issues-suggestions-block
+
+        .tab-pane.active#issues(role="tabpanel")
           .idea-summary-data#idea-summary-problems
             h4 Idea Problems
             h5 Recent Problems
@@ -846,6 +855,7 @@ html
           $("#componentName").val('');
           $("#componentDescription").val('');
           $("#addComponentModal").modal('hide');
+          //window.location.reload(true);
         });      
     });
 

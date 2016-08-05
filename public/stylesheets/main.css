@@ -23,11 +23,22 @@ h1, h2, h3, h4 {
   font-family: Roboto Slab, serif;
 }
 
+.underline {
+  text-decoration: underline;
+}
+
 .btn {
   background-color: #00A550;
   color: white;
   border-style: none;
-  border-radius: 0px;
+  border-radius: 2px;
+}
+
+.secondary-btn {
+  background-color: grey;
+  color: white;
+  border-style: none;
+  border-radius: 2px;
 }
 
 #logged-in-text {
@@ -592,6 +603,11 @@ canvas {
   margin:1em;
   padding:1em;
 }
+
+.idea-summary-left {
+  padding: 0em 1em;
+}
+
 .idea-summary-data.incomplete-data {
   background-color : #870202;
   color:white;
