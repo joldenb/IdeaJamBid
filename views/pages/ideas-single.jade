@@ -22,13 +22,15 @@ html
       .idea-summary-data#idea-summary-challenge
         h4 Challenge
         p <i>#{idea.problem}</i>
-        a.btn.btn-default( href="/introduce-idea" ) Edit > 
-        br
+        if inventorName == user.username
+          a.btn.btn-default( href="/introduce-idea" ) Edit > 
+          br
       .idea-summary-data#idea-summary-accomplish
         h4 Description
         p <i>#{idea.description}</i>
-        a.btn.btn-default( href="/accomplish" ) Edit >
-        br
+        if inventorName == user.username
+          a.btn.btn-default( href="/accomplish" ) Edit >
+          br
       #idea-summary-aptitudes.aptitudeList
         .profileAptitudes
           if aptitudes
@@ -37,25 +39,29 @@ html
               each aptitude in aptitudes
                 li(data-apt-id="#{aptitude.identifier}") 
                   a(href="/aptitudes/" + aptitude.title) #{aptitude.title}
-          form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
-            .form-group
-              |  
-              input(type="hidden", name="_csrf", value="#{csrfToken}")
-              input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
-            .modal-footer
-              button.btn.btn-success#aptitudeSubmit(type='submit') Save
+          if inventorName == user.username
+            form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
+              .form-group
+                |  
+                input(type="hidden", name="_csrf", value="#{csrfToken}")
+                input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
+              .modal-footer
+                button.btn.btn-success#aptitudeSubmit(type='submit') Save
 
 
     .idea-function-column.col-md-8
-      .row.patent-strength-row
-        h4 Is my idea ready to file?
-          a#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal")  What's Left?
-          button(type="button" id="emailShareButton" class="btn btn-default pull-right clearfix" data-toggle="modal" data-target="#shareModal")
-            span.glyphicon.glyphicon-envelope   
-        .app-strength-bar.col-md-8
-          .app-strength(class="#{appStrengthClass}") #{appStrengthText}
-        .col-md-4
-          a.btn.btn-default#file-patent(data-toggle="modal" data-target="#filePatentModal") File My Patent
+      button(type="button" id="emailShareButton" class="btn btn-default pull-right clearfix" data-toggle="modal" data-target="#shareModal")
+        span.glyphicon.glyphicon-envelope   
+
+      if inventorName == user.username
+        .row.patent-strength-row
+          h4 Is my idea ready to file?
+            a#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal")  What's Left?
+
+          .app-strength-bar.col-md-8
+            .app-strength(class="#{appStrengthClass}") #{appStrengthText}
+          .col-md-4
+            a.btn.btn-default#file-patent(data-toggle="modal" data-target="#filePatentModal") File My Patent
 
 
       //
@@ -117,14 +123,6 @@ html
         h4 Idea Viability Scores
         a.btn.btn-default( type="button" id="viabilityModalButton"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") View All
         br
-
-
-.inventor-only-idea-summary
-  h1 For the Inventor
-  .half-column
-    h4 Suggestions
-    a.btn.btn-default( href="/suggestion-summary" ) Make Suggestions
-    br
 
   #titleModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
