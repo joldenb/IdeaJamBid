@@ -20,6 +20,34 @@ html
             a.btn.secondary-btn.btn-default( href="/image-upload" )
               span.glyphicon.glyphicon-plus  
       h3 Idea Summary for #{idea.name}
+
+      .idea-summary-left#idea-summary-challenge
+        h4 Components
+        .row 
+          .col-xs-10        
+            if components
+              ul
+                each component,index in components
+                  if component['text'] && index < 5
+                    if component['identifier']
+                      li 
+                        a(href="/component-profile/"+component['identifier'])
+                          h4 #{component['number']} : #{component['text']}
+                    else
+                      li 
+                        h4 #{component['number']} : #{component['text']}
+                  else if component['descriptions'].length > 0 && index < 5
+                    if component['identifier']
+                      li
+                        a(href="/component-profile/"+component['identifier'])
+                          h4 #{component['descriptions'][0]}
+                    else
+                      li
+                        h4 #{component['descriptions'][0]}
+          .col-xs-2
+            button(type="button" id="componentModalButton"  class="btn secondary-btn btn-default" data-toggle="modal" data-target="#addComponentModal")
+              span.glyphicon.glyphicon-plus
+
       .idea-summary-left#idea-summary-challenge
         h4 Challenge
         .row 
@@ -77,39 +105,12 @@ html
         Navigation tabs
       ul.nav.nav-tabs(role="tablist")
         li.active(role="presention")
-          a(href="#components" aria-controls="components" role="tab" data-toggle="tab") Components
-        li(role="presention")
           a(href="#issues" aria-controls="issues" role="tab" data-toggle="tab") Issues
         li(role="presention")
           a(href="#suggestions" aria-controls="suggestions" role="tab" data-toggle="tab") Suggestions
       //
         Tab content
       .tab-content.components-issues-suggestions-block
-        .tab-pane.active#components(role="tabpanel")
-          .idea-summary-data#idea-summary-components
-            h4 Components
-            if components
-              ul
-                each component,index in components
-                  if component['text'] && index < 5
-                    if component['identifier']
-                      li 
-                        a(href="/component-profile/"+component['identifier'])
-                          h4 #{component['number']} : #{component['text']}
-                    else
-                      li 
-                        h4 #{component['number']} : #{component['text']}
-                  else if component['descriptions'].length > 0 && index < 5
-                    if component['identifier']
-                      li
-                        a(href="/component-profile/"+component['identifier'])
-                          h4 #{component['descriptions'][0]}
-                    else
-                      li
-                        h4 #{component['descriptions'][0]}
-
-
-            button(type="button" id="componentModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addComponentModal") Add a Component
 
         .tab-pane#issues(role="tabpanel")
           .idea-summary-data#idea-summary-problems
@@ -855,6 +856,7 @@ html
           $("#componentName").val('');
           $("#componentDescription").val('');
           $("#addComponentModal").modal('hide');
+          //window.location.reload(true);
         });      
     });
 
