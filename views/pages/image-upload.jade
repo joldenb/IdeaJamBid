@@ -20,17 +20,17 @@ html
           a.btn.btn-default( href="/ideas/" + idea.name) Continue >
         else
           if(imageURLs.length && !idea.name)
-            a.btn.btn-default( href="/inventor-idea-summary/yet-to-be-named" ) Continue >
+            a.btn.btn-default( href="/ideas/yet-to-be-named" ) Continue >
           else if(imageURLs.length && idea.name)
-            a.btn.btn-default( href="/inventor-idea-summary/#{idea.name}") Continue >
+            a.btn.btn-default( href="/ideas/#{idea.name}") Continue >
           else if(imageURLs.length == 0 && !idea.name)
-            a.btn.btn-default( href="/inventor-idea-summary/yet-to-be-named" ) Skip to Profile
+            a.btn.btn-default( href="/ideas/yet-to-be-named" ) Skip to Profile
             |  
-            a.btn.btn-default( href="/inventor-idea-summary/yet-to-be-named" disabled) Continue (+20)
+            a.btn.btn-default( href="/ideas/yet-to-be-named" disabled) Continue (+20)
           else if(imageURLs.length == 0 && idea.name)
-            a.btn.btn-default( href="/inventor-idea-summary/#{idea.name}" ) Skip to Profile
+            a.btn.btn-default( href="/ideas/#{idea.name}" ) Skip to Profile
             |  
-            a.btn.btn-default( href="/inventor-idea-summary/#{idea.name}" disabled) Continue (+20)
+            a.btn.btn-default( href="/ideas/#{idea.name}" disabled) Continue (+20)
 
 
           
