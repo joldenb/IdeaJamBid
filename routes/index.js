@@ -981,6 +981,44 @@ router.post('/image-upload', csrfProtection, function(req, res) {
   }); //end of idea image query
 });
 
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for saving a new application receipt
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.post('/receipt-upload', csrfProtection, function(req, res) {
+
+    IdeaImage.find({"filename" : {$regex : ".*"+req.body.filename+".*"}}, function(err, images){
+
+      var newFileName = req.body.filename + "-" + (images.length + 1).toString();
+
+      var image = new IdeaImage({ imageMimetype : req.body.type,
+        filename : newFileName, uploader : req.user.username, amazonURL : req.body.fileUrl });
+
+      if(req.body["exif[Orientation]"]){
+        image.orientation = parseInt(req.body["exif[Orientation]"]);
+      }
+
+      image.save(function(err, newReceipt){
+        if (err) {
+          console.log(err);
+        } else {
+          IdeaSeed.update(
+              { _id : req.session.idea },
+              { $set : { applicationReceipt : newReceipt.id }},
+              function(err, raw){
+                console.log('The raw response from Mongo was ', raw);
+                res.json({"redirectURL" : '/annotate-image/'+newFileName});
+              }
+          );
+        }
+      });
+
+    }); //end of idea image query
+});
+
 
 /*****************************************************************
 ******************************************************************

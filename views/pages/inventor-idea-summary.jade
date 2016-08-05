@@ -47,12 +47,13 @@ html
 
 
     .idea-function-column.col-md-8
-      h4 Is my idea ready to file?
-        a#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal")  What's Left?
-        button(type="button" id="emailShareButton" class="btn btn-default pull-right clearfix" data-toggle="modal" data-target="#inventorShareModal")
-          span.glyphicon.glyphicon-envelope
-      .app-strength-bar
-        .app-strength(class="#{appStrengthClass}") #{appStrengthText}
+      .row.patent-strength-row
+        h4 Is my idea ready to file?
+          a#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal")  What's Left?
+        .app-strength-bar.col-md-8
+          .app-strength(class="#{appStrengthClass}") #{appStrengthText}
+        .col-md-4
+          a.btn.btn-default#file-patent(data-toggle="modal" data-target="#filePatentModal") File My Patent
 
 
       //
@@ -121,21 +122,6 @@ html
   .half-column
     h4 Suggestions
     a.btn.btn-default( href="/suggestion-summary" ) Make Suggestions
-    br
-    br
-  .half-column
-    br
-    h4 Application
-    a.btn.btn-default( href="/create-application" ) Download Application
-    br
-    br
-    h4 Variants 
-    each variantDate in variantDates
-      ul.variantDateList
-        li
-          a(href="/variant/"+variantDate[1]) #{variantDate[0]}
-    a.btn.btn-default( href="/view-idea-suggestions" ) Create a New Variant
-    br
     br
 
   #titleModal.modal.fade.annotate-modal(role="dialog")
@@ -277,6 +263,39 @@ html
             .modal-footer
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#componentSubmit(type='submit') Save
+
+  #filePatentModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 File a Patent Application
+        .modal-body
+          if appStrengthClass == "yes col-md-12"
+            a.btn.btn-default( href="/create-application" ) Download Application
+            br
+            if !idea.applicationReceipt
+              form(role='form', id="prelimReceiptUpload" action="/reciept-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
+                .form-group
+                  input(type="hidden", name="_csrf", value="#{csrfToken}")
+                  input#receiptInput(type="file", name="receipt")
+            else
+              p Receipt uploaded.
+              h4 Variants
+              each variantDate in variantDates
+                ul.variantDateList
+                  li
+                    a(href="/variant/"+variantDate[1]) #{variantDate[0]}
+              a.btn.btn-default( href="/view-idea-suggestions" ) Create a New Variant
+              br
+          else if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
+            h4 Enter more information before generating an application.
+          br
+
+          .modal-footer
+            button.btn.btn-info(data-dismiss="modal") Cancel
+
 
   button(type="button" id="titleModalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#titleModal") Go Win Fight
 
@@ -947,17 +966,69 @@ html
       }
     });
 
-    $("#inventorEmailSend").click(function(event){
-      event.preventDefault();
-        $.post('/share-idea', 
-          {
-            _csrf : $('[name="_csrf"]').val(),
-            toEmailAddress : $("#toEmailAddress").val(),
-            fromEmailAddress : $("#fromEmailAddress").val(),
-            emailSubject : $("#emailSubject").val(),
-            emailBody : $("#emailBody").val()
-          },
-          function(resp) {
-            window.location.reload(true);
-          });
-    });
+    
+    document.getElementById("receiptInput").onchange = function(event) {
+      const files = document.getElementById('receiptInput').files;
+      const file = files[0];
+      const csrf = $("input[name='_csrf']").val();
+      if(file == null){
+        return alert('No file selected.');
+      }
+      var fr   = new FileReader;
+      
+      fr.onloadend = function() {
+        // get EXIF data
+        var exif = EXIF.readFromBinaryFile(this.result);
+
+        if(file.size < 3000000){
+          getSignedRequest(file, exif, csrf);
+        } else if (file.size > 3000000){
+          alert('Please choose an image smaller than 3 MB.')
+        } else {
+          alert('An error ocurred with this image.')
+        }
+
+      };
+
+      fr.readAsArrayBuffer(file); // read the file
+
+
+    };
+
+    function uploadFile(file, signedRequest, url, exif, csrf){
+      const xhr = new XMLHttpRequest();
+      xhr.open('PUT', signedRequest);
+      xhr.onreadystatechange = function() {
+        if(xhr.readyState === 4){
+          if(xhr.status === 200 && (file.type=="application/pdf")){
+            var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type,
+              exif : exif, "_csrf" : csrf };
+            $.post('/receipt-upload', data , function(response, status){
+              window.location.replace(response["redirectURL"]);
+            });
+          }
+          else{
+            alert('Please upload PDF.');
+          }
+        }
+      };
+      xhr.send(file);
+    }
+
+    function getSignedRequest(file, exif, csrf){
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', '/sign-s3?file-name='+file.name + '&file-type='+ file.type);
+      xhr.onreadystatechange = function() {
+        if(xhr.readyState === 4){
+          if(xhr.status === 200){
+            const response = JSON.parse(xhr.responseText);
+            uploadFile(file, response.signedRequest, response.url, exif, csrf);
+          }
+          else{
+            alert('Could not get signed URL.');
+          }
+        } 
+        
+      };
+      xhr.send();
+    }

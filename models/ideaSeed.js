@@ -18,6 +18,7 @@ var IdeaSeed = new Schema({
 	inventorName		: String,
 	visibility		: { type: String, default: "private" },
 	images			: [ObjectId],
+	applicationReceipt : ObjectId,
 	firstFeature	: String,
 	secondFeature	: String,
 	thirdFeature	: String,

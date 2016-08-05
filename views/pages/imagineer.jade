@@ -3,8 +3,9 @@ html
   head
     include ../partials/head.jade
   body
-  .header
-    include ../partials/header.jade
+  if user  
+    .header
+      include ../partials/header.jade
   div.profile-info.container
     .col-md-4.profile-left-column
       div#begin-info
