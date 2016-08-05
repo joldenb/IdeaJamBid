@@ -1021,7 +1021,12 @@ html
       xhr.onreadystatechange = function() {
         if(xhr.readyState === 4){
           if(xhr.status === 200){
-            const response = JSON.parse(xhr.responseText);
+            var response;
+            if(xhr.responseText == ""){
+              response = JSON.parse('{}');
+            } else {
+              response = JSON.parse(xhr.responseText);
+            }
             uploadFile(file, response.signedRequest, response.url, exif, csrf);
           }
           else{

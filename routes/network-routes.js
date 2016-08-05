@@ -515,7 +515,7 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                           }
                         }
                       }
-                      return res.render('pages/network-profile', {
+                      return res.render('pages/jam-profile', {
                         csrfToken: req.csrfToken(),
                         user : req.user || {},
                         ideas : ideaList,
