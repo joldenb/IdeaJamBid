@@ -968,6 +968,7 @@ router.post('/image-upload', csrfProtection, function(req, res) {
         console.log(err);
         console.log('The raw response from Mongo was ', raw);
         res.json({"error" : err});
+        return;
       } else {
         IdeaSeed.update(
             { _id : req.session.idea },
@@ -975,6 +976,7 @@ router.post('/image-upload', csrfProtection, function(req, res) {
             function(err, raw){
               console.log('The raw response from Mongo was ', raw);
               res.json({"redirectURL" : '/annotate-image/'+newFileName});
+              return;
             }
         );
       }
