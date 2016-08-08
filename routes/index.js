@@ -997,10 +997,6 @@ router.post('/receipt-upload', csrfProtection, function(req, res) {
       var image = new IdeaImage({ imageMimetype : req.body.type,
         filename : newFileName, uploader : req.user.username, amazonURL : req.body.fileUrl });
 
-      if(req.body["exif[Orientation]"]){
-        image.orientation = parseInt(req.body["exif[Orientation]"]);
-      }
-
       image.save(function(err, newReceipt){
         if (err) {
           console.log(err);
@@ -1010,7 +1006,7 @@ router.post('/receipt-upload', csrfProtection, function(req, res) {
               { $set : { applicationReceipt : newReceipt.id }},
               function(err, raw){
                 console.log('The raw response from Mongo was ', raw);
-                res.json({"redirectURL" : '/annotate-image/'+newFileName});
+                res.sendStatus(200);
               }
           );
         }
@@ -1519,70 +1515,74 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
                   }
                 }
                 Aptitude.find({"_id" : {$in : idea.aptitudes}}, function(err, myAptitudes){
-                  if (idea._doc.images.length !== 0){
-                    for (i =0; i < idea._doc.images.length; i++){
-                      var j = 0;
-                      IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
-                        j++;
-                        if(image && image._doc && image.amazonURL){
-                          var filename = image._doc["filename"];
-                          var imageStyle = "";
-                          switch (image["orientation"]) {
-                            case 1 :
-                              imageStyle = "";
-                              break;
-                            case 2 :
-                              imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                              break;
-                            case 3 :
-                              imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                              break;
-                            case 4 :
-                              imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                              break;
-                          }
-                          imageURLs.push([
-                            filename,
-                            image["amazonURL"],
-                            imageStyle
-                          ]);
-                        }           
-                        if (j == idea._doc.images.length){
-                          res.render('pages/ideas-single', { user : req.user || {}, idea : currentIdea,
-                            csrfToken: req.csrfToken(),
-                            variantDates : variantDates,
-                            strengthResponse : strengthResponse,
-                            appStrengthText : strengthResponse['appStrengthText'] || "" ,
-                            appStrengthClass : strengthResponse['appStrengthClass'] || "" ,
-                            problemAreas  : problemAreas,
-                            aptitudes : myAptitudes,
-                            headshot : headshotURL,
-                            headshotStyle : headshotStyle,
-                            imageURLs : imageURLs,
-                            inventorName : idea.inventorName,
-                            problems : problems,
-                            components : components,
-                            listOfProblems : listOfProblems });
-                        }
-                      });
-                    }
-                  } else {
-                          res.render('pages/ideas-single', { user : req.user || {}, idea : currentIdea,
-                            csrfToken: req.csrfToken(),
-                            variantDates : variantDates,
-                            problemAreas  : problemAreas,
-                            aptitudes : myAptitudes,
-                            strengthResponse : strengthResponse,
-                            appStrengthText : strengthResponse['appStrengthText'],
-                            appStrengthClass : strengthResponse['appStrengthClass'],
-                            imageURLs : [],
-                            inventorName : idea.inventorName,
-                            headshot : headshotURL,
-                            headshotStyle : headshotStyle,
-                            problems : problems,
-                            components : components,
-                            listOfProblems : listOfProblems });
-                  }
+                  IdeaImage.findOne({"_id" : idea.applicationReceipt}, function(err, receipt){
+                                if (idea._doc.images.length !== 0){
+                                  for (i =0; i < idea._doc.images.length; i++){
+                                    var j = 0;
+                                    IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
+                                      j++;
+                                      if(image && image._doc && image.amazonURL){
+                                        var filename = image._doc["filename"];
+                                        var imageStyle = "";
+                                        switch (image["orientation"]) {
+                                          case 1 :
+                                            imageStyle = "";
+                                            break;
+                                          case 2 :
+                                            imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                                            break;
+                                          case 3 :
+                                            imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                                            break;
+                                          case 4 :
+                                            imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                                            break;
+                                        }
+                                        imageURLs.push([
+                                          filename,
+                                          image["amazonURL"],
+                                          imageStyle
+                                        ]);
+                                      }           
+                                      if (j == idea._doc.images.length){
+                                        res.render('pages/ideas-single', { user : req.user || {}, idea : currentIdea,
+                                          csrfToken: req.csrfToken(),
+                                          variantDates : variantDates,
+                                          receipt : receipt,
+                                          strengthResponse : strengthResponse,
+                                          appStrengthText : strengthResponse['appStrengthText'] || "" ,
+                                          appStrengthClass : strengthResponse['appStrengthClass'] || "" ,
+                                          problemAreas  : problemAreas,
+                                          aptitudes : myAptitudes,
+                                          headshot : headshotURL,
+                                          headshotStyle : headshotStyle,
+                                          imageURLs : imageURLs,
+                                          inventorName : idea.inventorName,
+                                          problems : problems,
+                                          components : components,
+                                          listOfProblems : listOfProblems });
+                                      }
+                                    });
+                                  }
+                                } else {
+                                        res.render('pages/ideas-single', { user : req.user || {}, idea : currentIdea,
+                                          csrfToken: req.csrfToken(),
+                                          variantDates : variantDates,
+                                          receipt : receipt,
+                                          problemAreas  : problemAreas,
+                                          aptitudes : myAptitudes,
+                                          strengthResponse : strengthResponse,
+                                          appStrengthText : strengthResponse['appStrengthText'],
+                                          appStrengthClass : strengthResponse['appStrengthClass'],
+                                          imageURLs : [],
+                                          inventorName : idea.inventorName,
+                                          headshot : headshotURL,
+                                          headshotStyle : headshotStyle,
+                                          problems : problems,
+                                          components : components,
+                                          listOfProblems : listOfProblems });
+                                }
+                  });
                 }); //end of aptitude query
               }); //end of components query
             }); // end of idea problems query
@@ -1975,7 +1975,9 @@ router.post('/save-component', csrfProtection, function(req, res) {
       req.body.component = req.body.component.slice(-1);
     }
 
-    Component.findOne({"text" : req.body.component}, function(err, component){
+    Component.findOne({$and : [{ "ideaSeed" : req.session.idea },
+      {"text" : req.body.component}]}, 
+      function(err, component){
       if(err){
         res.json({error: err});
       }

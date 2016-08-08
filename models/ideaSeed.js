@@ -24,18 +24,6 @@ var IdeaSeed = new Schema({
 	thirdFeature	: String,
   aptitudes       : [ObjectId],
 
-	suggestions		: [{
-		suggestionID	: String, /* used in creating a variant */
-		category			: String, // the column and row in the grid of points
-		contributor		: String,
-		problemType		: String, // can be a waste value category or component ID (toString) ** outdated
-
-		suggestion		: String,
-		hindsight		: String,
-		outsight		: String,
-		foresight		: String
-	}],
-
 	variants			: [{
 		name				: String, /* should be a unique identifier */
 		components : [ String	], /* should match a suggestionID */

@@ -819,3 +819,7 @@ a.network-link:hover {
 #emailShareButton {
   margin-top: -10px;
 }
+
+#create-application-button {
+  margin-bottom: 1em;
+}
