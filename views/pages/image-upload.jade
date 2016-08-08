@@ -114,14 +114,9 @@ html
       const xhr = new XMLHttpRequest();
       xhr.open('GET', '/sign-s3?file-name='+file.name + '&file-type='+ file.type);
       xhr.onreadystatechange = function() {
-        if(xhr.readyState === 4){
+        if(xhr.readyState === 4 && xhr.responseText != ""){
           if(xhr.status === 200){
-            var response;
-            if (xhr.responseText == ""){
-               response= JSON.parse('{}');  
-            } else {
-              response = JSON.parse(xhr.responseText);
-            }
+            var response = JSON.parse(xhr.responseText);
             uploadFile(file, response.signedRequest, response.url, exif, csrf);
           }
           else{
