@@ -9,6 +9,8 @@ var IdeaProblem = new Schema({
 	date				: Date,
 	problemArea	: String,
 
+    identifier  : String, //unique public facing identifier, of the form prob-(date.now)
+
 	ideaSeed		: ObjectId
 });
 

@@ -2166,6 +2166,30 @@ router.get('/begin-contributor-review', csrfProtection, function(req, res){
   }
 });
 
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for imperfection profile
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/imperfection-profile/:identifier', csrfProtection, function(req, res){
+  if(!req.session.idea || !(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
+
+  Component.find({
+    "ideaSeed" : req.session.idea
+    }, function(err, suggestions){
+      res.render('pages/imperfection-profile', {
+        csrfToken: req.csrfToken(),
+        user : req.user || {},
+        suggestions: suggestions
+      });
+    });
+});
+
 
 /*****************************************************************
 ******************************************************************

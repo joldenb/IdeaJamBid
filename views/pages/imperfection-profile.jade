@@ -1,0 +1,24 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body
+  .header
+    include ../partials/header.jade
+
+  .component-summary
+    .col-md-4
+      h1 Imperfection Summary
+
+    .edit-column.col-md-8
+      .component-descriptions
+        h3 Suggestions
+        if( suggestions.length > 0)
+          ol
+            each suggestion in suggestions
+              li #{suggestion.descriptions[0]}
+              br
+        else
+          ul
+            li.no-descriptions No Descriptions Yet
+            br
