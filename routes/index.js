@@ -966,6 +966,8 @@ router.post('/image-upload', csrfProtection, function(req, res) {
     image.save(function(err, newImage){
       if (err) {
         console.log(err);
+        console.log('The raw response from Mongo was ', raw);
+        res.json({"error" : err});
       } else {
         IdeaSeed.update(
             { _id : req.session.idea },
