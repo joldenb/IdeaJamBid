@@ -35,7 +35,8 @@ router.post('/add-idea-problem', csrfProtection, function(req, res) {
     date          : new Date(),
     creator       : req.user.username,
     problemArea   : req.body.problemArea,
-    ideaSeed      : req.session.idea
+    ideaSeed      : req.session.idea,
+    identifier    : "prob-"+Date.now()
   };
 
   IdeaProblem.create( newProblem,

@@ -367,7 +367,8 @@ router.post('/featurability', csrfProtection, function(req, res) {
         text          : req.body.featureProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Featurability",
-        ideaSeed      : thisIdea.id
+        ideaSeed      : thisIdea.id,
+        identifier    : "prob-"+Date.now()
       };
 
       IdeaProblem.create( newProblem ,
@@ -413,7 +414,8 @@ router.post('/featurability', csrfProtection, function(req, res) {
           text          : req.body.featureProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Featurability",
-          ideaSeed      : thisIdea.id
+          ideaSeed      : thisIdea.id,
+          identifier    : "prob-"+Date.now()
         };
 
         IdeaProblem.create( newProblem ,
@@ -497,7 +499,8 @@ router.post('/deliverability', csrfProtection, function(req, res) {
         text          : req.body.deliverProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Deliverability",
-        ideaSeed      : thisIdea.id
+        ideaSeed      : thisIdea.id,
+        identifier    : "prob-"+Date.now()
       };
 
       IdeaProblem.create( newProblem ,
@@ -543,7 +546,8 @@ router.post('/deliverability', csrfProtection, function(req, res) {
           text          : req.body.deliverProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Deliverability",
-          ideaSeed      : thisIdea.id
+          ideaSeed      : thisIdea.id,
+          identifier    : "prob-"+Date.now()
         };
 
         IdeaProblem.create( newProblem ,
@@ -630,7 +634,8 @@ router.post('/useability', csrfProtection, function(req, res) {
         text          : req.body.useabilityProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Useability",
-        ideaSeed      : thisIdea.id
+        ideaSeed      : thisIdea.id,
+        identifier    : "prob-"+Date.now()
       };
 
       IdeaProblem.create( newProblem ,
@@ -678,7 +683,8 @@ router.post('/useability', csrfProtection, function(req, res) {
           text          : req.body.useabilityProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Useability",
-          ideaSeed      : thisIdea.id
+          ideaSeed      : thisIdea.id,
+          identifier    : "prob-"+Date.now()
         };
 
         IdeaProblem.create( newProblem ,
@@ -765,7 +771,8 @@ router.post('/maintainability', csrfProtection, function(req, res) {
         text          : req.body.maintainProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Maintainability",
-        ideaSeed      : thisIdea.id
+        ideaSeed      : thisIdea.id,
+        identifier    : "prob-"+Date.now()
       };
 
       IdeaProblem.create( newProblem ,
@@ -811,7 +818,8 @@ router.post('/maintainability', csrfProtection, function(req, res) {
           text          : req.body.maintainProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Maintainability",
-          ideaSeed      : thisIdea.id
+          ideaSeed      : thisIdea.id,
+          identifier    : "prob-"+Date.now()
         };
 
         IdeaProblem.create( newProblem ,
@@ -898,7 +906,8 @@ router.post('/durability', csrfProtection, function(req, res) {
         text          : req.body.durabilityProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Durability",
-        ideaSeed      : thisIdea.id
+        ideaSeed      : thisIdea.id,
+        identifier    : "prob-"+Date.now()
       };
 
       IdeaProblem.create( newProblem ,
@@ -944,7 +953,8 @@ router.post('/durability', csrfProtection, function(req, res) {
           text          : req.body.durabilityProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Durability",
-          ideaSeed      : thisIdea.id
+          ideaSeed      : thisIdea.id,
+          identifier    : "prob-"+Date.now()
         };
 
         IdeaProblem.create( newProblem ,
@@ -1031,7 +1041,8 @@ router.post('/imageability', csrfProtection, function(req, res) {
         text          : req.body.imageProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Imageability",
-        ideaSeed      : thisIdea.id
+        ideaSeed      : thisIdea.id,
+        identifier    : "prob-"+Date.now()
       };
 
       IdeaProblem.create( newProblem ,
@@ -1077,7 +1088,8 @@ router.post('/imageability', csrfProtection, function(req, res) {
           text          : req.body.imageProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Imageability",
-          ideaSeed      : thisIdea.id
+          ideaSeed      : thisIdea.id,
+          identifier    : "prob-"+Date.now()
         };
 
         IdeaProblem.create( newProblem ,
@@ -1164,7 +1176,8 @@ router.post('/complexity', csrfProtection, function(req, res) {
         text          : req.body.complexProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Complexity",
-        ideaSeed      : thisIdea.id
+        ideaSeed      : thisIdea.id,
+        identifier    : "prob-"+Date.now()
       };
 
       IdeaProblem.create( newProblem ,
@@ -1210,7 +1223,8 @@ router.post('/complexity', csrfProtection, function(req, res) {
           text          : req.body.complexProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Complexity",
-          ideaSeed      : thisIdea.id
+          ideaSeed      : thisIdea.id,
+          identifier    : "prob-"+Date.now()
         };
 
         IdeaProblem.create( newProblem ,
