@@ -840,3 +840,8 @@ a.network-link:hover {
 .problem-row-padding {
   padding: 15px;
 }
+
+#formSuggestion {
+  margin-left: 0 !important;
+  max-width: 400px !important;
+}

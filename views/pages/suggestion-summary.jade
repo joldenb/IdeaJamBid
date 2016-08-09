@@ -15,12 +15,6 @@ html
       if problems.length > 0
         #suggestionList 
           label(for="selectProblem") Select list:
-            #selectProblem
-              each val in problems
-                if firstProblemText == val['text']
-                  .problemOption.selectedProblem(id=val['problemArea']+"-"+val['creator']+"-"+val['text']) #{val['problemArea']} problem : #{val['text']}
-                else 
-                  .problemOption(id=val['problemArea']+"-"+val['creator']+"-"+val['text']) #{val['problemArea']} problem : #{val['text']}
           br
 
         #myModal.modal.fade(role="dialog")
@@ -176,7 +170,6 @@ html
     $(".btn.suggest").click(function(){
       $("#suggestion-category").val($(this).attr("id"));
       $("#point-value").val($(this).text());
-      $("#problem-type").val($(".selectedProblem").attr("id"));
 
       var headerStatement = "How will you ";
       switch($(this).attr("id")){

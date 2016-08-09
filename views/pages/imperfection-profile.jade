@@ -9,6 +9,24 @@ html
   .component-summary
     .col-md-6
       h1 Imperfection Summary
+      form(role='form', id="formSuggestion" action="/suggestion-submit-new", method="post", style='max-width: 300px;', data-idea-doc=idea)
+        .form-group
+          input(type="hidden", name="_csrf", value="#{csrfToken}")
+          select.form-control#tactics
+              option(value="None Selected") None Selected
+              each value in tactics
+                option(value=value) #{value}
+
+          select.form-control#targets
+              option(value="None Selected") None Selected
+              each value in targets
+                option(value=value) #{value}
+          input.form-control(type="text", name="suggestionText", value='The solution of ')
+          p.charactersRemaining
+        .modal-footer
+          button.btn.btn-info(data-dismiss="modal") Cancel
+          button.btn.btn-success#submit(type='submit') Save
+    .edit-column.col-md-6
         h3 Suggestions
         if( suggestions.length > 0)
           ul
@@ -19,6 +37,28 @@ html
         else
           ul
             li.no-descriptions No Descriptions Yet
-            br
-    .edit-column.col-md-6
-      .component-descriptions
+
+include ../partials/js-includes.jade
+script(type="text/javascript").
+  $("#formSuggestion").submit(function(event){
+    event.preventDefault();
+    var tacticVal = $("select#tactics option:selected").val();
+    var targetVal = $("select#targets option:selected").val();
+    if(tacticVal && targetVal){
+      var data = {
+        "suggestionText" : $("input[name='suggestionText']").val(),
+        "problemArea" : "!{problem.problemArea}",
+        "problemContributor" : "!{problem.creator}",
+        "problemText" : "!{problem.text}",
+        "tactic"  : tacticVal,
+        "target"  : targetVal,
+        "_csrf"   : $("input[name=_csrf]").val()
+      }
+      $.post('/suggestion-submit-new', data, function(error, response){
+        alert('saved successfully!')
+        window.location.reload();
+      });
+    } else {
+      alert('Tactic and Target Required!!!!!!!!!!!!!');
+    }
+  });

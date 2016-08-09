@@ -37,6 +37,27 @@ router.use(function (req, res, next) {
   next();
 });
 
+var tacticConstants =
+  [
+    "Eliminate",
+    "Reduce",
+    "Substitute",
+    "Separate",
+    "Integrate",
+    "Re-Use",
+    "Standardize",
+    "Add",
+  ]
+
+var targetConstants =
+  [
+    "Functions",
+    "Parts",
+    "Life-Cycle Processes",
+    "Materials",
+    "People",
+  ]  
+
 /*****************************************************************
 ******************************************************************
 ******************************************************************
@@ -664,6 +685,52 @@ router.post('/suggestion-submit', csrfProtection, function(req, res) {
       function(err, raw){
         console.log('The raw response from Mongo was ', raw);
         res.redirect('/suggestion-summary');
+      }
+    );
+
+  });
+});
+
+router.post('/suggestion-submit-new', csrfProtection, function(req, res) {
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
+  var problemArea = req.body.problemArea;
+  var contributor = req.body.problemContributor;
+  var problemText = req.body.problemText;
+
+  var suggestionTactic = req.body.tactic;
+  var suggestionTarget = req.body.target;
+  var suggestionCategory = IdeaSeed.getCategoryAbbreviatedName(suggestionTactic, suggestionTarget);
+
+  IdeaProblem.findOne({
+    "problemArea" : problemArea,
+    "creator"     : contributor,
+    "text"        : problemText
+  }, function(err, problem){
+
+      var newSuggestion = {
+      descriptions : [req.body.suggestionText.slice(16)], //getting rid of "the solution of "
+      category : suggestionCategory,
+      creator : req.user.username,
+      ideaSeed : req.session.idea,
+      problemID : problem.id,
+      date: Date.now(),
+      identifier : "comp-"+Date.now()
+    };
+
+    Account.findById( req.user.id,
+      function (err, account) {
+        var points = 50;
+        account.einsteinPoints = account.einsteinPoints + points;
+        account.save(function (err) {});
+    });
+
+    Component.create(newSuggestion,
+      function(err, raw){
+        console.log('The raw response from Mongo was ', raw);
+        res.redirect('/imperfection-profile/' + problem.identifier);
       }
     );
 
@@ -2187,15 +2254,16 @@ router.get('/imperfection-profile/:identifier', csrfProtection, function(req, re
   IdeaProblem.findOne({
     "identifier" : req.params.identifier
     }, function(err, ideaProblem){
-    debugger;
     Component.find({
       "problemID" : ideaProblem.id
       }, function(err, suggestions){
-        debugger;
         res.render('pages/imperfection-profile', {
           csrfToken: req.csrfToken(),
+          problem : ideaProblem,
           user : req.user || {},
-          suggestions: suggestions
+          suggestions: suggestions,
+          targets: targetConstants,
+          tactics: tacticConstants
         });
       }).sort({date: -1});
     });

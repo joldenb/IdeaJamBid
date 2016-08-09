@@ -754,6 +754,95 @@ IdeaSeed.statics.getCategoryDisplayNames = function(categorizedObject){
 	return returnCategories;
 };
 
+IdeaSeed.statics.getCategoryAbbreviatedName = function(tactic, target){
+	var concatVersion = tactic + " " + target;
+		switch ( concatVersion ) {
+			case "Eliminate Functions": return "elim-func";
+
+			case "Eliminate Parts": return "elim-parts";
+
+			case "Eliminate Life-Cycle Processes": return "elim-life";
+
+			case "Eliminate Materials": return "elim-mat";
+
+			case "Eliminate People": return "elim-people";
+
+			case "Reduce Functions": return "reduce-func";
+
+			case "Reduce Parts": return "reduce-parts";
+
+			case "Reduce Life-Cycle Processes": return "reduce-life";
+
+			case "Reduce Materials": return "reduce-mat";
+
+			case "Reduce People": return "reduce-people";
+
+			case "Substitute Functions": return "sub-func";
+
+			case "Substitute Parts": return "sub-parts";
+
+			case "Substitute Life-Cycle Processes": return "sub-life";
+
+			case "Substitute Materials": return "sub-mat";
+
+			case "Substitute People": return "sub-people";
+
+			case "Separate Functions": return "sep-func";
+
+			case "Separate Parts": return "sep-parts";
+
+			case "Separate Life-Cycle Processes": return "sep-life";
+
+			case "Separate Materials": return "sep-mat";
+
+			case "Separate People": return "sep-people";
+
+			case "Integrate Functions": return "int-func";
+
+			case "Integrate Parts": return "int-parts";
+
+			case "Integrate Life-Cycle Processes": return "int-life";
+
+			case "Integrate Materials": return "int-mat";
+
+			case "Integrate People": return "int-people";
+
+			case "Re-Use Functions": return "reuse-func";
+
+			case "Re-Use Parts": return "reuse-parts";
+
+			case "Re-Use Life-Cycle Processes": return "reuse-life";
+
+			case "Re-Use Materials": return "reuse-mat";
+
+			case "Re-Use People": return "reuse-people";
+
+			case "Standardize Functions": return "stand-func";
+
+			case "Standardize Parts": return "stand-parts";
+
+			case "Standardize Life-Cycle Processes": return "stand-life";
+
+			case "Standardize Materials": return "stand-mat";
+
+			case "Standardize People": return "stand-people";
+
+			case "Add Functions": return "add-func";
+
+			case "Add Parts": return "add-parts";
+
+			case "Add Life-Cycle Processes": return "add-life";
+
+			case "Add Materials": return "add-mat";
+
+			case "Add People": return "add-people";
+
+			default: return "other";
+		}
+};
+
+
+
 IdeaSeed.statics.generateSuggID = function(suggestionText){
 	var newID = suggestionText.substr(0, suggestionText.indexOf(" "));
 	newID = newID + Date.now().toString();
