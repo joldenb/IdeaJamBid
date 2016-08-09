@@ -7,18 +7,18 @@ html
     include ../partials/header.jade
 
   .component-summary
-    .col-md-4
+    .col-md-6
       h1 Imperfection Summary
-
-    .edit-column.col-md-8
-      .component-descriptions
         h3 Suggestions
         if( suggestions.length > 0)
-          ol
-            each suggestion in suggestions
-              li #{suggestion.descriptions[0]}
-              br
+          ul
+            each suggestion in suggestions             
+              li.row 
+                div.col-xs-12
+                  include ../partials/suggestion-summary-element.jade
         else
           ul
             li.no-descriptions No Descriptions Yet
             br
+    .edit-column.col-md-6
+      .component-descriptions

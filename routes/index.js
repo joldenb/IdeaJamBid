@@ -649,6 +649,7 @@ router.post('/suggestion-submit', csrfProtection, function(req, res) {
       creator : req.user.username,
       ideaSeed : req.session.idea,
       problemID : problem.id,
+      date: Date.now(),
       identifier : "comp-"+Date.now()
     };
 
@@ -2183,14 +2184,20 @@ router.get('/imperfection-profile/:identifier', csrfProtection, function(req, re
     return;
   }
 
-  Component.find({
-    "ideaSeed" : req.session.idea
-    }, function(err, suggestions){
-      res.render('pages/imperfection-profile', {
-        csrfToken: req.csrfToken(),
-        user : req.user || {},
-        suggestions: suggestions
-      });
+  IdeaProblem.findOne({
+    "identifier" : req.params.identifier
+    }, function(err, ideaProblem){
+    debugger;
+    Component.find({
+      "problemID" : ideaProblem.id
+      }, function(err, suggestions){
+        debugger;
+        res.render('pages/imperfection-profile', {
+          csrfToken: req.csrfToken(),
+          user : req.user || {},
+          suggestions: suggestions
+        });
+      }).sort({date: -1});
     });
 });
 

@@ -823,3 +823,20 @@ a.network-link:hover {
 #create-application-button {
   margin-bottom: 1em;
 }
+
+.problem-row {
+  cursor: pointer; 
+  cursor: hand; 
+}
+
+.solve-btn {
+  margin: 10px 10px 0 0;
+}
+
+.problem-summary-block {
+  padding: 15px;
+}
+
+.problem-row-padding {
+  padding: 15px;
+}

@@ -28,6 +28,8 @@ require('./config/passport')(passport);
 
 var app = express();
 
+app.locals.moment = require('moment');
+
 app.use(helmet());
 
 // not sure about this one

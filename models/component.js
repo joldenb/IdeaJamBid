@@ -11,6 +11,7 @@ var Component = new Schema({
 	outsight	: String,
 	foresight	: String,
 	number		: Number,
+	date : Date,
 	identifier	: String, //unique public facing identifier, of the form comp-(date.now)
 	
 	category	: String,  // the column and row of the component - suggestion

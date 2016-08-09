@@ -1,0 +1,30 @@
+.suggestion-element.variant-suggestion-block.problem-summary-block
+  .title-description.variant-suggestion
+    div.row.problem-row(id="#{problem.identifier}")
+      .col-xs-2
+        if(compHeadshot)
+          a(href='/imagineer/' + accountName)
+            img(src=compHeadshot height="50" width="50" style=compHeadshotStyle)
+        else
+          a(href='/imagineer/' + accountName)
+            img(src="/avatar.png" height="50" width="50")
+        span #{accountName || user.username}
+
+      .col-xs-2.problem-row-padding
+        if problem['date']
+          div #{moment(problem.date).format('MMMM Do YYYY, h:mm:ss a')}
+
+      .col-xs-5.problem-row-padding
+        if problem['text']
+          div Description: #{problem.text}
+
+      .col-xs-3
+        button(type="button" class="btn secondary-btn btn-default pull-right clearfix solve-btn" data-toggle="modal" data-target="#solveModal")
+          span.glyphicon.glyphicon-fire  
+
+    include ../partials/js-includes.jade
+    script(type="text/javascript").
+    
+      $(".problem-row").click(function(event){
+        window.document.location = "/imperfection-profile/" + $(this).attr('id');
+      });      

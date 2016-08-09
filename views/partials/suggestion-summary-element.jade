@@ -1,0 +1,23 @@
+.suggestion-element.variant-suggestion-block.problem-summary-block
+  .title-description.variant-suggestion
+    div.row
+      .col-xs-3
+        if(compHeadshot)
+          a(href='/imagineer/' + accountName)
+            img(src=compHeadshot height="50" width="50" style=compHeadshotStyle)
+        else
+          a(href='/imagineer/' + accountName)
+            img(src="/avatar.png" height="50" width="50")
+        span #{accountName || user.username}
+
+      .col-xs-3.problem-row-padding
+        if suggestion['date']
+          span #{moment(suggestion.date).format('MMMM Do YYYY, h:mm:ss a')}
+        //- if problem['date']
+        //-   div #{moment(problem.date).format('MM/DD/YYYY')}
+
+      .col-xs-6.problem-row-padding
+        if suggestion.category
+          div Category: #{suggestion.category}
+        if suggestion.descriptions[0]
+          div Description: #{suggestion.descriptions[0]}
