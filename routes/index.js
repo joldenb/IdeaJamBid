@@ -120,6 +120,63 @@ router.get('/login', csrfProtection, function(req, res) {
     res.render('pages/login', { user : req.user || {}, csrfToken: req.csrfToken() });
 });
 
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for getting forgot password page
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/forgot-password', csrfProtection, function(req, res) {
+    res.render('pages/forgot-password', { user : req.user || {}, csrfToken: req.csrfToken() });
+});
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for getting reset password page
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/reset-password/:resetToken', csrfProtection, function(req, res) {
+    res.render('pages/reset-password', { user : req.user || {}, csrfToken: req.csrfToken(), resetToken: req.params.resetToken});
+});
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for registering resetting password
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.post('/reset-password', csrfProtection, function(req, res) {
+  Account.findOne({"resetToken" : req.body.resetToken}, function(err, account){
+    
+    if (err || !account){
+      alert('Please try again or contact IdeaJam support to reset your password. Thank you!');
+      res.redirect('/');
+      return;
+    }
+
+    if (req.body.resetToken === account.resetToken) {
+      account.setPassword(req.body.password, function(err, account) {
+        debugger;
+        if (err) {
+          console.log("err.message:" + err.message);
+          return res.render('pages/register', { account : account, message : err.message, csrfToken: req.csrfToken() });
+        } else {
+          account.save();
+        }
+
+        res.redirect('/');
+      });
+    } else {
+      res.sendStatus(403);
+      res.redirect('/');
+    }
+  });
+});
+
 
 /*****************************************************************
 ******************************************************************
