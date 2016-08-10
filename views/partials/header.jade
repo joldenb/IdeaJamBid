@@ -1,5 +1,5 @@
 if Object.keys(user).length != 0
-  span.userName Howdy #{user.username}
+  span.userName Howdy #{user.nickname}
 else
   span.userName Howdy Guest
 |  
@@ -14,7 +14,7 @@ else
       a.plus-overlay(href="/imagineer-picture")
         img(src='/plus-overlay.png' height="75" width="75")
 if Object.keys(user).length != 0
-  a.home-logout.btn.btn-default( href="/imagineer/" + user.username ) My Profile
+  a.home-logout.btn.btn-default( href="/imagineer/" + user.nickname ) My Profile
   | 
   a.home-logout.btn.btn-default( href="/logout" ) Log Out
 else 

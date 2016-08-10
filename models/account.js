@@ -6,7 +6,10 @@ var ObjectId = mongoose.Schema.Types.ObjectId;
 var validator = require('validator');
 
 var Account = new Schema({
-    username		: String,
+    firstname       : String,
+    lastname        : String,
+    nickname        : {type: String, unique: true},
+    username		: {type: String, unique: true},
     password		: String,
     einsteinPoints	: {type: Number, default:0},
     rupees			: {type: Number, default:0},

@@ -12,7 +12,7 @@
 			a(href='/imagineer/' + accountName)
 				img(src="/avatar.png" height="50" width="50")
 		.userName 
-			p #{accountName || user.username}
+			p #{accountName || user.nickname}
 		.suggestion-category
 			p <b>Viability: </b>#{suggestionProblem} 
 			p <b>Description: </b>#{problemCategory}

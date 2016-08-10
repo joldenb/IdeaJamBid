@@ -67,7 +67,7 @@ var targetConstants =
 *****************************************************************/
 router.get('/', csrfProtection, function (req, res) {
     if(req.user){
-      res.redirect('/imagineer/' + req.user.username);
+      res.redirect('/imagineer/' + req.user.nickname);
     } else {
       res.render('index', { csrfToken: req.csrfToken() });
     }
@@ -92,7 +92,11 @@ router.get('/register', csrfProtection, function(req, res) {
 ******************************************************************
 *****************************************************************/
 router.post('/register', csrfProtection, function(req, res) {
-    Account.register(new Account({ username : req.body.username,
+    Account.register(new Account({ 
+      firstname : req.body.firstname,
+      lastname : req.body.lastname,
+      nickname : req.body.nickname,
+      username : req.body.username,
       einsteinPoints: 0, rupees: 0, ideaSeeds: [] }), req.body.password, function(err, account) {
         if (err) {
             console.log("err.message:" + err.message);
@@ -124,13 +128,12 @@ router.get('/login', csrfProtection, function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/imagineer/:username', csrfProtection, function(req, res) {
+router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
   if (req.session.idea){
     req.session.idea = null;
   }
 
-  /* For now, we're trusting the username is unique */
-  Account.findOne({"username" : req.params.username}, function(err, account){
+  Account.findOne({"nickname" : req.params.nickname}, function(err, account){
     
     if (err || !account){
       console.log('Error is ' + err);
@@ -1485,7 +1488,7 @@ router.post('/incorporate-suggestions', csrfProtection, function(req, res) {
 ******************************************************************
 *****************************************************************/
 router.post('/login', csrfProtection, passport.authenticate('local'), function(req,res){
-    res.redirect('/imagineer/' + req.user.username);
+    res.redirect('/imagineer/' + req.user.nickname);
 });
 
 
