@@ -1,0 +1,121 @@
+doctype html
+html
+	head
+		include ../partials/head.jade
+	body
+	.header
+		include ../partials/header.jade
+
+	.variant-contract-text
+		h4 Assignment Agreement
+
+		p This Assignment Agreement made this ____ day of __________, 20___ by Party A (“Creator”) [address] and Party B [C/D/etc.] [addresses] (“Contributor(s)”) (collectively the “Parties”) hereby enter this agreement regarding an assignment of the Invention (“Assignment Agreement”)
+
+		p WhereAS Creator has invented a [description of invention], and Contributors have contributed to the invention. 
+
+		p NOW THEREFORE, in consideration of the representations and covenants contained herein, the Parties agree as follows: 
+
+		h4 Definitions
+
+		p “Contributor” means any person or party who contributed any information that was selected by “Creator” to include into an Invention. 
+
+		p “Creator” means any person or party who provided an Invention to Contributors.
+
+		p “Funding Event” means monies received by a party related to the Invention through a Funding Round.
+
+		p “Funding Round” means monies received by a party from third-party investors, including monies received from a crowd funding campaign, seed round investment, series investment, angel investment, or any other funds received by a party.  A Funding Round does not include any investment made by a party by itself or through the contribution of its officers, directors, board members, or employees. 
+
+		p “Invention” means any invention, idea, improvement or discovery, whether or not patentable that has arisen through, conceived either solely or jointly with others or otherwise related to the use of the website [insert url to Qonspire],
+
+		h4 Provisions
+
+		p 1.  Assignment.  Contributor(s) agree to assign all rights in the Invention to Creator [do we want anything more than patent rights?  Should this be all IP?]. 
+
+		p 2. Payment.  In consideration of for an assignment of patent rights, [Creator] shall pay Contributor(s) 10% (ten percent) of any funds received by [Creator] during a Funding Event.  If there are multiple Contributors, the 10% shall be divided equally between each Contributor.  
+
+		p 3.  Duty to Execute Assignment.  [Contributor] and [Creator] agree to execute and record an assignment with the United States Patent and Trademark Office (“USPTO”) within three months of the filing of a patent application directed to the Invention, a form of which is attached as Exhibit A to this Assignment Agreement.  Contributor further agrees that it shall: (a) execute all documents requested for formally confirming in Creator the entire right, title and interest in and to the Invention; and (b) execute any and all documents requested by Creator for filing and prosecuting patent applications that Creator may desire covering the Invention.
+
+		p 4.  Opportunity for Review.  The Parties agree that they have had full and complete opportunity to consult with counsel of his or her choosing concerning the terms of this Agreement.
+
+		p 5. Validity and Enforceability.  If any provision of this Agreement is held to be unenforceable, invalid, or illegal by any court of competent jurisdiction, such unenforceable, invalid, or illegal provisions(s) shall be stricken and shall not affect the enforceability of the remainder of this Agreement.
+
+		p 6. Signatures.  This Agreement may be executed in counterparts or by electronic signature, facsimile, photocopy, email, PDF, or other electronic means, which, when taken together, shall constitute the entire original agreement of the Parties.
+
+		h4 AGREED:
+
+		p By: ____________________________________			By: ______________________________
+		p [Creator]																			[Contributor]
+
+		p ________________________________________			__________________________________	
+		p Printed Name																	Printed Name
+
+
+		p _______________________________________			__________________________________
+		p Title																				Title
+
+		p _______________________________________			__________________________________
+		p Date																				Date
+
+
+
+		h4 Exhibit A: Assignment
+
+		h4 ASSIGNMENT
+
+		p WHEREAS, I, [Contributor], having an address of [Insert] have invented a certain new and useful invention entitled “[Insert]” for which an application for Letters Patent of the United States has been prepared for filing, said application being identified as Application No. [insert]. 
+
+		p NOW THEREFORE, be it known that I, the said inventor, for and in consideration of certain good and valuable consideration, the sufficiency and receipt of which is hereby acknowledged, at the request of the assignee do sell, assign and transfer unto said assignee, [Insert Assignee], a [Insert State and Entity Type] having a place of business at [Insert Address], its successors, legal representatives and assigns, the aforesaid application and the invention described therein for the territory of the United States of America and all regular, continuation, divisional, continuation-in-part and reissue applications, all patent applications in foreign countries, all applications pursuant to the Patent Cooperation Treaty and all applications for extension filed or to be filed for the invention, and all Letters Patent, Invention Registrations, Utility Models, Extensions or Reissues and other patent rights, obtained for the invention in the United States or any other country; I also assign any right, title or interest in and to the said invention which has not already been transferred to the assignee, I warrant that I have made no assignment of the invention, application or patent therefor to a party other than [Insert Asignee], and I am under no obligation to make any assignment of the invention, application, or patent therefor to any other party; and I further agree to cooperate with the assignee hereunder in the obtaining and sustaining of any and all such Letters Patent and in confirming assignee's exclusive ownership of the invention, but at the expense of said assignee.
+
+		p The Commissioner of Patents is hereby authorized and requested to issue the Letters Patent solely in accordance with the terms of this Assignment, to [Insert Assignee], its successors, legal representatives and assigns, as the assignee of the entire right, title and interest therein.
+
+		p IN WITNESS WHEREOF, the party hereto has executed this Assignment as of the date indicated hereunder.
+
+
+		p Date:______________________			
+
+		p Assignor:												  			Accepted by 
+		p 																				Assignee: 
+
+		p By: _______________________		  	By: ______________________	
+
+		p Name:  ____________________			Name:____________________	
+
+		p Title:_____________________
+
+		p STATE OF ___________________)		)SS.
+		p COUNTY OF_________________)
+
+		p Before me, a Notary Public in and for said County and State, personally appeared________________________, known to me to be the person whose name is subscribed to the foregoing instrument, and acknowledged to me that he executed the same for the purposes and considerations therein expressed.
+
+		p Given under my hand	and seal of this office this __________ day of _____________, 2016
+
+
+		p ___________________________________
+		p Notary Public
+
+		p My Commission Expires:______________ 
+
+		form(role='form', id="formSignContract" action="/sign-variant-contract", method="post", style='max-width: 300px;', data-idea-doc=idea)
+			h3 Enter your full name:
+			input(type="hidden", name="_csrf", value="#{csrfToken}")
+			input(type="hidden", name="variantName", value="#{variantName}")
+			input.form-control(type="text" name="variantContributorName", placeholder="Sign Here..." id="variantContributorName")
+			a.home-logout.btn.btn-default( href="/ideas" ) Cancel
+			|  
+			button.btn.btn-success#contractSubmit(type='submit') I Agree to the Terms of the Contract
+
+	include ../partials/js-includes.jade
+	script(type="text/javascript").
+		
+		$("#contractSubmit").click(function(event){
+			event.preventDefault();
+				$.post('/sign-variant-contract', {
+						_csrf : $('[name="_csrf"]').val(),
+						variantName : $("input[name='variantName']").val(),
+						contributorSignatureName : $("input[name='variantContributorName']").val(),
+						contributorUsername : "#{contributorUsername}",
+						ideaName : "#{idea.name}"
+					},function(resp) {
+						window.location.href = '/ideas/#{idea.name}/variant/' + $("input[name='variantName']").val();
+					});
+			});

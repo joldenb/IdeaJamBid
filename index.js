@@ -29,6 +29,8 @@ require('./config/passport')(passport);
 var app = express();
 
 app.locals.moment = require('moment');
+// Set your region for future requests.
+aws.config.region = 'us-west-2';
 
 app.use(helmet());
 

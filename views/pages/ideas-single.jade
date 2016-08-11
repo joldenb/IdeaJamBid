@@ -21,9 +21,9 @@ html
               span.glyphicon.glyphicon-plus
 
       .idea-summary-left
-        h4.underline Components
+        h4.underline#componentsHeader Components
         .row 
-          .col-xs-10        
+          .col-xs-10
             if components
               ul
                 each component,index in components
@@ -135,6 +135,38 @@ html
             .modal-footer
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#submit(type='submit') Save
+
+  #viewAllComponents.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 All Components
+        .modal-body
+          .row 
+            .col-xs-9
+              if components
+                ul
+                  each component,index in components
+                    if component['text']
+                      if component['identifier']
+                        li 
+                          a(href="/component-profile/"+component['identifier'])
+                            h4 #{component['number']} : #{component['text']}
+                      else
+                        li 
+                          h4 #{component['number']} : #{component['text']}
+                    else if component['descriptions'].length > 0 && index < 5
+                      if component['identifier']
+                        li
+                          a(href="/component-profile/"+component['identifier'])
+                            h4 #{component['descriptions'][0]}
+                      else
+                        li
+                          h4 #{component['descriptions'][0]}
+        .modal-footer
+          button.btn.btn-info(data-dismiss="modal") Ok
 
   #whatsLeftModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -279,9 +311,9 @@ html
                 p Receipt uploaded.
               h4 Variants
               each variantDate in variantDates
-                ul.variantDateList
-                  li
-                    a(href="/variant/"+variantDate[1]) #{variantDate[0]}
+                .row
+                  a(href="/ideas/#{idea.name}/variant/"+variantDate[1]) #{variantDate[0]}
+
               a.btn.btn-default( href="/view-idea-suggestions" ) Create a New Variant
               br
           else if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
@@ -803,9 +835,11 @@ html
           $("#whatsLeftModal").modal('hide');
           $('a').filter(function(index) { return $(this).text() === "Components"; }).click();
         })
-
-
     });
+
+    $("#componentsHeader").click(function(event){
+      $('#viewAllComponents').modal('show');
+    })
 
     $("#problemSubmit").click(function(event){
       event.preventDefault();

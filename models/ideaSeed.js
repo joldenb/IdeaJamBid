@@ -27,7 +27,14 @@ var IdeaSeed = new Schema({
 	variants			: [{
 		name				: String, /* should be a unique identifier */
 		components : [ String	], /* should match a suggestionID */
-		images			: [ String ] // filenames of images
+		images			: [ String ], // filenames of images
+		variantApplication : ObjectId, //this should be a pdf store in amazon s3
+		variantReceipt : ObjectId, // once the variant application is built and filed.
+		contributorsSignedOff : Schema.Types.Mixed, //this will be a list of all the contributors to the variant with a
+		//true or false to indicate if they've signed off for the variant to be filed.  E.g. {"tom" : unsent, pending, or approved}
+		// it will get populated with a bunch of false's when when the variant is created, then switched to 
+		// trues one by one as people sign off.
+		contributorContracts : Schema.Types.Mixed
 	}],
 
 	ideaReviews		: [ObjectId],
@@ -90,6 +97,203 @@ IdeaSeed.statics.getWasteValueScores = function(idea){
 IdeaSeed.statics.getWasteValueCompletion = function(idea){
 	
 };
+
+IdeaSeed.statics.createVariantContract = function(signerName){
+
+	return new Promise(
+		function (resolve, reject) {
+
+
+	var docx = officegen ( {type: 'docx', font_face :'Times New Roman'} );
+
+
+	var pObj = docx.createP ({ align: 'center' });
+	pObj.addText ( 'Assignment Agreement', { font_size: 18 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'This Assignment Agreement made this ____ day of __________, 20___ by Party A (“Creator”)'+
+		' [address] and Party B [C/D/etc.] [addresses] (“Contributor(s)”) (collectively the “Parties”) hereby '+
+		'enter this agreement regarding an assignment of the Invention (“Assignment Agreement”)', { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'WhereAS Creator has invented a [description of invention], and Contributors have '+
+		'contributed to the invention. ', { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'NOW THEREFORE, in consideration of the representations and covenants contained herein, '+
+		'the Parties agree as follows: ', { font_size: 14 } );
+	var pObj = docx.createP ({ });
+
+	pObj.addText ( 'Definitions', { font_size: 18 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( '“Contributor” means any person or party who contributed any information that was selected by '+
+		'“Creator” to include into an Invention. ', { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( '“Creator” means any person or party who provided an Invention to Contributors.', { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( '“Funding Event” means monies received by a party related to the Invention through a '+
+		'Funding Round.', { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( '“Funding Round” means monies received by a party from third-party investors, including '+
+		'monies received from a crowd funding campaign, seed round investment, series investment, angel investment, '+
+		'or any other funds received by a party.  A Funding Round does not include any investment made by a party'+
+		' by itself or through the contribution of its officers, directors, board members, or employees. ',
+		{ font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( '“Invention” means any invention, idea, improvement or discovery, whether or not patentable'+
+		' that has arisen through, conceived either solely or jointly with others or otherwise related to the use'+
+		' of the website ideajam.io.', { font_size: 14 } );
+
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'Provisions', { font_size: 18 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( '1.  Assignment.  Contributor(s) agree to assign all rights in the Invention to Creator '+
+		'[do we want anything more than patent rights?  Should this be all IP?]. ', { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( '2. Payment.  In consideration of for an assignment of patent rights, [Creator] shall pay '+
+		'Contributor(s) 10% (ten percent) of any funds received by [Creator] during a Funding Event.  If there '+
+		'are multiple Contributors, the 10% shall be divided equally between each Contributor.', { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( '3.  Duty to Execute Assignment.  [Contributor] and [Creator] agree to execute and record an '+
+		'assignment with the United States Patent and Trademark Office (“USPTO”) within three months of the filing '+
+		'of a patent application directed to the Invention, a form of which is attached as Exhibit A to this '+
+		'Assignment Agreement.  Contributor further agrees that it shall: (a) execute all documents requested for '+
+		'formally confirming in Creator the entire right, title and interest in and to the Invention; and (b) '+
+		'execute any and all documents requested by Creator for filing and prosecuting patent applications that '+
+		'Creator may desire covering the Invention.', { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( '4.  Opportunity for Review.  The Parties agree that they have had full and complete '+
+		'opportunity to consult with counsel of his or her choosing concerning the terms of this Agreement.',
+		{ font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( '5. Validity and Enforceability.  If any provision of this Agreement is held to be '+
+		'unenforceable, invalid, or illegal by any court of competent jurisdiction, such unenforceable, invalid, '+
+		'or illegal provisions(s) shall be stricken and shall not affect the enforceability of the remainder of '+
+		'this Agreement.', { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( '6. Signatures.  This Agreement may be executed in counterparts or by electronic signature, '+
+		'facsimile, photocopy, email, PDF, or other electronic means, which, when taken together, shall constitute '+
+		'the entire original agreement of the Parties.', { font_size: 14 } );
+	var pObj = docx.createP ({ });
+
+	pObj.addText ( 'AGREED:', { font_size: 18 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'By: ____________________________________			By: ______________________________', { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( '[Creator]																			[Contributor]', { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( '____________________________________				  ______________________________', { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'Printed Name																	Printed Name', { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( '____________________________________					______________________________', { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'Title    																			Title', { font_size: 14 } );
+
+	docx.putPageBreak ();	
+
+	var pObj = docx.createP ({ align: 'center' });
+	pObj.addText ( 'Exhibit A: Assignment', { font_size: 18 } );
+	var pObj = docx.createP ({ align: 'center' });
+	pObj.addText ( 'ASSIGNMENT', { font_size: 18 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'WHEREAS, I, [Contributor], having an address of [Insert] have invented a certain new and useful invention entitled “[Insert]” for which an application for Letters Patent of the United States has been prepared for filing, said application being identified as Application No. [insert].',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'NOW THEREFORE, be it known that I, the said inventor, for and in consideration of certain good and valuable consideration, the sufficiency and receipt of which is hereby acknowledged, at the request of the assignee do sell, assign and transfer unto said assignee, [Insert Assignee], a [Insert State and Entity Type] having a place of business at [Insert Address], its successors, legal representatives and assigns, the aforesaid application and the invention described therein for the territory of the United States of America and all regular, continuation, divisional, continuation-in-part and reissue applications, all patent applications in foreign countries, all applications pursuant to the Patent Cooperation Treaty and all applications for extension filed or to be filed for the invention, and all Letters Patent, Invention Registrations, Utility Models, Extensions or Reissues and other patent rights, obtained for the invention in the United States or any other country; I also assign any right, title or interest in and to the said invention which has not already been transferred to the assignee, I warrant that I have made no assignment of the invention, application or patent therefor to a party other than [Insert Asignee], and I am under no obligation to make any assignment of the invention, application, or patent therefor to any other party; and I further agree to cooperate with the assignee hereunder in the obtaining and sustaining of any and all such Letters Patent and in confirming assignee\'s exclusive ownership of the invention, but at the expense of said assignee.',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'The Commissioner of Patents is hereby authorized and requested to issue the Letters Patent solely in accordance with the terms of this Assignment, to [Insert Assignee], its successors, legal representatives and assigns, as the assignee of the entire right, title and interest therein.',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'IN WITNESS WHEREOF, the party hereto has executed this Assignment as of the date indicated hereunder.',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'IN WITNESS WHEREOF, the party hereto has executed this Assignment as of the date indicated hereunder.',  { font_size: 14 } );
+	
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'Date:______________________',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'Assignor:												  			Accepted by ',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( ' 																				Assignee: ',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'By: _______________________		  	By: ______________________	',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'Name:  ____________________			Name:____________________	',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'Title:_____________________',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'STATE OF ___________________)		)SS.',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'COUNTY OF_________________)',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'Before me, a Notary Public in and for said County and State, personally appeared________________________, known to me to be the person whose name is subscribed to the foregoing instrument, and acknowledged to me that he executed the same for the purposes and considerations therein expressed.',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'Given under my hand	and seal of this office this __________ day of _____________, 2016',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( '___________________________________',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'Notary Public',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'My Commission Expires:______________ ',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'Title:_____________________ ',  { font_size: 14 } );
+
+	docx.putPageBreak ();	
+
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'STATE OF ___________________)',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( '	                          )SS.	',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'COUNTY OF_________________)',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'Before me, a Notary Public in and for said County and State, personally appeared________________________, known to me to be the person whose name is subscribed to the foregoing instrument, and acknowledged to me that he executed the same for the purposes and considerations therein expressed'
+		,  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'Given under my hand	and seal of this office this __________ day of _____________, 2016',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'Before me, a Notary Public in and for said County and State, personally appeared________________________, known to me to be the person whose name is subscribed to the foregoing instrument, and acknowledged to me that he executed the same for the purposes and considerations therein expressed.',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'Given under my hand	and seal of this office this __________ day of _____________, 2016',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( '___________________________________',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'Notary Public',  { font_size: 14 } );
+	var pObj = docx.createP ({ });
+	pObj.addText ( 'My Commission Expires:______________ ',  { font_size: 14 } );
+
+	var contractFilename = __dirname + '/../tmp/contract-' + signerName +Date.now()+'.docx';
+	var out = fs.createWriteStream ( contractFilename );
+	docx.generate ( out, {
+	  'finalize': function ( written ) {
+	    console.log ( 'Finish to create a PowerPoint file.\nTotal bytes created: ' + written + '\n' );
+			var body = fs.createReadStream( contractFilename );
+		  var s3 = new aws.S3({
+		      accessKeyId : process.env.accessKeyId,
+		      secretAccessKey : process.env.secretAccessKey
+		  });
+		  var s3Params = {
+		    Body : body,
+		    Bucket: 'qonspire',
+		    Key: 'contract-' + signerName +Date.now()+'.docx',
+		    Expires: 60,
+		    ContentType: "docx",
+		    ACL: 'public-read'
+		  };
+			s3.upload(s3Params).
+			  on('httpUploadProgress', function(evt) { console.log(evt); }).
+			  send(function(err, data) {
+			  	fs.unlink( contractFilename );
+			  	console.log(err, data)
+			  	resolve({
+			  		"location":data['Location'], 
+			  		"filename" : 'contract-' + signerName +Date.now()+'.docx'
+			  	});
+			  });
+	  },
+	  'error': function ( err ) {
+	    console.log ( err );
+	    resolve({});
+	  }
+	});
+	});
+};
+
 
 IdeaSeed.statics.createApplication = function(idea, account, problems, images, comps, res){
 

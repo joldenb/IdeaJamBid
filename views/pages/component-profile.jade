@@ -123,7 +123,7 @@ html
             each variantDate in variantDates
               ul.variantDateList
                 li
-                  a(href="/variant/"+variantDate[1]) #{variantDate[0]}
+                  a(href="/ideas/#{idea.name}/variant/"+variantDate[1]) #{variantDate[0]}
           else 
             p <i>Not currently part of any variants</i>
       .return-button

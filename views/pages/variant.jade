@@ -8,6 +8,9 @@ html
 
   .view-idea-suggestions
     h2 Name : #{idea.name}
+    a.btn.btn-default#file-variant(data-toggle="modal" data-target="#fileVariantModal") File This Variant
+    if allSignedOff
+      a.btn.btn-default#generate-variant-application Build Variant Application
     
     .container
       h2 Suggestions
@@ -90,11 +93,49 @@ html
                 include ../partials/image-block-element.jade
 
       br
-      button.btn.btn-success#submit(type='submit') Create Variant >
+      button.btn.btn-success#submit(type='submit') File this Variant > 
 
     br
     br
     a.home-logout.btn.btn-default( href="/ideas/" + idea.name) < Back to Idea Summary
+
+  #fileVariantModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 File a Patent Application
+            h5 Send each contributor an email to e-sign contract.
+        .modal-body
+          .row
+            .col-md-3
+              h3 Name
+            .col-md-3
+              h3 Status
+            .col-md-3
+              h3 Email
+          each value, contributor in listOfContributors
+            .row
+              .col-md-3
+                h5.contributor-name= contributor
+              .col-md-3
+                h5= value
+              .col-md-6
+                if value != "Approved"
+                  form(role='form', class="shareForm" action="/send-variant-contract", method="post", style='max-width: 300px;')
+                    .form-group
+                      input#toEmailAddress.form-control(type="email", name="toEmailAddress" placeholder="To:" required data-contributorName=contributor)
+                      input#fromEmailAddress.form-control(type="email", name="fromEmailAddress" placeholder="From:" required data-contributorName=contributor)
+                      input(type="hidden", name="_csrf", value="#{csrfToken}" data-contributorName=contributor)
+                      button.btn.btn-success.emailSend(data-contributorName=contributor) Send
+                else
+                  a(href=contributorContracts[contributor]['location'])
+                    h5 Approved - Contract
+        .modal-footer
+          button.btn.btn-info(data-dismiss="modal") Ok
+
+
 
 
   include ../partials/js-includes.jade
@@ -129,4 +170,25 @@ html
       $.get("/image-modal/" + $(link).text(), function(data){
         $(".modal-body").append("<img src="+data.imgURL+" height='300' width='550'>");
       });
+    });
+
+
+    $(".emailSend").click(function(event){
+      event.preventDefault();
+      var contributorName = $(this).attr("data-contributorname");
+      var fromEmail = $("#fromEmailAddress[data-contributorname="+contributorName+"]").val();
+      var toEmail = $("#toEmailAddress[data-contributorname="+contributorName+"]").val();
+
+      $.post('/send-variant-contract',
+        {
+          _csrf : $('[name="_csrf"]').val(),
+          toEmailAddress : fromEmail,
+          fromEmailAddress : toEmail,
+          inventor : "#{idea.inventorName}",
+          contributorName : contributorName,
+          variantName : "#{variantName}"
+        },
+        function(resp) {
+          window.location.reload(true);
+        });
     });

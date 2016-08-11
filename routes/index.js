@@ -1457,22 +1457,38 @@ router.post('/incorporate-suggestions', csrfProtection, function(req, res) {
       }
     }
 
-    Component.find({"images.imageID" : {$in : incorporatedImages}}, function(err, components){
+    //suggestion query
+    Component.find({"_id" : {$in : incorporatedSuggestions}}, function(err, suggestions){
+      //this query is for components that are annotations of images included in the variant.
+      Component.find({"images.imageID" : {$in : incorporatedImages}}, function(err, components){
 
-      for(var k = 0; k < components.length; k++){
-        if(incorporatedSuggestions.indexOf(components[k]['id']) == -1){
-          incorporatedSuggestions.push(components[k]['id']);
+        for(var k = 0; k < components.length; k++){
+          if(incorporatedSuggestions.indexOf(components[k]['id']) == -1){
+            incorporatedSuggestions.push(components[k]['id']);
+          }
         }
-      }
 
-      newVariant["components"] = incorporatedSuggestions;
-      newVariant["images"] = incorporatedImages;
+        newVariant.contributorsSignedOff = {};
+        newVariant.contributorContracts = {};
+        _.each(suggestions, function(element,index){
+          newVariant.contributorsSignedOff[element.creator] = "No Email Sent";
+          newVariant.contributorContracts[element.creator] = "no contract yet";
+        });
+        //this tells mongoose to save the mixed field of contributors
+        // when save is called below
 
-      currentIdea.variants.push(newVariant);
-      idea.save(function(data){
-        res.redirect('/ideas/' + idea.name);
+        newVariant["components"] = incorporatedSuggestions;
+        newVariant["images"] = incorporatedImages;
+
+        idea.variants.set(idea.variants.length -1, newVariant);
+
+        idea.markModified('variants');
+
+        idea.save(function(err, data){
+          res.redirect('/ideas/' + idea.name);
+        });
       });
-    });
+    }); //end of suggestion query
   });
 });
 
@@ -1709,7 +1725,7 @@ router.get('/create-application', csrfProtection, function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/variant/:variantname', csrfProtection, function(req, res){
+router.get('/ideas/:ideaSeedName/variant/:variantname', csrfProtection, function(req, res){
 
   if(!req.session.idea || !(req.user && req.user.username)){
     res.redirect('/');
@@ -1744,10 +1760,10 @@ router.get('/variant/:variantname', csrfProtection, function(req, res){
         var currentImageID;
         var headshotNames = [];
 
-
         for(var i = 0; i < components.length; i++){
           //break into two lists, one for components with no images, and on for those with
-          if(components[i].images.length == 0){
+          if(components[i].images.length == 0 &&
+            currentVariant.components.indexOf(components[i].id.toString()) > -1){
             suggestionsList.push(components[i]);
           } else {
             for(var k=0; k < components[i].images.length; k++){
@@ -1828,13 +1844,22 @@ router.get('/variant/:variantname', csrfProtection, function(req, res){
 
                 }
 
-                currentIdea = idea._doc;
+                var allSignedOff = true;
+                _.each(currentVariant.contributorsSignedOff, function(value, key){
+                  if(value != "Approved"){
+                    allSignedOff = false;
+                  }
+                });
 
                 res.render('pages/variant', { user : req.user || {}, idea : currentIdea,
                   csrfToken: req.csrfToken(),
                   suggestionsList : suggestionsList,
+                  variantName : req.params.variantname,
                   images : imageList,
                   variantSummary : true,
+                  listOfContributors : currentVariant.contributorsSignedOff,
+                  contributorContracts : currentVariant.contributorContracts,
+                  allSignedOff : allSignedOff,
                   headshotURLs : headshotURLs,
                   headshotStyle : headshotStyle,
                   headshot : headshotURL,
@@ -1847,6 +1872,85 @@ router.get('/variant/:variantname', csrfProtection, function(req, res){
     });
   });
 });
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for sort problems
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/ideas/:ideaSeedName/variant/:variantname/contract/:contributorName', csrfProtection, function(req, res){
+
+  if(!req.session.idea || !(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
+
+  ideaSeedHelpers.getUserHeadshot(req).then(function(headshotData){
+    var headshotURL = headshotData['headshotURL'];
+    var headshotStyle = headshotData['headshotStyle'];
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      var currentIdea = idea._doc;
+      res.render('pages/variant-contract', { user : req.user || {},
+        idea : currentIdea,
+        csrfToken: req.csrfToken(),
+        contributorUsername : req.params.contributorName,
+        variantName : req.params.variantname
+      });
+    });
+  });
+});
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for a contributor signing a variant contract.
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.post('/sign-variant-contract', csrfProtection, function(req, res){
+  ideaSeedHelpers.getUserHeadshot(req).then(function(headshotData){
+    var headshotURL = headshotData['headshotURL'];
+    var headshotStyle = headshotData['headshotStyle'];
+    var signerName = req.body.contributorSignatureName;
+    IdeaSeed.createVariantContract(signerName).then(function(contractInfo){
+
+      IdeaSeed.find({"name" : req.body.ideaName} ,function(err, ideas){
+        //update the variant list to show that people have been sent the contract.
+        var idea = ideas[0];
+        var currentVariant;
+        for (var i = 0; i < idea.variants.length; i++){
+          if(idea.variants[i].name == req.body.variantName){
+            currentVariant = idea.variants[i];
+          }
+        }
+        if(!currentVariant){
+          res.redirect('/ideas/' + idea['name']);
+          return;
+        } 
+
+        //find the contributor who this email is being sent to and record that their response is pending
+        currentVariant['contributorsSignedOff'][req.body.contributorUsername] = "Approved";
+        if (contractInfo['filename'] && contractInfo['location'] && currentVariant['contributorContracts']){
+          currentVariant['contributorContracts'][req.body.contributorUsername] = {
+            filename : contractInfo['filename'],
+            location : contractInfo['location']
+          };
+        }
+        currentVariant.markModified('contributorsSignedOff');
+        currentVariant.markModified('contributorContracts');
+        idea.save(function(err){
+          if(err) { console.log(err); }
+          res.sendStatus(200);
+          return;
+        });
+        
+      });
+    }); // end of promis from contract creation
+  });
+});
+
 
 /*****************************************************************
 ******************************************************************
