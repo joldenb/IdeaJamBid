@@ -25,7 +25,7 @@ function(token, refreshToken, profile, done) {
     process.nextTick(function() {
 
         // try to find the user based on their google id
-        Account.findOne({ 'username' : profile.displayName }, function(err, user) {
+        Account.findOne({ 'username' : profile.emails[0].value }, function(err, user) {
             if (err)
                 return done(err);
 
@@ -34,22 +34,44 @@ function(token, refreshToken, profile, done) {
                 // if a user is found, log them in
                 return done(null, user);
             } else {
-                // if the user isnt in our database, create a new user
-                var account = new Account({username: profile.displayName});
 
-                // set all of the relevant information
-                //account.google.id    = profile.id;
-                //account.google.token = token;
-                //account.google.name  = profile.displayName;
-                //account.google.email = profile.emails[0].value; // pull the first email
+                Account.find({"nickname" : {$regex : ".*"+profile.displayName+".*"} }, function(err, nicknames){
+                    var newNickname;
+                    if(nicknames.length == 0){
+                        newNickname = profile.displayName;
+                    } else {
+                        newNickname = profile.displayName + "-" + (nicknames.length + 1).toString();
+                    }
 
-                // save the user
-                Account.register(account, token, function(err, account) {
-                  if (err) {
-                    return done(null, user);
-                  }
+                    // if the user isnt in our database, create a new user
+                    var account = new Account({
+                        firstname: profile.name.givenName,
+                        lastname : profile.name.familyName,
+                        username : profile.emails[0].value,
+                        nickname : newNickname
+                    });
 
-                });
+                    // set all of the relevant information
+                    //account.google.id    = profile.id;
+                    //account.google.token = token;
+                    //account.google.name  = profile.displayName;
+                    //account.google.email = profile.emails[0].value; // pull the first email
+
+                    // save the user
+                    Account.register(account,  token, function(err, account) {
+                      if (err) {
+                        return done(null, user);
+                      }
+
+                    });
+
+
+
+
+
+
+
+                })
 
             }
         });
@@ -76,7 +98,7 @@ passport.use(new LinkedInStrategy({
 
         var linkedinName = profile.displayName;
         // try to find the user based on their google id
-        Account.findOne({ 'username' : linkedinName }, function(err, user) {
+        Account.findOne({ 'username' : profile.emails[0].value }, function(err, user) {
             if (err)
                 return done(err);
 
@@ -85,17 +107,29 @@ passport.use(new LinkedInStrategy({
                 // if a user is found, log them in
                 return done(null, user);
             } else {
-                // if the user isnt in our database, create a new user
-                var account = new Account({username: linkedinName});
+                Account.find({"nickname" : {$regex : ".*"+profile.displayName+".*"} }, function(err, nicknames){
+                    var newNickname;
+                    if(nicknames.length == 0){
+                        newNickname = profile.displayName;
+                    } else {
+                        newNickname = profile.displayName + "-" + (nicknames.length + 1).toString();
+                    }
+                    // if the user isnt in our database, create a new user
+                    var account = new Account({
+                        firstname: profile.name.givenName,
+                        lastname : profile.name.familyName,
+                        username : profile.emails[0].value,
+                        nickname : newNickname
+                    });
 
-                // save the user
-                Account.register(account, token, function(err, account) {
-                  if (err) {
-                    return done(null, user);
-                  }
+                    // save the user
+                    Account.register(account, token, function(err, account) {
+                      if (err) {
+                        return done(null, user);
+                      }
 
+                    });
                 });
-
             }
         });
     });
@@ -110,7 +144,8 @@ passport.use(new FacebookStrategy({
         // pull in our app id and secret from our auth.js file
         clientID        : configAuth.facebookAuth.clientID,
         clientSecret    : configAuth.facebookAuth.clientSecret,
-        callbackURL     : configAuth.facebookAuth.callbackURL
+        callbackURL     : configAuth.facebookAuth.callbackURL,
+        profileFields: ['id', 'photos', 'emails', 'name']
 
     },
 
@@ -120,7 +155,7 @@ function(token, refreshToken, profile, done) {
     process.nextTick(function() {
 
         // try to find the user based on their google id
-        Account.findOne({ 'username' : profile.displayName }, function(err, user) {
+        Account.findOne({ 'username' : profile.emails[0].value  }, function(err, user) {
             if (err)
                 return done(err);
 
@@ -129,23 +164,35 @@ function(token, refreshToken, profile, done) {
                 // if a user is found, log them in
                 return done(null, user);
             } else {
-                // if the user isnt in our database, create a new user
-                var account = new Account({username: profile.displayName});
+                Account.find({"nickname" : {$regex : ".*"+profile.displayName+".*"} }, function(err, nicknames){
+                    var newNickname;
+                    if(nicknames.length == 0){
+                        newNickname = profile.displayName;
+                    } else {
+                        newNickname = profile.displayName + "-" + (nicknames.length + 1).toString();
+                    }
+                    // if the user isnt in our database, create a new user
+                    var account = new Account({
+                        firstname: profile.name.givenName,
+                        lastname : profile.name.familyName,
+                        username : profile.emails[0].value,
+                        nickname : newNickname
+                    });
 
-                // set all of the relevant information
-                //account.google.id    = profile.id;
-                //account.google.token = token;
-                //account.google.name  = profile.displayName;
-                //account.google.email = profile.emails[0].value; // pull the first email
+                    // set all of the relevant information
+                    //account.google.id    = profile.id;
+                    //account.google.token = token;
+                    //account.google.name  = profile.displayName;
+                    //account.google.email = profile.emails[0].value; // pull the first email
 
-                // save the user
-                Account.register(account, token, function(err, account) {
-                  if (err) {
-                    return done(null, user);
-                  }
+                    // save the user
+                    Account.register(account, token, function(err, account) {
+                      if (err) {
+                        return done(null, user);
+                      }
 
+                    });
                 });
-
             }
         });
     });

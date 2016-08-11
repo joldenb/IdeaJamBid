@@ -28,8 +28,8 @@ var minLength = 8;
 var maxLength = 32;
 
 var validatePassword = function(password, cb) {
-    if (!validator.isLength(password, minLength, maxLength)) {
-        return cb({code: 400, message: "Password should be between " + minLength + " and " + maxLength + " chars"});
+    if (!validator.isLength(password, minLength)) {
+        return cb({code: 400, message: "Password should be at least " + minLength + " chars"});
     }
     return cb(null);
 }
