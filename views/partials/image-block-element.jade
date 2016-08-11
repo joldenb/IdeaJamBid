@@ -8,7 +8,7 @@
 		else
 			a(href='/imagineer/' + accountName)
 				img(src="/avatar.png" height="50" width="50")
-		.userName #{accountName || user.username}
+		.userName #{accountName || user.nickname}
 		.suggestion-category
 			ul
 				each component in componentList

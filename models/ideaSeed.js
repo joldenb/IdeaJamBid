@@ -325,7 +325,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 					pObj = docx.createP ({ align: 'center' });
 					pObj.addText ( idea.name, { font_size: 14 } );
 					pObj = docx.createP ({ align: 'center' });
-					pObj.addText( account.username, { font_size : 14 } );
+					pObj.addText( account.nickname, { font_size : 14 } );
 					pObj = docx.createP ({ align: 'center' });
 					pObj.addText( '', { font_size : 14 } );
 

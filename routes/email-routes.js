@@ -10,6 +10,7 @@ var IdeaSeed = require('../models/ideaSeed');
 var Component = require('../models/component');
 var Network = require('../models/network');
 var IdeaProblem = require('../models/ideaProblem');
+var randomstring = require("randomstring");
 var Account = require('../models/account');
 
 router.post('/share-idea', csrfProtection, function(req, res){
@@ -25,7 +26,6 @@ router.post('/share-idea', csrfProtection, function(req, res){
       text:     emailBody
     }, function(err, json) {
       if (err) { return console.error(err); }
-      console.log(json);
       res.redirect('back');
     });
 
@@ -77,5 +77,37 @@ router.post('/send-variant-contract', csrfProtection, function(req, res){
   });  
 });
 
+router.post('/request-reset-email', function(req, res){
+    var toEmailAddress = req.body.toEmailAddress;
+    var fromEmailAddress = "resetbot@ideajam.io";
+    var emailSubject = "IdeaJam Password Reset Link";
+    var sendgrid  = require('sendgrid')(process.env.SENDGRID_USERNAME, process.env.SENDGRID_PASSWORD);
+    var resetToken = randomstring.generate();
+    var emailBody = "reset your password here: http://" + req.headers.host + "/reset-password/" + resetToken;
+
+    Account.findOne({"username" : toEmailAddress}, function(err, account){
+
+      if (err || !account){
+        alert('Please try again or contact IdeaJam support to reset your password. Thank you!');
+        res.redirect('/');
+        return;
+      }
+
+      account.resetToken = resetToken;
+      account.save();
+
+      sendgrid.send({
+        to:       toEmailAddress,
+        from:     fromEmailAddress,
+        subject:  emailSubject,
+        text:     emailBody,
+      }, function(err, json) {
+        if (err) { return console.error(err); }
+        res.redirect('/');
+      });
+
+    });
+    
+});
 
 module.exports = router;

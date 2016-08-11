@@ -67,7 +67,7 @@ var targetConstants =
 *****************************************************************/
 router.get('/', csrfProtection, function (req, res) {
     if(req.user){
-      res.redirect('/imagineer/' + req.user.username);
+      res.redirect('/imagineer/' + req.user.nickname);
     } else {
       res.render('index', { csrfToken: req.csrfToken() });
     }
@@ -92,7 +92,11 @@ router.get('/register', csrfProtection, function(req, res) {
 ******************************************************************
 *****************************************************************/
 router.post('/register', csrfProtection, function(req, res) {
-    Account.register(new Account({ username : req.body.username,
+    Account.register(new Account({ 
+      firstname : req.body.firstname,
+      lastname : req.body.lastname,
+      nickname : req.body.nickname,
+      username : req.body.username,
       einsteinPoints: 0, rupees: 0, ideaSeeds: [] }), req.body.password, function(err, account) {
         if (err) {
             console.log("err.message:" + err.message);
@@ -116,6 +120,63 @@ router.get('/login', csrfProtection, function(req, res) {
     res.render('pages/login', { user : req.user || {}, csrfToken: req.csrfToken() });
 });
 
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for getting forgot password page
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/forgot-password', csrfProtection, function(req, res) {
+    res.render('pages/forgot-password', { user : req.user || {}, csrfToken: req.csrfToken() });
+});
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for getting reset password page
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/reset-password/:resetToken', csrfProtection, function(req, res) {
+    res.render('pages/reset-password', { user : req.user || {}, csrfToken: req.csrfToken(), resetToken: req.params.resetToken});
+});
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for registering resetting password
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.post('/reset-password', csrfProtection, function(req, res) {
+  Account.findOne({"resetToken" : req.body.resetToken}, function(err, account){
+    
+    if (err || !account){
+      alert('Please try again or contact IdeaJam support to reset your password. Thank you!');
+      res.redirect('/');
+      return;
+    }
+
+    if (req.body.resetToken === account.resetToken) {
+      account.setPassword(req.body.password, function(err, account) {
+        debugger;
+        if (err) {
+          console.log("err.message:" + err.message);
+          return res.render('pages/register', { account : account, message : err.message, csrfToken: req.csrfToken() });
+        } else {
+          account.save();
+        }
+
+        res.redirect('/');
+      });
+    } else {
+      res.sendStatus(403);
+      res.redirect('/');
+    }
+  });
+});
+
 
 /*****************************************************************
 ******************************************************************
@@ -124,13 +185,12 @@ router.get('/login', csrfProtection, function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/imagineer/:username', csrfProtection, function(req, res) {
+router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
   if (req.session.idea){
     req.session.idea = null;
   }
 
-  /* For now, we're trusting the username is unique */
-  Account.findOne({"username" : req.params.username}, function(err, account){
+  Account.findOne({"nickname" : req.params.nickname}, function(err, account){
     
     if (err || !account){
       console.log('Error is ' + err);
@@ -1501,7 +1561,7 @@ router.post('/incorporate-suggestions', csrfProtection, function(req, res) {
 ******************************************************************
 *****************************************************************/
 router.post('/login', csrfProtection, passport.authenticate('local'), function(req,res){
-    res.redirect('/imagineer/' + req.user.username);
+    res.redirect('/imagineer/' + req.user.nickname);
 });
 
 

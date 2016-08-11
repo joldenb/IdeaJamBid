@@ -9,7 +9,7 @@ html
   div.profile-info.container
     .col-md-4.profile-left-column
       div#begin-info
-        h2 #{profileAccount.username}'s Profile
+        h2 #{profileAccount.nickname}'s Profile
         h4 Einstein Points: #{profileAccount.einsteinPoints}
       div#begin-info-right
         .profileSchool
@@ -55,7 +55,7 @@ html
           
 
     .col-md-4.existingIdeas
-      h3 #{profileAccount.username}'s Ideas:
+      h3 #{profileAccount.nickname}'s Ideas:
       if accountIdeaSeeds
         ul
           each val, index in accountIdeaSeeds
@@ -76,7 +76,7 @@ html
         a.home-login.btn.btn-success( href="/introduce-idea" ) Begin a New Idea > 
 
     .col-md-4.contributedIdeas
-      h3 #{profileAccount.username}'s Contributions
+      h3 #{profileAccount.nickname}'s Contributions
       if reviewNames
         ul
           each val, index in reviewNames

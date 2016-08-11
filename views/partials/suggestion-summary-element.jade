@@ -8,7 +8,7 @@
         else
           a(href='/imagineer/' + accountName)
             img(src="/avatar.png" height="50" width="50")
-        span #{accountName || user.username}
+        span #{accountName || user.nickname}
 
       .col-xs-3.problem-row-padding
         if suggestion['date']
