@@ -25,6 +25,7 @@
     "http": "0.0.0",
     "jade": "^1.11.0",
     "mocha": "^2.5.3",
+    "moment": "^2.14.1",
     "mongo-sanitize": "^1.0.0",
     "mongodb": "^2.1.4",
     "mongoose": "^4.3.7",
