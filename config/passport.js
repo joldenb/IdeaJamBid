@@ -45,31 +45,25 @@ function(token, refreshToken, profile, done) {
 
                     // if the user isnt in our database, create a new user
                     var account = new Account({
-                        firstname: profile.name.givenName,
-                        lastname : profile.name.familyName,
-                        username : profile.emails[0].value,
                         nickname : newNickname
                     });
 
-                    // set all of the relevant information
-                    //account.google.id    = profile.id;
-                    //account.google.token = token;
-                    //account.google.name  = profile.displayName;
-                    //account.google.email = profile.emails[0].value; // pull the first email
+                    if(profile.name && profile.name.givenName){
+                        account.firstname =  profile.name.givenName;
+                    }
+                    if(profile.name && profile.name.familyName){
+                        account.lastname = profile.name.familyName;
+                    }
+                    if(profile.emails[0].value){
+                        account.username = profile.emails[0].value;
+                    }
 
-                    // save the user
-                    Account.register(account,  token, function(err, account) {
-                      if (err) {
-                        return done(null, user);
-                      }
 
+                    Account.create(account, function (err, account) {
+                      if (err) console.log(err);
+                      else console.log("New account created.");
+                      return done(null, account);
                     });
-
-
-
-
-
-
 
                 })
 
@@ -114,20 +108,25 @@ passport.use(new LinkedInStrategy({
                     } else {
                         newNickname = profile.displayName + "-" + (nicknames.length + 1).toString();
                     }
-                    // if the user isnt in our database, create a new user
+
                     var account = new Account({
-                        firstname: profile.name.givenName,
-                        lastname : profile.name.familyName,
-                        username : profile.emails[0].value,
                         nickname : newNickname
                     });
 
-                    // save the user
-                    Account.register(account, token, function(err, account) {
-                      if (err) {
-                        return done(null, user);
-                      }
+                    if(profile.name && profile.name.givenName){
+                        account.firstname =  profile.name.givenName;
+                    }
+                    if(profile.name && profile.name.familyName){
+                        account.lastname = profile.name.familyName;
+                    }
+                    if(profile.emails[0].value){
+                        account.username = profile.emails[0].value;
+                    }
 
+                    Account.create(account, function (err, account) {
+                      if (err) console.log(err);
+                      else console.log("New account created.");
+                      return done(null, account);
                     });
                 });
             }
@@ -173,24 +172,23 @@ function(token, refreshToken, profile, done) {
                     }
                     // if the user isnt in our database, create a new user
                     var account = new Account({
-                        firstname: profile.name.givenName,
-                        lastname : profile.name.familyName,
-                        username : profile.emails[0].value,
                         nickname : newNickname
                     });
 
-                    // set all of the relevant information
-                    //account.google.id    = profile.id;
-                    //account.google.token = token;
-                    //account.google.name  = profile.displayName;
-                    //account.google.email = profile.emails[0].value; // pull the first email
+                    if(profile.name && profile.name.givenName){
+                        account.firstname =  profile.name.givenName;
+                    }
+                    if(profile.name && profile.name.familyName){
+                        account.lastname = profile.name.familyName;
+                    }
+                    if(profile.emails[0].value){
+                        account.username = profile.emails[0].value;
+                    }
 
-                    // save the user
-                    Account.register(account, token, function(err, account) {
-                      if (err) {
-                        return done(null, user);
-                      }
-
+                    Account.create(account, function (err, account) {
+                      if (err) console.log(err);
+                      else console.log("New account created.");
+                      return done(null, account);
                     });
                 });
             }

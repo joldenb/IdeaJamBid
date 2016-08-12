@@ -5,7 +5,10 @@ html
   body
   .container
     h1 Login Page
-    p.lead Log in to continue
+    if showMessage
+      p #{showMessage}
+    else
+      p.lead Log in to continue
     br
     form(role='form', action="/login",method="post", style='max-width: 300px;')
       .form-group

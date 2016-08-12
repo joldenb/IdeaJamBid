@@ -92,7 +92,15 @@ router.get('/register', csrfProtection, function(req, res) {
 ******************************************************************
 *****************************************************************/
 router.post('/register', csrfProtection, function(req, res) {
-    Account.register(new Account({ 
+  Account.findOne({ 'username' : req.body.username  }, function(err, user) {
+    if(user){
+      res.render('pages/login', {
+        csrfToken: req.csrfToken(),
+        showMessage : "You already have an account. Log in below"
+      });
+    }
+
+    Account.register(new Account({
       firstname : req.body.firstname,
       lastname : req.body.lastname,
       nickname : req.body.nickname,
@@ -107,6 +115,12 @@ router.post('/register', csrfProtection, function(req, res) {
             res.redirect('/');
         });
     });
+  });
+});
+
+
+router.get('/login', csrfProtection, function(req, res) {
+  res.render('pages/login', { csrfToken: req.csrfToken() });
 });
 
 /*****************************************************************
@@ -116,8 +130,17 @@ router.post('/register', csrfProtection, function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/login', csrfProtection, function(req, res) {
-    res.render('pages/login', { user : req.user || {}, csrfToken: req.csrfToken() });
+router.get('/login/:loginStatus', csrfProtection, function(req, res) {
+    if(req.params.loginStatus){
+      if (req.params.loginStatus == "failed-login"){
+        var message  = "Login failed. Please try again.";
+      }
+      res.render('pages/login', { user : req.user || {}, csrfToken: req.csrfToken(),
+        showMessage : message
+      });  
+    } else {
+      res.render('pages/login', { user : req.user || {}, csrfToken: req.csrfToken() });
+    }
 });
 
 /*****************************************************************
@@ -160,7 +183,6 @@ router.post('/reset-password', csrfProtection, function(req, res) {
 
     if (req.body.resetToken === account.resetToken) {
       account.setPassword(req.body.password, function(err, account) {
-        debugger;
         if (err) {
           console.log("err.message:" + err.message);
           return res.render('pages/register', { account : account, message : err.message, csrfToken: req.csrfToken() });
@@ -1560,8 +1582,18 @@ router.post('/incorporate-suggestions', csrfProtection, function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.post('/login', csrfProtection, passport.authenticate('local'), function(req,res){
-    res.redirect('/imagineer/' + req.user.nickname);
+router.post('/login', csrfProtection, function(req,res, next){
+    passport.authenticate('local', function(err, user, info) {
+      if (err) { return next(err); }
+      if (!user) {
+        return res.redirect('/login/failed-login');
+      }
+      req.logIn(user, function(err) {
+        if (err) { return next(err); }
+        return res.redirect('/imagineer/' + user.nickname);
+      });
+    })(req, res, next);
+
 });
 
 
