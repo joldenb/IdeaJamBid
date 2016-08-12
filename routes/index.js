@@ -100,23 +100,79 @@ router.post('/register', csrfProtection, function(req, res) {
       });
     }
 
-    Account.register(new Account({
-      firstname : req.body.firstname,
-      lastname : req.body.lastname,
-      nickname : req.body.nickname,
-      username : req.body.username,
-      einsteinPoints: 0, rupees: 0, ideaSeeds: [] }), req.body.password, function(err, account) {
-        if (err) {
-            console.log("err.message:" + err.message);
-            return res.render('pages/register', { account : account, message : err.message, csrfToken: req.csrfToken() });
-        }
 
-        passport.authenticate('local')(req, res, function () {
-            res.redirect('/');
-        });
+    Account.find({"nickname" : {$regex : ".*"+req.body.nickname+".*"}}, function(err, users){
+      if(users.length > 1){
+        var newNickname = req.body.nickname + " (" + (users.length + 1).toString() + ")";
+      } else {
+        var newNickname = req.body.nickname;
+      }
+                
+      Account.register(new Account({
+        firstname : req.body.firstname,
+        lastname : req.body.lastname,
+        nickname : newNickname,
+        username : req.body.username,
+        einsteinPoints: 0, rupees: 0,
+        ideaSeeds: []
+      }), req.body.password, function(err, account) {
+          if (err) {
+              console.log("err.message:" + err.message);
+              return res.render('pages/register', { account : account, message : err.message, csrfToken: req.csrfToken() });
+          }
+
+          passport.authenticate('local')(req, res, function () {
+              res.redirect('/');
+          });
+      });
     });
   });
 });
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for registering new user for DSW denver startup week
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.post('/register-dsw', csrfProtection, function(req, res) {
+  Account.findOne({ 'username' : req.body.username  }, function(err, user) {
+    if(user){
+      res.render('pages/login', {
+        csrfToken: req.csrfToken(),
+        showMessage : "You already have an account. Log in below"
+      });
+    }
+
+    Account.find({"nickname" : {$regex : ".*"+req.body.nickname+".*"}}, function(err, users){
+      if(users.length > 0){
+        var newNickname = req.body.nickname + "-" + (users.length + 1).toString();
+      } else {
+        var newNickname = req.body.nickname;
+      }
+                
+      Account.register(new Account({
+        firstname : req.body.firstname,
+        lastname : req.body.lastname,
+        nickname : newNickname,
+        username : req.body.username,
+        einsteinPoints: 0, rupees: 0,
+        ideaSeeds: []
+      }), req.body.password, function(err, account) {
+          if (err) {
+              console.log("err.message:" + err.message);
+              return res.render('pages/register', { account : account, message : err.message, csrfToken: req.csrfToken() });
+          }
+
+          passport.authenticate('local')(req, res, function () {
+              res.redirect('/jam/dsw');
+          });
+      });
+    });
+  });
+});
+
 
 
 router.get('/login', csrfProtection, function(req, res) {
@@ -1591,6 +1647,21 @@ router.post('/login', csrfProtection, function(req,res, next){
       req.logIn(user, function(err) {
         if (err) { return next(err); }
         return res.redirect('/imagineer/' + user.nickname);
+      });
+    })(req, res, next);
+
+});
+
+
+router.post('/login-dsw', csrfProtection, function(req,res, next){
+    passport.authenticate('local', function(err, user, info) {
+      if (err) { return next(err); }
+      if (!user) {
+        return res.redirect('/login/failed-login');
+      }
+      req.logIn(user, function(err) {
+        if (err) { return next(err); }
+        return res.redirect('/jam/dsw');
       });
     })(req, res, next);
 

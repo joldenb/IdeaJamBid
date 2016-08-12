@@ -16,7 +16,7 @@ var csrfProtection = csrf({ cookie: true });
 // email gets their emails
 router.get('/auth/google', csrfProtection, passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-router.get('/auth/google/callback', csrfProtection, 
+router.get('/auth/google/callback', csrfProtection,
   passport.authenticate('google',{
     successRedirect: '/',
     failureRedirect: '/'
@@ -44,7 +44,7 @@ router.get('/auth/facebook/callback', csrfProtection,
 // email gets their emails
 router.get('/auth/linkedin', csrfProtection, passport.authenticate('linkedin'));
 
-router.get('/auth/linkedin/callback', csrfProtection, 
+router.get('/auth/linkedin/callback', csrfProtection,
   passport.authenticate('linkedin',{
     successRedirect: '/',
     failureRedirect: '/'

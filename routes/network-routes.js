@@ -245,6 +245,15 @@ router.post('/save-aptitude', csrfProtection, function(req, res) {
 ******************************************************************
 *****************************************************************/
 router.get('/jam/:networkName', csrfProtection, function(req, res){
+  
+  //special case for denver startup week
+  var dsw = false;
+  if(req.params.networkName == "dsw"){
+    if(!req.user){
+      dsw = true;
+    }
+  }
+
   ideaSeedHelpers.getUserHeadshot(req).then(function(headshotData){
     var headshotURL = headshotData['headshotURL'];
     var headshotStyle = headshotData['headshotStyle'];
@@ -518,6 +527,7 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                       return res.render('pages/jam-profile', {
                         csrfToken: req.csrfToken(),
                         user : req.user || {},
+                        dsw : dsw,
                         ideas : ideaList,
                         topInventors : topAccountsToDisplay,
                         inventorAptitudes :  aptitudes,
