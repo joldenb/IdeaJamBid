@@ -56,7 +56,7 @@ var targetConstants =
     "Life-Cycle Processes",
     "Materials",
     "People",
-  ]  
+  ]
 
 /*****************************************************************
 ******************************************************************
@@ -92,6 +92,7 @@ router.get('/register', csrfProtection, function(req, res) {
 ******************************************************************
 *****************************************************************/
 router.post('/register', csrfProtection, function(req, res) {
+
   Account.findOne({ 'username' : req.body.username  }, function(err, user) {
     if(user){
       res.render('pages/login', {
@@ -100,14 +101,13 @@ router.post('/register', csrfProtection, function(req, res) {
       });
     }
 
-
     Account.find({"nickname" : {$regex : ".*"+req.body.nickname+".*"}}, function(err, users){
       if(users.length > 1){
         var newNickname = req.body.nickname + " (" + (users.length + 1).toString() + ")";
       } else {
         var newNickname = req.body.nickname;
       }
-                
+
       Account.register(new Account({
         firstname : req.body.firstname,
         lastname : req.body.lastname,
@@ -151,7 +151,7 @@ router.post('/register-dsw', csrfProtection, function(req, res) {
       } else {
         var newNickname = req.body.nickname;
       }
-                
+
       Account.register(new Account({
         firstname : req.body.firstname,
         lastname : req.body.lastname,
@@ -193,7 +193,7 @@ router.get('/login/:loginStatus', csrfProtection, function(req, res) {
       }
       res.render('pages/login', { user : req.user || {}, csrfToken: req.csrfToken(),
         showMessage : message
-      });  
+      });
     } else {
       res.render('pages/login', { user : req.user || {}, csrfToken: req.csrfToken() });
     }
@@ -230,7 +230,7 @@ router.get('/reset-password/:resetToken', csrfProtection, function(req, res) {
 *****************************************************************/
 router.post('/reset-password', csrfProtection, function(req, res) {
   Account.findOne({"resetToken" : req.body.resetToken}, function(err, account){
-    
+
     if (err || !account){
       alert('Please try again or contact IdeaJam support to reset your password. Thank you!');
       res.redirect('/');
@@ -269,7 +269,7 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
   }
 
   Account.findOne({"nickname" : req.params.nickname}, function(err, account){
-    
+
     if (err || !account){
       console.log('Error is ' + err);
       res.redirect('/');
@@ -1172,15 +1172,13 @@ router.post('/image-upload', csrfProtection, function(req, res) {
     image.save(function(err, newImage){
       if (err) {
         console.log(err);
-        console.log('The raw response from Mongo was ', raw);
         res.json({"error" : err});
         return;
       } else {
         IdeaSeed.update(
             { _id : req.session.idea },
             { $push : { images : newImage.id }},
-            function(err, raw){
-              console.log('The raw response from Mongo was ', raw);
+            function(err){
               res.json({"redirectURL" : '/annotate-image/'+newFileName});
               return;
             }
@@ -1715,7 +1713,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
 
         ideaSeedHelpers.getApplicationStrength(idea.id)
           .then(function(strengthResponse){
-            
+
             IdeaProblem.find({"ideaSeed" : currentIdea._id, date : {$exists : true}}, null,
               {sort: '-date'}, function(err, problems){
               Component.find({"ideaSeed" : idea.id}, function(err, components){
@@ -1794,7 +1792,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
                                           image["amazonURL"],
                                           imageStyle
                                         ]);
-                                      }           
+                                      }
                                       if (j == idea._doc.images.length){
                                         res.render('pages/ideas-single', { user : req.user || {}, idea : currentIdea,
                                           csrfToken: req.csrfToken(),
@@ -1837,7 +1835,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
                 }); //end of aptitude query
               }); //end of components query
             }); // end of idea problems query
-            
+
         });
       });
     });
@@ -2091,7 +2089,7 @@ router.post('/sign-variant-contract', csrfProtection, function(req, res){
         if(!currentVariant){
           res.redirect('/ideas/' + idea['name']);
           return;
-        } 
+        }
 
         //find the contributor who this email is being sent to and record that their response is pending
         currentVariant['contributorsSignedOff'][req.body.contributorUsername] = "Approved";
@@ -2108,7 +2106,7 @@ router.post('/sign-variant-contract', csrfProtection, function(req, res){
           res.sendStatus(200);
           return;
         });
-        
+
       });
     }); // end of promis from contract creation
   });
@@ -2315,7 +2313,7 @@ router.post('/save-component', csrfProtection, function(req, res) {
     }
 
     Component.findOne({$and : [{ "ideaSeed" : req.session.idea },
-      {"text" : req.body.component}]}, 
+      {"text" : req.body.component}]},
       function(err, component){
       if(err){
         res.json({error: err});
