@@ -24,6 +24,7 @@ var Account = require('./models/account');
 var csrf = require('csurf');
 var RateLimit = require('express-rate-limit');
 var enforce = require('express-sslify');
+var forceSSL = require('express-force-ssl');
 
 require('./config/passport')(passport);
 
@@ -41,6 +42,15 @@ app.use(helmet.hsts({ maxAge: ninetyDaysInMilliseconds, includeSubdomains: true 
 // not sure about this one
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
+
+app.use(forceSSL);
+
+app.set('forceSSLOptions', {
+  enable301Redirects: true,
+  trustXFPHeader: false,
+  httpsPort: 443,
+  sslRequiredMessage: 'SSL Required.'
+});
 
 // views is directory for all template files
 app.set('views', __dirname + '/views');
