@@ -1717,6 +1717,12 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
 
             IdeaProblem.find({"ideaSeed" : currentIdea._id, date : {$exists : true}}, null,
               {sort: '-date'}, function(err, problems){
+                _.each(problems, function(value, key, list){
+                    Account.findOne({"username": value.creator}, function(err, user) {
+                      value.wholeCreator = user;
+                    });
+                });
+
               Component.find({"ideaSeed" : idea.id}, function(err, components){
                 var variantDates = [],
                     sortedProblems = [];

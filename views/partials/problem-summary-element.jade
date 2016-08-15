@@ -8,7 +8,7 @@
         else
           a(href='/imagineer/' + accountName)
             img(src="/avatar.png" height="50" width="50")
-        span #{accountName || user.nickname}
+        span #{accountName || problem.wholeCreator.nickname}
 
       .col-xs-3.problem-row-padding
         if problem['date']
@@ -20,7 +20,7 @@
 
     include ../partials/js-includes.jade
     script(type="text/javascript").
-    
+
       $(".problem-row").click(function(event){
         window.document.location = "/imperfection-profile/" + $(this).attr('id');
-      });      
+      });
