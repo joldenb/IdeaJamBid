@@ -22,7 +22,7 @@ var Account = new Schema({
 			company : ObjectId,
 			location	: ObjectId
     } //for now there's up to three, all ids for network ids
-});
+}, { autoIndex: false });
 
 var minLength = 8;
 var maxLength = 32;

@@ -85,7 +85,7 @@ var IdeaSeed = new Schema({
 
 	skillsOne		: Number,
 	skillsPriority		: { type: Number, default: 15 }
-});
+}, { autoIndex: false });
 
 IdeaSeed.statics.getWasteValueScores = function(idea){
 	IdeaReview.find({}, function(err, reviews){

@@ -9,7 +9,7 @@ var IdeaImage = new Schema({
 	amazonURL : String,
 	uploader		: String //should match the username field of an account
 
-});
+}, { autoIndex: false });
 
 IdeaImage.plugin(passportLocalMongoose);
 

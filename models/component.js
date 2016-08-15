@@ -37,7 +37,7 @@ var Component = new Schema({
 	}],
 
 	ideaSeed		: ObjectId
-});
+}, { autoIndex: false });
 
 /*
 	This function is designed to take as an argument the output of the 
