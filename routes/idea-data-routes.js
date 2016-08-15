@@ -159,7 +159,8 @@ router.post('/add-profile-headshot', csrfProtection,  function(req, res) {
                 account.headshots = [newImage.id];
               }
               account.save(function (err) {
-                res.redirect('/profile-picture');
+                res.sendStatus(200);
+                return;
               });
           });
         }
