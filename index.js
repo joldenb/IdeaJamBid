@@ -107,7 +107,10 @@ var limiter = new RateLimit({
 	}
 });
 
+console.log("environment " + process.env.NODE_ENV);
+
 if(process.env.NODE_ENV == "production"){
+	console.log("enforcing https");
   app.use(enforce.HTTPS());
 	// app.use(function(req, res, next){
 	// 	if(req.header['x-forwarded-proto'] != 'https'){
