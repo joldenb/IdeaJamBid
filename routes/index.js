@@ -31,6 +31,7 @@ var uploading = multer({
 });
 
 router.use(function (req, res, next) {
+  res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
   req.body = JSON.parse(sanitizer.sanitize(JSON.stringify(mongoSanitize(req.body))));
   req.params = JSON.parse(sanitizer.sanitize(JSON.stringify(mongoSanitize(req.params))));
   req.query = JSON.parse(sanitizer.sanitize(JSON.stringify(mongoSanitize(req.query))));

@@ -189,7 +189,7 @@ div#begin-info-right button {
 }
 
 #whatsLeftModal li:last-of-type {
-  border-bottom: none; 
+  border-bottom: none;
 }
 
 #whatsLeftModal li a {
@@ -238,7 +238,7 @@ div#begin-info-right button {
   background: -webkit-linear-gradient(left, #EAE8DE , #00A550); /* For Safari 5.1 to 6.0 */
   background: -o-linear-gradient(right, #EAE8DE, #00A550); /* For Opera 11.1 to 12.0 */
   background: -moz-linear-gradient(right, #EAE8DE, #00A550); /* For Firefox 3.6 to 15 */
-  background: linear-gradient(to right, #EAE8DE , #00A550);  
+  background: linear-gradient(to right, #EAE8DE , #00A550);
 }
 
 .ui-slider-handle {
@@ -301,7 +301,7 @@ table.suggestion-table .col-md-4 {
 .idea-image.view-all-ideas{
   height: 50%;
   background-size: cover;
-  background-position: 50%;  
+  background-position: 50%;
 }
 
 .title-description.view-all-ideas, .title-description.inventor-block {
@@ -309,7 +309,7 @@ table.suggestion-table .col-md-4 {
   padding-left: 1em;
 }
 
-.footer.view-all-ideas { 
+.footer.view-all-ideas {
   height: 15%;
   background-color: #414142; /*dark gray */
   position: relative;
@@ -344,7 +344,7 @@ table.suggestion-table .col-md-4 {
 .idea-image.inventor-block.image-block {
   height:15em;
   background-size: cover;
-  background-position: 50%;  
+  background-position: 50%;
 
 }
 
@@ -385,7 +385,7 @@ table.suggestion-table .col-md-4 {
   width:80%;
 }
 
-.view-idea-suggestions .container{ 
+.view-idea-suggestions .container{
   width: 100%;
 }
 
@@ -427,7 +427,7 @@ table.idea-summary {
   margin-bottom: 3em;
 }
 
-table.idea-summary th,  table.idea-summary td { 
+table.idea-summary th,  table.idea-summary td {
   border: 1px solid gray;
 }
 
@@ -700,7 +700,7 @@ a.plus-overlay img{
 }
 
 .edit-annotation:hover, .delete-component:hover  {
-  cursor: pointer; cursor: hand; 
+  cursor: pointer; cursor: hand;
   border: 1px solid blue;
 }
 
@@ -727,7 +727,7 @@ form#addDescription #submit{
   display: inline-block;
 }
 
-#viabilityModal { 
+#viabilityModal {
   color : #EAE7DE;
 }
 
@@ -770,7 +770,7 @@ img {
 .idea-image.variant-suggestion{
   height: 15em;
   background-size: cover;
-  background-position: 50%;  
+  background-position: 50%;
 }
 
 .title-description.variant-suggestion {
@@ -778,7 +778,7 @@ img {
   padding-left: 1em;
 }
 
-.footer.variant-suggestion, .footer.inventor-block { 
+.footer.variant-suggestion, .footer.inventor-block {
   height: 4em;
   background-color: #414142; /*dark gray */
   position: relative;
@@ -823,8 +823,8 @@ a.network-link:hover {
 }
 
 .problem-row {
-  cursor: pointer; 
-  cursor: hand; 
+  cursor: pointer;
+  cursor: hand;
 }
 
 .solve-btn {
@@ -849,4 +849,8 @@ a.network-link:hover {
 
 .variant-contract-text {
   padding:3em;
+}
+
+.image-summary-image img {
+  max-width: 100%;
 }
