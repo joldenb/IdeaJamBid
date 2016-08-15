@@ -23,6 +23,7 @@ var ideaDataRoutes = require('./routes/idea-data-routes');
 var Account = require('./models/account');
 var csrf = require('csurf');
 var RateLimit = require('express-rate-limit');
+var enforce = require('express-sslify');
 
 require('./config/passport')(passport);
 
@@ -106,19 +107,18 @@ var limiter = new RateLimit({
 	}
 });
 
-
-
 if(process.env.NODE_ENV == "production"){
-	app.use(function(req, res, next){
-		if(req.header['x-forwarded-proto'] != 'https'){
-			res.redirect("https://" + req.header['host'] + req.url);
-		} else {
-			next();
-		}
-	});
+  app.use(enforce.HTTPS());
+	// app.use(function(req, res, next){
+	// 	if(req.header['x-forwarded-proto'] != 'https'){
+	// 		res.redirect("https://" + req.header['host'] + req.url);
+	// 	} else {
+	// 		next();
+	// 	}
+	// });
 }
- 
-//  apply to all requests 
+
+//  apply to all requests
 app.use(limiter);
 
 
