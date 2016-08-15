@@ -118,20 +118,18 @@ var limiter = new RateLimit({
 });
 
 
-module.exports.initMiddleware = function (app) {
-	console.log("environment " + process.env.NODE_ENV);
+console.log("environment " + process.env.NODE_ENV);
 
-	if(process.env.NODE_ENV == "production"){
-		console.log("enforcing https");
-	  app.use(enforce.HTTPS());
-		// app.use(function(req, res, next){
-		// 	if(req.header['x-forwarded-proto'] != 'https'){
-		// 		res.redirect("https://" + req.header['host'] + req.url);
-		// 	} else {
-		// 		next();
-		// 	}
-		// });
-	}
+if(process.env.NODE_ENV == "production"){
+	console.log("enforcing https");
+  app.use(enforce.HTTPS());
+	// app.use(function(req, res, next){
+	// 	if(req.header['x-forwarded-proto'] != 'https'){
+	// 		res.redirect("https://" + req.header['host'] + req.url);
+	// 	} else {
+	// 		next();
+	// 	}
+	// });
 }
 //  apply to all requests
 app.use(limiter);
