@@ -115,7 +115,7 @@ if(process.env.NODE_ENV == "production"){
 		} else {
 			next();
 		}
-	}
+	});
 }
  
 //  apply to all requests 
