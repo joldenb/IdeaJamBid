@@ -34,6 +34,9 @@ aws.config.region = 'us-west-2';
 
 app.use(helmet());
 
+var ninetyDaysInMilliseconds = 7776000000;
+app.use(helmet.hsts({ maxAge: ninetyDaysInMilliseconds, includeSubdomains: true }))
+
 // not sure about this one
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
@@ -85,12 +88,12 @@ app.use(function(req, res, next) {
     next(err);
 });
 
-app.enable('trust proxy'); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS if you use an ELB, custom Nginx setup, etc) 
- 
+app.enable('trust proxy'); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS if you use an ELB, custom Nginx setup, etc)
+
 var limiter = new RateLimit({
-  windowMs: 15*60*1000, // 15 minutes 
-  max: 400, // limit each IP to 100 requests per windowMs 
-  delayMs: 0, // disable delaying - full speed until the max limit is reached 
+  windowMs: 15*60*1000, // 15 minutes
+  max: 400, // limit each IP to 100 requests per windowMs
+  delayMs: 0, // disable delaying - full speed until the max limit is reached
 	handler:  function (req, res) {
 		res.format({
 			html: function(){
@@ -102,6 +105,7 @@ var limiter = new RateLimit({
 		});
 	}
 });
+
 
 
 if(process.env.NODE_ENV == "production"){
