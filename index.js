@@ -43,15 +43,6 @@ app.use(helmet.hsts({ maxAge: ninetyDaysInMilliseconds, includeSubdomains: true 
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
 
-app.use(forceSSL);
-
-app.set('forceSSLOptions', {
-  enable301Redirects: true,
-  trustXFPHeader: false,
-  httpsPort: 443,
-  sslRequiredMessage: 'SSL Required.'
-});
-
 // views is directory for all template files
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
@@ -123,13 +114,15 @@ console.log("environment " + process.env.NODE_ENV);
 if(process.env.NODE_ENV == "production"){
 	console.log("enforcing https");
   app.use(enforce.HTTPS());
-	// app.use(function(req, res, next){
-	// 	if(req.header['x-forwarded-proto'] != 'https'){
-	// 		res.redirect("https://" + req.header['host'] + req.url);
-	// 	} else {
-	// 		next();
-	// 	}
-	// });
+
+  app.use(forceSSL);
+
+  app.set('forceSSLOptions', {
+    enable301Redirects: true,
+    trustXFPHeader: false,
+    httpsPort: 443,
+    sslRequiredMessage: 'SSL Required.'
+  });
 }
 //  apply to all requests
 app.use(limiter);
