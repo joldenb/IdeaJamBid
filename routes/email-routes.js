@@ -17,7 +17,7 @@ router.post('/share-idea', csrfProtection, function(req, res){
     var toEmailAddress = req.body.toEmailAddress;
     var fromEmailAddress = req.body.fromEmailAddress;
     var emailSubject = req.body.emailSubject;
-    var emailBody = req.body.emailBody;    
+    var emailBody = req.body.emailBody;
     var sendgrid  = require('sendgrid')(process.env.SENDGRID_USERNAME, process.env.SENDGRID_PASSWORD);
     sendgrid.send({
       to:       toEmailAddress,
@@ -29,7 +29,7 @@ router.post('/share-idea', csrfProtection, function(req, res){
       res.redirect('back');
     });
 
-    
+
 });
 
 router.post('/send-variant-contract', csrfProtection, function(req, res){
@@ -74,7 +74,7 @@ router.post('/send-variant-contract', csrfProtection, function(req, res){
 
 
 
-  });  
+  });
 });
 
 router.post('/request-reset-email', function(req, res){
@@ -88,7 +88,7 @@ router.post('/request-reset-email', function(req, res){
     Account.findOne({"username" : toEmailAddress}, function(err, account){
 
       if (err || !account){
-        alert('Please try again or contact IdeaJam support to reset your password. Thank you!');
+        console.log('Please try again or contact IdeaJam support to reset your password. Thank you!');
         res.redirect('/');
         return;
       }
@@ -107,7 +107,7 @@ router.post('/request-reset-email', function(req, res){
       });
 
     });
-    
+
 });
 
 module.exports = router;
