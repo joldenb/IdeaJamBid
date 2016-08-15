@@ -14,13 +14,14 @@ html
           if imageURL[0] == profilePictureFilename
             .image-summary-image
               img(src=imageURL[1] height="300" width="400", id=imageURL[0] style=imageURL[2])
-        h3 Select a different Picture
-        each imageURL, index in imageURLs
-          if imageURL[0] != profilePictureFilename
-            a
-              img.imageListItems(src=imageURL[1], id=imageURL[0] style=imageURL[2])
-        .view-all-images-btn
-          a#resetPicture.btn.btn-default() Set Profile Image
+        if imageURLs.length > 1
+          h3 Select a different Picture
+          each imageURL, index in imageURLs
+            if imageURL[0] != profilePictureFilename
+              a
+                img.imageListItems(src=imageURL[1], id=imageURL[0] style=imageURL[2])
+          .view-all-images-btn
+            a#resetPicture.btn.btn-default() Set Profile Image
     form(role='form', id="headshotForm" action="/add-profile-headshot", method="post", data-idea-doc=idea, enctype="multipart/form-data")
       .form-group
         h3 Upload a new User Profile Picture
