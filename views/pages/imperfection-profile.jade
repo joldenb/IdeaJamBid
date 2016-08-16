@@ -6,44 +6,56 @@ html
   .header.navbar.navbar-default
     include ../partials/header.jade
 
-  .component-summary
+  .row.imperfection-summary
+    h1 #{problem.text}
+    h5 By: #{problemCreator.nickname}, #{problem.date}
+  .row.imperfection-summary
+    .edit-column.col-md-6
+      h3 Suggestions
+      if( suggestions.length > 0)
+        ul
+          each suggestion in suggestions             
+            li.row 
+              div.col-xs-12
+                include ../partials/suggestion-summary-element.jade
+      else
+        ul
+          li.no-descriptions No Descriptions Yet
     .col-md-6
-      h1 Imperfection Summary
+      h1 Make a New Suggestion
+      h3#suggestion-question-header How will you:
       form(role='form', id="formSuggestion" action="/suggestion-submit-new", method="post", style='max-width: 300px;', data-idea-doc=idea)
         .form-group
           input(type="hidden", name="_csrf", value="#{csrfToken}")
-          select.form-control#tactics
-              option(value="None Selected") None Selected
-              each value in tactics
-                option(value=value) #{value}
+          div#suggestion-tactics(class="btn-group" role="group" aria-label="suggestionTactic" data-toggle="buttons")
+            h4.suggestion-number 1.
+            each value in tactics
+              label.btn.btn-primary.suggestion-tactics
+                input(type="checkbox" value=value)
+                | #{value}
 
-          select.form-control#targets
-              option(value="None Selected") None Selected
-              each value in targets
-                option(value=value) #{value}
-          input.form-control(type="text", name="suggestionText", value='The solution of ')
+
+          div#suggestion-targets(class="btn-group" role="group" aria-label="suggestionTarget" data-toggle="buttons")
+            h4.suggestion-number 2.
+            each value in targets
+              label.btn.btn-primary.suggestion-targets.disabled
+                input(type="checkbox" value=value)
+                | #{value}
+
+        h3#end-of-suggestion-query to help solve the imperfection of #{problem.text}?
+          h4#suggestion-input-header.suggestion-number 3.
+          input.form-control.suggestion-input(type="text", name="suggestionText", value='The solution of ' disabled)
           p.charactersRemaining
         .modal-footer
           button.btn.btn-info(data-dismiss="modal") Cancel
           button.btn.btn-success#submit(type='submit') Save
-    .edit-column.col-md-6
-        h3 Suggestions
-        if( suggestions.length > 0)
-          ul
-            each suggestion in suggestions             
-              li.row 
-                div.col-xs-12
-                  include ../partials/suggestion-summary-element.jade
-        else
-          ul
-            li.no-descriptions No Descriptions Yet
 
 include ../partials/js-includes.jade
 script(type="text/javascript").
   $("#formSuggestion").submit(function(event){
     event.preventDefault();
-    var tacticVal = $("select#tactics option:selected").val();
-    var targetVal = $("select#targets option:selected").val();
+    var tacticVal = $(".suggestion-tactics.active input").val();
+    var targetVal = $(".suggestion-targets.active input").val();
     if(tacticVal && targetVal){
       var data = {
         "suggestionText" : $("input[name='suggestionText']").val(),
@@ -62,3 +74,82 @@ script(type="text/javascript").
       alert('Tactic and Target Required!!!!!!!!!!!!!');
     }
   });
+
+  $(".suggestion-tactics").click(function(event){
+    if($(".suggestion-tactics.active").length > 0){
+      $(".suggestion-tactics.active").removeClass("active");
+    }
+
+    var verb = "";
+    switch($(this).text()){
+      case "Eliminate" :
+        verb = "eliminating ";
+        break;
+      case "Reduce" :
+        verb = "reducing ";
+        break;
+      case "Substitute" :
+        verb = "substituting ";
+        break;
+      case "Separate" :
+        verb = "separating ";
+        break;
+      case "Integrate" :
+        verb = "integrating ";
+        break;
+      case "Re-Use" :
+        verb = "reusing ";
+        break;
+      case "Standardize" :
+        verb = "standardizing ";
+        break;
+      case "Add" :
+        verb = "adding ";
+        break;
+    }
+
+    $("#suggestion-question-header").text("How will you " + $(this).text().toLowerCase() + ":");
+
+    $(".suggestion-input").remove();
+    // This is for the main solution text input
+    var requiredText = "The solution of " + verb;
+    var input = $("<input class='form-control suggestion-input' type='text' name='suggestionText' disabled>")
+        .insertAfter("#suggestion-input-header")
+        .val(requiredText);
+
+    input[0].addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredText) == -1) {
+            $(this).val(requiredText);
+      }
+      if (this.selectionStart < requiredText.length) {
+        this.selectionStart = requiredText.length;
+      }
+    }, false);
+
+    input[0].addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredText) == -1) {
+            $(this).val(requiredText);
+      }
+      if (this.selectionStart < requiredText.length) {
+        this.selectionStart = requiredText.length;
+      }
+    }, false);
+
+    $(".disabled").removeClass("disabled");
+    $("#suggestion-tactics").hide(400);
+  });
+
+
+  $(".suggestion-targets").click(function(event){
+    if($(".suggestion-targets.active").length > 0){
+      $(".suggestion-targets.active").removeClass("active");
+    }
+
+    var verb = $(".suggestion-tactics.active").text().toLowerCase();
+    $("#suggestion-question-header").text("How will you " + verb + " " + $(this).text().toLowerCase() + " " + $("#end-of-suggestion-query").text());
+    $("#end-of-suggestion-query").remove();
+    $("#suggestion-targets").hide(400);
+
+    document.getElementsByClassName('suggestion-input')[0].disabled = false;
+  });
+
