@@ -446,60 +446,168 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
 
     IdeaImage.find({"_id" : { $in : headshotIDs}}, function(err, images){
 
-      var imageURLs = [];
-      var profilePictureFilename = "";
-      if(images && images.length > 0){
-        for(var i=0; i < images.length; i++){
-          var imageStyle = "";
-          switch (images[i]["orientation"]) {
-            case 1 :
-              imageStyle = "";
-              break;
-            case 2 :
-              imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-              break;
-            case 3 :
-              imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-              break;
-            case 4 :
-              imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-              break;
-          }
-          //get the first image listed in the accounts headshots, use this as the
-          // primary one to display in the header bar
-          if(images[i].id.toString() == req.user.headshots[0]){
-            profilePictureFilename = images[i].filename;
+      /* oh, this is a find all. this should change at some point */
+      Network.find({}, function(err, networks){
+        var masterSchoolNetworkList = [],
+            schoolNetwork = "",
+            masterCompanyNetworkList = [],
+            companyNetwork = "",
+            masterLocationNetworkList = [],
+            locationNetwork = "";
+
+        _.each(networks, function(element, index, list){
+          if(element['type'] == 'school'){
+            masterSchoolNetworkList.push(element);
+            //get school name if it exists
+            if(req.user.networks
+              && req.user.networks['school']
+              && req.user.networks['school'].toString() == element['id'].toString()){
+                schoolNetwork = element['name'];
+            }
           }
 
-          var filename = images[i]._doc["filename"];
-          if(images[i]._doc["image"]){
+          if(element['type'] == 'company'){
+            masterCompanyNetworkList.push(element);
+            //get company name if it exists
+            if(req.user.networks
+              && req.user.networks['company']
+              && req.user.networks['company'].toString() == element['id'].toString()){
+                companyNetwork = element['name'];
+            }
+          }
+
+          if(element['type'] == 'location'){
+            masterLocationNetworkList.push(element);
+            //get company name if it exists
+            if(req.user.networks
+              && req.user.networks['location']
+              && req.user.networks['location'].toString() == element['id'].toString()){
+                locationNetwork = element['name'];
+            }
+          }
+        });
+      
+        Aptitude.find({"_id" : {$in : req.user.aptitudes}}, function(err, myAptitudes){
+          if(req.user.ideaSeeds && req.user.ideaSeeds.length > 0){
+            var ideaNames = [],
+                j = 0;
+            IdeaReview.find({"reviewer" : req.user.username}, function(err, reviews){
+              var ideaSeedIDs = _.map(reviews, function(item){return item["ideaSeedId"];});
+              ideaSeedIDs = _.filter(ideaSeedIDs, Boolean);
+              IdeaSeed.find({_id : {$in : ideaSeedIDs}}, function(err, reviewedIdeas){
+                var creationDate, formattedDate;
+                var reviewedIdeaNames = _.map(reviewedIdeas, function(item){
+                  creationDate = item._id.getTimestamp();
+                  formattedDate = creationDate.getMonth().toString() + "-" +
+                    creationDate.getDate().toString() + "-" +
+                    creationDate.getFullYear().toString();
+                  return [item["name"], formattedDate];
+                });
+                var context = {"reviewedNames" : reviewedIdeaNames};
+                _.each(req.user.ideaSeeds, function(element, index,  list){
+                  reviewNames = this["reviewedNames"];
+                  (function(reviewNames){
+                    IdeaSeed.findById(element._id, function(error, document){
+                      j++;
+                      if(document){
+                        creationDate = document._id.getTimestamp();
+                        formattedDate = creationDate.getMonth().toString() + "-" +
+                          creationDate.getDate().toString() + "-" +
+                          creationDate.getFullYear().toString();
+                        ideaNames.push([document.name, formattedDate]);
+                        if(j == req.user.ideaSeeds.length){
+
+
+                                var imageURLs = [];
+                                var profilePictureFilename = "";
+                                if(images && images.length > 0){
+                                  for(var i=0; i < images.length; i++){
+                                    var imageStyle = "";
+                                    switch (images[i]["orientation"]) {
+                                      case 1 :
+                                        imageStyle = "";
+                                        break;
+                                      case 2 :
+                                        imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                                        break;
+                                      case 3 :
+                                        imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                                        break;
+                                      case 4 :
+                                        imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                                        break;
+                                    }
+                                    //get the first image listed in the accounts headshots, use this as the
+                                    // primary one to display in the header bar
+                                    if(images[i].id.toString() == req.user.headshots[0]){
+                                      profilePictureFilename = images[i].filename;
+                                    }
+
+                                    var filename = images[i]._doc["filename"];
+                                    if(images[i]._doc["image"]){
+                                    } else {
+                                      imageURLs.push([
+                                        filename,
+                                        images[i]._doc["amazonURL"],
+                                        imageStyle
+                                      ]);
+                                    }
+                                  }
+                                  res.render('pages/imagineer-picture', {
+                                    csrfToken: req.csrfToken(),
+                                    user : req.user || {},
+                                    imageURLs : imageURLs,
+                                    aptitudes : myAptitudes,
+                                    reviewNames : reviewNames,
+                                    accountIdeaSeeds : ideaNames,
+                                    schoolNetwork : schoolNetwork,
+                                    locationNetwork : locationNetwork,
+                                    companyNetwork : companyNetwork,
+                                    headshotStyle : headshotStyle,
+                                    headshot : headshotURL,
+                                    profilePictureFilename : profilePictureFilename
+                                  });
+                                } else {
+                                  res.render('pages/imagineer-picture', {
+                                    csrfToken: req.csrfToken(),
+                                    reviewNames : reviewNames,
+                                    user : req.user || {},
+                                    aptitudes : myAptitudes,
+                                    schoolNetwork : schoolNetwork,
+                                    accountIdeaSeeds : ideaNames,
+                                    locationNetwork : locationNetwork,
+                                    companyNetwork : companyNetwork,
+                                    headshot : headshotURL,
+                                    headshotStyle : headshotStyle,
+                                    imageURLs : [],
+                                    profilePictureFilename : ""
+                                  });
+                                }
+                        }
+                      }
+                    });
+                  }(reviewNames));
+                }); //each
+              });
+            });
           } else {
-            imageURLs.push([
-              filename,
-              images[i]._doc["amazonURL"],
-              imageStyle
-            ]);
+            res.render('pages/imagineer-picture', {
+              csrfToken: req.csrfToken(),
+              reviewNames : reviewNames,
+              user : req.user || {},
+              aptitudes : myAptitudes,
+              schoolNetwork : schoolNetwork,
+              accountIdeaSeeds : ideaNames,
+              locationNetwork : locationNetwork,
+              companyNetwork : companyNetwork,
+              headshot : headshotURL,
+              headshotStyle : headshotStyle,
+              imageURLs : [],
+              profilePictureFilename : ""
+            });
           }
-        }
-
-        res.render('pages/imagineer-picture', {
-          csrfToken: req.csrfToken(),
-          user : req.user || {},
-          imageURLs : imageURLs,
-          headshotStyle : headshotStyle,
-          headshot : headshotURL,
-          profilePictureFilename : profilePictureFilename
         });
-      } else {
-        res.render('pages/imagineer-picture', {
-          csrfToken: req.csrfToken(),
-          user : req.user || {},
-          headshot : headshotURL,
-          headshotStyle : headshotStyle,
-          imageURLs : [],
-          profilePictureFilename : ""
-        });
-      }
+      });
     });
   });
 });
@@ -1043,13 +1151,40 @@ router.post('/update-all-viabilities', csrfProtection, function(req, res) {
       });
 
     } else {
-      IdeaReview.findOne({"_id" : req.session.ideaReview}, function(error, currentReview){
+
+      IdeaReview.findById( req.session.ideaReview, function(error, currentReview){
         if(error){
           console.error('ERROR! ' + error);
           res.json({});
-        } else {
+        } else if (!currentReview){
+          var ideaReview = new IdeaReview({
+            reviewer : req.user.username,
+            ideaSeedId : req.session.idea
+          });
+
           _.each(req.body, function(value, key){
-            currentReview[key] = value;
+            ideaReview[key] = value;
+          });
+
+          ideaReview.save(function(err, newReview){
+            if (err) {
+              console.log(err);
+            } else {
+              IdeaSeed.findOneAndUpdate(
+                  { _id : req.session.idea },
+                  { $push : { ideaReviews : newReview.id } },
+                  function(err, idea){
+                    console.log('The raw response from Mongo was ', idea);
+                    req.session.ideaReview = newReview.id;
+                    res.sendStatus(200);
+                  }
+              );
+            }
+          });
+        } else {
+          var newValues = {};
+          _.each(req.body, function(value, key){
+            newValues[key] = value;
           });
 
           currentReview.save(function (err, idea, numaffected) {
@@ -1060,6 +1195,7 @@ router.post('/update-all-viabilities', csrfProtection, function(req, res) {
           });
         }
       });
+
     }
   });
 });
@@ -1707,10 +1843,16 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
       var headshotURL = headshotData['headshotURL'];
       var headshotStyle = headshotData['headshotStyle'];
 
+      //uhhhh why is this?
       delete req.session.ideaReview;
 
       IdeaSeed.findById(req.session.idea,function(err, idea){
         currentIdea = idea._doc;
+
+        
+
+
+
 
         ideaSeedHelpers.getApplicationStrength(idea.id)
           .then(function(strengthResponse){
@@ -2502,7 +2644,7 @@ router.get('/begin-contributor-review', csrfProtection, function(req, res){
             function(err, idea){
               console.log('The raw response from Mongo was ', idea);
               req.session.ideaReview = newReview.id;
-              res.redirect('/ideas/' + idea.name);
+              res.sendStatus(200);
             }
         );
       }

@@ -1,0 +1,30 @@
+@media (max-width: 768px) {
+
+	.container {
+		width: 90%;
+	}
+
+	.existingIdeas {
+	  border: none;
+	}
+
+	.col-md-4.profile-left-column {
+	  border: none;
+	}
+
+	.navbar>.container .navbar-brand, .navbar>.container-fluid .navbar-brand {
+		margin-left: 1em;
+    height: 3em;
+    vertical-align: middle;
+    line-height: 3em;
+ 	}
+
+	li.profile-headshot-list-item {
+		display: none;
+	}
+
+  .header .userName {
+    line-height: initial;
+    margin-right: 1em;	
+  }
+}

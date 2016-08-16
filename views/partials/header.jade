@@ -1,23 +1,40 @@
-if Object.keys(user).length != 0
-  span.userName Howdy #{user.nickname}
-else
-  span.userName Howdy Guest
-|  
-.profile-headshot
-  if headshot && Object.keys(user).length != 0
-    img.placeholder(src=headshot height="75" width="75" style=headshotStyle)
-    a.plus-overlay(href="/imagineer-picture")
-      img(src='/plus-overlay.png' height="75" width="75")
-  else  
-    img.placeholder(src="/avatar.png" height="75" width="75")
-    if Object.keys(user).length != 0
-      a.plus-overlay(href="/imagineer-picture")
-        img(src='/plus-overlay.png' height="75" width="75")
-if Object.keys(user).length != 0
-  a.home-logout.btn.btn-default( href="/imagineer/" + user.nickname ) My Profile
-  | 
-  a.home-logout.btn.btn-default( href="/logout" ) Log Out
-else 
-  a.home-login.btn.btn-success( href="/ideas" ) View All Ideas
-  |  
-  a.home-logout.btn.btn-default( href="/" ) Log In
+.container-fluid
+  .navbar-header
+    button(type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false")
+      span(class="sr-only") Toggle navigation
+      span(class="icon-bar")
+      span(class="icon-bar")
+      span(class="icon-bar")
+    a(class="navbar-brand" href="/") IdeaJam
+    
+  div(class="collapse navbar-collapse" id="bs-example-navbar-collapse-1")
+    ul(class="nav navbar-nav navbar-right")
+      if Object.keys(user).length != 0
+        li
+          span.userName Howdy #{user.nickname}
+      else
+        li
+          span.userName Howdy Guest
+      if headshot && Object.keys(user).length != 0
+        li.profile-headshot-list-item
+          .profile-headshot
+            img.placeholder(src=headshot height="75" width="75" style=headshotStyle)
+            a.plus-overlay(href="/imagineer-picture")
+              img(src='/plus-overlay.png' height="75" width="75")
+      else  
+        li.profile-headshot-list-item
+          .profile-headshot
+            img.placeholder(src="/avatar.png" height="75" width="75")
+            if Object.keys(user).length != 0
+              a.plus-overlay(href="/imagineer-picture")
+                img(src='/plus-overlay.png' height="75" width="75")
+      if Object.keys(user).length != 0
+        li
+          a.home-logout.btn.btn-default( href="/imagineer/" + user.nickname ) My Profile
+        li
+          a.home-logout.btn.btn-default( href="/logout" ) Log Out
+      else 
+        li
+          a.home-login.btn.btn-success( href="/ideas" ) View All Ideas
+        li
+          a.home-logout.btn.btn-default( href="/" ) Log In

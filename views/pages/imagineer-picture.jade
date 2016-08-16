@@ -3,42 +3,293 @@ html
   head
     include ../partials/head.jade
   body
-  .header
+  .header.navbar.navbar-default.navbar.navbar-default
     include ../partials/header.jade
 
-  .container
-    .imagesList
-      if(imageURLs)
-        h3 Current Picture
-        each imageURL, index in imageURLs
-          if imageURL[0] == profilePictureFilename
-            .image-summary-image
-              img(src=imageURL[1] height="300" width="400", id=imageURL[0] style=imageURL[2])
-        if imageURLs.length > 1
-          h3 Select a different Picture
+  .container.row#profile-edit-top-row
+    .col-md-6
+      .imagesList
+        if(imageURLs)
+          h3 Current Picture
           each imageURL, index in imageURLs
-            if imageURL[0] != profilePictureFilename
-              a
-                img.imageListItems(src=imageURL[1], id=imageURL[0] style=imageURL[2])
-          .view-all-images-btn
-            a#resetPicture.btn.btn-default() Set Profile Image
-    form(role='form', id="headshotForm" action="/add-profile-headshot", method="post", data-idea-doc=idea, enctype="multipart/form-data")
-      .form-group
-        h3 Upload a new User Profile Picture
-        |  
-        input#headshotButton(type="file", name="picture")
-        input(type="hidden", name="_csrf", value="#{csrfToken}")
-        br
-    a.home-logout.btn.btn-default( href="/imagineer/" + user.nickname) User Profile
-          
+            if imageURL[0] == profilePictureFilename
+              .image-summary-image
+                img(src=imageURL[1] height="300" width="400", id=imageURL[0] style=imageURL[2])
+          if imageURLs.length > 1
+            h3 Select a different Picture
+            each imageURL, index in imageURLs
+              if imageURL[0] != profilePictureFilename
+                a
+                  img.imageListItems(src=imageURL[1], id=imageURL[0] style=imageURL[2])
+            .view-all-images-btn
+              a#resetPicture.btn.btn-default() Set Profile Image
+      form(role='form', id="headshotForm" action="/add-profile-headshot", method="post", data-idea-doc=idea, enctype="multipart/form-data")
+        .form-group
+          h3 Upload a new User Profile Picture
+          |  
+          input#headshotButton(type="file", name="picture")
+          input(type="hidden", name="_csrf", value="#{csrfToken}")
+          br
+      a.home-logout.btn.btn-default( href="/imagineer/" + user.nickname) User Profile
 
+    .col-md-6
+      h3 Attributes
+      div#begin-info-right
+        .profileSchool
+          if schoolNetwork
+            h4 School :  #[a(class="network-link") #{schoolNetwork}]
+            if Object.keys(user).length != 0
+              a(class="btn btn-default" href="#" id="schoolModalButton" data-toggle="modal" data-target="#schoolModal") Edit Jam
+          else
+            if Object.keys(user).length != 0
+              button(type="button" id="schoolModalButton" class="btn btn-default" data-toggle="modal" data-target="#schoolModal") Add your School
+        .profileCompany
+          if companyNetwork
+            h4 Company :  #[a(class="network-link") #{companyNetwork}]
+            if Object.keys(user).length != 0
+              a(class="btn btn-default" href="#" id="companyModalButton" data-toggle="modal" data-target="#companyModal") Edit Jam
+          else
+            if Object.keys(user).length != 0
+              button(type="button" id="companyModalButton" class="btn btn-default" data-toggle="modal" data-target="#companyModal") Add your Company
+        .profileLocation
+          if locationNetwork
+            h4 Location : #[a(class="network-link") #{locationNetwork}]
+            if Object.keys(user).length != 0
+              a(class="btn btn-default" href="#" id="locationModalButton" data-toggle="modal" data-target="#companyModal") Edit Jam
+          else
+            if Object.keys(user).length != 0
+              button(type="button" id="locationModalButton" class="btn btn-default" ) Add your Location
+      div#begin-info-aptitudes.aptitudeList
+        .profileAptitudes
+          if aptitudes
+            h3 Aptitudes : 
+            ul
+              each aptitude in aptitudes
+                li(data-apt-id="#{aptitude.identifier}")
+                  a(href="/aptitudes/" + aptitude.title) #{aptitude.title}
+          if Object.keys(user).length != 0
+            form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
+              .form-group
+                |  
+                input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
+                input(type="hidden", name="_csrf", value="#{csrfToken}")
+              .modal-footer
+                button.btn.btn-success#aptitudeSubmit(type='submit') Save
+          
+  #profile-edit-bottom-row.row
+    .col-md-6.existingIdeas
+      h3 Your Ideas:
+      if accountIdeaSeeds
+        ul
+          each val, index in accountIdeaSeeds
+            if val[0]
+              li
+                if Object.keys(user).length != 0
+                  a(href="/ideas/" + val[0])
+                    h4.idea-text-name= val[0]
+                  span.idea-text-date= val[1]
+                else
+                  a(href="/ideas/" + val[0])
+                    h4.idea-text-name= val[0]
+                  span.idea-text-date= val[1]
+
+      else
+        h4 None so far.
+      if Object.keys(user).length != 0
+        a.home-login.btn.btn-success( href="/introduce-idea" ) Begin a New Idea > 
+
+    .col-md-6.contributedIdeas
+      h3 Your Contributions
+      if reviewNames
+        ul
+          each val, index in reviewNames
+            if val[0]
+              li
+                a(href="/ideas/" + val[0])
+                  h4.idea-text-name= val[0]
+                span.idea-text-date= val[1]
+      else
+        h4 None so far.
+      a.home-login.btn.btn-success( href="/ideas" ) View All Ideas
+
+  #schoolModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 School Jam
+        .modal-body
+          form(role='form', id="saveSchool" action="/save-school-network", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            .form-group
+              |  
+              input.form-control.ui-front(type='text', id="schoolNetwork", name="schoolNetwork", placeholder='My school is called... ', autocomplete="on")
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+            .modal-footer
+              button.btn.btn-info(data-dismiss="modal") Cancel
+              button.btn.btn-success#submit(type='submit') Save
+  #companyModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Company Jam
+        .modal-body
+          form(role='form', id="saveCompany" action="/save-company-network", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            .form-group
+              |  
+              input.form-control.ui-front(type='text', id="companyNetwork", name="companyNetwork", placeholder='My company is called... ', autocomplete="on")
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+            .modal-footer
+              button.btn.btn-info(data-dismiss="modal") Cancel
+              button.btn.btn-success#submit(type='submit') Save
+  #locationModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Location Jam
+        .modal-body
+          form(role='form', id="saveLocation" action="/save-location-network", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            .form-group
+              |  
+              h4 Select State
+              select.form-control#locationState
+              h4.locationCity(style="display:none;") Select City
+              select.form-control.locationCity(style="display:none;")
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+
+            .modal-footer
+              button.btn.btn-info(data-dismiss="modal") Cancel
+              button.btn.btn-success#locationSubmit(type='submit') Save
+
+  button(type="button" id="secretLocationButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#locationModal") Go Win Fight
 
   include ../partials/js-includes.jade
   script(src='/exif.js')
   script(type="text/javascript").
-    /* document.getElementById("headshotButton").onchange = function() {
-      document.getElementById("headshotForm").submit();
-    }; */
+    $( document ).ready(function() {
+      jQuery.get("/clear-session-idea", function(data){
+        var stop;
+      });
+
+
+      $.getJSON("/university-majors.json", function(data){
+        var majorName, words = [];
+        var majorsArray = _.map(data, function(object){
+           majorName = object['Major']
+           words = majorName.toLowerCase().split(' ');;
+            for(var i = 0; i < words.length; i++){
+              words[i] = words[i].split('');
+              words[i][0] = words[i][0].toUpperCase(); 
+              words[i] = words[i].join('');
+            }
+            return words.join(' ');
+        });
+
+        $("#aptitudeTitle").autocomplete({
+          source : majorsArray,
+          appendTo : "#saveAptitude .form-group"
+        });
+      });
+
+
+    });
+
+    $("#schoolModal").on('shown.bs.modal', function(){
+      var schoolNetworkList = _.map(JSON.parse('!{masterSchoolNetworkString}'), function(item){return item['name'];})
+      $("#schoolNetwork").autocomplete({
+        source : schoolNetworkList,
+        appendTo : "#saveSchool"
+      });
+    });
+
+    $("#companyModal").on('shown.bs.modal', function(){
+      var companyNetworkList = _.map(JSON.parse('!{masterCompanyNetworkString}'), function(item){return item['name'];})
+      $("#companyNetwork").autocomplete({
+        source : companyNetworkList,
+        appendTo : "#saveCompany"
+      });
+    });
+
+    $("#locationModalButton").click(function(){
+      $.getJSON("/us-cities-and-states.json", function(data){
+        var stateArray = _.map(data, function(object){
+          return object['FIELD2'];
+        });
+
+        stateArray.shift();
+        stateArray = _.uniq(stateArray);
+        stateArray = _.sortBy(stateArray);
+
+        $("#secretLocationButton").click();
+        _.each(stateArray, function(state, index){
+          $('#locationState').append($('<option>', {
+            value: state,
+            text: state
+          }));
+        });
+
+        $("#locationState").change(function(event){
+          $('select.locationCity option').remove();
+
+          var cityArray = _.filter(data, function(object){
+            return object['FIELD2'] == $('#locationState').find(":selected").text();
+          });
+
+          cityArray = _.map(cityArray, function(object){
+            return object['FIELD1'];
+          });
+
+          cityArray = _.uniq(cityArray);
+          cityArray = _.sortBy(cityArray);
+
+          $(".locationCity").show();
+          _.each(cityArray, function(city, index){
+            $('select.locationCity').append($('<option>', {
+              value: city,
+              text: city
+            }));
+          });
+        });
+      });
+    });
+
+    $("a.network-link").click(function(event){
+      var urlPath = $(this).text().split(" ").join("-")
+      window.location.pathname = "/jam/" + urlPath;
+    });
+
+    $("#locationSubmit").click(function(event){
+      event.preventDefault();
+      $.post('/save-location-network', 
+        {
+          locationCity : $("select.locationCity option:selected").text(),
+          locationState : $("#locationState option:selected").text(),
+          "_csrf" : $('[name="_csrf"]').val()
+        },
+        function(resp) {
+          window.location.reload(true);
+        });      
+    });
+
+    $("#aptitudeSubmit").click(function(event){
+      event.preventDefault();
+      if($("#aptitudeTitle").val() != ""){
+        $.post('/save-aptitude', 
+          {
+            aptitudeTitle : $("#aptitudeTitle").val(),
+            "_csrf" : $('[name="_csrf"]').val()
+          },
+          function(resp) {
+            window.location.reload(true);
+          });
+      } else {
+        alert("Please enter a valid aptitude.");  
+      }
+    });
 
     document.getElementById("headshotButton").onchange = function(event) {
       const files = document.getElementById('headshotButton').files;

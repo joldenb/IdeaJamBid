@@ -4,7 +4,7 @@ html
     include ../partials/head.jade
   body
   if user  
-    .header
+    .header.navbar.navbar-default
       include ../partials/header.jade
   div.profile-info.container
     .col-md-4.profile-left-column
@@ -15,44 +15,20 @@ html
         .profileSchool
           if schoolNetwork
             h4 School :  #[a(class="network-link") #{schoolNetwork}]
-            if Object.keys(user).length != 0
-              a(class="btn btn-default" href="#" id="schoolModalButton" data-toggle="modal" data-target="#schoolModal") Edit Jam
-          else
-            if Object.keys(user).length != 0
-              button(type="button" id="schoolModalButton" class="btn btn-default" data-toggle="modal" data-target="#schoolModal") Add your School
         .profileCompany
           if companyNetwork
             h4 Company :  #[a(class="network-link") #{companyNetwork}]
-            if Object.keys(user).length != 0
-              a(class="btn btn-default" href="#" id="companyModalButton" data-toggle="modal" data-target="#companyModal") Edit Jam
-          else
-            if Object.keys(user).length != 0
-              button(type="button" id="companyModalButton" class="btn btn-default" data-toggle="modal" data-target="#companyModal") Add your Company
         .profileLocation
           if locationNetwork
             h4 Location : #[a(class="network-link") #{locationNetwork}]
-            if Object.keys(user).length != 0
-              a(class="btn btn-default" href="#" id="locationModalButton" data-toggle="modal" data-target="#companyModal") Edit Jam
-          else
-            if Object.keys(user).length != 0
-              button(type="button" id="locationModalButton" class="btn btn-default" ) Add your Location
       div#begin-info-aptitudes.aptitudeList
         .profileAptitudes
-          if aptitudes
+          if aptitudes && aptitudes.length > 0
             h3 Aptitudes : 
             ul
               each aptitude in aptitudes
                 li(data-apt-id="#{aptitude.identifier}")
                   a(href="/aptitudes/" + aptitude.title) #{aptitude.title}
-          if Object.keys(user).length != 0
-            form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
-              .form-group
-                |  
-                input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
-                input(type="hidden", name="_csrf", value="#{csrfToken}")
-              .modal-footer
-                button.btn.btn-success#aptitudeSubmit(type='submit') Save
-          
 
     .col-md-4.existingIdeas
       h3 #{profileAccount.nickname}'s Ideas:
