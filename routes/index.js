@@ -59,6 +59,76 @@ var targetConstants =
     "People",
   ]
 
+var viabilities = [
+    {
+      name: "performability",
+      prefix: "perf"
+    }, 
+    {
+      name: "affordability",
+      prefix: "afford"
+    }, 
+    {
+      name: "featurability",
+      prefix: "feature",
+      iconId: "perfIcon" 
+    },
+    {
+      name: "deliverability",
+      prefix: "deliver",
+      iconId: "deliverabilityIcon"
+    }, 
+    {
+      name: "useability",
+      prefix: "useability"
+    }, 
+    {
+      name: "maintainability",
+      prefix: "maintain",
+      iconId: "maintainabilityIcon"
+    }, 
+    {
+      name: "danger",
+      link: "dangerous",
+      prefix: "danger"
+    }, 
+    {
+      name: "durability",
+      prefix: "durability"
+    }, 
+    {
+      name: "imageability",
+      prefix: "imageability",
+      sliderId: "imageSlider"
+    }, 
+    {
+      name: "complexity",
+      prefix: "complexity",
+      sliderId: "complexSlider"
+    }, 
+    {
+      name: "precision",
+      prefix: "precision"
+    }, 
+    {
+      name: "variability",
+      prefix: "variability"
+    }, 
+    {
+      name: "sensitivity",
+      prefix: "sensitivity"
+    }, 
+    {
+      name: "immaturity",
+      prefix: "immaturity",
+      sliderId: "immatureSlider"
+    }, 
+    {
+      name: "skills",
+      prefix: "skills"
+    }
+  ];
+
 /*****************************************************************
 ******************************************************************
 ******************************************************************
@@ -1818,6 +1888,36 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
     return;
   }
 
+  // if (Object.keys(req.user).length != 0) {
+    
+  // }
+
+  function shuffle(a) {
+      var j, x, i;
+      for (i = a.length; i; i--) {
+          j = Math.floor(Math.random() * i);
+          x = a[i - 1];
+          a[i - 1] = a[j];
+          a[j] = x;
+      }
+  }
+
+  shuffle(viabilities);
+
+  for (var via in viabilities) {
+    if (!viabilities[via]['iconId']) {
+      viabilities[via]['iconId'] = viabilities[via].prefix + "Icon";      
+    }
+    if (!viabilities[via]['sliderId']) {
+      viabilities[via]['sliderId'] = viabilities[via].prefix + "Slider";
+    }
+    if (!viabilities[via]['labelId']) {
+      viabilities[via]['labelId'] = viabilities[via].prefix + "Label";
+    }
+    viabilities[via]['link'] = viabilities[via].link || viabilities[via].name;
+    viabilities[via]['name'] = viabilities[via].name.charAt(0).toUpperCase() + viabilities[via].name.slice(1);
+  }  
+
   // potentially fragile logic here. all ideas should have
   // a name after the initial visit to this path. but on the first
   // visit, we'll rely on the session to grab the idea id that was
@@ -1958,6 +2058,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
                                           inventorName : idea.inventorName,
                                           problems : problems,
                                           components : components,
+                                          viabilities : viabilities,
                                           listOfProblems : listOfProblems });
                                       }
                                     });
@@ -1978,6 +2079,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
                                           headshotStyle : headshotStyle,
                                           problems : problems,
                                           components : components,
+                                          viabilities : viabilities,                                          
                                           listOfProblems : listOfProblems });
                                 }
                   });
