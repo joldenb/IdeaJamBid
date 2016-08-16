@@ -2770,19 +2770,31 @@ router.get('/imperfection-profile/:identifier', csrfProtection, function(req, re
   IdeaProblem.findOne({
     "identifier" : req.params.identifier
     }, function(err, ideaProblem){
-    Component.find({
-      "problemID" : ideaProblem.id
-      }, function(err, suggestions){
-        res.render('pages/imperfection-profile', {
-          csrfToken: req.csrfToken(),
-          problem : ideaProblem,
-          user : req.user || {},
-          suggestions: suggestions,
-          targets: targetConstants,
-          tactics: tacticConstants
-        });
-      }).sort({date: -1});
-    });
+
+    if(!ideaProblem){
+      res.redirect('/');
+      return;
+    }
+    Account.findOne({"username" : ideaProblem.creator}, function(err, problemCreator){
+      if(!problemCreator){
+        res.redirect('/');
+        return;
+      }
+      Component.find({
+        "problemID" : ideaProblem.id
+        }, function(err, suggestions){
+          res.render('pages/imperfection-profile', {
+            csrfToken: req.csrfToken(),
+            problem : ideaProblem,
+            problemCreator : problemCreator,
+            user : req.user || {},
+            suggestions: suggestions,
+            targets: targetConstants,
+            tactics: tacticConstants
+          });
+        }).sort({date: -1});
+    })
+  });
 });
 
 
