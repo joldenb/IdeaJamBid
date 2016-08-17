@@ -81,6 +81,8 @@ router.post('/add-component-image', csrfProtection, function(req, res) {
             } else {
               if(req.body.componentProfilePage ){
                 res.json({"redirectURL" : '/component-profile/'+req.body.imageComponent});
+              } else if(req.body.suggestionPage ){
+                res.json({"imageURL" : req.body.fileUrl});
               } else {
                 // I need to figure out how this should behave. The form is not being submitted
                 // correctly

@@ -957,7 +957,7 @@ router.post('/suggestion-submit-new', csrfProtection, function(req, res) {
     "text"        : problemText
   }, function(err, problem){
 
-      var newSuggestion = {
+    var newSuggestion = {
       descriptions : [req.body.suggestionText.slice(16)], //getting rid of "the solution of "
       category : suggestionCategory,
       creator : req.user.username,
@@ -967,20 +967,48 @@ router.post('/suggestion-submit-new', csrfProtection, function(req, res) {
       identifier : "comp-"+Date.now()
     };
 
-    Account.findById( req.user.id,
-      function (err, account) {
-        var points = 50;
-        account.einsteinPoints = account.einsteinPoints + points;
-        account.save(function (err) {});
-    });
 
-    Component.create(newSuggestion,
-      function(err, raw){
-        console.log('The raw response from Mongo was ', raw);
-        res.redirect('/imperfection-profile/' + problem.identifier);
-      }
-    );
+    if(req.body.filename){
+      IdeaImage.find({"filename" : {$regex : ".*"+req.body.filename+".*"}}, function(err, images){
 
+        var newFileName = req.body.filename + "-" + (images.length + 1).toString();
+
+        var image = new IdeaImage({ imageMimetype : req.body.type,
+          filename : newFileName, uploader : req.user.username, amazonURL : req.body.fileUrl });
+        image.save(function(err, newImage){
+          if (err) {
+            console.log(err);
+          } else {
+            newSuggestion["mainImage"] =  newImage.id;
+            Account.findById( req.user.id,
+              function (err, account) {
+                var points = 50;
+                account.einsteinPoints = account.einsteinPoints + points;
+                account.save(function (err) {});
+            });
+            Component.create(newSuggestion,
+              function(err, raw){
+                console.log('The raw response from Mongo was ', raw);
+                res.redirect('/imperfection-profile/' + problem.identifier);
+              }
+            );
+          }
+        });
+      });
+    } else {
+      Account.findById( req.user.id,
+        function (err, account) {
+          var points = 50;
+          account.einsteinPoints = account.einsteinPoints + points;
+          account.save(function (err) {});
+      });
+      Component.create(newSuggestion,
+        function(err, raw){
+          console.log('The raw response from Mongo was ', raw);
+          res.redirect('/imperfection-profile/' + problem.identifier);
+        }
+      );
+    }
   });
 });
 

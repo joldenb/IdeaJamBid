@@ -932,3 +932,14 @@ button.suggestion-tactics, button.suggestion-targets {
 .btn-group .btn+.btn {
   margin-left: 0;
 }
+
+#suggestion-image-preview {
+  width: 80%;
+  height: auto;
+}
+
+#spinner {
+  display: block;
+  margin: 1em auto;
+  height: 5em;
+}
