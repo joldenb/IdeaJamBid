@@ -929,3 +929,6 @@ button.suggestion-tactics, button.suggestion-targets {
   max-width:80%;
 }
 
+.btn-group .btn+.btn {
+  margin-left: 0;
+}
