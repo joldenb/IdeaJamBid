@@ -769,12 +769,25 @@ html
       });
     }
 
-    $("a.viabilityLink").click(function(event){
-      event.preventDefault();
+
+    //- $("#viabilityModal .cancel-button").click(function(event){
+    //-   if($("#viabilityModal").is(":visible")){    
+    //-     $('#viabilityModal').modal('hide');
+    //-   }
+    //- });
+
+    //- $("#viabilityModalButton").click(function(event){
+    //-   if(!$("#viabilityModal").is(":visible")){    
+    //-     $('#viabilityModal').modal('show');
+    //-   }
+    //- });
+
+    $(".viabilityLink").click(function(event){
+      //event.preventDefault();
       var data = {
         "isModal" : true
       };
-      var pathname = $(this)[0].pathname;
+      var pathname = $(this)[0].getAttribute("href");
       $("button.btn.btn-info.modal-expand-collapse").hide();        
       $("button.btn.btn-info.modal-view-all").show();
       $.get(pathname, data, function(returnData, status){

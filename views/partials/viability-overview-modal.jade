@@ -9,7 +9,7 @@ form(role='form', id="viability-overview" action="/update-viability-scores", met
                   .col-sm-6
                     .slider-container
                       div(id=viabilities[counter + offset].iconId class="viability-icon")
-                        a.viabilityLink(href="/" + viabilities[counter + offset].link)
+                        .viabilityLink(href="/" + viabilities[counter + offset].link)
                           img(src="/" + viabilities[counter + offset].iconId + ".png" height="75" width="75")
                         a.plus-overlay()
                           img(height="75" width="75")
@@ -26,7 +26,7 @@ form(role='form', id="viability-overview" action="/update-viability-scores", met
                     .col-sm-6
                       .slider-container
                         div(id=viabilities[counter + offset].iconId class="viability-icon")
-                          a.viabilityLink(href="/" + viabilities[counter + offset].link)
+                          .viabilityLink(href="/" + viabilities[counter + offset].link)
                             img(src="/" + viabilities[counter + offset].iconId + ".png" height="75" width="75")
                           a.plus-overlay()
                             img(height="75" width="75")
