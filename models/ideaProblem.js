@@ -11,7 +11,9 @@ var IdeaProblem = new Schema({
 
     identifier  : String, //unique public facing identifier, of the form prob-(date.now)
 
-	ideaSeed		: ObjectId
+	ideaSeed		: ObjectId,
+  upvotes      : [ObjectId],
+
 }, { autoIndex: false });
 
 module.exports = mongoose.model('IdeaProblem', IdeaProblem);

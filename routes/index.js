@@ -1139,6 +1139,54 @@ router.get('/update-suggestion-points/:problemAuthor', csrfProtection, function(
 /*****************************************************************
 ******************************************************************
 ******************************************************************
+* Upvote imperfection and suggestion
+******************************************************************
+******************************************************************
+*****************************************************************/
+
+router.post('/upvote-imperfection', csrfProtection, function(req, res) {
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
+
+  var problemId = req.body.problem;
+
+  IdeaProblem.findById(problemId,
+    function (err, problem) {
+      if(problem.upvotes.indexOf(req.user.id) == -1) {
+        problem.upvotes.push(req.user.id);
+        problem.save(function (err) {});
+      }
+  });
+
+  res.sendStatus(200);
+});
+
+router.post('/upvote-suggestion', csrfProtection, function(req, res) {
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
+
+  var suggestionId = req.body.suggestion;
+
+  debugger;
+
+  Component.findById(suggestionId,
+    function (err, component) {
+      if(component.upvotes.indexOf(req.user.id) == -1) {
+        component.upvotes.push(req.user.id);
+        component.save(function (err) {});
+      }
+  });
+
+  res.sendStatus(200);
+});
+
+/*****************************************************************
+******************************************************************
+******************************************************************
 * I have to look up where this is used.
 ******************************************************************
 ******************************************************************

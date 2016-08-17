@@ -1,6 +1,6 @@
 .suggestion-element.variant-suggestion-block.problem-summary-block
   .title-description.variant-suggestion
-    div.row
+    div.row(id="#{suggestion.identifier}")
       .col-xs-3
         if(compHeadshot)
           a(href='/imagineer/' + accountName)
@@ -16,8 +16,34 @@
         //- if problem['date']
         //-   div #{moment(problem.date).format('MM/DD/YYYY')}
 
-      .col-xs-6.problem-row-padding
+      .col-xs-4.problem-row-padding
         if suggestion.category
           div Category: #{suggestion.category}
         if suggestion.descriptions[0]
           div Description: #{suggestion.descriptions[0]}
+
+      .col-xs-2.problem-row-padding.upvote
+        a(class="upvote-suggestion" id="upvote-#{suggestion.identifier}")
+          div.glyphicon.glyphicon-fire 
+        span #{suggestion.upvotes.length || 0}
+
+    include ../partials/js-includes.jade
+    script(type="text/javascript").
+
+      $(".upvote-suggestion").click(function(event){
+        event.preventDefault();
+        var selector = "#upvote-" + "!{suggestion.identifier}";
+
+        if ($.contains($(selector)[0], event.target)) {
+          $.post('/upvote-suggestion', 
+          {
+            _csrf : $('[name="_csrf"]').val(),
+            suggestion : "!{suggestion.id}"
+          },
+          function(data, response) {
+            window.location.reload(true);
+          });
+        }
+
+        return false;
+      });
