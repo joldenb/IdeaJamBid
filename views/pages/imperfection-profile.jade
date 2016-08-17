@@ -11,7 +11,7 @@ html
     h5 By: #{problemCreator.nickname}, #{problem.date}
   .row.imperfection-summary
     .edit-column.col-md-6
-      h3 Suggestions
+      h1 Suggestions
       if( suggestions.length > 0)
         ul
           each suggestion in suggestions             
@@ -38,8 +38,8 @@ html
           div#suggestion-targets(class="btn-group" role="group" aria-label="suggestionTarget" data-toggle="buttons")
             h4.suggestion-number 2.
             each value in targets
-              label.btn.btn-primary.suggestion-targets.disabled
-                input(type="checkbox" value=value)
+              label.btn.btn-primary.suggestion-targets.disabled(style="background-color : #00A550 !important;")
+                input.target-inputs(type="checkbox" value=value disabled )
                 | #{value}
 
         h3#end-of-suggestion-query to help solve the imperfection of #{problem.text}?
@@ -78,6 +78,10 @@ script(type="text/javascript").
   $(".suggestion-tactics").click(function(event){
     if($(".suggestion-tactics.active").length > 0){
       $(".suggestion-tactics.active").removeClass("active");
+    }
+
+    if($(".suggestion-targets.disabled").length > 0){
+      $(".suggestion-targets.active").removeClass("active");
     }
 
     var verb = "";
@@ -135,21 +139,26 @@ script(type="text/javascript").
       }
     }, false);
 
+    $(".disabled").removeAttr("style");
     $(".disabled").removeClass("disabled");
     $("#suggestion-tactics").hide(400);
   });
 
 
   $(".suggestion-targets").click(function(event){
-    if($(".suggestion-targets.active").length > 0){
-      $(".suggestion-targets.active").removeClass("active");
-    }
 
-    var verb = $(".suggestion-tactics.active").text().toLowerCase();
-    $("#suggestion-question-header").text("How will you " + verb + " " + $(this).text().toLowerCase() + " " + $("#end-of-suggestion-query").text());
-    $("#end-of-suggestion-query").remove();
-    $("#suggestion-targets").hide(400);
+    if(!$(this).hasClass("disabled")){
 
-    document.getElementsByClassName('suggestion-input')[0].disabled = false;
+      if($(".suggestion-targets.active").length > 0){
+        $(".suggestion-targets.active").removeClass("active");
+      }
+
+      var verb = $(".suggestion-tactics.active").text().toLowerCase();
+      $("#suggestion-question-header").text("How will you " + verb + " " + $(this).text().toLowerCase() + " " + $("#end-of-suggestion-query").text());
+      $("#end-of-suggestion-query").remove();
+      $("#suggestion-targets").hide(400);
+
+      document.getElementsByClassName('suggestion-input')[0].disabled = false;
+    } 
+
   });
-
