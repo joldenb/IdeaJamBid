@@ -115,7 +115,7 @@ html
 
       .idea-summary-data#idea-summary-waste-values
         h4 Idea Viability Scores
-        a.btn.btn-default( type="button" id="viabilityModalButton"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") View All
+        a.btn.btn-default( type="button" id="viabilityModalButton"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") Score Now
         br
 
   #titleModal.modal.fade.annotate-modal(role="dialog")
@@ -234,9 +234,10 @@ html
               include ../partials/viability-overview-modal.jade
           .view-specific-viability
         .modal-footer.view-all-button
-            button.btn.btn-info.modal-view-all View All
+            button.btn.btn-info.modal-expand-collapse Expand
+            button.btn.btn-info.modal-view-all Back
             button.btn.btn-info.cancel-button(data-dismiss="modal") Cancel
-            button.btn.btn-success#viabilitySubmit(data-viability-category="view-all") Save
+            button.btn.btn-success#viabilitySubmit(data-viability-category="view-all") Submit
 
   #addProblemModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -495,7 +496,7 @@ html
       // as the user went through more than one in a row. I tried the jquery unbind and off
       // functions
       $("#viabilitySubmit").remove();
-      $("<button class='btn btn-success' id='viabilitySubmit'>Save</button>")
+      $("<button class='btn btn-success' id='viabilitySubmit'>Submit</button>")
       .appendTo("#viabilityModal .modal-footer.view-all-button")
       .click(function(event){
 
@@ -768,33 +769,47 @@ html
       });
     }
 
-    $("a.viabilityLink").click(function(event){
-      //event.preventDefault();
+    $(".viabilityLink").click(function(event){
       var data = {
         "isModal" : true
       };
-      var pathname = $(this)[0].pathname;
+      var pathname = $(this)[0].getAttribute("href");
+      $("button.btn.btn-info.modal-expand-collapse").hide();        
+      $("button.btn.btn-info.modal-view-all").show();
       $.get(pathname, data, function(returnData, status){
         $("#viabilityModal .view-all-viabilities").hide();
         //$("#viabilitySubmit").attr("data-viability-category", pathname.slice(1));
         $("#viabilityModal .modal-body .view-specific-viability").append(returnData)
 
         getNextSliderConfig(pathname.slice(1));
-
       });
+    });
+
+    $("#viabilityModal .modal-expand-collapse").click(function(eventView){
+      //if view all viabilities is not visible, remove contents and show 
+      // the view-all view
+      if($(".additional-viabilities").is(":visible")){
+        $(".additional-viabilities").hide();
+        $("button.btn.btn-info.modal-expand-collapse").text("Expand")
+      } else {
+        $(".additional-viabilities").show();
+        $("button.btn.btn-info.modal-expand-collapse").text("Collapse")
+      }
     });
 
     $("#viabilityModal .modal-view-all").click(function(eventView){
       //if view all viabilities is not visible, remove contents and show 
       // the view-all view
       if(!$(".view-all-viabilities").is(":visible")){
+        $("button.btn.btn-info.modal-expand-collapse").show();        
+        $("button.btn.btn-info.modal-view-all").hide();       
         $("#viabilityModal .modal-body .view-specific-viability").html("")
         //$("#viabilitySubmit").attr("data-viability-category", "view-all");
         $("#viabilityModal .view-all-viabilities").show();
         
         $.get('/update-viability-scores', function(returnData, status){
           $(".view-all-viabilities .ui-slider").html("");
-          initializeAllSliders(returnData);
+          initializeAllSliders(returnData);   
         });
       }
     });

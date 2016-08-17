@@ -869,6 +869,17 @@ a.network-link:hover {
   max-width: 100%;
 }
 
+.modal-footer {
+  clear: both;
+}
+
+button.btn.btn-info.modal-view-all {
+  display: none;
+}
+
+.additional-viabilities {
+  display: none;
+}
 #profile-edit-top-row.container {
   width: initial;
   margin: 0;
