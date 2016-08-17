@@ -27,4 +27,8 @@
     line-height: initial;
     margin-right: 1em;	
   }
+
+  .suggestion-tactics, .suggestion-targets {
+  	width: 100%;
+	}
 }
