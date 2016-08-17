@@ -9,8 +9,10 @@ html
   .row.imperfection-summary
     h1 #{problem.text}
     h5 By: #{problemCreator.nickname}, #{problem.date}
+    .return-button
+      a.home-logout.btn.btn-default( href="/ideas/#{idea.name}") Idea Summary
   .row.imperfection-summary
-    .edit-column.col-md-6
+    #existing-suggestion-list.edit-column.col-md-6
       h1 Suggestions
       if( suggestions.length > 0)
         ul

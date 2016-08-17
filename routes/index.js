@@ -2795,33 +2795,37 @@ router.get('/imperfection-profile/:identifier', csrfProtection, function(req, re
     return;
   }
 
-  IdeaProblem.findOne({
-    "identifier" : req.params.identifier
-    }, function(err, ideaProblem){
 
-    if(!ideaProblem){
-      res.redirect('/');
-      return;
-    }
-    Account.findOne({"username" : ideaProblem.creator}, function(err, problemCreator){
-      if(!problemCreator){
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    IdeaProblem.findOne({
+      "identifier" : req.params.identifier
+      }, function(err, ideaProblem){
+
+      if(!ideaProblem){
         res.redirect('/');
         return;
       }
-      Component.find({
-        "problemID" : ideaProblem.id
-        }, function(err, suggestions){
-          res.render('pages/imperfection-profile', {
-            csrfToken: req.csrfToken(),
-            problem : ideaProblem,
-            problemCreator : problemCreator,
-            user : req.user || {},
-            suggestions: suggestions,
-            targets: targetConstants,
-            tactics: tacticConstants
-          });
-        }).sort({date: -1});
-    })
+      Account.findOne({"username" : ideaProblem.creator}, function(err, problemCreator){
+        if(!problemCreator){
+          res.redirect('/');
+          return;
+        }
+        Component.find({
+          "problemID" : ideaProblem.id
+          }, function(err, suggestions){
+            res.render('pages/imperfection-profile', {
+              csrfToken: req.csrfToken(),
+              problem : ideaProblem,
+              idea : idea || {},
+              problemCreator : problemCreator,
+              user : req.user || {},
+              suggestions: suggestions,
+              targets: targetConstants,
+              tactics: tacticConstants
+            });
+          }).sort({date: -1});
+      })
+    });
   });
 });
 

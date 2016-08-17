@@ -941,7 +941,6 @@ button.suggestion-tactics, button.suggestion-targets {
 }
 
 .btn-group .btn+.btn {
-  margin-left: 0;
 }
 
 #suggestion-image-preview {
@@ -953,4 +952,14 @@ button.suggestion-tactics, button.suggestion-targets {
   display: block;
   margin: 1em auto;
   height: 5em;
+}
+
+#existing-suggestion-list ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.suggestion-tactics, .suggestion-targets {
+  margin: 2px !important;
+  width: 40%;
 }
