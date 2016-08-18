@@ -378,100 +378,101 @@ html
         valueEntered = false;
         switch (viabilitySliders[i]){
           case "#perf" : 
-            initialValue = idea.performOne || '#{idea.performOne}' || '#{review.performOne}' || 50;
-            if(idea.performOne || '#{idea.performOne}'!=""){
+            initialValue = idea.performOne || 50;
+            if(idea.performOne){
               valueEntered = true;
-            }
+            } else { valueEntered = false; }
             break;
           case "#afford" : 
-            initialValue = idea.affordOne || '#{idea.affordOne}' || '#{review.affordOne}' || 50;
-            if(idea.affordOne || '#{idea.affordOne}'!=""){
+            initialValue = idea.affordOne || 50;
+            if(idea.affordOne){
               valueEntered = true;
-            }
+            } else { valueEntered = false; }
             break;
           case "#feature" : 
-            initialValue = idea.featureOne || '#{idea.featureOne}' || '#{review.featureOne}' || 50;
-            if(idea.featureOne || '#{idea.featureOne}'!=""){
+            initialValue = idea.featureOne || 50;
+            if(idea.featureOne){
               valueEntered = true;
-            }
+            } else { valueEntered = false; }
             break;
           case "#deliver" : 
-            initialValue = idea.deliverOne || '#{idea.deliverOne}' || '#{review.deliverOne}' || 50;
-            if(idea.deliverOne || '#{idea.deliverOne}'!=""){
+            initialValue = idea.deliverOne || 50;
+            if(idea.deliverOne){
               valueEntered = true;
-            }
+            } else { valueEntered = false; }
             break;
           case "#useability" : 
-            initialValue = idea.useabilityOne || '#{idea.useabilityOne}' || '#{review.useabilityOne}' || 50;
-            if(idea.useabilityOne || '#{idea.useabilityOne}'!=""){
+            initialValue = idea.useabilityOne || 50;
+            if(idea.useabilityOne){
               valueEntered = true;
-            }
+            } else { valueEntered = false; }
             break;
           case "#maintain" : 
-            initialValue = idea.maintainOne || '#{idea.maintainOne}' || '#{review.maintainOne}' || 50;
-            if(idea.maintainOne || '#{idea.maintainOne}'!=""){
+            initialValue = idea.maintainOne || 50;
+            if(idea.maintainOne){
               valueEntered = true;
-            }
+            } else { valueEntered = false; }
             break;
           case "#danger" : 
-            initialValue = idea.dangerOne || '#{idea.dangerOne}' || '#{review.dangerOne}' || 50;
-            if(idea.dangerOne || '#{idea.dangerOne}'!=""){
+            initialValue = idea.dangerOne || 50;
+            if(idea.dangerOne){
               valueEntered = true;
-            }
+            } else { valueEntered = false; }
             break;
           case "#durability" : 
-            initialValue = idea.durabilityOne || '#{idea.durabilityOne}' || '#{review.durabilityOne}' || 50;
-            if(idea.durabilityOne || '#{idea.durabilityOne}'!=""){
+            initialValue = idea.durabilityOne || 50;
+            if(idea.durabilityOne){
               valueEntered = true;
-            }
+            } else { valueEntered = false; }
             break;
           case "#image" : 
-            initialValue = idea.imageOne || '#{idea.imageOne}' || '#{review.imageOne}' || 50;
-            if(idea.imageOne || '#{idea.imageOne}'!=""){
+            initialValue = idea.imageOne || 50;
+            if(idea.imageOne){
               valueEntered = true;
-            }
+            } else { valueEntered = false; }
             break;
           case "#complex" : 
-            initialValue = idea.complexOne || '#{idea.complexOne}' || '#{review.complexOne}' || 50;
-            if(idea.complexOne || '#{idea.complexOne}'!=""){
+            initialValue = idea.complexOne || 50;
+            if(idea.complexOne){
               valueEntered = true;
-            }
+            } else { valueEntered = false; }
             break;
           case "#precision" : 
-            initialValue = idea.precisionOne || '#{idea.precisionOne}' || '#{review.precisionOne}' || 50;
-            if(idea.precisionOne || '#{idea.precisionOne}'!=""){
+            initialValue = idea.precisionOne || 50;
+            if(idea.precisionOne){
               valueEntered = true;
-            }
+            } else { valueEntered = false; }
             break;
           case "#variability" : 
-            initialValue = idea.variabilityOne || '#{idea.variabilityOne}' || '#{review.variabilityOne}' || 50;
-            if(idea.variabilityOne || '#{idea.variabilityOne}'!=""){
+            initialValue = idea.variabilityOne || 50;
+            if(idea.variabilityOne){
               valueEntered = true;
-            }
+            } else { valueEntered = false; }
             break;
           case "#sensitivity" : 
-            initialValue = idea.sensitivityOne || '#{idea.sensitivityOne}' || '#{review.sensitivityOne}' || 50;
-            if(idea.sensitivityOne || '#{idea.sensitivityOne}'!=""){
+            initialValue = idea.sensitivityOne || 50;
+            if(idea.sensitivityOne){
               valueEntered = true;
-            }
+            } else { valueEntered = false; }
             break;
           case "#immature" : 
-            initialValue = idea.immatureOne || '#{idea.immatureOne}' || '#{review.immatureOne}' || 50;
-            if(idea.immatureOne || '#{idea.immatureOne}'!=""){
+            initialValue = idea.immatureOne || 50;
+            if(idea.immatureOne){
               valueEntered = true;
-            }
+            } else { valueEntered = false; }
             break;
           case "#skills" : 
-            initialValue = idea.skillsOne || '#{idea.skillsOne}' || '#{review.skillsOne}' || 50;
-            if(idea.skillsOne || '#{idea.skillsOne}'!=""){
+            initialValue = idea.skillsOne || 50;
+            if(idea.skillsOne){
               valueEntered = true;
-            }
+            } else { valueEntered = false; }
             break;
         }
 
         ////////////////////////////////////////////
         // SET UP SLIDER ONE
         ////////////////////////////////////////////
+        
         $(viabilitySliders[i]+ "Slider").slider({
           value:initialValue,
           min: min,
@@ -595,139 +596,107 @@ html
 
     function getNextSliderConfig(categoryName, valueEntered, value){
         switch (categoryName) {
-          case "view-all":
-            break;
-          case "performability" : 
-            var initialValue =  value || '#{idea.performOne}' || '#{review.performOne}' || 50;
+          case "performability" :
+            var initialValue =  value || 50;
             
-            deleteAllSliders();
-
             initiateSlider("perfSliderOne", "perfLabelOne",
               "formPerformability", initialValue, "performability",
               "performProblem", "affordability", valueEntered)
             break;
 
-          case "affordability" : 
-            var initialValue = value || '#{idea.affordOne}' || '#{review.affordOne}' || 50;
-
-            deleteAllSliders();
+          case "affordability" :
+            var initialValue = value || 50;
 
             initiateSlider("affordSliderOne", "affordLabelOne",
               "formAffordability", initialValue, "affordability",
               "affordProblem", "featurability", valueEntered)
             break;
-          case "featurability" : 
-            var initialValue = value || '#{idea.featureOne}' || '#{review.featureOne}' || 50;
-
-            deleteAllSliders();
+          case "featurability" :
+            var initialValue = value || 50;
 
             initiateSlider("featureSliderOne", "featureLabelOne",
               "formFeaturability", initialValue, "featurability",
               "featureProblem", "deliverability", valueEntered)
             break;
-          case "deliverability" : 
-            var initialValue = value || '#{idea.deliverOne}' || '#{review.deliverOne}' || 50;
-
-            deleteAllSliders();
+          case "deliverability" :
+            var initialValue = value || 50;
 
             initiateSlider("deliverSliderOne", "deliverLabelOne",
               "formDeliverability", initialValue, "deliverability",
               "deliverProblem", "useability", valueEntered)
             break;
           case "useability" : 
-            var initialValue = value || '#{idea.useabilityOne}' || '#{review.useabilityOne}' || 50;
-
-            deleteAllSliders();
+            var initialValue = value || 50;
 
             initiateSlider("useabilitySliderOne", "useabilityLabelOne",
               "formUseability", initialValue, "useability",
               "useabilityProblem", "maintainability", valueEntered)
             break;
           case "maintainability" : 
-            var initialValue = value || '#{idea.maintainOne}' || '#{review.maintainOne}' || 50;
-
-            deleteAllSliders();
+            var initialValue = value || 50;
 
             initiateSlider("maintainabilitySliderOne", "maintainabilityLabelOne",
               "formMaintainability", initialValue, "maintainability",
               "maintainProblem", "durability", valueEntered)
             break;
           case "durability" : 
-            var initialValue = value || '#{idea.durabilityOne}' || '#{review.durabilityOne}' || 50;
-
-            deleteAllSliders();
+            var initialValue = value || 50;
 
             initiateSlider("durabilitySliderOne", "durabilityLabelOne",
               "formDurability", initialValue, "durability",
               "durabilityProblem", "imageability", valueEntered)
             break;
           case "imageability" : 
-            var initialValue = value || '#{idea.durabilityOne}' || '#{review.durabilityOne}' || 50;
-
-            deleteAllSliders();
+            var initialValue = value || 50;
 
             initiateSlider("imageabilitySliderOne", "imageabilityLabelOne",
               "formImageability", initialValue, "imageability",
               "imageProblem", "complexity", valueEntered)
             break;
           case "complexity" : 
-            var initialValue = value || '#{idea.complexOne}' || '#{review.complexOne}' || 50;
-
-            deleteAllSliders();
+            var initialValue = value || 50;
 
             initiateSlider("complexitySliderOne", "complexityLabelOne",
               "formComplexity", initialValue, "complexity",
               "complexProblem", "precision", valueEntered)
             break;
           case "precision" : 
-            var initialValue = value || '#{idea.precisionOne}' || '#{review.precisionOne}' || 50;
-
-            deleteAllSliders();
+            var initialValue = value || 50;
 
             initiateSlider("precisionSliderOne", "precisionLabelOne",
               "formPrecision", initialValue, "precision",
               "precisionProblem", "variability", valueEntered)
             break;
           case "variability" : 
-            var initialValue = value || '#{idea.variabilityOne}' || '#{review.variabilityOne}' || 50;
-
-            deleteAllSliders();
+            var initialValue = value || 50;
 
             initiateSlider("variabilitySliderOne", "variabilityLabelOne",
               "formVariability", initialValue, "variability",
               "variabilityProblem", "sensitivity", valueEntered)
             break;
           case "sensitivity" : 
-            var initialValue = value || '#{idea.sensitivityOne}' || '#{review.sensitivityOne}' || 50;
-
-            deleteAllSliders();
+            var initialValue = value || 50;
 
             initiateSlider("sensitivitySliderOne", "sensitivityLabelOne",
               "formSensitivity", initialValue, "sensitivity",
               "sensitivityProblem", "immaturity", valueEntered)
             break;
           case "immaturity" : 
-            var initialValue = value || '#{idea.immatureOne}' || '#{review.immatureOne}' || 50;
-
-            deleteAllSliders();
+            var initialValue = value || 50;
 
             initiateSlider("immaturitySliderOne", "immaturityLabelOne",
               "formImmaturity", initialValue, "immaturity",
               "immatureProblem", "dangerous", valueEntered)
             break;
           case "dangerous" : 
-            var initialValue = value || '#{idea.dangerOne}' || '#{review.dangerOne}' || 50;
-
-            deleteAllSliders();
+            var initialValue = value || 50;
 
             initiateSlider("dangerousSliderOne", "dangerousLabelOne",
               "formDangerous", initialValue, "dangerous",
               "dangerProblem", "skills", valueEntered)
             break;
           case "skills" : 
-            var initialValue = value || '#{idea.skillsOne}' || '#{review.skillsOne}' || 50;
-
-            deleteAllSliders();
+            var initialValue = value || 50;
 
             initiateSlider("skillsSliderOne", "skillsLabelOne",
               "formSkills", initialValue, "skills",
@@ -737,16 +706,13 @@ html
 
     }
 
-    function deleteAllSliders(){
-    }
-
-
     function initiateSlider(sliderName, labelName, formName, initialValue, postPath, problemName, nextCategory, valueEntered){
       var labelArr = _.range(101).map(function(number){
         return number.toString();
       });
       var min=1, max=100, uiValue;
       
+
       $("#"+ sliderName).slider({
         value:initialValue,
         orientation : "horizontal",
@@ -796,8 +762,9 @@ html
           } else {
             $.get("/" + nextCategory, {isModal : true}, function(returnData, status){
               $("#viabilityModal .modal-body .view-specific-viability").html("")
-              $("#viabilityModal .modal-body .view-specific-viability").append(returnData);
+              $("#viabilityModal .modal-body .view-specific-viability").html(returnData);
               $.get('/update-viability-scores', function(sliderData, status){
+                var sliderVal;
                 //get the correct value out of sliderData
                 switch(nextCategory) {
                 case "performability" : 
@@ -850,6 +817,7 @@ html
                   valueEntered = true;
                 } else {
                   valueEntered = false;
+                  sliderVal = 50;
                 }
                 getNextSliderConfig(nextCategory, valueEntered, sliderVal);
               });
@@ -872,7 +840,7 @@ html
       $.get(pathname, data, function(returnData, status){
         $("#viabilityModal .view-all-viabilities").hide();
         //$("#viabilitySubmit").attr("data-viability-category", pathname.slice(1));
-        $("#viabilityModal .modal-body .view-specific-viability").append(returnData)
+        $("#viabilityModal .modal-body .view-specific-viability").html(returnData)
         $.get('/update-viability-scores', function(sliderData, status){
           //get the correct value out of sliderData
           switch(pathname.slice(1)) {
@@ -954,6 +922,21 @@ html
         $("#viabilityModal .view-all-viabilities").show();
         
         $.get('/update-viability-scores', function(returnData, status){
+          $("#perfSlider").slider("destroy");
+          $("#affordSlider").slider("destroy");
+          $("#featureSlider").slider("destroy");
+          $("#deliverSlider").slider("destroy");
+          $("#useabilitySlider").slider("destroy");
+          $("#maintainSlider").slider("destroy");
+          $("#dangerSlider").slider("destroy");
+          $("#durabilitySlider").slider("destroy");
+          $("#imageSlider").slider("destroy");
+          $("#complexSlider").slider("destroy");
+          $("#precisionSlider").slider("destroy");
+          $("#variabilitySlider").slider("destroy");
+          $("#sensitivitySlider").slider("destroy");
+          $("#immatureSlider").slider("destroy");
+          $("#skillsSlider").slider("destroy");
           $(".view-all-viabilities .ui-slider").html("");
           initializeAllSliders(returnData);   
         });

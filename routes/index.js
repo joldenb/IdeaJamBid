@@ -1250,7 +1250,6 @@ router.get('/update-viability-scores', csrfProtection, function(req, res) {
     // enters info into the ideaSeed model vs the ideaReview model
     if(thisIdea.inventorName == req.user.username){
       res.json(thisIdea._doc);
-
     } else {
                     IdeaReview.findOne(
                       {"reviewer" : req.user.username, "ideaSeedId" : req.session.idea},
