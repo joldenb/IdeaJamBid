@@ -4,9 +4,9 @@ html
     include ../../partials/head.jade
   body
   div.scoreIdea(class='modalContainer')
-    h1 Variability
-    h4 
-      | Will the use or production of #{idea.name} change based upon specific scenarios or circumstances?
+    img.viability-question-icon(src='/question-mark.png' height="40" width="40")
+    h4.viability-question(style="display:none;")
+      | Will use or production of the #{idea.name} change based upon specific scenarios or circumstances when solving the problem of #{idea.problem}?
     br
     form(role='form', id="formVariability" action="/variability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
@@ -15,6 +15,9 @@ html
           span.yes-way High Degree of Variability 
         #variabilityLabelOne.sliderLabel
         #variabilitySliderOne
+      h4 What problem with the #{idea.name} creates variability?
+      textarea.form-control(rows='6', cols="75", name="variabilityProblem")
+        | The problem of 
       br
       h4 Recorded problems for variability:
       ul.waste-value-problem-list
@@ -22,11 +25,6 @@ html
           li
             h4 #{index + 1} : #{problem.text}
       br
-      h4 What problem prevented you from rating your #{idea.name} better?
-      textarea.form-control(rows='6', cols="75", name="variabilityProblem")
-        | The problem of 
-      br
-      h3 Einstein Points: #{user.einsteinPoints}
 
   
   script(type="text/javascript").
@@ -52,3 +50,7 @@ html
         this.selectionStart = 15;
       }
     }, false);
+
+    $(".viability-question-icon").click(function(event){
+      $(".viability-question").show();
+    })

@@ -980,3 +980,9 @@ button.suggestion-tactics, button.suggestion-targets {
   list-style-type: none;
   padding-left: 0;
 }
+
+.viability-question-icon {
+    position: absolute;
+    right: 3em;
+    top: -6em;
+}

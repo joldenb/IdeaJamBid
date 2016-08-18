@@ -4,9 +4,9 @@ html
     include ../../partials/head.jade
   body
   div.scoreIdea(class='modalContainer')
-    h1 Dangerous
-    h4 
-      | Will #{idea.name} require human or enviornmental protections to reduce potential harm?
+    img.viability-question-icon(src='/question-mark.png' height="40" width="40")
+    h4.viability-question(style="display:none;")
+      | Will the #{idea.name} require human or environmental protections to reduce potential harm?
     br
     form(role='form', id="formDangerous" action="/dangerous", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
@@ -16,18 +16,18 @@ html
         #dangerousLabelOne.sliderLabel
         #dangerousSliderOne
       br
-      h4 Recorded problems for danger:
-      ul.waste-value-problem-list
-        each problem, index in problems
-          li
-            h4 #{index + 1} : #{problem.text}
-      br
-      h4 What problem prevented you from rating your #{idea.name} better?
+      h4 What problem with the #{idea.name} makes it more dangerous than necessary?
       input(type="hidden", name="_csrf", value="#{csrfToken}")
       textarea.form-control(rows='6', cols="75", name="dangerProblem")
         | The problem of 
       br
-      h3 Einstein Points: #{user.einsteinPoints}
+      if problems.length > 0
+        h4 Recorded problems for danger:
+        ul.waste-value-problem-list
+          each problem, index in problems
+            li
+              h4 #{index + 1} : #{problem.text}
+        br
 
   
   script(type="text/javascript").
@@ -53,4 +53,7 @@ html
         this.selectionStart = 15;
       }
     }, false);
-    
+
+    $(".viability-question-icon").click(function(event){
+      $(".viability-question").show();
+    })    

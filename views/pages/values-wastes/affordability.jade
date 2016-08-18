@@ -5,9 +5,9 @@ html
   body
 
   div.scoreIdea(class='modalContainer')
-    h1 Affordability
-    h4 
-      | Will #{idea.name} be within cost expectations?
+    img.viability-question-icon(src='/question-mark.png' height="40" width="40")
+    h4.viability-question(style="display:none;")
+      | Will the #{idea.name} stay within reasonable cost expectations when solving the problem of #{idea.name}?
     br
     form(role='form', id="formAffordability" action="/affordability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
@@ -17,20 +17,19 @@ html
         #affordLabelOne.sliderLabel
         #affordSliderOne
       br
-      if problems.length > 0    
+      h4 What cost-related problem prevents the #{idea.name} from being more affordable?
+      input(type="hidden", name="_csrf", value="#{csrfToken}")
+      textarea.form-control(rows='6', cols="75", name="affordProblem")
+        | The problem of 
+      br
+      if problems.length > 0
         h4 Recorded problems for Affordability:
         ul.waste-value-problem-list
           each problem, index in problems
             li
               h4 #{index + 1} : #{problem.text}
       br
-      h4 What cost-related problem prevented you from giving #{idea.name} a better score?
-      input(type="hidden", name="_csrf", value="#{csrfToken}")
-      textarea.form-control(rows='6', cols="75", name="affordProblem")
-        | The problem of 
-      br
       p (Ex. "The problem of uranium requires you to pay Libyan terrorists millions of dollars to acquire.")
-      h3 Einstein Points: #{user.einsteinPoints}
 
 
   
@@ -58,3 +57,6 @@ html
       }
     }, false);
     
+    $(".viability-question-icon").click(function(event){
+      $(".viability-question").show();
+    })

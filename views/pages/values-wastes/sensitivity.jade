@@ -5,9 +5,9 @@ html
   body
 
   div.scoreIdea(class='modalContainer')
-    h1 Sensitivity
-    h4 
-      | Will usage or the enviornment easily disturb or damage #{idea.name}?
+    img.viability-question-icon(src='/question-mark.png' height="40" width="40")
+    h4.viability-question(style="display:none;")
+      | Will usage or the environment easily disturb or damage the #{idea.name} while solving the problem of #{idea.problem}?
     br
     form(role='form', id="formSensitivity" action="/sensitivity", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
@@ -17,17 +17,16 @@ html
         #sensitivityLabelOne.sliderLabel
         #sensitivitySliderOne
       br
+      h4 What problem with the #{idea.name} makes it sensitive to its environment?
+      textarea.form-control(rows='6', cols="75", name="sensitivityProblem")
+        | The problem of 
+      br
       h4 Recorded problems for sensitivity:
       ul.waste-value-problem-list
         each problem, index in problems
           li
             h4 #{index + 1} : #{problem.text}
       br
-      h4 What problem prevented you from rating your #{idea.name} better?
-      textarea.form-control(rows='6', cols="75", name="sensitivityProblem")
-        | The problem of 
-      br
-      h3 Einstein Points: #{user.einsteinPoints}
 
   
   script(type="text/javascript").
@@ -54,3 +53,6 @@ html
       }
     }, false);
     
+    $(".viability-question-icon").click(function(event){
+      $(".viability-question").show();
+    })

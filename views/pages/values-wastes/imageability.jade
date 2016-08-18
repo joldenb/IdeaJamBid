@@ -4,9 +4,9 @@ html
     include ../../partials/head.jade
   body
   div.scoreIdea(class='modalContainer')
-    h1 Imageability
-    h4 
-      | Will #{idea.name} convey an image of quality and prestige?
+    img.viability-question-icon(src='/question-mark.png' height="40" width="40")
+    h4.viability-question(style="display:none;")
+      | Will the #{idea.name} convey an image of quality and prestige when solving the problem of #{idea.problem}?
     br
     form(role='form', id="formImageability" action="/imageability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
@@ -16,17 +16,17 @@ html
         #imageabilityLabelOne.sliderLabel
         #imageabilitySliderOne
       br
+      h4 What problem prevents the #{idea.name} from having a better image?
+      input(type="hidden", name="_csrf", value="#{csrfToken}")
+      textarea.form-control(rows='6', cols="75", name="imageProblem")
+        | The problem of 
+      br
       if problems.length > 0
         h4 Recorded problems for imageability:
         ul.waste-value-problem-list
           each problem, index in problems
             li
               h4 #{index + 1} : #{problem.text}
-      br
-      h4 What about the image of quality and prestige of #{idea.name} prevented you from scoring it higher?
-      input(type="hidden", name="_csrf", value="#{csrfToken}")
-      textarea.form-control(rows='6', cols="75", name="imageProblem")
-        | The problem of 
       br
       p (Ex. "The problem of the two massive exhaust protrusions extending from the back of the Delorean.")
 
@@ -55,3 +55,6 @@ html
       }
     }, false);
     
+    $(".viability-question-icon").click(function(event){
+      $(".viability-question").show();
+    })

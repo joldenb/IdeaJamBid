@@ -5,9 +5,9 @@ html
   body
   div.scoreIdea(class='modalContainer')
     form(role='form', id="formPerformability" action="/performability", method="post", style='max-width: 700px;', data-idea-doc=idea)
-      h1 Performability
-      h4
-        | Will #{idea.name}, as it is, perform to solve the problem of #{idea.problem} in an effective way?
+      img.viability-question-icon(src='/question-mark.png' height="40" width="40")
+      h4.viability-question(style="display:none;")
+        | Will the #{idea.name} effectively work to solve the problem of #{idea.problem}?
       br
       .slider-container
         .slider-end-labels
@@ -16,6 +16,11 @@ html
         #perfLabelOne.sliderLabel
         #perfSliderOne(name="perfSliderOne")
       br
+      h4 What problem prevents the #{idea.name} from performing better?
+      input(type="hidden", name="_csrf", value="#{csrfToken}")
+      textarea.form-control(rows='6', cols="75", name="performProblem")
+          | The problem of 
+      br
       if problems.length > 0
         h4 Performability problems associated with #{idea.name}:
         ul.waste-value-problem-list
@@ -23,13 +28,8 @@ html
             li
               h4 #{index + 1} : #{problem.text}
         br
-      h4 What problem prevented you from rating your #{idea.name} better?
-      input(type="hidden", name="_csrf", value="#{csrfToken}")
-      textarea.form-control(rows='6', cols="75", name="performProblem")
-          | The problem of 
-      br
       p (Ex. "The problem of Mr. Fusion only works with uranium or lightning strikes.")  
-      h3 Einstein Points: #{user.einsteinPoints}
+      
 
   
   script(type="text/javascript").
@@ -56,3 +56,6 @@ html
       }
     }, false);
     
+    $(".viability-question-icon").click(function(event){
+      $(".viability-question").show();
+    })

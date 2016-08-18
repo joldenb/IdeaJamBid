@@ -5,9 +5,9 @@ html
   body
 
   div.scoreIdea(class='modalContainer')
-    h1 Precision
-    h4 
-      | Will #{idea.name} require specific timing, precise sequence or much practice to effectively solve the problem of #{idea.problem}?
+    img.viability-question-icon(src='/question-mark.png' height="40" width="40")
+    h4.viability-question(style="display:none;")
+      | Will the #{idea.name} require specific timing, precise sequence or much practice to solve the problem of #{idea.problem}?
     br
     form(role='form', id="formPrecision" action="/precision", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
@@ -17,17 +17,15 @@ html
         #precisionLabelOne.sliderLabel
         #precisionSliderOne
       br
-      h4 Recorded problems for precision:
+      h4 What problem causes the #{idea.name} to require a high degree of precision?
+      textarea.form-control(rows='6', cols="75", name="precisionProblem")
+        | The problem of 
+      br
       ul.waste-value-problem-list
         each problem, index in problems
           li
             h4 #{index + 1} : #{problem.text}
       br
-      h4 What problem prevented you from rating your #{idea.name} better?
-      textarea.form-control(rows='6', cols="75", name="precisionProblem")
-        | The problem of 
-      br
-      h3 Einstein Points: #{user.einsteinPoints}
 
   
   script(type="text/javascript").
@@ -53,3 +51,6 @@ html
       }
     }, false);
     
+    $(".viability-question-icon").click(function(event){
+      $(".viability-question").show();
+    })

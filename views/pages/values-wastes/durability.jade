@@ -4,9 +4,9 @@ html
     include ../../partials/head.jade
   body
   div.scoreIdea(class='modalContainer')
-    h1 Durability
-    h4 
-      | Is #{idea.name} robust enough to withstand abuse?
+    img.viability-question-icon(src='/question-mark.png' height="40" width="40")
+    h4.viability-question(style="display:none;")
+      | Is the #{idea.name} robust enough to withstand abuse when solving the problem of #{idea.problem}? 
     br
     form(role='form', id="formDurability" action="/durability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
@@ -16,16 +16,16 @@ html
         #durabilityLabelOne.sliderLabel
         #durabilitySliderOne
       br
+      h4 What problem prevents the #{idea.name} from being more durable?
+      textarea.form-control(rows='6', cols="75", name="durabilityProblem")
+        | The problem of 
+      br
       if problems.length > 0
         h4 Recorded problems for durability:
         ul.waste-value-problem-list
           each problem, index in problems
             li
               h4 #{index + 1} : #{problem.text}
-      br
-      h4 What prevents #{idea.name} from being robust enough to withstand abuse?
-      textarea.form-control(rows='6', cols="75", name="durabilityProblem")
-        | The problem of 
       br
       p (Ex. "The problem of the Delorean's shocks were not designed to withstand the terrain of the wild west desert.")
 
@@ -52,4 +52,7 @@ html
         this.selectionStart = 15;
       }
     }, false);
-    
+
+    $(".viability-question-icon").click(function(event){
+      $(".viability-question").show();
+    })    

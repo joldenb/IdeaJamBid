@@ -257,7 +257,7 @@ html
           .view-specific-viability
         .modal-footer.view-all-button
             button.btn.btn-info.modal-expand-collapse Expand
-            button.btn.btn-info.modal-view-all Back
+            button.btn.btn-info.modal-view-all View All
             button.btn.btn-info.cancel-button(data-dismiss="modal") Cancel
             button.btn.btn-success#viabilitySubmit(data-viability-category="view-all") Submit
 
@@ -785,6 +785,7 @@ html
             $.get("/" + nextCategory, {isModal : true}, function(returnData, status){
               $("#viabilityModal .modal-body .view-specific-viability").html("")
               $("#viabilityModal .modal-body .view-specific-viability").html(returnData);
+              $("#viabilityModal .modal-title h2").text(nextCategory.charAt(0).toUpperCase() + nextCategory.slice(1));
               $.get('/get-all-viability-scores', function(sliderData, status){
                 var sliderVal;
                 //get the correct value out of sliderData
@@ -862,7 +863,8 @@ html
       $.get(pathname, data, function(returnData, status){
         $("#viabilityModal .view-all-viabilities").hide();
         //$("#viabilitySubmit").attr("data-viability-category", pathname.slice(1));
-        $("#viabilityModal .modal-body .view-specific-viability").html(returnData)
+        $("#viabilityModal .modal-body .view-specific-viability").html(returnData);
+        $("#viabilityModal .modal-title h2").text(pathname.slice(1).charAt(0).toUpperCase() + pathname.slice(1).slice(1));
         $.get('/get-all-viability-scores', function(sliderData, status){
           //get the correct value out of sliderData
           switch(pathname.slice(1)) {
@@ -942,6 +944,7 @@ html
         $("#viabilityModal .modal-body .view-specific-viability").html("")
         //$("#viabilitySubmit").attr("data-viability-category", "view-all");
         $("#viabilityModal .view-all-viabilities").show();
+        $("#viabilityModal .modal-title h2").text("Idea Viability Scores");
         
         $.get('/get-all-viability-scores', function(returnData, status){
           $("#perfSlider").slider("destroy");

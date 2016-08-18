@@ -4,9 +4,9 @@ html
     include ../../partials/head.jade
   body
   div.scoreIdea(class='modalContainer')
-    h1 Immaturity
-    h4 
-      | Will the design, manufacture, or production of #{idea.name} involve new or unproven technology, processes or materials?
+    img.viability-question-icon(src='/question-mark.png' height="40" width="40")
+    h4.viability-question(style="display:none;")
+      | Will the design, manufacture, or production of the #{idea.name} require new or unproven technology, processes or materials to solve the problem of #{idea.problem}?
     br
     form(role='form', id="formImmaturity" action="/immaturity", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
@@ -16,18 +16,17 @@ html
         #immaturityLabelOne.sliderLabel
         #immaturitySliderOne
       br
+      h4 What problem with the #{idea.name} requires incorporation of something new or unproven?
+      input(type="hidden", name="_csrf", value="#{csrfToken}")
+      textarea.form-control(rows='6', cols="75", name="immatureProblem")
+        | The problem of 
+      br
       h4 Recorded problems for immaturity:
       ul.waste-value-problem-list
         each problem, index in problems
           li
             h4 #{index + 1} : #{problem.text}
       br
-      h4 What problem prevented you from rating your #{idea.name} better?
-      input(type="hidden", name="_csrf", value="#{csrfToken}")
-      textarea.form-control(rows='6', cols="75", name="immatureProblem")
-        | The problem of 
-      br
-      h3 Einstein Points: #{user.einsteinPoints}
 
   
   script(type="text/javascript").
@@ -53,3 +52,6 @@ html
       }
     }, false);
     
+    $(".viability-question-icon").click(function(event){
+      $(".viability-question").show();
+    })

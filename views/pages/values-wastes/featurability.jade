@@ -4,9 +4,9 @@ html
     include ../../partials/head.jade
   body
   div.scoreIdea(class='modalContainer')
-    h1 Featurability
-    h4 
-      | Will #{idea.name} provide added benefits?
+    img.viability-question-icon(src='/question-mark.png' height="40" width="40")
+    h4.viability-question(style="display:none;")
+      | Will the #{idea.name} provide enough added benefit to solve the problem of #{idea.problem}?
     br
     form(role='form', id="formFeaturability" action="/featurability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
@@ -16,6 +16,11 @@ html
         #featureLabelOne.sliderLabel
         #featureSliderOne
       br
+      h4 What problem prevents the #{idea.name} from having more features?
+      input(type="hidden", name="_csrf", value="#{csrfToken}")
+      textarea.form-control(rows='6', cols="75", name="featureProblem")
+        | The problem of 
+      br
       if problems.length > 0
         h4 Recorded problems for featurability:
         ul.waste-value-problem-list
@@ -23,11 +28,6 @@ html
             li
               h4 #{index + 1} : #{problem.text}
         br
-      h4 What problem associated with #{idea.name} prevents it from providing more benefits?
-      input(type="hidden", name="_csrf", value="#{csrfToken}")
-      textarea.form-control(rows='6', cols="75", name="featureProblem")
-        | The problem of 
-      br
       p (Ex. "The problem of the Delorean not having automatic locks so that Biff can steal a Gray's Sports Almanac out of the back seat.")
 
   
@@ -53,4 +53,7 @@ html
         this.selectionStart = 15;
       }
     }, false);
-    
+
+    $(".viability-question-icon").click(function(event){
+      $(".viability-question").show();
+    })    

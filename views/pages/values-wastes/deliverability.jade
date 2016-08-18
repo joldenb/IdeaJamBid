@@ -5,9 +5,9 @@ html
   body
 
   div.scoreIdea(class='modalContainer')
-    h1 Deliverability
-    h4 
-      | Will #{idea.name} be ready on demand?
+    img.viability-question-icon(src='/question-mark.png' height="40" width="40")
+    h4.viability-question(style="display:none;")
+      | Will the #{idea.name} be ready on demand when and where the user wants it to solve the problem of #{idea.problem}?
     br
     form(role='form', id="formDeliverability" action="/deliverability", method="post", style='max-width: 600px;', data-idea-doc=idea)
       .slider-container
@@ -17,17 +17,17 @@ html
         #deliverLabelOne.sliderLabel
         #deliverSliderOne
       br
+      h4 What problem prevents the #{idea.name} from being deliverable on demand?
+      input(type="hidden", name="_csrf", value="#{csrfToken}")
+      textarea.form-control(rows='6', cols="75", name="deliverProblem")
+        | The problem of 
+      br
       if problems.length > 0
         h4 Recorded problems for deliverability:
         ul.waste-value-problem-list
           each problem, index in problems
             li
               h4 #{index + 1} : #{problem.text}
-      br
-      h4 What problem prevents #{idea.name} from being fully ready on demand?
-      input(type="hidden", name="_csrf", value="#{csrfToken}")
-      textarea.form-control(rows='6', cols="75", name="deliverProblem")
-        | The problem of 
       br
       p (Ex. "The problem of the Delorean's faulty time circuitry changing the date so that Marty arrives in the old wild west instead of the demanded date.")
 
@@ -56,4 +56,7 @@ html
         this.selectionStart = 15;
       }
     }, false);
-    
+
+    $(".viability-question-icon").click(function(event){
+      $(".viability-question").show();
+    })    
