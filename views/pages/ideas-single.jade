@@ -763,7 +763,7 @@ html
             $.get("/" + nextCategory, {isModal : true}, function(returnData, status){
               $("#viabilityModal .modal-body .view-specific-viability").html("")
               $("#viabilityModal .modal-body .view-specific-viability").html(returnData);
-              $.get('/update-viability-scores', function(sliderData, status){
+              $.get('/get-all-viability-scores', function(sliderData, status){
                 var sliderVal;
                 //get the correct value out of sliderData
                 switch(nextCategory) {
@@ -841,7 +841,7 @@ html
         $("#viabilityModal .view-all-viabilities").hide();
         //$("#viabilitySubmit").attr("data-viability-category", pathname.slice(1));
         $("#viabilityModal .modal-body .view-specific-viability").html(returnData)
-        $.get('/update-viability-scores', function(sliderData, status){
+        $.get('/get-all-viability-scores', function(sliderData, status){
           //get the correct value out of sliderData
           switch(pathname.slice(1)) {
           case "performability" : 
@@ -921,7 +921,7 @@ html
         //$("#viabilitySubmit").attr("data-viability-category", "view-all");
         $("#viabilityModal .view-all-viabilities").show();
         
-        $.get('/update-viability-scores', function(returnData, status){
+        $.get('/get-all-viability-scores', function(returnData, status){
           $("#perfSlider").slider("destroy");
           $("#affordSlider").slider("destroy");
           $("#featureSlider").slider("destroy");
@@ -983,7 +983,7 @@ html
     });
 
     $("#viabilityModalButton").click(function(event){
-      $.get('/update-viability-scores', function(returnData, status){
+      $.get('/get-all-viability-scores', function(returnData, status){
         $(".view-all-viabilities .ui-slider").html("");
         initializeAllSliders(returnData);
         if(status != "success"){

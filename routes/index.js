@@ -1239,7 +1239,7 @@ router.post('/save-idea-name', csrfProtection, function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/update-viability-scores', csrfProtection, function(req, res) {
+router.get('/get-all-viability-scores', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
     return;
@@ -1251,27 +1251,30 @@ router.get('/update-viability-scores', csrfProtection, function(req, res) {
     if(thisIdea.inventorName == req.user.username){
       res.json(thisIdea._doc);
     } else {
-                    IdeaReview.findOne(
-                      {"reviewer" : req.user.username, "ideaSeedId" : req.session.idea},
-                      function(error, currentReview){
-                      if(error){
-                        console.error('ERROR! ' + error);
-                        res.json({});
-                      } else if (currentReview){
-                        req.session.ideaReview = currentReview;
-                        res.json(currentReview._doc);
-                      } else {
-                        var newReview = {
-                          ideaSeedId : req.session.idea,
-                          reviewer : req.user.username
-                        }
-                        IdeaReview.create(newReview, function(err, newReview){
-                          if(err) { console.log("new review not created correctly")}
-                          req.session.ideaReview = newReview;
-                          res.json(newReview._doc);
-                        });
-                      }
-                    });
+      IdeaReview.findOne(
+        {"reviewer" : req.user.username, "ideaSeedId" : req.session.idea},
+        function(error, currentReview){
+        if(error){
+          console.error('ERROR! ' + error);
+          res.json({});
+        } else if (currentReview){
+          req.session.ideaReview = currentReview;
+          res.json(currentReview._doc);
+        } else {
+          var newReview = {
+            ideaSeedId : req.session.idea,
+            reviewer : req.user.username
+          }
+          IdeaReview.create(newReview, function(err, newReview){
+            if(err) { console.log("new review not created correctly")}
+            thisIdea.ideaReviews.push(newReview.id);
+            thisIdea.save(function(err, updatedIdea){
+              req.session.ideaReview = newReview;
+              res.json(newReview._doc);
+            });
+          });
+        }
+      });
     }
   });
 });

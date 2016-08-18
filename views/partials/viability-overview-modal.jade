@@ -1,4 +1,4 @@
-form(role='form', id="viability-overview" action="/update-viability-scores", method="post", data-idea-doc=idea)
+form(role='form', id="viability-overview" action="/get-all-viability-scores", method="post", data-idea-doc=idea)
   .form-group
       if(viabilities)
         - for (var counter = 0; counter < 4; counter++) {
