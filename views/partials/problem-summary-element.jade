@@ -1,7 +1,7 @@
 .suggestion-element.variant-suggestion-block.problem-summary-block
   .title-description.variant-suggestion
     div.row.problem-row(id="#{problem.identifier}")
-      .col-xs-3
+      .col-xs-3.click-row
         if(compHeadshot)
           a(href='/imagineer/' + accountName)
             img(src=compHeadshot height="50" width="50" style=compHeadshotStyle)
@@ -10,17 +10,42 @@
             img(src="/avatar.png" height="50" width="50")
         span #{accountName || problem.wholeCreator.nickname}
 
-      .col-xs-3.problem-row-padding
+      .col-xs-3.problem-row-padding.click-row
         if problem['date']
           div #{moment(problem.date).format('MM/DD/YY')}
 
-      .col-xs-6.problem-row-padding
+      .col-xs-4.problem-row-padding.click-row
         if problem['text']
           div Description: #{problem.text}
+
+      .col-xs-2.problem-row-padding.upvote
+        a(id="upvote-#{problem.identifier}")
+          div.glyphicon.glyphicon-fire 
+        span #{problem.upvotes.length || 0}
 
     include ../partials/js-includes.jade
     script(type="text/javascript").
 
-      $(".problem-row").click(function(event){
-        window.document.location = "/imperfection-profile/" + $(this).attr('id');
+      $(".click-row").click(function(event){
+        if ($.contains($("#!{problem.identifier}")[0], event.target)) {
+          window.document.location = "/imperfection-profile/" + "!{problem.identifier}";    
+        }
+      });
+
+      $(".upvote").click(function(event){      
+        event.preventDefault();
+
+        var selector = "#upvote-" + "!{problem.identifier}";
+        if ($.contains($(selector)[0], event.target)) {
+          $.post('/upvote-imperfection', 
+          {
+            _csrf : $('[name="_csrf"]').val(),
+            problem : "!{problem.id}"
+          },
+          function(data, response) {
+            window.location.reload(true);          
+          });
+        }
+
+        return false;
       });

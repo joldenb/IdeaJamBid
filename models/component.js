@@ -36,7 +36,9 @@ var Component = new Schema({
 		relationship	: String 
 	}],
 
-	ideaSeed		: ObjectId
+	ideaSeed		: ObjectId,
+  upvotes      : [ObjectId],
+
 }, { autoIndex: false });
 
 /*
