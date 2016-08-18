@@ -8,8 +8,8 @@ var ObjectId = mongoose.Schema.Types.ObjectId;
 
 
 var IdeaReview = new Schema({
-	ideaSeedId		: ObjectId,
-	reviewer			: String,
+	ideaSeedId		: ObjectId, 
+	reviewer			: String, /* should be username */
 	variant				: String,
 
 

@@ -1204,14 +1204,27 @@ router.get('/update-viability-scores', csrfProtection, function(req, res) {
       res.json(thisIdea._doc);
 
     } else {
-      IdeaReview.findOne({"_id" : req.session.ideaReview}, function(error, currentReview){
-        if(error){
-          console.error('ERROR! ' + error);
-          res.json({});
-        } else {
-          res.json(currentReview._doc);
-        }
-      });
+                    IdeaReview.findOne(
+                      {"reviewer" : req.user.username, "ideaSeedId" : req.session.idea},
+                      function(error, currentReview){
+                      if(error){
+                        console.error('ERROR! ' + error);
+                        res.json({});
+                      } else if (currentReview){
+                        req.session.ideaReview = currentReview;
+                        res.json(currentReview._doc);
+                      } else {
+                        var newReview = {
+                          ideaSeedId : req.session.idea,
+                          reviewer : req.user.username
+                        }
+                        IdeaReview.create(newReview, function(err, newReview){
+                          if(err) { console.log("new review not created correctly")}
+                          req.session.ideaReview = newReview;
+                          res.json(newReview._doc);
+                        });
+                      }
+                    });
     }
   });
 });
@@ -1250,7 +1263,7 @@ router.post('/update-all-viabilities', csrfProtection, function(req, res) {
 
     } else {
 
-      IdeaReview.findById( req.session.ideaReview, function(error, currentReview){
+      IdeaReview.findById( req.session.ideaReview._id, function(error, currentReview){
         if(error){
           console.error('ERROR! ' + error);
           res.json({});
@@ -1280,12 +1293,11 @@ router.post('/update-all-viabilities', csrfProtection, function(req, res) {
             }
           });
         } else {
-          var newValues = {};
           _.each(req.body, function(value, key){
-            newValues[key] = value;
+            currentReview[key] = value;
           });
 
-          currentReview.save(function (err, idea, numaffected) {
+          currentReview.save(function (err, review, numaffected) {
             if(err) {
                 console.error('ERROR!' + err);
             }
@@ -1916,10 +1928,6 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
     return;
   }
 
-  // if (Object.keys(req.user).length != 0) {
-    
-  // }
-
   function shuffle(a) {
       var j, x, i;
       for (i = a.length; i; i--) {
@@ -1971,16 +1979,8 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
       var headshotURL = headshotData['headshotURL'];
       var headshotStyle = headshotData['headshotStyle'];
 
-      //uhhhh why is this?
-      delete req.session.ideaReview;
-
       IdeaSeed.findById(req.session.idea,function(err, idea){
         currentIdea = idea._doc;
-
-        
-
-
-
 
         ideaSeedHelpers.getApplicationStrength(idea.id)
           .then(function(strengthResponse){
@@ -2040,78 +2040,87 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
                     ]);
                   }
                 }
-                Aptitude.find({"_id" : {$in : idea.aptitudes}}, function(err, myAptitudes){
-                  IdeaImage.findOne({"_id" : idea.applicationReceipt}, function(err, receipt){
-                                if (idea._doc.images.length !== 0){
-                                  for (i =0; i < idea._doc.images.length; i++){
-                                    var j = 0;
-                                    IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
-                                      j++;
-                                      if(image && image._doc && image.amazonURL){
-                                        var filename = image._doc["filename"];
-                                        var imageStyle = "";
-                                        switch (image["orientation"]) {
-                                          case 1 :
-                                            imageStyle = "";
-                                            break;
-                                          case 2 :
-                                            imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                                            break;
-                                          case 3 :
-                                            imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                                            break;
-                                          case 4 :
-                                            imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                                            break;
-                                        }
-                                        imageURLs.push([
-                                          filename,
-                                          image["amazonURL"],
-                                          imageStyle
-                                        ]);
+                IdeaReview.find({"reviewer" : req.user.username, "ideaSeedId" : idea.id}, function(err, review){
+
+
+                                Aptitude.find({"_id" : {$in : idea.aptitudes}}, function(err, myAptitudes){
+                                  IdeaImage.findOne({"_id" : idea.applicationReceipt}, function(err, receipt){
+                                    if (idea._doc.images.length !== 0){
+                                      for (i =0; i < idea._doc.images.length; i++){
+                                        var j = 0;
+                                        IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
+                                          j++;
+                                          if(image && image._doc && image.amazonURL){
+                                            var filename = image._doc["filename"];
+                                            var imageStyle = "";
+                                            switch (image["orientation"]) {
+                                              case 1 :
+                                                imageStyle = "";
+                                                break;
+                                              case 2 :
+                                                imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                                                break;
+                                              case 3 :
+                                                imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                                                break;
+                                              case 4 :
+                                                imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                                                break;
+                                            }
+                                            imageURLs.push([
+                                              filename,
+                                              image["amazonURL"],
+                                              imageStyle
+                                            ]);
+                                          }
+                                          if (j == idea._doc.images.length){
+                                            res.render('pages/ideas-single', { user : req.user || {}, idea : currentIdea,
+                                              review : review || {},
+                                              csrfToken: req.csrfToken(),
+                                              variantDates : variantDates,
+                                              receipt : receipt,
+                                              strengthResponse : strengthResponse,
+                                              appStrengthText : strengthResponse['appStrengthText'] || "" ,
+                                              appStrengthClass : strengthResponse['appStrengthClass'] || "" ,
+                                              problemAreas  : problemAreas,
+                                              aptitudes : myAptitudes,
+                                              headshot : headshotURL,
+                                              headshotStyle : headshotStyle,
+                                              imageURLs : imageURLs,
+                                              inventorName : idea.inventorName,
+                                              problems : problems,
+                                              components : components,
+                                              viabilities : viabilities,
+                                              listOfProblems : listOfProblems });
+                                          }
+                                        });
                                       }
-                                      if (j == idea._doc.images.length){
-                                        res.render('pages/ideas-single', { user : req.user || {}, idea : currentIdea,
-                                          csrfToken: req.csrfToken(),
-                                          variantDates : variantDates,
-                                          receipt : receipt,
-                                          strengthResponse : strengthResponse,
-                                          appStrengthText : strengthResponse['appStrengthText'] || "" ,
-                                          appStrengthClass : strengthResponse['appStrengthClass'] || "" ,
-                                          problemAreas  : problemAreas,
-                                          aptitudes : myAptitudes,
-                                          headshot : headshotURL,
-                                          headshotStyle : headshotStyle,
-                                          imageURLs : imageURLs,
-                                          inventorName : idea.inventorName,
-                                          problems : problems,
-                                          components : components,
-                                          viabilities : viabilities,
-                                          listOfProblems : listOfProblems });
-                                      }
-                                    });
-                                  }
-                                } else {
-                                        res.render('pages/ideas-single', { user : req.user || {}, idea : currentIdea,
-                                          csrfToken: req.csrfToken(),
-                                          variantDates : variantDates,
-                                          receipt : receipt,
-                                          problemAreas  : problemAreas,
-                                          aptitudes : myAptitudes,
-                                          strengthResponse : strengthResponse,
-                                          appStrengthText : strengthResponse['appStrengthText'],
-                                          appStrengthClass : strengthResponse['appStrengthClass'],
-                                          imageURLs : [],
-                                          inventorName : idea.inventorName,
-                                          headshot : headshotURL,
-                                          headshotStyle : headshotStyle,
-                                          problems : problems,
-                                          components : components,
-                                          viabilities : viabilities,                                          
-                                          listOfProblems : listOfProblems });
-                                }
-                  });
-                }); //end of aptitude query
+                                    } else {
+                                            res.render('pages/ideas-single', { user : req.user || {}, idea : currentIdea,
+                                              review : review || {},
+                                              csrfToken: req.csrfToken(),
+                                              variantDates : variantDates,
+                                              receipt : receipt,
+                                              problemAreas  : problemAreas,
+                                              aptitudes : myAptitudes,
+                                              strengthResponse : strengthResponse,
+                                              appStrengthText : strengthResponse['appStrengthText'],
+                                              appStrengthClass : strengthResponse['appStrengthClass'],
+                                              imageURLs : [],
+                                              inventorName : idea.inventorName,
+                                              headshot : headshotURL,
+                                              headshotStyle : headshotStyle,
+                                              problems : problems,
+                                              components : components,
+                                              viabilities : viabilities,                                          
+                                              listOfProblems : listOfProblems });
+                                    }
+                                  });
+                                }); //end of aptitude query
+              }); // end of the review query
+
+
+
               }); //end of components query
             }); // end of idea problems query
 
