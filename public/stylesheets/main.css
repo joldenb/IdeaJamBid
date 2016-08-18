@@ -975,3 +975,8 @@ button.suggestion-tactics, button.suggestion-targets {
   margin-left: 5%;
   margin-right: 5%;  
 }
+
+#viewAllImperfections ul {
+  list-style-type: none;
+  padding-left: 0;
+}

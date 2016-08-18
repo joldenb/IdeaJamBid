@@ -20,6 +20,7 @@ html
             a.btn.secondary-btn.btn-default( href="/image-upload" )
               span.glyphicon.glyphicon-plus
 
+      h1 #{idea.name}
       .idea-summary-left
         h4.underline#componentsHeader Components
         .row 
@@ -101,7 +102,7 @@ html
 
       .row
         .idea-summary-data#idea-summary-problems
-          h4 Imperfections
+          h4#imperfections-header Imperfections
           ul.idea-summary-problem-list
             each problem, index in problems
               if(index < 3 && problem.text && problem['identifier'])
@@ -111,7 +112,7 @@ html
 
           button(type="button" id="problemModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addProblemModal") Add a Problem
           |  
-          a.btn.btn-default( href="/sort-problems" ) Sort Existing Problems
+          button(type="button"  class="btn btn-default" data-toggle="modal" data-target="#viewAllImperfections") View All
 
       .idea-summary-data#idea-summary-waste-values
         h4 Idea Viability Scores
@@ -135,6 +136,27 @@ html
             .modal-footer
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#submit(type='submit') Save
+
+  #viewAllImperfections.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 All Imperfections
+        .modal-body
+          .row 
+            .idea-summary-data#idea-summary-problems
+              ul.idea-summary-problem-list
+                each problem, index in problems
+                  if(problem.text && problem['identifier'])
+                    li.row
+                      div.col-xs-12
+                        include ../partials/problem-summary-element.jade
+
+              button(type="button" id="problemModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addProblemModal") Add a Problem
+        .modal-footer
+          button.btn.btn-info(data-dismiss="modal") Ok
 
   #viewAllComponents.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -1012,6 +1034,10 @@ html
 
     $("#componentsHeader").click(function(event){
       $('#viewAllComponents').modal('show');
+    })
+
+    $("#imperfections-header").click(function(event){
+      $('#viewAllImperfections').modal('show');
     })
 
     $("#problemSubmit").click(function(event){
