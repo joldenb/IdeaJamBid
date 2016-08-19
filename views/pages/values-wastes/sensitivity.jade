@@ -21,14 +21,14 @@ html
       h4 What problem with the #{idea.name} makes it sensitive to its environment?
       textarea.form-control(rows='6', cols="75", name="sensitivityProblem")
         | The problem of 
-      br
-      h4 Recorded problems for sensitivity:
-      ul.waste-value-problem-list
-        each problem, index in problems
-          li
-            h5.problem-text #{index + 1} : #{problem.text}
-            if problem.identifier
-              a.btn.btn-default.problem-solve-button(href="/imperfection-profile/" + problem.identifier) Solve this!
+      if problems.length > 0
+        h4 Recorded problems for sensitivity:
+        ul.waste-value-problem-list
+          each problem, index in problems
+            li
+              h5.problem-text #{index + 1} : #{problem.text}
+              if problem.identifier
+                a.btn.btn-default.problem-solve-button(href="/imperfection-profile/" + problem.identifier) Solve this!
       br
 
   

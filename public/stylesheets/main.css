@@ -984,7 +984,7 @@ button.suggestion-tactics, button.suggestion-targets {
 .viability-question-icon {
     position: absolute;
     right: 3em;
-    top: -6em;
+    top: -4.5em;
 }
 
 .problem-solve-button {
@@ -993,4 +993,15 @@ button.suggestion-tactics, button.suggestion-targets {
 
 .problem-text {
   display: inline;
+}
+
+.viabilityIcon {
+  height:3em;
+  width: 3em;
+}
+
+#viabilityModal .modal-title h2 {
+  display : inline;
+  vertical-align: middle;
+  margin: 0 .5em;  
 }

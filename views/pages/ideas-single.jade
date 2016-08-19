@@ -789,51 +789,68 @@ html
               $.get('/get-all-viability-scores', function(sliderData, status){
                 var sliderVal;
                 //get the correct value out of sliderData
+                $("#viabilityModal .modal-title img").remove();
+
                 switch(nextCategory) {
                 case "performability" : 
                   sliderVal = sliderData['performOne'];
+                  $("<img src='/perfIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
                   break;
                 case "affordability" : 
                   sliderVal = sliderData['affordOne'];
+                  $("<img src='/affordIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
                   break;
                 case "featurability" : 
                   sliderVal = sliderData['featureOne'];
+                  $("<img src='/perfIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
                   break;
                 case "deliverability" : 
                   sliderVal = sliderData['deliverOne'];
+                  $("<img src='/deliverabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
                   break;
                 case "useability" : 
                   sliderVal = sliderData['useabilityOne'];
+                  $("<img src='/perfIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
                   break;
                 case "maintainability" : 
                   sliderVal = sliderData['maintainOne'];
+                  $("<img src='/maintainabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
                   break;
                 case "durability" : 
                   sliderVal = sliderData['durabilityOne'];
+                  $("<img src='/durabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
                   break;
                 case "imageability" : 
                   sliderVal = sliderData['imageOne'];
+                  $("<img src='/imageabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
                   break;
                 case "complexity" : 
                   sliderVal = sliderData['complexOne'];
+                  $("<img src='/complexityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
                   break;
                 case "precision" : 
                   sliderVal = sliderData['precisionOne'];
+                  $("<img src='/precisionIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
                   break;
                 case "variability" : 
                   sliderVal = sliderData['variabilityOne'];
+                  $("<img src='/variabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
                   break;
                 case "sensitivity" : 
                   sliderVal = sliderData['sensitivityOne'];
+                  $("<img src='/sensitivityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
                   break;
                 case "immaturity" : 
                   sliderVal = sliderData['immatureOne'];
+                  $("<img src='/immaturityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
                   break;
                 case "dangerous" : 
                   sliderVal = sliderData['dangerOne'];
+                  $("<img src='/dangerIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
                   break;
                 case "skills" : 
                   sliderVal = sliderData['skillsOne'];
+                  $("<img src='/skillsIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
                   break;
                 }
                 if(sliderVal){
@@ -867,51 +884,67 @@ html
         $("#viabilityModal .modal-title h2").text(pathname.slice(1).charAt(0).toUpperCase() + pathname.slice(1).slice(1));
         $.get('/get-all-viability-scores', function(sliderData, status){
           //get the correct value out of sliderData
+          $("#viabilityModal .modal-title img").remove();
           switch(pathname.slice(1)) {
           case "performability" : 
             sliderVal = sliderData['performOne'];
+            $("<img src='/perfIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
             break;
           case "affordability" : 
             sliderVal = sliderData['affordOne'];
+            $("<img src='/affordIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
             break;
           case "featurability" : 
             sliderVal = sliderData['featureOne'];
+            $("<img src='/perfIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
             break;
           case "deliverability" : 
             sliderVal = sliderData['deliverOne'];
+            $("<img src='/deliverabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
             break;
           case "useability" : 
             sliderVal = sliderData['useabilityOne'];
+            $("<img src='/perfIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
             break;
           case "maintainability" : 
             sliderVal = sliderData['maintainOne'];
+            $("<img src='/maintainabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
             break;
           case "durability" : 
             sliderVal = sliderData['durabilityOne'];
+            $("<img src='/durabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
             break;
           case "imageability" : 
             sliderVal = sliderData['imageOne'];
+            $("<img src='/imageabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
             break;
           case "complexity" : 
             sliderVal = sliderData['complexOne'];
+            $("<img src='/complexityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
             break;
           case "precision" : 
             sliderVal = sliderData['precisionOne'];
+            $("<img src='/precisionIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
             break;
           case "variability" : 
             sliderVal = sliderData['variabilityOne'];
+            $("<img src='/variabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
             break;
           case "sensitivity" : 
             sliderVal = sliderData['sensitivityOne'];
+            $("<img src='/sensitivityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
             break;
           case "immaturity" : 
             sliderVal = sliderData['immatureOne'];
+            $("<img src='/immaturityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
             break;
           case "dangerous" : 
             sliderVal = sliderData['dangerOne'];
+            $("<img src='/dangerIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
             break;
           case "skills" : 
             sliderVal = sliderData['skillsOne'];
+            $("<img src='/skillsIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
             break;
           }
           if(sliderVal){
