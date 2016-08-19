@@ -984,6 +984,7 @@ button.suggestion-tactics, button.suggestion-targets {
 .viability-question-icon {
     position: absolute;
     right: 3em;
+<<<<<<< HEAD
     top: -4.5em;
 }
 
@@ -1004,4 +1005,13 @@ button.suggestion-tactics, button.suggestion-targets {
   display : inline;
   vertical-align: middle;
   margin: 0 .5em;  
+  top: -6em;
+}
+
+.jam-page .idea-summary-problem-list {
+  list-style: none;
+}
+
+.jam-page .imperfection-row {
+  padding: 0px !important;  
 }

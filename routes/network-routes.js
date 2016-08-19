@@ -254,6 +254,24 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
     }
   }
 
+  var imperfections = [];
+
+  IdeaProblem.find({}, function(err, problems) {
+    imperfections = problems;
+    _.each(imperfections, function(value, key, list){
+        Account.findOne({"username": value.creator}, function(err, user) {
+          value.wholeCreator = user;
+        });
+    });
+  });
+
+  var suggestions = [];
+
+  Component.find({}, function(err, components) {
+    suggestions = components;
+  });
+
+
   ideaSeedHelpers.getUserHeadshot(req).then(function(headshotData){
     var headshotURL = headshotData['headshotURL'];
     var headshotStyle = headshotData['headshotStyle'];
@@ -532,7 +550,9 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                         topInventors : topAccountsToDisplay,
                         inventorAptitudes :  aptitudes,
                         accountNameAndURLs : accountNameAndURLs,
-                        networkName : network.name
+                        networkName : network.name,
+                        imperfections: imperfections,
+                        suggestions: suggestions,
                       });
 
                     });

@@ -2849,11 +2849,21 @@ router.get('/begin-contributor-review', csrfProtection, function(req, res){
 ******************************************************************
 *****************************************************************/
 router.get('/imperfection-profile/:identifier', csrfProtection, function(req, res){
-  if(!req.session.idea || !(req.user && req.user.username)){
-    res.redirect('/');
-    return;
-  }
 
+  //coming from jam page
+  if (!req.session.idea && req.params.identifier) {
+    IdeaProblem.findOne({
+      "identifier" : req.params.identifier
+      }, function(err, ideaProblem){
+        IdeaSeed.findById(ideaProblem.ideaSeed, function(err, idea){
+          req.session.idea = idea.id;
+          if(!req.session.idea || !(req.user && req.user.username)){
+            res.redirect('/');
+            return;
+          }
+        });
+      });
+  }
 
   IdeaSeed.findById(req.session.idea,function(err, idea){
     IdeaProblem.findOne({
