@@ -5,14 +5,15 @@ html
   body
   div.scoreIdea(class='modalContainer')
     form(role='form', id="formPerformability" action="/performability", method="post", style='max-width: 700px;', data-idea-doc=idea)
+      input(type="hidden", name="_csrf", value="#{csrfToken}")
       img.viability-question-icon(src='/question-mark.png' height="40" width="40")
       h4.viability-question(style="display:none;")
         | Will the #{idea.name} effectively work to solve the problem of #{idea.problem}?
       br
       .slider-container
         .slider-end-labels
-          span.no-way Performs Poorly
-          span.yes-way Performs as Expected
+          span.no-way Poor
+          span.yes-way Well
         #perfLabelOne.sliderLabel
         #perfSliderOne(name="perfSliderOne")
       br
@@ -20,15 +21,17 @@ html
       input(type="hidden", name="_csrf", value="#{csrfToken}")
       textarea.form-control(rows='6', cols="75", name="performProblem")
           | The problem of 
+      p (Ex. "The problem of Mr. Fusion only works with uranium or lightning strikes.")  
       br
       if problems.length > 0
         h4 Performability problems associated with #{idea.name}:
         ul.waste-value-problem-list
           each problem, index in problems
             li
-              h4 #{index + 1} : #{problem.text}
+              h5.problem-text #{index + 1} : #{problem.text}
+              if problem.identifier
+                a.btn.btn-default.problem-solve-button(href="/imperfection-profile/" + problem.identifier) Solve this!
         br
-      p (Ex. "The problem of Mr. Fusion only works with uranium or lightning strikes.")  
       
 
   

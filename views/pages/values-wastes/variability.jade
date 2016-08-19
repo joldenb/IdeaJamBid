@@ -9,10 +9,11 @@ html
       | Will use or production of the #{idea.name} change based upon specific scenarios or circumstances when solving the problem of #{idea.problem}?
     br
     form(role='form', id="formVariability" action="/variability", method="post", style='max-width: 600px;', data-idea-doc=idea)
+      input(type="hidden", name="_csrf", value="#{csrfToken}")
       .slider-container
         .slider-end-labels
-          span.no-way Constant Method of Use and Production
-          span.yes-way High Degree of Variability 
+          span.no-way Consistent
+          span.yes-way Dynamic
         #variabilityLabelOne.sliderLabel
         #variabilitySliderOne
       h4 What problem with the #{idea.name} creates variability?
@@ -23,7 +24,9 @@ html
       ul.waste-value-problem-list
         each problem, index in problems
           li
-            h4 #{index + 1} : #{problem.text}
+            h5.problem-text #{index + 1} : #{problem.text}
+            if problem.identifier
+              a.btn.btn-default.problem-solve-button(href="/imperfection-profile/" + problem.identifier) Solve this!
       br
 
   

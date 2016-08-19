@@ -10,10 +10,11 @@ html
       | Will the #{idea.name} require specific timing, precise sequence or much practice to solve the problem of #{idea.problem}?
     br
     form(role='form', id="formPrecision" action="/precision", method="post", style='max-width: 600px;', data-idea-doc=idea)
+      input(type="hidden", name="_csrf", value="#{csrfToken}")
       .slider-container
         .slider-end-labels
-          span.no-way Minimal Exactness Necessary
-          span.yes-way Definite, Meticulous Precision Required 
+          span.no-way Minimal
+          span.yes-way A Lot
         #precisionLabelOne.sliderLabel
         #precisionSliderOne
       br
@@ -24,7 +25,9 @@ html
       ul.waste-value-problem-list
         each problem, index in problems
           li
-            h4 #{index + 1} : #{problem.text}
+            h5.problem-text #{index + 1} : #{problem.text}
+            if problem.identifier
+              a.btn.btn-default.problem-solve-button(href="/imperfection-profile/" + problem.identifier) Solve this!
       br
 
   

@@ -9,25 +9,28 @@ html
       | Is the #{idea.name} robust enough to withstand abuse when solving the problem of #{idea.problem}? 
     br
     form(role='form', id="formDurability" action="/durability", method="post", style='max-width: 600px;', data-idea-doc=idea)
+      input(type="hidden", name="_csrf", value="#{csrfToken}")
       .slider-container
         .slider-end-labels
           span.no-way Fragile
-          span.yes-way Highly Durable
+          span.yes-way Durable
         #durabilityLabelOne.sliderLabel
         #durabilitySliderOne
       br
       h4 What problem prevents the #{idea.name} from being more durable?
       textarea.form-control(rows='6', cols="75", name="durabilityProblem")
         | The problem of 
+      p (Ex. "The problem of the Delorean's shocks were not designed to withstand the terrain of the wild west desert.")
       br
       if problems.length > 0
         h4 Recorded problems for durability:
         ul.waste-value-problem-list
           each problem, index in problems
             li
-              h4 #{index + 1} : #{problem.text}
+              h5.problem-text #{index + 1} : #{problem.text}
+              if problem.identifier
+                a.btn.btn-default.problem-solve-button(href="/imperfection-profile/" + problem.identifier) Solve this!
       br
-      p (Ex. "The problem of the Delorean's shocks were not designed to withstand the terrain of the wild west desert.")
 
   
   script(type="text/javascript").

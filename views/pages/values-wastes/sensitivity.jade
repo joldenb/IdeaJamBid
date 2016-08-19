@@ -10,10 +10,11 @@ html
       | Will usage or the environment easily disturb or damage the #{idea.name} while solving the problem of #{idea.problem}?
     br
     form(role='form', id="formSensitivity" action="/sensitivity", method="post", style='max-width: 600px;', data-idea-doc=idea)
+      input(type="hidden", name="_csrf", value="#{csrfToken}")
       .slider-container
         .slider-end-labels
-          span.no-way Resistant to Damage
-          span.yes-way Highly Sensitive 
+          span.no-way Fragile
+          span.yes-way Durable
         #sensitivityLabelOne.sliderLabel
         #sensitivitySliderOne
       br
@@ -25,7 +26,9 @@ html
       ul.waste-value-problem-list
         each problem, index in problems
           li
-            h4 #{index + 1} : #{problem.text}
+            h5.problem-text #{index + 1} : #{problem.text}
+            if problem.identifier
+              a.btn.btn-default.problem-solve-button(href="/imperfection-profile/" + problem.identifier) Solve this!
       br
 
   

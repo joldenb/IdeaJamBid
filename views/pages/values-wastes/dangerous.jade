@@ -9,10 +9,11 @@ html
       | Will the #{idea.name} require human or environmental protections to reduce potential harm?
     br
     form(role='form', id="formDangerous" action="/dangerous", method="post", style='max-width: 600px;', data-idea-doc=idea)
+      input(type="hidden", name="_csrf", value="#{csrfToken}")
       .slider-container
         .slider-end-labels
           span.no-way Harmless
-          span.yes-way Highly Dangerous to humans or the enviornment
+          span.yes-way Dangerous
         #dangerousLabelOne.sliderLabel
         #dangerousSliderOne
       br
@@ -26,7 +27,9 @@ html
         ul.waste-value-problem-list
           each problem, index in problems
             li
-              h4 #{index + 1} : #{problem.text}
+              h5.problem-text #{index + 1} : #{problem.text}
+              if problem.identifier
+                a.btn.btn-default.problem-solve-button(href="/imperfection-profile/" + problem.identifier) Solve this!
         br
 
   

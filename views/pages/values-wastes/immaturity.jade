@@ -9,10 +9,11 @@ html
       | Will the design, manufacture, or production of the #{idea.name} require new or unproven technology, processes or materials to solve the problem of #{idea.problem}?
     br
     form(role='form', id="formImmaturity" action="/immaturity", method="post", style='max-width: 600px;', data-idea-doc=idea)
+      input(type="hidden", name="_csrf", value="#{csrfToken}")
       .slider-container
         .slider-end-labels
-          span.no-way New, Unproven Design Materials and Processes
-          span.yes-way Proven, Established Design Materials and Processes
+          span.no-way Immature
+          span.yes-way Mature
         #immaturityLabelOne.sliderLabel
         #immaturitySliderOne
       br
@@ -25,7 +26,9 @@ html
       ul.waste-value-problem-list
         each problem, index in problems
           li
-            h4 #{index + 1} : #{problem.text}
+            h5.problem-text #{index + 1} : #{problem.text}
+            if problem.identifier
+              a.btn.btn-default.problem-solve-button(href="/imperfection-profile/" + problem.identifier) Solve this!
       br
 
   

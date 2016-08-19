@@ -9,10 +9,11 @@ html
       | Will the #{idea.name} require many specific skills to solve the problem of #{idea.problem}?
     br
     form(role='form', id="formSkills" action="/skills", method="post", style='max-width: 600px;', data-idea-doc=idea)
+      input(type="hidden", name="_csrf", value="#{csrfToken}")
       .slider-container
         .slider-end-labels
-          span.no-way Easy to Make and Use
-          span.yes-way Many Specific Skills Needed
+          span.no-way Easy
+          span.yes-way Difficult
         #skillsLabelOne.sliderLabel
         #skillsSliderOne
       br
@@ -24,7 +25,9 @@ html
       ul.waste-value-problem-list
         each problem, index in problems
           li
-            h4 #{index + 1} : #{problem.text}
+            h5.problem-text #{index + 1} : #{problem.text}
+            if problem.identifier
+                a.btn.btn-default.problem-solve-button(href="/imperfection-profile/" + problem.identifier) Solve this!
       br
 
   

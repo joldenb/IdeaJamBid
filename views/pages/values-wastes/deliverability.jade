@@ -10,10 +10,11 @@ html
       | Will the #{idea.name} be ready on demand when and where the user wants it to solve the problem of #{idea.problem}?
     br
     form(role='form', id="formDeliverability" action="/deliverability", method="post", style='max-width: 600px;', data-idea-doc=idea)
+      input(type="hidden", name="_csrf", value="#{csrfToken}")
       .slider-container
         .slider-end-labels
           span.no-way Unavailable
-          span.yes-way Ready on Demand 
+          span.yes-way Ready
         #deliverLabelOne.sliderLabel
         #deliverSliderOne
       br
@@ -21,15 +22,17 @@ html
       input(type="hidden", name="_csrf", value="#{csrfToken}")
       textarea.form-control(rows='6', cols="75", name="deliverProblem")
         | The problem of 
+      p (Ex. "The problem of the Delorean's faulty time circuitry changing the date so that Marty arrives in the old wild west instead of the demanded date.")
       br
       if problems.length > 0
         h4 Recorded problems for deliverability:
         ul.waste-value-problem-list
           each problem, index in problems
             li
-              h4 #{index + 1} : #{problem.text}
+              h5.problem-text #{index + 1} : #{problem.text}
+              if problem.identifier
+                a.btn.btn-default.problem-solve-button(href="/imperfection-profile/" + problem.identifier) Solve this!
       br
-      p (Ex. "The problem of the Delorean's faulty time circuitry changing the date so that Marty arrives in the old wild west instead of the demanded date.")
 
 
   

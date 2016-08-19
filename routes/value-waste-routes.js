@@ -94,13 +94,14 @@ router.post('/performability', csrfProtection, function(req, res) {
     if(req.body.performProblem){
       req.body.performProblem = req.body.performProblem.slice(15);
       if(req.body.performProblem.charAt(req.body.performProblem.length-1) == "."){
-        req.body.performProblem = req.body.performProblem.slice(-1);
+        req.body.performProblem = req.body.performProblem.slice(0,-1);
       }
       var newProblem = {
         text          : req.body.performProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Performability",
-        ideaSeed      : thisIdea.id
+        ideaSeed      : thisIdea.id,
+        identifier    : "prob-"+Date.now()
       };
 
       IdeaProblem.create( newProblem ,
@@ -141,13 +142,14 @@ router.post('/performability', csrfProtection, function(req, res) {
       if(req.body.performProblem){
         req.body.performProblem = req.body.performProblem.slice(15);
         if(req.body.performProblem.charAt(req.body.performProblem.length-1) == "."){
-          req.body.performProblem = req.body.performProblem.slice(-1);
+          req.body.performProblem = req.body.performProblem.slice(0,-1);
         }
         var newProblem = {
           text          : req.body.performProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Performability",
-          ideaSeed      : thisIdea.id
+          ideaSeed      : thisIdea.id,
+          identifier    : "prob-"+Date.now()
         };
 
         IdeaProblem.create( newProblem ,
@@ -225,13 +227,14 @@ router.post('/affordability', csrfProtection, function(req, res) {
     if(req.body.affordProblem){
       req.body.affordProblem = req.body.affordProblem.slice(15);
       if(req.body.affordProblem.charAt(req.body.affordProblem.length-1) == "."){
-        req.body.affordProblem = req.body.affordProblem.slice(-1);
+        req.body.affordProblem = req.body.affordProblem.slice(0,-1);
       }
       var newProblem = {
         text          : req.body.affordProblem, //get rid of "the problem of ""
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Affordability",
-        ideaSeed      : thisIdea.id
+        ideaSeed      : thisIdea.id,
+        identifier    : "prob-"+Date.now()
       };
 
       IdeaProblem.create( newProblem ,
@@ -271,13 +274,14 @@ router.post('/affordability', csrfProtection, function(req, res) {
       if(req.body.affordProblem){
         req.body.affordProblem = req.body.affordProblem.slice(15);
         if(req.body.affordProblem.charAt(req.body.affordProblem.length-1) == "."){
-          req.body.affordProblem = req.body.affordProblem.slice(-1);
+          req.body.affordProblem = req.body.affordProblem.slice(0,-1);
         }
         var newProblem = {
           text          : req.body.affordProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Affordability",
-          ideaSeed      : thisIdea.id
+          ideaSeed      : thisIdea.id,
+          identifier    : "prob-"+Date.now()
         };
 
         IdeaProblem.create( newProblem ,
@@ -361,7 +365,7 @@ router.post('/featurability', csrfProtection, function(req, res) {
     if(req.body.featureProblem){
       req.body.featureProblem = req.body.featureProblem.slice(15);
       if(req.body.featureProblem.charAt(req.body.featureProblem.length-1) == "."){
-        req.body.featureProblem = req.body.featureProblem.slice(-1);
+        req.body.featureProblem = req.body.featureProblem.slice(0,-1);
       }
       var newProblem = {
         text          : req.body.featureProblem,
@@ -408,7 +412,7 @@ router.post('/featurability', csrfProtection, function(req, res) {
       if(req.body.featureProblem){
         req.body.featureProblem = req.body.featureProblem.slice(15);
         if(req.body.featureProblem.charAt(req.body.featureProblem.length-1) == "."){
-          req.body.featureProblem = req.body.featureProblem.slice(-1);
+          req.body.featureProblem = req.body.featureProblem.slice(0,-1);
         }
         var newProblem = {
           text          : req.body.featureProblem,
@@ -493,7 +497,7 @@ router.post('/deliverability', csrfProtection, function(req, res) {
     if(req.body.deliverProblem){
       req.body.deliverProblem = req.body.deliverProblem.slice(15);
       if(req.body.deliverProblem.charAt(req.body.deliverProblem.length-1) == "."){
-        req.body.deliverProblem = req.body.deliverProblem.slice(-1);
+        req.body.deliverProblem = req.body.deliverProblem.slice(0,-1);
       }
       var newProblem = {
         text          : req.body.deliverProblem,
@@ -540,7 +544,7 @@ router.post('/deliverability', csrfProtection, function(req, res) {
       if(req.body.deliverProblem){
         req.body.deliverProblem = req.body.deliverProblem.slice(15);
         if(req.body.deliverProblem.charAt(req.body.deliverProblem.length-1) == "."){
-          req.body.deliverProblem = req.body.deliverProblem.slice(-1);
+          req.body.deliverProblem = req.body.deliverProblem.slice(0,-1);
         }
         var newProblem = {
           text          : req.body.deliverProblem,
@@ -628,7 +632,7 @@ router.post('/useability', csrfProtection, function(req, res) {
     if(req.body.useabilityProblem){
       req.body.useabilityProblem = req.body.useabilityProblem.slice(15);
       if(req.body.useabilityProblem.charAt(req.body.useabilityProblem.length-1) == "."){
-        req.body.useabilityProblem = req.body.useabilityProblem.slice(-1);
+        req.body.useabilityProblem = req.body.useabilityProblem.slice(0,-1);
       }
       var newProblem = {
         text          : req.body.useabilityProblem,
@@ -677,7 +681,7 @@ router.post('/useability', csrfProtection, function(req, res) {
       if(req.body.useabilityProblem){
         req.body.useabilityProblem = req.body.useabilityProblem.slice(15);
         if(req.body.useabilityProblem.charAt(req.body.useabilityProblem.length-1) == "."){
-          req.body.useabilityProblem = req.body.useabilityProblem.slice(-1);
+          req.body.useabilityProblem = req.body.useabilityProblem.slice(0,-1);
         }
         var newProblem = {
           text          : req.body.useabilityProblem,
@@ -765,7 +769,7 @@ router.post('/maintainability', csrfProtection, function(req, res) {
     if(req.body.maintainProblem){
       req.body.maintainProblem = req.body.maintainProblem.slice(15);
       if(req.body.maintainProblem.charAt(req.body.maintainProblem.length-1) == "."){
-        req.body.maintainProblem = req.body.maintainProblem.slice(-1);
+        req.body.maintainProblem = req.body.maintainProblem.slice(0,-1);
       }
       var newProblem = {
         text          : req.body.maintainProblem,
@@ -812,7 +816,7 @@ router.post('/maintainability', csrfProtection, function(req, res) {
       if(req.body.maintainProblem){
         req.body.maintainProblem = req.body.maintainProblem.slice(15);
         if(req.body.maintainProblem.charAt(req.body.maintainProblem.length-1) == "."){
-          req.body.maintainProblem = req.body.maintainProblem.slice(-1);
+          req.body.maintainProblem = req.body.maintainProblem.slice(0,-1);
         }
         var newProblem = {
           text          : req.body.maintainProblem,
@@ -900,7 +904,7 @@ router.post('/durability', csrfProtection, function(req, res) {
     if(req.body.durabilityProblem){
       req.body.durabilityProblem = req.body.durabilityProblem.slice(15);
       if(req.body.durabilityProblem.charAt(req.body.durabilityProblem.length-1) == "."){
-        req.body.durabilityProblem = req.body.durabilityProblem.slice(-1);
+        req.body.durabilityProblem = req.body.durabilityProblem.slice(0,-1);
       }
       var newProblem = {
         text          : req.body.durabilityProblem,
@@ -947,7 +951,7 @@ router.post('/durability', csrfProtection, function(req, res) {
       if(req.body.durabilityProblem){
         req.body.durabilityProblem = req.body.durabilityProblem.slice(15);
         if(req.body.durabilityProblem.charAt(req.body.durabilityProblem.length-1) == "."){
-          req.body.durabilityProblem = req.body.durabilityProblem.slice(-1);
+          req.body.durabilityProblem = req.body.durabilityProblem.slice(0,-1);
         }
         var newProblem = {
           text          : req.body.durabilityProblem,
@@ -1035,7 +1039,7 @@ router.post('/imageability', csrfProtection, function(req, res) {
     if(req.body.imageProblem){
       req.body.imageProblem = req.body.imageProblem.slice(15);
       if(req.body.imageProblem.charAt(req.body.imageProblem.length-1) == "."){
-        req.body.imageProblem = req.body.imageProblem.slice(-1);
+        req.body.imageProblem = req.body.imageProblem.slice(0,-1);
       }
       var newProblem = {
         text          : req.body.imageProblem,
@@ -1082,7 +1086,7 @@ router.post('/imageability', csrfProtection, function(req, res) {
       if(req.body.imageProblem){
         req.body.imageProblem = req.body.imageProblem.slice(15);
         if(req.body.imageProblem.charAt(req.body.imageProblem.length-1) == "."){
-          req.body.imageProblem = req.body.imageProblem.slice(-1);
+          req.body.imageProblem = req.body.imageProblem.slice(0,-1);
         }
         var newProblem = {
           text          : req.body.imageProblem,
@@ -1170,7 +1174,7 @@ router.post('/complexity', csrfProtection, function(req, res) {
     if(req.body.complexProblem){
       req.body.complexProblem = req.body.complexProblem.slice(15);
       if(req.body.complexProblem.charAt(req.body.complexProblem.length-1) == "."){
-        req.body.complexProblem = req.body.complexProblem.slice(-1);
+        req.body.complexProblem = req.body.complexProblem.slice(0,-1);
       }
       var newProblem = {
         text          : req.body.complexProblem,
@@ -1217,7 +1221,7 @@ router.post('/complexity', csrfProtection, function(req, res) {
       if(req.body.complexProblem){
         req.body.complexProblem = req.body.complexProblem.slice(15);
         if(req.body.complexProblem.charAt(req.body.complexProblem.length-1) == "."){
-          req.body.complexProblem = req.body.complexProblem.slice(-1);
+          req.body.complexProblem = req.body.complexProblem.slice(0,-1);
         }
         var newProblem = {
           text          : req.body.complexProblem,
@@ -1305,13 +1309,14 @@ router.post('/precision', csrfProtection, function(req, res) {
     if(req.body.precisionProblem){
       req.body.precisionProblem = req.body.precisionProblem.slice(15);
       if(req.body.precisionProblem.charAt(req.body.precisionProblem.length-1) == "."){
-        req.body.precisionProblem = req.body.precisionProblem.slice(-1);
+        req.body.precisionProblem = req.body.precisionProblem.slice(0,-1);
       }
       var newProblem = {
         text          : req.body.precisionProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Precision",
-        ideaSeed      : thisIdea.id
+        ideaSeed      : thisIdea.id,
+        identifier    : "prob-"+Date.now()
       };
 
       IdeaProblem.create( newProblem ,
@@ -1351,13 +1356,14 @@ router.post('/precision', csrfProtection, function(req, res) {
       if(req.body.precisionProblem){
         req.body.precisionProblem = req.body.precisionProblem.slice(15);
         if(req.body.precisionProblem.charAt(req.body.precisionProblem.length-1) == "."){
-          req.body.precisionProblem = req.body.precisionProblem.slice(-1);
+          req.body.precisionProblem = req.body.precisionProblem.slice(0,-1);
         }
         var newProblem = {
           text          : req.body.precisionProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Precision",
-          ideaSeed      : thisIdea.id
+          ideaSeed      : thisIdea.id,
+          identifier    : "prob-"+Date.now()
         };
 
         IdeaProblem.create( newProblem ,
@@ -1441,13 +1447,14 @@ router.post('/variability', csrfProtection, function(req, res) {
     if(req.body.variabilityProblem){
       req.body.variabilityProblem = req.body.variabilityProblem.slice(15);
       if(req.body.variabilityProblem.charAt(req.body.variabilityProblem.length-1) == "."){
-        req.body.variabilityProblem = req.body.variabilityProblem.slice(-1);
+        req.body.variabilityProblem = req.body.variabilityProblem.slice(0,-1);
       }
       var newProblem = {
         text          : req.body.variabilityProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Variability",
-        ideaSeed      : thisIdea.id
+        ideaSeed      : thisIdea.id,
+        identifier    : "prob-"+Date.now()
       };
 
       IdeaProblem.create( newProblem ,
@@ -1487,13 +1494,14 @@ router.post('/variability', csrfProtection, function(req, res) {
       if(req.body.variabilityProblem){
         req.body.variabilityProblem = req.body.variabilityProblem.slice(15);
         if(req.body.variabilityProblem.charAt(req.body.variabilityProblem.length-1) == "."){
-          req.body.variabilityProblem = req.body.variabilityProblem.slice(-1);
+          req.body.variabilityProblem = req.body.variabilityProblem.slice(0,-1);
         }
         var newProblem = {
           text          : req.body.variabilityProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Variability",
-          ideaSeed      : thisIdea.id
+          ideaSeed      : thisIdea.id,
+          identifier    : "prob-"+Date.now()
         };
 
         IdeaProblem.create( newProblem ,
@@ -1575,13 +1583,14 @@ router.post('/sensitivity', csrfProtection, function(req, res) {
     if(req.body.sensitivityProblem){
       req.body.sensitivityProblem = req.body.sensitivityProblem.slice(15);
       if(req.body.sensitivityProblem.charAt(req.body.sensitivityProblem.length-1) == "."){
-        req.body.sensitivityProblem = req.body.sensitivityProblem.slice(-1);
+        req.body.sensitivityProblem = req.body.sensitivityProblem.slice(0,-1);
       }
       var newProblem = {
         text          : req.body.sensitivityProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Sensitivity",
-        ideaSeed      : thisIdea.id
+        ideaSeed      : thisIdea.id,
+        identifier    : "prob-"+Date.now()
       };
 
       IdeaProblem.create( newProblem ,
@@ -1621,13 +1630,14 @@ router.post('/sensitivity', csrfProtection, function(req, res) {
       if(req.body.sensitivityProblem){
         req.body.sensitivityProblem = req.body.sensitivityProblem.slice(15);
         if(req.body.sensitivityProblem.charAt(req.body.sensitivityProblem.length-1) == "."){
-          req.body.sensitivityProblem = req.body.sensitivityProblem.slice(-1);
+          req.body.sensitivityProblem = req.body.sensitivityProblem.slice(0,-1);
         }
         var newProblem = {
           text          : req.body.sensitivityProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Sensitivity",
-          ideaSeed      : thisIdea.id
+          ideaSeed      : thisIdea.id,
+          identifier    : "prob-"+Date.now()
         };
 
         IdeaProblem.create( newProblem ,
@@ -1711,13 +1721,14 @@ router.post('/immaturity', csrfProtection, function(req, res) {
     if(req.body.immatureProblem){
       req.body.immatureProblem = req.body.immatureProblem.slice(15);
       if(req.body.immatureProblem.charAt(req.body.immatureProblem.length-1) == "."){
-        req.body.immatureProblem = req.body.immatureProblem.slice(-1);
+        req.body.immatureProblem = req.body.immatureProblem.slice(0,-1);
       }
       var newProblem = {
         text          : req.body.immatureProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Immaturity",
-        ideaSeed      : thisIdea.id
+        ideaSeed      : thisIdea.id,
+        identifier    : "prob-"+Date.now()
       };
 
       IdeaProblem.create( newProblem ,
@@ -1757,13 +1768,14 @@ router.post('/immaturity', csrfProtection, function(req, res) {
       if(req.body.immatureProblem){
         req.body.immatureProblem = req.body.immatureProblem.slice(15);
         if(req.body.immatureProblem.charAt(req.body.immatureProblem.length-1) == "."){
-          req.body.immatureProblem = req.body.immatureProblem.slice(-1);
+          req.body.immatureProblem = req.body.immatureProblem.slice(0,-1);
         }
         var newProblem = {
           text          : req.body.immatureProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Immaturity",
-          ideaSeed      : thisIdea.id
+          ideaSeed      : thisIdea.id,
+          identifier    : "prob-"+Date.now()
         };
 
         IdeaProblem.create( newProblem ,
@@ -1843,13 +1855,14 @@ router.post('/dangerous', csrfProtection, function(req, res) {
     if(req.body.dangerProblem){
       req.body.dangerProblem = req.body.dangerProblem.slice(15);
       if(req.body.dangerProblem.charAt(req.body.dangerProblem.length-1) == "."){
-        req.body.dangerProblem = req.body.dangerProblem.slice(-1);
+        req.body.dangerProblem = req.body.dangerProblem.slice(0,-1);
       }
       var newProblem = {
         text          : req.body.dangerProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Danger",
-        ideaSeed      : thisIdea.id
+        ideaSeed      : thisIdea.id,
+        identifier    : "prob-"+Date.now()
       };
 
       IdeaProblem.create( newProblem ,
@@ -1889,13 +1902,14 @@ router.post('/dangerous', csrfProtection, function(req, res) {
       if(req.body.dangerProblem){
         req.body.dangerProblem = req.body.dangerProblem.slice(15);
         if(req.body.dangerProblem.charAt(req.body.dangerProblem.length-1) == "."){
-          req.body.dangerProblem = req.body.dangerProblem.slice(-1);
+          req.body.dangerProblem = req.body.dangerProblem.slice(0,-1);
         }
         var newProblem = {
           text          : req.body.dangerProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Danger",
-          ideaSeed      : thisIdea.id
+          ideaSeed      : thisIdea.id,
+          identifier    : "prob-"+Date.now()
         };
 
         IdeaProblem.create( newProblem ,
@@ -1976,13 +1990,14 @@ router.post('/skills', csrfProtection, function(req, res) {
     if(req.body.skillsProblem){
       req.body.skillsProblem = req.body.skillsProblem.slice(15);
       if(req.body.skillsProblem.charAt(req.body.skillsProblem.length-1) == "."){
-        req.body.skillsProblem = req.body.skillsProblem.slice(-1);
+        req.body.skillsProblem = req.body.skillsProblem.slice(0,-1);
       }
       var newProblem = {
         text          : req.body.skillsProblem,
         creator       : req.user.username, date : new Date(),
         problemArea   : "Area : Skills",
-        ideaSeed      : thisIdea.id
+        ideaSeed      : thisIdea.id,
+        identifier    : "prob-"+Date.now()
       };
 
       IdeaProblem.create( newProblem ,
@@ -2022,13 +2037,14 @@ router.post('/skills', csrfProtection, function(req, res) {
       if(req.body.skillsProblem){
         req.body.skillsProblem = req.body.skillsProblem.slice(15);
         if(req.body.skillsProblem.charAt(req.body.skillsProblem.length-1) == "."){
-          req.body.skillsProblem = req.body.skillsProblem.slice(-1);
+          req.body.skillsProblem = req.body.skillsProblem.slice(0,-1);
         }
         var newProblem = {
           text          : req.body.skillsProblem,
           creator       : req.user.username, date : new Date(),
           problemArea   : "Area : Skills",
-          ideaSeed      : thisIdea.id
+          ideaSeed      : thisIdea.id,
+          identifier    : "prob-"+Date.now()
         };
 
         IdeaProblem.create( newProblem ,

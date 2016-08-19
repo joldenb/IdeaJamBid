@@ -986,3 +986,11 @@ button.suggestion-tactics, button.suggestion-targets {
     right: 3em;
     top: -6em;
 }
+
+.problem-solve-button {
+  margin: 0 .5em;
+}
+
+.problem-text {
+  display: inline;
+}
