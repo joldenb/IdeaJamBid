@@ -263,13 +263,13 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
           value.wholeCreator = user;
         });
     });
-  });
+  }).sort({upvotes : -1});
 
   var suggestions = [];
 
   Component.find({}, function(err, components) {
     suggestions = components;
-  });
+  }).sort({upvotes : -1});
 
 
   ideaSeedHelpers.getUserHeadshot(req).then(function(headshotData){
