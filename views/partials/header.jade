@@ -18,13 +18,13 @@
       if headshot && Object.keys(user).length != 0
         li.profile-headshot-list-item
           .profile-headshot
-            img.placeholder(src=headshot height="75" width="75" style=headshotStyle)
+            div(class="placeholder" style="height: 75px; width: 75px; background-image : url('" + headshot + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + headshotStyle)
             a.plus-overlay(href="/imagineer-picture")
               img(src='/plus-overlay.png' height="75" width="75")
       else  
         li.profile-headshot-list-item
           .profile-headshot
-            img.placeholder(src="/avatar.png" height="75" width="75")
+            div(class="placeholder" style="height: 75px; width: 75px; background-image : url('" + headshot + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + headshotStyle)
             if Object.keys(user).length != 0
               a.plus-overlay(href="/imagineer-picture")
                 img(src='/plus-overlay.png' height="75" width="75")
