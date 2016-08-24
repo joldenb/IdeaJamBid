@@ -14,7 +14,7 @@ html
             each imageURL, index in imageURLs
               if index == 0
                 .image-summary-image
-                  img(src=imageURL[1] height="300" width="400" style=imageURL[2])
+                  div(id='#{imageURL[0]}' style="height: 300px; width: 400px; background-image : url('" + '#{imageURL[1] || "/avatar.png"}' + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + "#{imageURL[2]}")
               if index < 3 && index > 0
                 img.imageListItems(src=imageURL[1]  style=imageURL[2])
             span.view-all-images-btn
