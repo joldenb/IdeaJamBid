@@ -22,18 +22,18 @@ html
           .row
             .col-md-4
               if(topInventors[index])
-                if accountNameAndURLs[topInventors[index].nickname]
-                  - inventorImage = accountNameAndURLs[topInventors[index].nickname][0]
-                  - inventorImageStyle = accountNameAndURLs[topInventors[index].nickname][1]
+                if accountNameAndURLs[topInventors[index].username]
+                  - inventorImage = accountNameAndURLs[topInventors[index].username][0]
+                  - inventorImageStyle = accountNameAndURLs[topInventors[index].username][1]
                 - inventorName = topInventors[index].nickname
                 - inventorPoints = topInventors[index].einsteinPoints
                 - inventorAptitudeIds = topInventors[index].aptitudes
                 include ../partials/inventor-block.jade
             .col-md-4
               if(topInventors[index + 1])
-                if accountNameAndURLs[topInventors[index + 1].nickname]
-                  - inventorImage = accountNameAndURLs[topInventors[index + 1].nickname][0]
-                  - inventorImageStyle = accountNameAndURLs[topInventors[index + 1].nickname][1]
+                if accountNameAndURLs[topInventors[index + 1].username]
+                  - inventorImage = accountNameAndURLs[topInventors[index + 1].username][0]
+                  - inventorImageStyle = accountNameAndURLs[topInventors[index + 1].username][1]
                 else
                   - inventorImage = ""
                   - inventorImageStyle = ""
@@ -43,9 +43,9 @@ html
                 include ../partials/inventor-block.jade
             .col-md-4
               if(topInventors[index + 2 ])
-                if accountNameAndURLs[topInventors[index + 2].nickname]
-                  - inventorImage = accountNameAndURLs[topInventors[index + 2].nickname][0]
-                  - inventorImageStyle = accountNameAndURLs[topInventors[index + 2].nickname][1]
+                if accountNameAndURLs[topInventors[index + 2].username]
+                  - inventorImage = accountNameAndURLs[topInventors[index + 2].username][0]
+                  - inventorImageStyle = accountNameAndURLs[topInventors[index + 2].username][1]
                 else 
                   - inventorImage = ""
                   - inventorImageStyle = ""
