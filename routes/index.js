@@ -409,6 +409,7 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
                 });
                 var context = {"reviewedNames" : reviewedIdeaNames};
                 _.each(account.ideaSeeds, function(element, index,  list){
+                  var reviewNames = [];
                   reviewNames = this["reviewedNames"];
                   (function(reviewNames){
                     IdeaSeed.findById(element._id, function(error, document){
