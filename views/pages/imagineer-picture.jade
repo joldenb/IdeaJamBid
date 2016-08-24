@@ -55,7 +55,7 @@ html
           if locationNetwork
             h4 Location : #[a(class="network-link") #{locationNetwork}]
             if Object.keys(user).length != 0
-              a(class="btn btn-default" href="#" id="locationModalButton" data-toggle="modal" data-target="#companyModal") Edit Jam
+              a(class="btn btn-default" href="#" id="locationModalButton") Edit Jam
           else
             if Object.keys(user).length != 0
               button(type="button" id="locationModalButton" class="btn btn-default" ) Add your Location
@@ -155,10 +155,22 @@ html
           form(role='form', id="saveLocation" action="/save-location-network", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
               |  
-              h4 Select State
-              select.form-control#locationState
-              h4.locationCity(style="display:none;") Select City
-              select.form-control.locationCity(style="display:none;")
+              h4 Select Location
+              select.form-control#locationState(style="display: none;")
+                option(value="CO") Colorado
+              select.form-control.locationCity
+                option(value="Denver") Denver
+                option(value="Boulder") Boulder
+                option(value="Colorado Springs") Colorado Springs
+                option(value="Fort Collins") Fort Collins
+                option(value="Golden") Golden
+                option(value="Steamboat") Steamboat
+                option(value="Western Slope") Western Slope
+                option(value="Durango") Durango
+                option(value="Summit County") Summit County
+                option(value="Grand County") Grand County
+                option(value="Pitkin County") Pitkin County
+                option(value="San Luis Valley") San Luis Valley
               input(type="hidden", name="_csrf", value="#{csrfToken}")
 
             .modal-footer
