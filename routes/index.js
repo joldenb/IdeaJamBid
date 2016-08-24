@@ -561,6 +561,7 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
         });
       
         Aptitude.find({"_id" : {$in : req.user.aptitudes}}, function(err, myAptitudes){
+          var reviewNames;
           if(req.user.ideaSeeds && req.user.ideaSeeds.length > 0){
             var ideaNames = [],
                 j = 0;
@@ -578,8 +579,7 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
                   return [item["name"], formattedDate];
                 });
                 var context = {"reviewedNames" : reviewedIdeaNames};
-                _.each(req.user.ideaSeeds, function(element, index,  list){
-                  var reviewNames = [];
+                _.each(req.user.ideaSeeds, function(element, index,  list){                  
                   reviewNames = this["reviewedNames"];
                   (function(reviewNames){
                     IdeaSeed.findById(element._id, function(error, document){
