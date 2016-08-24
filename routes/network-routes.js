@@ -254,24 +254,6 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
     }
   }
 
-  var imperfections = [];
-
-  IdeaProblem.find({}, function(err, problems) {
-    imperfections = problems;
-    _.each(imperfections, function(value, key, list){
-        Account.findOne({"username": value.creator}, function(err, user) {
-          value.wholeCreator = user;
-        });
-    });
-  }).sort({upvotes : -1});
-
-  var suggestions = [];
-
-  Component.find({}, function(err, components) {
-    suggestions = components;
-  }).sort({upvotes : -1});
-
-
   ideaSeedHelpers.getUserHeadshot(req).then(function(headshotData){
     var headshotURL = headshotData['headshotURL'];
     var headshotStyle = headshotData['headshotStyle'];
@@ -351,6 +333,22 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
               return idea.id.toString();
             });
 
+            var imperfections = [];
+
+            IdeaProblem.find({"ideaSeed" : { $in : allIdeas}}, function(err, problems) {
+              imperfections = problems;
+              _.each(imperfections, function(value, key, list){
+                  Account.findOne({"username": value.creator}, function(err, user) {
+                    value.wholeCreator = user;
+                  });
+              });
+            }).sort({upvotes : -1});
+
+            var suggestions = [];
+
+            Component.find({"ideaSeed" : { $in : allIdeas}}, function(err, components) {
+              suggestions = components;
+            }).sort({upvotes : -1});            
 
             IdeaSeed.find({"_id" : { $in : allIdeas}}, function(err, ideas){
 
