@@ -14,7 +14,7 @@ html
           each imageURL, index in imageURLs
             if imageURL[0] == profilePictureFilename
               .image-summary-image
-                img(src=imageURL[1] height="300" width="400", id=imageURL[0] style=imageURL[2])
+                div(id='#{imageURL[0]}' style="height: 300px; width: 400px; background-image : url('" + '#{imageURL[1] || "/avatar.png"}' + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + "#{imageURL[2]}")
           if imageURLs.length > 1
             h3 Select a different Picture
             each imageURL, index in imageURLs
