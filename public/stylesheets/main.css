@@ -82,11 +82,6 @@ h1, h2, h3, h4 {
   margin: 1em;
 }
 
-.container {
-  margin-top:3em;
-  width: 50%;
-}
-
 .container.profile {
   text-align:center;
 }
@@ -135,7 +130,7 @@ div#begin-info-right button {
   margin:.3em 0;
 }
 
-.container.idea-summary, .container.scoreIdea {
+.container.scoreIdea {
   text-align: left;
   margin-left: 30%;
 }
