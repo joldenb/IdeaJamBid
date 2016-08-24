@@ -21,7 +21,10 @@ html
               a.btn.secondary-btn.btn-default( href="/image-upload" )
                 span.glyphicon.glyphicon-plus
 
-        h1 #{idea.name}
+        if idea.name && inventorName == user.username
+          h3 #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)} solves the problem of #[a(href='/introduce-idea') #{idea.problem}] by #[a(href='/accomplish') #{idea.description}].
+        else if idea.name 
+          h3 #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)} solves the problem of #{idea.problem} by #{idea.description}.
         .idea-summary-left
           h4.underline#componentsHeader Components
           .row 
@@ -49,42 +52,24 @@ html
               button(type="button" id="componentModalButton"  class="btn secondary-btn btn-default" data-toggle="modal" data-target="#addComponentModal")
                 span.glyphicon.glyphicon-plus
 
-        .idea-summary-left#idea-summary-challenge
-          h4.underline Challenge
-          .row 
-            .col-xs-10
-              <i>#{idea.problem}</i>
-            .col-xs-2
+          #idea-summary-aptitudes.aptitudeList
+            .profileAptitudes
+              if aptitudes && aptitudes.length > 0
+                h4 Aptitudes
+                ul
+                  each aptitude in aptitudes
+                    li(data-apt-id="#{aptitude.identifier}") 
+                      a(href="/aptitudes/" + aptitude.title) #{aptitude.title}
               if inventorName == user.username
-                a.btn.secondary-btn.btn-default( href="/introduce-idea" )
-                  span.glyphicon.glyphicon-pencil
-
-        .idea-summary-left#idea-summary-accomplish
-          h4.underline Description
-          .row
-            .col-xs-10
-              <i>#{idea.description}</i>
-            .col-xs-2
-              if inventorName == user.username
-                a.btn.secondary-btn.btn-default( href="/accomplish" )
-                  span.glyphicon.glyphicon-pencil
-
-        #idea-summary-aptitudes.aptitudeList
-          .profileAptitudes
-            if aptitudes
-              h3 Aptitudes : 
-              ul
-                each aptitude in aptitudes
-                  li(data-apt-id="#{aptitude.identifier}") 
-                    a(href="/aptitudes/" + aptitude.title) #{aptitude.title}
-            if inventorName == user.username
-              form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
-                .form-group
-                  |  
-                  input(type="hidden", name="_csrf", value="#{csrfToken}")
-                  input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
-                .modal-footer
-                  button.btn.btn-success#aptitudeSubmit(type='submit') Save
+                if !aptitudes || aptitudes.length == 0
+                  h4 Aptitudes
+                form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
+                  .form-group
+                    |  
+                    input(type="hidden", name="_csrf", value="#{csrfToken}")
+                    input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
+                  .modal-footer
+                    button.btn.btn-success#aptitudeSubmit(type='submit') Save
 
 
       .idea-function-column.col-md-8
