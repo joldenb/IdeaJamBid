@@ -339,7 +339,7 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
     req.session.idea = null;
   }
 
-  Account.findOne({"nickname" : req.params.nickname}, function(err, account){
+  Account.findById(req.user.id, function(err, account){
 
     if (err || !account){
       console.log('Error is ' + err);
@@ -392,6 +392,7 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
             var headshotURL = headshotData['headshotURL'];
             var headshotStyle = headshotData['headshotStyle'];
 
+          var reviewNames, accountIdeaSeeds;
           if(account.ideaSeeds && account.ideaSeeds.length > 0){
             var ideaNames = [],
                 j = 0;
@@ -473,13 +474,14 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
               csrfToken: req.csrfToken(),
               user : req.user || {} || {},
               profileAccount: account,
+              reviewNames : reviewNames,
               aptitudes : myAptitudes,
               headshot : headshotURL,
               headshotStyle : headshotStyle,
               schoolNetwork : schoolNetwork,
               locationNetwork : locationNetwork,
               companyNetwork : companyNetwork,
-              accountIdeaSeeds : []
+              accountIdeaSeeds : accountIdeaSeeds
             });
           }
         });
