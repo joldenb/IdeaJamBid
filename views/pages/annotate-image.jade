@@ -27,7 +27,8 @@ html
 
   button(type="button" id="modalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Go Win Fight
 
-  .container.annotate-image-container
+  .container-fluid.annotate-image-container
+    .row
       if (imgURL)
         canvas(id="myCanvas", width="1000", height="700", style="border:1px solid #d3d3d3;")
         img.summary-image(id="scream", src=imgURL, data-original="http://www.example.com/my-dummy-image-path", style="display:none;" + imageStyle)

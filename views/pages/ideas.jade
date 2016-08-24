@@ -6,61 +6,55 @@ html
   .header.navbar.navbar-default
     include ../partials/header.jade
 
-  .view-idea-suggestions
-    h1 Contribute to an Idea
-    
-    .container
-      each idea, index in ideas
-        - var ideaName
-        - var ideaLink
-        - var problemCategory
-        - var suggestionProblem
-        - var accountName
-        - var ideaImage
-        - var ideaImageStyle
-        - var inventorImage
-        - var inventorImageStyle
-        if index % 3 == 0 
-          .row
-            .col-md-4
-              if(ideas[index])
-                - ideaName = ideas[index][0] || ""
-                - ideaLink = "/ideas/"+ ideas[index][0]
-                - problemCategory = ideas[index][1] || ""
-                - suggestionProblem = "W: "+ ideas[index][2][0] +" V: "+ideas[index][2][1] || ""
-                - accountName = ideas[index][3]
-                - ideaImage = ideas[index][4] || ""
-                - ideaImageStyle = ideas[index][5]
-                - inventorImage = ideas[index][6] || ""
-                - inventorImageStyle = ideas[index][7] || ""
+  .container.view-idea-suggestions
+    each idea, index in ideas
+      - var ideaName
+      - var ideaLink
+      - var problemCategory
+      - var suggestionProblem
+      - var accountName
+      - var ideaImage
+      - var ideaImageStyle
+      - var inventorImage
+      - var inventorImageStyle
+      if index % 3 == 0 
+        .row
+          .col-md-4
+            if(ideas[index])
+              - ideaName = ideas[index][0] || ""
+              - ideaLink = "/ideas/"+ ideas[index][0]
+              - problemCategory = ideas[index][1] || ""
+              - suggestionProblem = "W: "+ ideas[index][2][0] +" V: "+ideas[index][2][1] || ""
+              - accountName = ideas[index][3]
+              - ideaImage = ideas[index][4] || ""
+              - ideaImageStyle = ideas[index][5]
+              - inventorImage = ideas[index][6] || ""
+              - inventorImageStyle = ideas[index][7] || ""
+              include ../partials/view-all-idea-block.jade
+          .col-md-4
+            if(ideas[index + 1])
+              - ideaName = ideas[index + 1][0] || ""
+              - ideaLink = "/ideas/"+ ideas[index + 1][0] || ""
+              - problemCategory = ideas[index + 1][1] || ""
+              - suggestionProblem = "W: "+ ideas[index + 1][2][0] +" V: "+ideas[index + 1][2][1] || ""
+              - accountName = ideas[index + 1][3] || ""
+              - ideaImage = ideas[index + 1][4] || ""
+              - ideaImageStyle = ideas[index + 1][5] || ""
+              - inventorImage = ideas[index + 1][6] || ""
+              - inventorImageStyle = ideas[index + 1 ][7] || ""
+              include ../partials/view-all-idea-block.jade
+          .col-md-4
+              if(ideas[index + 2 ])
+                - ideaName = ideas[index + 2 ][0] || ""
+                - ideaLink = "/ideas/"+ ideas[index + 2 ][0] || ""
+                - problemCategory = ideas[index + 2 ][1] || ""
+                - suggestionProblem = "W: "+ ideas[index + 2 ][2][0] +" V: "+ideas[index + 2 ][2][1] || ""
+                - accountName = ideas[index + 2 ][3] || ""
+                - ideaImage = ideas[index + 2 ][4] || ""
+                - ideaImageStyle = ideas[index + 2][5] || ""
+                - inventorImage = ideas[index + 2 ][6] || ""
+                - inventorImageStyle = ideas[index + 2 ][7] || ""
                 include ../partials/view-all-idea-block.jade
-            .col-md-4
-              if(ideas[index + 1])
-                - ideaName = ideas[index + 1][0] || ""
-                - ideaLink = "/ideas/"+ ideas[index + 1][0] || ""
-                - problemCategory = ideas[index + 1][1] || ""
-                - suggestionProblem = "W: "+ ideas[index + 1][2][0] +" V: "+ideas[index + 1][2][1] || ""
-                - accountName = ideas[index + 1][3] || ""
-                - ideaImage = ideas[index + 1][4] || ""
-                - ideaImageStyle = ideas[index + 1][5] || ""
-                - inventorImage = ideas[index + 1][6] || ""
-                - inventorImageStyle = ideas[index + 1 ][7] || ""
-                include ../partials/view-all-idea-block.jade
-            .col-md-4
-                if(ideas[index + 2 ])
-                  - ideaName = ideas[index + 2 ][0] || ""
-                  - ideaLink = "/ideas/"+ ideas[index + 2 ][0] || ""
-                  - problemCategory = ideas[index + 2 ][1] || ""
-                  - suggestionProblem = "W: "+ ideas[index + 2 ][2][0] +" V: "+ideas[index + 2 ][2][1] || ""
-                  - accountName = ideas[index + 2 ][3] || ""
-                  - ideaImage = ideas[index + 2 ][4] || ""
-                  - ideaImageStyle = ideas[index + 2][5] || ""
-                  - inventorImage = ideas[index + 2 ][6] || ""
-                  - inventorImageStyle = ideas[index + 2 ][7] || ""
-                  include ../partials/view-all-idea-block.jade
-    br
-
-    br
     br
 
   include ../partials/js-includes.jade

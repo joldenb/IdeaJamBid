@@ -1,7 +1,7 @@
 .suggestion-element.variant-suggestion-block.problem-summary-block
   .title-description.variant-suggestion
     div.row.imperfection-row(id="#{suggestion.identifier}")
-      .col-xs-3
+      .col-sm-3
         if(compHeadshot)
           a(href='/imagineer/' + accountName)
             img(src=compHeadshot height="50" width="50" style=compHeadshotStyle)
@@ -10,19 +10,19 @@
             img(src="/avatar.png" height="50" width="50")
         span #{accountName || user.nickname}
 
-      .col-xs-3.problem-row-padding
+      .col-sm-3.problem-row-padding
         if suggestion['date']
           span #{moment(suggestion.date).format('MM/DD/YY')}
         //- if problem['date']
         //-   div #{moment(problem.date).format('MM/DD/YYYY')}
 
-      .col-xs-4.problem-row-padding
+      .col-sm-4.problem-row-padding
         if suggestion.category
           div Category: #{suggestion.category}
         if suggestion.descriptions[0]
           div Description: #{suggestion.descriptions[0]}
 
-      .col-xs-2.problem-row-padding.upvote
+      .col-sm-2.problem-row-padding.upvote
         a(class="upvote-suggestion" id="upvote-#{suggestion.identifier}")
           div.glyphicon.glyphicon-fire 
         span #{suggestion.upvotes.length || 0}
