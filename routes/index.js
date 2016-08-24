@@ -566,7 +566,8 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
               ideaSeedIDs = _.filter(ideaSeedIDs, Boolean);
               IdeaSeed.find({_id : {$in : ideaSeedIDs}}, function(err, reviewedIdeas){
                 var creationDate, formattedDate;
-                var reviewedIdeaNames = _.map(reviewedIdeas, function(item){
+                var reviewedIdeaNames = [];
+                reviewedIdeaNames = _.map(reviewedIdeas, function(item){
                   creationDate = item._id.getTimestamp();
                   formattedDate = creationDate.getMonth().toString() + "-" +
                     creationDate.getDate().toString() + "-" +
