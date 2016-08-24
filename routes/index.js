@@ -410,6 +410,7 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
                 });
                 var context = {"reviewedNames" : reviewedIdeaNames};
                 _.each(account.ideaSeeds, function(element, index,  list){
+                  var reviewNames = [];
                   reviewNames = this["reviewedNames"];
                   (function(reviewNames){
                     IdeaSeed.findById(element._id, function(error, document){
@@ -568,7 +569,8 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
               ideaSeedIDs = _.filter(ideaSeedIDs, Boolean);
               IdeaSeed.find({_id : {$in : ideaSeedIDs}}, function(err, reviewedIdeas){
                 var creationDate, formattedDate;
-                var reviewedIdeaNames = _.map(reviewedIdeas, function(item){
+                var reviewedIdeaNames = [];
+                reviewedIdeaNames = _.map(reviewedIdeas, function(item){
                   creationDate = item._id.getTimestamp();
                   formattedDate = creationDate.getMonth().toString() + "-" +
                     creationDate.getDate().toString() + "-" +
@@ -577,6 +579,7 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
                 });
                 var context = {"reviewedNames" : reviewedIdeaNames};
                 _.each(req.user.ideaSeeds, function(element, index,  list){
+                  var reviewNames = [];
                   reviewNames = this["reviewedNames"];
                   (function(reviewNames){
                     IdeaSeed.findById(element._id, function(error, document){
