@@ -576,6 +576,7 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
                 });
                 var context = {"reviewedNames" : reviewedIdeaNames};
                 _.each(req.user.ideaSeeds, function(element, index,  list){
+                  var reviewNames = [];
                   reviewNames = this["reviewedNames"];
                   (function(reviewNames){
                     IdeaSeed.findById(element._id, function(error, document){
