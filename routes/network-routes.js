@@ -595,7 +595,7 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                             var imperfections = [];
 
                             IdeaProblem.find({"ideaSeed" : { $in : allIdeas}}, function(err, imperfections) {
-                              var imperfectionNameList = _.map(suggestions, function(eachOne) { return eachOne.creator;})
+                              var imperfectionNameList = _.map(imperfections, function(eachOne) { return eachOne.creator;})
 
                               Account.find({"username" : {$in : imperfectionNameList}}, function(err, imperfectors){
                                 var imperfectorHeadshotIdList = _.map(imperfectors, function(eachOne) { 
