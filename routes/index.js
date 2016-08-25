@@ -1032,11 +1032,18 @@ router.post('/suggestion-submit-new', csrfProtection, function(req, res) {
     "text"        : problemText
   }, function(err, problem){
 
+    if(!problem.ideaSeed){
+      res.redirect('/');
+      return;
+    }
+
+    var ideaSeedId = req.session.idea || problem.ideaSeed;
+
     var newSuggestion = {
       descriptions : [req.body.suggestionText.slice(16)], //getting rid of "the solution of "
       category : suggestionCategory,
       creator : req.user.username,
-      ideaSeed : req.session.idea,
+      ideaSeed : ideaSeedId,
       problemID : problem.id,
       date: Date.now(),
       identifier : "comp-"+Date.now()
@@ -2912,7 +2919,7 @@ router.get('/imperfection-profile/:identifier', csrfProtection, function(req, re
 ******************************************************************
 *****************************************************************/
 router.get('/component-profile/:identifier', csrfProtection, function(req, res){
-  if(!req.session.idea || !(req.user && req.user.username)){
+  if(!(req.user && req.user.username)){
     res.redirect('/');
     return;
   }
@@ -2922,7 +2929,12 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
     var headshotStyle = headshotData['headshotStyle'];
 
     Component.findOne({"identifier" : req.params.identifier}, function(err, component){
-      IdeaSeed.findById(req.session.idea,function(err, idea){
+      if(!component || !component.ideaSeed){
+        res.redirect('/');
+        return;
+      } 
+      var ideaSeedId = req.session.idea || component.ideaSeed.toString();
+      IdeaSeed.findById(ideaSeedId,function(err, idea){
 
         Component.find({
           "ideaSeed" : req.session.idea

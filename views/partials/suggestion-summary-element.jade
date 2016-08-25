@@ -21,6 +21,9 @@
           div Category: #{suggestion.category}
         if suggestion.descriptions[0]
           div Description: #{suggestion.descriptions[0]}
+          if suggestion.ideaSeed && suggestion.identifier
+            a(href='/component-profile/'+ suggestion.identifier) More...
+
 
       .col-sm-2.problem-row-padding.upvote
         a(class="upvote-suggestion" id="upvote-#{suggestion.identifier}")
