@@ -1086,7 +1086,7 @@ router.post('/suggestion-submit-new', csrfProtection, function(req, res) {
       });
       Component.create(newSuggestion,
         function(err, raw){
-          console.log('This didnt work, raw response: ', raw);
+          console.log('No photo uploaded, raw response: ', raw);
           res.redirect('/imperfection-profile/' + problem.identifier);
         }
       );
@@ -3060,8 +3060,16 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
 
                 //assumes the first headshot in the user's array of headshots is their
                 // primary one for display
-                var problemHeadshotID = problemCreator['headshots'][0];
-                var problemHeadshotURL = '';
+                if(problemCreator['headshots']){
+                  var problemHeadshotID = problemCreator['headshots'][0];
+                  var problemHeadshotURL = '';
+                } else {
+                  var problemHeadshotID, problemHeadshotURL, problemHeadshotStyle;
+                }
+
+                problem['wholeCreator'] = {
+                  'nickname' : problemCreator['nickname']
+                };
 
                 //first get the images that the component is in
                 if(component.images.length > 0 || problemHeadshotID){
@@ -3105,6 +3113,7 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
                           ]);
                         } else if( images[i].id.toString() == problemCreator['headshots'][0]){
                           problemHeadshotURL = images[i]["amazonURL"];
+                          problemHeadshotStyle = imageStyle;
                         } else {
                           imageURLs.push([
                             filename,
@@ -3114,6 +3123,11 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
                         }
                       }
                     }
+                    problem['headshot'] = {
+                      'url' : problemHeadshotURL,
+                      'style' : problemHeadshotStyle
+                    };
+
                     res.render('pages/component-profile', {
                       csrfToken: req.csrfToken(),
                       user : req.user || {},

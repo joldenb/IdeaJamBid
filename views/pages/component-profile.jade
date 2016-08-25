@@ -92,30 +92,13 @@ html
         button(type="button" id="modalButton" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Add New Related Component
 
 
-      .idea-function-column.half-column
+      .idea-function-column
         if(problem != "none")
           h4 Related Problem
-          .image-block-element
-            .suggestion
-              .suggestion-text
-                p <b>Problem: </b> #{problem['text']}
-                p <b>Problem Area: </b> #{problem['problemArea']}
-                p <b>Suggestion Type: </b> #{component['category']}
-
-              .suggestion-category
-                ul
-                  li
-                    p <b> Hindsight :</b> #{component['hindsight'] || "No value yet"} 
-                  li
-                    p <b> Foresight :</b> #{component['foresight'] || "No value yet"} 
-                  li
-                    p <b> Outsight :</b> #{component['outsight'] || "No value yet"} 
-            .suggestion-maker
-              if problemHeadshotURL != ""
-                img(src=problemHeadshotURL height="50" width="50")
-              else
-                img(src="/avatar.png" height="50" width="50")
-              div.userName #{problem['creator'] || "Unknown User"}
+          #idea-summary-problems
+            .row
+              div.col-xs-12
+                include ../partials/problem-summary-element.jade
 
         .component-variants
           h4 Included in Variants
