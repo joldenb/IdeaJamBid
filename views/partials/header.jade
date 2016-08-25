@@ -25,6 +25,8 @@
             div(class="placeholder" style="height: 40px; width: 40px; background-image : url('" + headshot + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + headshotStyle)
       if Object.keys(user).length != 0
         li
+          a.home-logout.btn.btn-default( href="/ideas" ) View All Ideas
+        li
           a.home-logout.btn.btn-default( href="/imagineer-picture/") Edit Profile
         li
           a.home-logout.btn.btn-default( href="/logout" ) Log Out
