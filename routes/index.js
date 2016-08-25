@@ -1086,7 +1086,7 @@ router.post('/suggestion-submit-new', csrfProtection, function(req, res) {
       });
       Component.create(newSuggestion,
         function(err, raw){
-          console.log('The raw response from Mongo was ', raw);
+          console.log('This didnt work, raw response: ', raw);
           res.redirect('/imperfection-profile/' + problem.identifier);
         }
       );
@@ -2051,7 +2051,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
                     Account.findOne({"username": value.creator}, function(err, user) {
                       value.wholeCreator = user;
                       if (user.headshots[0]) {
-                        IdeaImage.findById(user.headshots[0].id, function(err, headshot) {
+                        IdeaImage.findById(user.headshots[0], function(err, headshot) {
                           value.headshot = {};
                           value.headshot.url = headshot.amazonURL;
                           var imageStyle;
@@ -2915,44 +2915,75 @@ router.get('/imperfection-profile/:identifier', csrfProtection, function(req, re
           "problemID" : ideaProblem.id
           }, function(err, suggestions){
 
-            _.each(suggestions, function(value, key, list){
-                Account.findOne({"username": value.creator}, function(err, user) {
-                  value.wholeCreator = user;
-                  if (user.headshots[0]) {
-                    IdeaImage.findById(user.headshots[0].id, function(err, headshot) {
-                      value.headshot = {};
-                      value.headshot.url = headshot.amazonURL;
-                      var imageStyle;
-                      switch (headshot["orientation"]) {
-                        case 1 :
-                          imageStyle = "";
-                          break;
-                        case 2 :
-                          imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                          break;
-                        case 3 :
-                          imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                          break;
-                        case 4 :
-                          imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                          break;
-                      }
-                      value.headshot.style = imageStyle;
-                    });                        
-                  }
-                });
-            });
+            var suggestionNameList = _.map(suggestions, function(eachOne) { return eachOne.creator;})
 
-            res.render('pages/imperfection-profile', {
-              csrfToken: req.csrfToken(),
-              problem : ideaProblem,
-              idea : idea || {},
-              problemCreator : problemCreator,
-              user : req.user || {},
-              suggestions: suggestions,
-              targets: targetConstants,
-              tactics: tacticConstants
-            });
+            Account.find({"username" : {$in : suggestionNameList}}, function(err, suggestors){
+              var suggestorHeadshotIdList = _.map(suggestors, function(eachOne) { 
+                if(eachOne.headshots){
+                  return eachOne.headshots[0];
+                } else {
+                  return null;
+                }
+              });
+              suggestorHeadshotIdList = _.compact(suggestorHeadshotIdList);
+
+              IdeaImage.find({"_id" : {$in : suggestorHeadshotIdList}}, function(err, images){
+
+                // Figure out which account and headshot go with with suggestion
+                var wholeSuggestionBlockInfo = {};
+                _.each(suggestions, function(suggestion, index){
+                  
+                  wholeSuggestionBlockInfo[suggestion.identifier] = {'document' : suggestion};
+                  
+                  _.each(suggestors, function(suggestor, suggIndex){
+                    if(suggestor.username == suggestion.creator){
+                      //now we've found the right suggestor to go with the suggestion, so we put the 
+                      // nickname and suggestor profile picture into the whole block object;
+                      wholeSuggestionBlockInfo[suggestion.identifier]['creatorNickname'] = suggestor.nickname;
+                      _.each(images, function(image, imageIndex){
+                        if(suggestor.headshots && image.id == suggestor.headshots[0]){
+                          wholeSuggestionBlockInfo[suggestion.identifier]['creatorProfilePic'] = image.amazonURL;
+                          var imageStyle;
+                          switch (image["orientation"]) {
+                            case 1 :
+                              imageStyle = "";
+                              break;
+                            case 2 :
+                              imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                              break;
+                            case 3 :
+                              imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                              break;
+                            case 4 :
+                              imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                              break;
+                          }
+                          wholeSuggestionBlockInfo[suggestion.identifier]['profilePicOrientation'] = imageStyle;
+                        }
+                      })
+                    }
+                  })
+                });
+
+                // Now, wholeSuggestionBlockInfo is an object with suggestion identifier keys and values
+                // that hold suggestion objects as well as the suggestor nicknames and profile pictures
+
+
+
+
+                res.render('pages/imperfection-profile', {
+                  csrfToken: req.csrfToken(),
+                  problem : ideaProblem,
+                  wholeSuggestionBlockInfo : wholeSuggestionBlockInfo,
+                  idea : idea || {},
+                  problemCreator : problemCreator,
+                  user : req.user || {},
+                  suggestions: suggestions,
+                  targets: targetConstants,
+                  tactics: tacticConstants
+                });
+              }); //end of idea image query
+            }); // end of account query
           }).sort({date: -1});
       })
     });

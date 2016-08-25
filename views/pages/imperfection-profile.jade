@@ -7,26 +7,27 @@ html
     include ../partials/header.jade
 
   .row.imperfection-summary
-    h1 #{problem.text}
-    h5 By: #{problemCreator.nickname}, #{problem.date}
-    .return-button
-      a.home-logout.btn.btn-default( href="/ideas/#{idea.name}") Idea Summary
+    .col-sm-12
+      h1 #{problem.text}
+      h5 By: #{problemCreator.nickname}, #{problem.date}
+      .return-button
+        a.home-logout.btn.btn-default( href="/ideas/#{idea.name}") Idea Summary
   .row.imperfection-summary
-    #existing-suggestion-list.edit-column.col-md-6
+    #existing-suggestion-list.edit-column.col-sm-6
       h1 Suggestions
       if( suggestions.length > 0)
         ul
-          each suggestion in suggestions             
+          each suggestion, identifier in wholeSuggestionBlockInfo
             li.row 
               div.col-xs-12()
                 include ../partials/suggestion-summary-element.jade
       else
         ul
           li.no-descriptions No Descriptions Yet
-    .col-md-6
+    .col-sm-6
       h1 Make a New Suggestion
       h3#suggestion-question-header How will you:
-      form(role='form', id="formSuggestion" action="/suggestion-submit-new", method="post", style='max-width: 300px;', data-idea-doc=idea)
+      form(role='form', id="formSuggestion" action="/suggestion-submit-new", method="post", data-idea-doc=idea)
         .form-group
           input(type="hidden", name="_csrf", value="#{csrfToken}")
           div#suggestion-tactics(class="btn-group" role="group" aria-label="suggestionTactic" data-toggle="buttons")

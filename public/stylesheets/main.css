@@ -820,10 +820,6 @@ a.network-link:hover {
   padding: 15px;
 }
 
-#formSuggestion {
-  margin-left: 0 !important;
-  max-width: 400px !important;
-}
 .contributor-name {
   margin-left:1em;
 }
@@ -881,7 +877,7 @@ button.btn.btn-info.modal-view-all {
 }
 
 .row.imperfection-summary {
-  margin-left: 2em;
+  margin: 0;
 }
 
 .suggestion-number {
