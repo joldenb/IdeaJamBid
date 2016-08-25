@@ -658,6 +658,7 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                                     networkName : network.name,
                                     imperfections: imperfections,
                                     suggestions: suggestions,
+                                    headshot: headshotURL
                                   });
                                 }); //end if idea image query
                               }); //end of account query

@@ -1006,17 +1006,22 @@ button.suggestion-tactics, button.suggestion-targets {
 }
 
 @media (min-width: 700px) { 
+  .navbar-header .navbar-brand {
+    display: none;
+  }
+  .custom-nav .navbar-brand {
+    padding-bottom: 15px;
+    margin-top: -14px;
+  }
   .header {
     padding-bottom: 1%;
   }
-  .navbar-brand {
-    padding-bottom: 15px;
-  }  
   .navbar-toggle {
     display: none;
   }
   .custom-nav {
     display: block;
+    padding-top: 10px;
   }
   body > div.header.navbar.navbar-default > div > div.dropdown.custom-nav.open > ul#test {
     right: 0;

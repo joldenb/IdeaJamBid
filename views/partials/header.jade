@@ -37,6 +37,7 @@
           a.home-logout.btn.btn-default( href="/" ) Log In
 
   .dropdown.custom-nav
+    a(class="navbar-brand" href="/") IdeaJam
     if Object.keys(user).length != 0
       span.newUserName Howdy #{user.nickname}
     else
