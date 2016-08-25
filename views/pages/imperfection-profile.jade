@@ -60,8 +60,8 @@ script(src='/exif.js')
 script(type="text/javascript").
   $("#formSuggestion").submit(function(event){
     event.preventDefault();
-    var tacticVal = $(".suggestion-tactics.active input").val();
-    var targetVal = $(".suggestion-targets.active input").val();
+    var tacticVal = $(".suggestion-tactics.selected input").val();
+    var targetVal = $(".suggestion-targets.selected input").val();
     if(tacticVal && targetVal){
       var data = {
         "suggestionText" : $("input[name='suggestionText']").val(),
@@ -88,13 +88,15 @@ script(type="text/javascript").
   });
 
   $(".suggestion-tactics").click(function(event){
-    /*if($(".suggestion-tactics.active").length > 0){
+    if($(".suggestion-tactics.active").length > 0){
       $(".suggestion-tactics.active").removeClass("active");
     }
 
+    $(this).addClass("selected");
+
     if($(".suggestion-targets.disabled").length > 0){
       $(".suggestion-targets.active").removeClass("active");
-    }*/
+    }
 
     var verb = "";
     switch($(this).text()){
@@ -165,7 +167,9 @@ script(type="text/javascript").
         $(".suggestion-targets.active").removeClass("active");
       }
 
-      var verb = $(".suggestion-tactics.active").text().toLowerCase();
+      $(this).addClass("selected");
+
+      var verb = $(".suggestion-tactics.selected").text().toLowerCase();
       $("#suggestion-question-header").text("How will you " + verb + " " + $(this).text().toLowerCase() + " " + $("#end-of-suggestion-query").text());
       $("#end-of-suggestion-query").remove();
       $("#suggestion-targets").hide(400);
