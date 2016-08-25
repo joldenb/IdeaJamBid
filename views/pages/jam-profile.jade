@@ -113,7 +113,7 @@ html
         .row.imperfection-row
           .idea-summary-data#idea-summary-problems
             ul.idea-summary-problem-list
-              each problem in imperfections
+              each problem, identifier in wholeImperfectionBlockInfo
                 if(problem.text && problem['identifier'])
                   li.row.imperfection-row
                     div.col-xs-12
@@ -126,7 +126,7 @@ html
         .row.imperfection-row
           .idea-summary-data#idea-summary-problems
             ul.idea-summary-problem-list
-              each suggestion in suggestions             
+              each suggestion, identifier in wholeSuggestionBlockInfo             
                 li.row.imperfection-row
                   div.col-xs-12
                     include ../partials/suggestion-summary-element.jade

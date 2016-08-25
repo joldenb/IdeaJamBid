@@ -333,73 +333,6 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
               return idea.id.toString();
             });
 
-            var imperfections = [];
-
-            IdeaProblem.find({"ideaSeed" : { $in : allIdeas}}, function(err, problems) {
-              imperfections = problems;
-              _.each(imperfections, function(value, key, list){
-                Account.findOne({"username": value.creator}, function(err, user) {
-                  value.wholeCreator = user;
-                  if (user.headshots && user.headshots[0]) {
-                    IdeaImage.findById(user.headshots[0].id, function(err, headshot) {
-                      value.headshot = {};
-                      value.headshot.url = headshot.amazonURL;
-                      var imageStyle;
-                      switch (headshot["orientation"]) {
-                        case 1 :
-                          imageStyle = "";
-                          break;
-                        case 2 :
-                          imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                          break;
-                        case 3 :
-                          imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                          break;
-                        case 4 :
-                          imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                          break;
-                      }
-                      value.headshot.style = imageStyle;
-                    });
-                  }
-                });
-              });
-            }).sort({upvotes : -1});
-
-            var suggestions = [];
-
-            Component.find({"ideaSeed" : { $in : allIdeas}}, function(err, components) {
-              suggestions = components;
-              _.each(suggestions, function(value, key, list){
-                Account.findOne({"username": value.creator}, function(err, user) {
-                  debugger;
-                  value.wholeCreator = user;
-                  if (user.headshots && user.headshots[0]) {
-                    IdeaImage.findById(user.headshots[0].id, function(err, headshot) {
-                      value.headshot = {};
-                      value.headshot.url = headshot.amazonURL;
-                      var imageStyle;
-                      switch (headshot["orientation"]) {
-                        case 1 :
-                          imageStyle = "";
-                          break;
-                        case 2 :
-                          imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                          break;
-                        case 3 :
-                          imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                          break;
-                        case 4 :
-                          imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                          break;
-                      }
-                      value.headshot.style = imageStyle;
-                    });
-                  }                  
-                });
-              });
-            }).sort({upvotes : -1});            
-
             IdeaSeed.find({"_id" : { $in : allIdeas}}, function(err, ideas){
 
             _.each(ideas, function(idea){
@@ -590,18 +523,148 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                           }
                         }
                       }
-                      return res.render('pages/jam-profile', {
-                        csrfToken: req.csrfToken(),
-                        user : req.user || {},
-                        dsw : dsw,
-                        ideas : ideaList,
-                        topInventors : topAccountsToDisplay,
-                        inventorAptitudes :  aptitudes,
-                        accountNameAndURLs : accountNameAndURLs,
-                        networkName : network.name,
-                        imperfections: imperfections,
-                        suggestions: suggestions,
-                      });
+
+                      //
+                      //
+                      // THIS SECTION IS FOR THE SUGGESTIONS
+                      //
+                      //
+
+                      var suggestions = [];
+
+                      Component.find({"ideaSeed" : { $in : allIdeas}}, function(err, components) {
+                        suggestions = components;
+                        var suggestionNameList = _.map(suggestions, function(eachOne) { return eachOne.creator;})
+
+                        Account.find({"username" : {$in : suggestionNameList}}, function(err, suggestors){
+                          var suggestorHeadshotIdList = _.map(suggestors, function(eachOne) { 
+                            if(eachOne.headshots){
+                              return eachOne.headshots[0];
+                            } else {
+                              return null;
+                            }
+                          });
+                          suggestorHeadshotIdList = _.compact(suggestorHeadshotIdList);
+
+                          IdeaImage.find({"_id" : {$in : suggestorHeadshotIdList}}, function(err, images){
+
+                            // Figure out which account and headshot go with with suggestion
+                            var wholeSuggestionBlockInfo = {};
+                            _.each(suggestions, function(suggestion, index){
+                              
+                              wholeSuggestionBlockInfo[suggestion.identifier] = {'document' : suggestion};
+                              
+                              _.each(suggestors, function(suggestor, suggIndex){
+                                if(suggestor.username == suggestion.creator){
+                                  //now we've found the right suggestor to go with the suggestion, so we put the 
+                                  // nickname and suggestor profile picture into the whole block object;
+                                  wholeSuggestionBlockInfo[suggestion.identifier]['creatorNickname'] = suggestor.nickname;
+                                  _.each(images, function(image, imageIndex){
+                                    if(suggestor.headshots && image.id == suggestor.headshots[0]){
+                                      wholeSuggestionBlockInfo[suggestion.identifier]['creatorProfilePic'] = image.amazonURL;
+                                      var imageStyle;
+                                      switch (image["orientation"]) {
+                                        case 1 :
+                                          imageStyle = "";
+                                          break;
+                                        case 2 :
+                                          imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                                          break;
+                                        case 3 :
+                                          imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                                          break;
+                                        case 4 :
+                                          imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                                          break;
+                                      }
+                                      wholeSuggestionBlockInfo[suggestion.identifier]['profilePicOrientation'] = imageStyle;
+                                    }
+                                  })
+                                }
+                              })
+                            });
+
+                            // Now, wholeSuggestionBlockInfo is an object with suggestion identifier keys and values
+                            // that hold suggestion objects as well as the suggestor nicknames and profile pictures
+
+
+
+
+
+
+                            var imperfections = [];
+
+                            IdeaProblem.find({"ideaSeed" : { $in : allIdeas}}, function(err, imperfections) {
+                              var imperfectionNameList = _.map(suggestions, function(eachOne) { return eachOne.creator;})
+
+                              Account.find({"username" : {$in : imperfectionNameList}}, function(err, imperfectors){
+                                var imperfectorHeadshotIdList = _.map(imperfectors, function(eachOne) { 
+                                  if(eachOne.headshots){
+                                    return eachOne.headshots[0];
+                                  } else {
+                                    return null;
+                                  }
+                                });
+                                imperfectorHeadshotIdList = _.compact(imperfectorHeadshotIdList);
+
+                                IdeaImage.find({"_id" : {$in : imperfectorHeadshotIdList}}, function(err, images){
+
+                                  // Figure out which account and headshot go with with suggestion
+                                  var wholeImperfectionBlockInfo = {};
+                                  _.each(imperfections, function(imperfection, index){
+                                    
+                                    wholeImperfectionBlockInfo[imperfection.identifier] = imperfection;
+                                    
+                                    _.each(imperfectors, function(imperfector, impIndex){
+                                      if(imperfector.username == imperfection.creator){
+                                        //now we've found the right suggestor to go with the suggestion, so we put the 
+                                        // nickname and suggestor profile picture into the whole block object;
+                                        wholeImperfectionBlockInfo[imperfection.identifier]['wholeCreator'] = imperfector.nickname;
+                                        _.each(images, function(image, imageIndex){
+                                          if(imperfector.headshots && image.id == imperfector.headshots[0]){
+                                            wholeImperfectionBlockInfo[imperfection.identifier]['headshot'] = {'url' : image.amazonURL};
+                                            var imageStyle;
+                                            switch (image["orientation"]) {
+                                              case 1 :
+                                                imageStyle = "";
+                                                break;
+                                              case 2 :
+                                                imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                                                break;
+                                              case 3 :
+                                                imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                                                break;
+                                              case 4 :
+                                                imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                                                break;
+                                            }
+                                            wholeImperfectionBlockInfo[imperfection.identifier]['headshot']['style'] = imageStyle;
+                                          }
+                                        });
+                                      }
+                                    });
+                                  });
+
+                                  return res.render('pages/jam-profile', {
+                                    csrfToken: req.csrfToken(),
+                                    user : req.user || {},
+                                    dsw : dsw,
+                                    ideas : ideaList,
+                                    wholeImperfectionBlockInfo : wholeImperfectionBlockInfo,
+                                    wholeSuggestionBlockInfo : wholeSuggestionBlockInfo,
+                                    topInventors : topAccountsToDisplay,
+                                    inventorAptitudes :  aptitudes,
+                                    accountNameAndURLs : accountNameAndURLs,
+                                    networkName : network.name,
+                                    imperfections: imperfections,
+                                    suggestions: suggestions,
+                                  });
+                                }); //end if idea image query
+                              }); //end of account query
+                            }); //end of componet query for suggestions
+                          }); //end if idea image query
+                        }); //end of account query
+                      }); //end of componet query for suggestions
 
                     });
                   }); //end of account lookup
