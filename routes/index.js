@@ -3035,8 +3035,6 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
                       imageURLs : imageURLs,
                       components : components,
                       relatedComponents : relatedComponents
-                      //components : components,
-                      //listOfProblems : listOfProblems
                     });
                   });//end of image query
 
