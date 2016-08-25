@@ -32,4 +32,16 @@
   	width: 100%;
   	margin: 5px 0 !important;
 	}
+
+	.mobile-only {
+		display: initial;
+	}
+	#idea-summary-waste-values a.btn {
+    width: 100%;
+    font-size: x-large;
+	}
+	.desktop-only {
+		display: none;
+	}
 }
+

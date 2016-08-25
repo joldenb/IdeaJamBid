@@ -8,7 +8,7 @@ html
 
   .container-fluid.idea-summary
     .row
-      .edit-column.col-md-4
+      .col-sm-4
         .imagesList
           if(imageURLs)
             each imageURL, index in imageURLs
@@ -25,6 +25,11 @@ html
           h3 #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)} solves the problem of #[a(href='/introduce-idea') #{idea.problem}] by #[a(href='/accomplish') #{idea.description}].
         else if idea.name 
           h3 #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)} solves the problem of #{idea.problem} by #{idea.description}.
+        .row.mobile-only
+          .idea-summary-data#idea-summary-waste-values
+            a.btn.btn-default( type="button" id="viabilityModalButton"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") Score Now
+            br
+
         .idea-summary-left
           h4.underline#componentsHeader Components
           .row 
@@ -72,9 +77,10 @@ html
                     button.btn.btn-success#aptitudeSubmit(type='submit') Save
 
 
-      .idea-function-column.col-md-8
-        button(type="button" id="emailShareButton" class="btn secondary-btn btn-default pull-right clearfix" data-toggle="modal" data-target="#shareModal")
-          span.glyphicon.glyphicon-envelope   
+      .col-sm-8
+        .row
+          button(type="button" id="emailShareButton" class="btn secondary-btn btn-default pull-right clearfix" data-toggle="modal" data-target="#shareModal")
+            span.glyphicon.glyphicon-envelope   
 
         if inventorName == user.username
           .row.patent-strength-row
@@ -100,10 +106,11 @@ html
             |  
             button(type="button"  class="btn btn-default" data-toggle="modal" data-target="#viewAllImperfections") View All
 
-        .idea-summary-data#idea-summary-waste-values
-          h4 Idea Viability Scores
-          a.btn.btn-default( type="button" id="viabilityModalButton"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") Score Now
-          br
+        .row.desktop-only
+          .idea-summary-data#idea-summary-waste-values
+            h4 Idea Viability Scores
+            a.btn.btn-default( type="button" id="viabilityModalButton"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") Score Now
+            br
 
   #titleModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog

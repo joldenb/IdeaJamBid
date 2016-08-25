@@ -619,7 +619,7 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                                       if(imperfector.username == imperfection.creator){
                                         //now we've found the right suggestor to go with the suggestion, so we put the 
                                         // nickname and suggestor profile picture into the whole block object;
-                                        wholeImperfectionBlockInfo[imperfection.identifier]['wholeCreator'] = imperfector.nickname;
+                                        wholeImperfectionBlockInfo[imperfection.identifier]['wholeCreator'] ={ 'nickname' : imperfector.nickname};
                                         _.each(images, function(image, imageIndex){
                                           if(imperfector.headshots && image.id == imperfector.headshots[0]){
                                             wholeImperfectionBlockInfo[imperfection.identifier]['headshot'] = {'url' : image.amazonURL};
@@ -661,10 +661,10 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                                   });
                                 }); //end if idea image query
                               }); //end of account query
-                            }); //end of componet query for suggestions
+                            }).sort({date: -1}); //end of componet query for suggestions
                           }); //end if idea image query
                         }); //end of account query
-                      }); //end of componet query for suggestions
+                      }).sort({date: -1}); //end of componet query for suggestions
 
                     });
                   }); //end of account lookup

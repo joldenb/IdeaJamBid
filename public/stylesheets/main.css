@@ -978,6 +978,13 @@ button.suggestion-tactics, button.suggestion-targets {
   padding: 0px !important;  
 }
 
+.mobile-only {
+  display:none;
+}
+
+.desktop-only {
+    display: initial;
+}
 /* display mobile nav all of the time */
 .navbar-header {
     float: none;
