@@ -3311,6 +3311,33 @@ router.post('/add-related-component', csrfProtection, function(req, res) {
     });
 });
 
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for adding a component title
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.post('/add-component-title', csrfProtection, function(req, res) {
+  if( !(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
+    var compIdentifier = req.body['component-identifier'];
+    var compTitle = req.body['compTitle'];
+
+    Component.findOne({"identifier" : compIdentifier}, function(err, thisComponent){
+      thisComponent.text = compTitle;
+
+      thisComponent.save(function(err){
+        if(err){ console.log("Error saving title.")}
+        res.redirect('/component-profile/'+compIdentifier);
+      });
+
+    });
+});
+
+
 router.get('/sign-s3', csrfProtection, function(req, res) {
   var s3 = new aws.S3({
       accessKeyId : process.env.accessKeyId,

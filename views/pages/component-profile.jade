@@ -8,15 +8,23 @@ html
 
   .component-summary.container
     .col-md-4
-      h1 Component Summary
-      if component['text']
+      if component['text'] && component['number']
         .component-name
-          if component['number']
-            h3 Component # #{component['number']} : #{component['text']}
-          else
-            .component-name
-              h3 Name : #{component['number']}
-      h4 It is a component of the idea seed "#{idea.name}"
+          h1 Component # #{component['number']} : #{component['text']}
+      else if (component['number'])
+        .component-name
+          h1 Component # #{component['number']}
+          if (component['descriptions'][0])
+            h3 #{component['descriptions'][0]}
+      else if component['text']
+        .component-name
+          h1 #{component['text']}
+      else
+        h1 No Component Title
+      if !component['text']
+        button(type="button" id="compTitleModalButton" class="btn btn-primary" data-toggle="modal" data-target="#addTitleModal") Add One
+  
+      h4 Part of "#{idea.name}"
       .imagesList
         if(imageURLs)
           h4 Uploaded Images
@@ -147,6 +155,24 @@ html
                 button.btn.btn-info(data-dismiss="modal") Cancel
                 button.btn.btn-success#newRelCompSubmit(type='submit') Submit (+20)
 
+    #addTitleModal.modal.fade.annotate-modal(role="dialog")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button(type="button", class="close" data-dismiss="modal") &times;
+            .modal-title 
+              h2 Add a Component Title:
+          .modal-body
+            form(role='form', id="addComponentTitle" action="/add-component-title", method="post", data-idea-doc=idea)
+              .form-group
+                input(type="hidden", name="_csrf", value="#{csrfToken}")
+                input.form-control(name="compTitle", id="compTitle",
+                  placeholder='Pizza hydrator')
+                input(type="hidden" id="component-identifier" name="component-identifier" value="#{component['identifier']}")
+
+              .modal-footer
+                button.btn.btn-info(data-dismiss="modal") Cancel
+                button.btn.btn-success(type='submit') Save
 
 
   include ../partials/js-includes.jade
