@@ -1183,8 +1183,6 @@ router.post('/upvote-suggestion', csrfProtection, function(req, res) {
 
   var suggestionId = req.body.suggestion;
 
-  debugger;
-
   Component.findById(suggestionId,
     function (err, component) {
       if(component.upvotes.indexOf(req.user.id) == -1) {
@@ -2052,6 +2050,28 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
                 _.each(problems, function(value, key, list){
                     Account.findOne({"username": value.creator}, function(err, user) {
                       value.wholeCreator = user;
+                      if (user.headshots[0]) {
+                        IdeaImage.findById(user.headshots[0].id, function(err, headshot) {
+                          value.headshot = {};
+                          value.headshot.url = headshot.amazonURL;
+                          var imageStyle;
+                          switch (headshot["orientation"]) {
+                            case 1 :
+                              imageStyle = "";
+                              break;
+                            case 2 :
+                              imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                              break;
+                            case 3 :
+                              imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                              break;
+                            case 4 :
+                              imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                              break;
+                          }
+                          value.headshot.style = imageStyle;
+                        });                        
+                      }
                     });
                 });
 
@@ -2894,6 +2914,35 @@ router.get('/imperfection-profile/:identifier', csrfProtection, function(req, re
         Component.find({
           "problemID" : ideaProblem.id
           }, function(err, suggestions){
+
+            _.each(suggestions, function(value, key, list){
+                Account.findOne({"username": value.creator}, function(err, user) {
+                  value.wholeCreator = user;
+                  if (user.headshots[0]) {
+                    IdeaImage.findById(user.headshots[0].id, function(err, headshot) {
+                      value.headshot = {};
+                      value.headshot.url = headshot.amazonURL;
+                      var imageStyle;
+                      switch (headshot["orientation"]) {
+                        case 1 :
+                          imageStyle = "";
+                          break;
+                        case 2 :
+                          imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                          break;
+                        case 3 :
+                          imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                          break;
+                        case 4 :
+                          imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                          break;
+                      }
+                      value.headshot.style = imageStyle;
+                    });                        
+                  }
+                });
+            });
+
             res.render('pages/imperfection-profile', {
               csrfToken: req.csrfToken(),
               problem : ideaProblem,

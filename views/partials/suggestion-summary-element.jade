@@ -1,14 +1,16 @@
 .suggestion-element.variant-suggestion-block.problem-summary-block
   .title-description.variant-suggestion
     div.row.imperfection-row(id="#{suggestion.identifier}")
-      .col-sm-3
-        if(compHeadshot)
-          a(href='/imagineer/' + accountName)
-            img(src=compHeadshot height="50" width="50" style=compHeadshotStyle)
+      .col-sm-1.click-row
+        if(suggestion.headshot && suggestion.headshot.url)
+          a(href='/imagineer/' + suggestion.wholeCreator.nickname)
+            div(style="height: 50px; width: 50px; background-image : url('" + suggestion.headshot.url + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + suggestion.headshot.style)
         else
-          a(href='/imagineer/' + accountName)
+          a(href='/imagineer/' + suggestion.wholeCreator.nickname)
             img(src="/avatar.png" height="50" width="50")
-        span #{accountName || user.nickname}
+
+      .col-sm-2.click-row.problem-row-padding
+        span #{suggestion.wholeCreator.nickname}
 
       .col-sm-3.problem-row-padding
         if suggestion['date']

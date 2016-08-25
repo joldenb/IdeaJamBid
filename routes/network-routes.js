@@ -338,9 +338,31 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
             IdeaProblem.find({"ideaSeed" : { $in : allIdeas}}, function(err, problems) {
               imperfections = problems;
               _.each(imperfections, function(value, key, list){
-                  Account.findOne({"username": value.creator}, function(err, user) {
-                    value.wholeCreator = user;
-                  });
+                Account.findOne({"username": value.creator}, function(err, user) {
+                  value.wholeCreator = user;
+                  if (user.headshots && user.headshots[0]) {
+                    IdeaImage.findById(user.headshots[0].id, function(err, headshot) {
+                      value.headshot = {};
+                      value.headshot.url = headshot.amazonURL;
+                      var imageStyle;
+                      switch (headshot["orientation"]) {
+                        case 1 :
+                          imageStyle = "";
+                          break;
+                        case 2 :
+                          imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                          break;
+                        case 3 :
+                          imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                          break;
+                        case 4 :
+                          imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                          break;
+                      }
+                      value.headshot.style = imageStyle;
+                    });
+                  }
+                });
               });
             }).sort({upvotes : -1});
 
@@ -348,6 +370,34 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
 
             Component.find({"ideaSeed" : { $in : allIdeas}}, function(err, components) {
               suggestions = components;
+              _.each(suggestions, function(value, key, list){
+                Account.findOne({"username": value.creator}, function(err, user) {
+                  debugger;
+                  value.wholeCreator = user;
+                  if (user.headshots && user.headshots[0]) {
+                    IdeaImage.findById(user.headshots[0].id, function(err, headshot) {
+                      value.headshot = {};
+                      value.headshot.url = headshot.amazonURL;
+                      var imageStyle;
+                      switch (headshot["orientation"]) {
+                        case 1 :
+                          imageStyle = "";
+                          break;
+                        case 2 :
+                          imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                          break;
+                        case 3 :
+                          imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                          break;
+                        case 4 :
+                          imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                          break;
+                      }
+                      value.headshot.style = imageStyle;
+                    });
+                  }                  
+                });
+              });
             }).sort({upvotes : -1});            
 
             IdeaSeed.find({"_id" : { $in : allIdeas}}, function(err, ideas){
