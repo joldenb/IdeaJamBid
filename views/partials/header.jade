@@ -1,4 +1,4 @@
-.container-fluid
+.container-fluid.custom-header
   .navbar-header
     button(type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false")
       span(class="sr-only") Toggle navigation
@@ -18,16 +18,11 @@
       if headshot && Object.keys(user).length != 0
         li.profile-headshot-list-item
           .profile-headshot
-            div(class="placeholder" style="height: 75px; width: 75px; background-image : url('" + headshot + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + headshotStyle)
-            a.plus-overlay(href="/imagineer-picture")
-              img(src='/plus-overlay.png' height="75" width="75")
+            div(class="placeholder" style="height: 40px; width: 40px; background-image : url('" + headshot + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + headshotStyle)
       else  
         li.profile-headshot-list-item
           .profile-headshot
-            div(class="placeholder" style="height: 75px; width: 75px; background-image : url('" + headshot + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + headshotStyle)
-            if Object.keys(user).length != 0
-              a.plus-overlay(href="/imagineer-picture")
-                img(src='/plus-overlay.png' height="75" width="75")
+            div(class="placeholder" style="height: 40px; width: 40px; background-image : url('" + headshot + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + headshotStyle)
       if Object.keys(user).length != 0
         li
           a.home-logout.btn.btn-default( href="/imagineer-picture/") Edit Profile
@@ -38,3 +33,26 @@
           a.home-login.btn.btn-success( href="/ideas" ) View All Ideas
         li
           a.home-logout.btn.btn-default( href="/" ) Log In
+
+  .dropdown.custom-nav
+    if Object.keys(user).length != 0
+      span.newUserName Howdy #{user.nickname}
+    else
+      span.newUserName Howdy Guest
+
+    button.btn.dropdown-toggle(type='button', data-toggle='dropdown')
+      div(class="placeholder" style="height: 40px; width: 40px; background-image : url('" + headshot + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + headshotStyle)      
+    ul.dropdown-menu(id="test")
+      if Object.keys(user).length != 0
+        li
+          a.home-logout.btn.btn-default( href="/ideas" ) View All Ideas
+        li
+          a.home-logout.btn.btn-default( href="/imagineer-picture/") Edit Profile
+        li
+          a.home-logout.btn.btn-default( href="/logout" ) Log Out
+      else 
+        li
+          a.home-login.btn.btn-success( href="/ideas" ) View All Ideas
+        li
+          a.home-logout.btn.btn-default( href="/" ) Log In
+     
