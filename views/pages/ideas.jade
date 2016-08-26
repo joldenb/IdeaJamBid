@@ -17,6 +17,7 @@ html
       - var ideaImageStyle
       - var inventorImage
       - var inventorImageStyle
+      - var accountNickname
       if index % 3 == 0 
         .row
           .col-md-4
@@ -30,6 +31,7 @@ html
               - ideaImageStyle = ideas[index][5]
               - inventorImage = ideas[index][6] || ""
               - inventorImageStyle = ideas[index][7] || ""
+              - accountNickname = ideas[index][8] || ""
               include ../partials/view-all-idea-block.jade
           .col-md-4
             if(ideas[index + 1])
@@ -42,6 +44,7 @@ html
               - ideaImageStyle = ideas[index + 1][5] || ""
               - inventorImage = ideas[index + 1][6] || ""
               - inventorImageStyle = ideas[index + 1 ][7] || ""
+              - accountNickname = ideas[index + 1][8] || ""
               include ../partials/view-all-idea-block.jade
           .col-md-4
               if(ideas[index + 2 ])
@@ -54,6 +57,7 @@ html
                 - ideaImageStyle = ideas[index + 2][5] || ""
                 - inventorImage = ideas[index + 2 ][6] || ""
                 - inventorImageStyle = ideas[index + 2 ][7] || ""
+                - accountNickname = ideas[index + 2][8] || ""
                 include ../partials/view-all-idea-block.jade
     br
 

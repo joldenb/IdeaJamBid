@@ -449,9 +449,7 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                   }
 
                   var ideaLink = "";
-                  if(req.user == idea['inventorName']){
-                    ideaLink = "/inventor-idea-summary/" + idea['name'];
-                  } else if(idea['name']) {
+                  if(idea['name']) {
                     ideaLink = "/ideas/" + idea['name'];
                   } else {
                     ideaLink = "";
@@ -516,6 +514,12 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                                     }
 
                                   }
+                                }
+                                //tack on the account nick name to display in the block
+                                if(accounts[k].nickname){
+                                  ideaList[j].push(accounts[k].nickname);
+                                } else {
+                                  ideaList[j].push("User");
                                 }
                               }
                             }
@@ -942,8 +946,15 @@ router.get('/aptitudes/:aptitudeName', csrfProtection, function(req, res){
                                   }
                                 }
                               }
-                            }
 
+                              //tack on the account nick name to display in the block
+                              if(accounts[k].nickname){
+                                ideaList[j].push(accounts[k].nickname);
+                              } else {
+                                ideaList[j].push("User");
+                              }
+
+                            }
                           }
                         }
                       }

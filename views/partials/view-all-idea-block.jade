@@ -6,13 +6,13 @@
 		else
 			h3 <b></b>#{ideaName || 'No Idea Name'}
 		if(inventorImage)
-			a(href='/imagineer/' + accountName)
+			a(href='/imagineer/' + accountNickname)
 				img(src=inventorImage height="50" width="50" style=inventorImageStyle)
 		else
-			a(href='/imagineer/' + accountName)
+			a(href='/imagineer/' + accountNickname)
 				img(src="/avatar.png" height="50" width="50")
 		.userName 
-			p #{accountName || user.nickname}
+			p #{accountNickname || accountName || user.nickname}
 		.suggestion-category
 			p <b>Viability: </b>#{suggestionProblem} 
 			p <b>Description: </b>#{problemCategory}

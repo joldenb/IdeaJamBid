@@ -807,6 +807,14 @@ router.get('/ideas', csrfProtection, function(req, res){
                             }
                           }
                         }
+
+                        //tack on the account nick name to display in the block
+                        if(accounts[k].nickname){
+                          ideaList[j].push(accounts[k].nickname);
+                        } else {
+                          ideaList[j].push("User");
+                        }
+
                       }
 
                     }
