@@ -22,7 +22,7 @@
       else  
         li.profile-headshot-list-item
           .profile-headshot
-            div(class="placeholder" style="height: 40px; width: 40px; background-image : url('" + headshot + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + headshotStyle)
+            div(class="placeholder" style="height: 40px; width: 40px; background-image : url('/avatar.png');  background-position: center center; background-repeat: no-repeat; background-size: cover;")
       if Object.keys(user).length != 0
         li
           a.home-logout.btn.btn-default( href="/ideas" ) View All Ideas
@@ -41,11 +41,15 @@
     if Object.keys(user).length != 0
       span.newUserName Howdy #{user.nickname}
     else
-      span.newUserName Howdy Guest
+      span.newUserName Howdy Guest      
 
-    button.btn.dropdown-toggle(type='button', data-toggle='dropdown')
-      div(class="placeholder" style="height: 40px; width: 40px; background-image : url('" + headshot + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + headshotStyle)      
-    ul.dropdown-menu(id="test")
+    if headshot
+      button.btn.dropdown-toggle(type='button', data-toggle='dropdown')
+        div(class="placeholder" style="height: 40px; width: 40px; background-image : url('" + headshot + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;")      
+    else
+      button.btn.dropdown-toggle(type='button', data-toggle='dropdown')
+        div(class="placeholder" style="height: 40px; width: 40px; background-image : url('/avatar.png');  background-position: center center; background-repeat: no-repeat; background-size: cover;")      
+     ul.dropdown-menu(id="test")
       if Object.keys(user).length != 0
         li
           a.home-logout.btn.btn-default( href="/ideas" ) View All Ideas
