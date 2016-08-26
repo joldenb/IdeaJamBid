@@ -95,7 +95,7 @@ app.use(function(req, res, next) {
 app.enable('trust proxy'); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS if you use an ELB, custom Nginx setup, etc)
 
 var limiter = new RateLimit({
-  windowMs: 15*60*1000, // 15 minutes
+  windowMs: 3*60*1000, // 3 minutes
   max: 2000, // limit each IP to 100 requests per windowMs
   delayMs: 0, // disable delaying - full speed until the max limit is reached
 	handler:  function (req, res) {
