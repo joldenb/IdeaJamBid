@@ -38,12 +38,15 @@
 
   .dropdown.custom-nav
     a(class="navbar-brand" href="/") IdeaJam
-    if headshot && Object.keys(user).length != 0
+    if Object.keys(user).length != 0
       span.newUserName Howdy #{user.nickname}
+    else
+      span.newUserName Howdy Guest      
+
+    if headshot
       button.btn.dropdown-toggle(type='button', data-toggle='dropdown')
         div(class="placeholder" style="height: 40px; width: 40px; background-image : url('" + headshot + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;")      
     else
-      span.newUserName Howdy Guest
       button.btn.dropdown-toggle(type='button', data-toggle='dropdown')
         div(class="placeholder" style="height: 40px; width: 40px; background-image : url('/avatar.png');  background-position: center center; background-repeat: no-repeat; background-size: cover;")      
      ul.dropdown-menu(id="test")
