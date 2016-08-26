@@ -25,6 +25,7 @@ var csrf = require('csurf');
 var RateLimit = require('express-rate-limit');
 var enforce = require('express-sslify');
 var forceSSL = require('express-force-ssl');
+require('newrelic');
 
 require('./config/passport')(passport);
 
