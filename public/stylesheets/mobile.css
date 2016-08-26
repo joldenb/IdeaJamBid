@@ -43,5 +43,21 @@
 	.desktop-only {
 		display: none;
 	}
+
+	.view-all-viabilities .viability-icon {
+	  max-width:15%;
+	}
+
+	.view-all-viabilities .col-sm-6 {
+		min-height: 9em;
+	}
+
+	.view-all-viabilities .row {
+		margin: 0;
+	}
+
+	.view-all-viabilities .slider-container label {
+		margin: .6em !important;
+	}
 }
 

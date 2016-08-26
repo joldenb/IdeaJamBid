@@ -200,17 +200,21 @@ div#begin-info-right button {
   padding: 0;
 }
 
+.view-all-viabilities .row {
+  margin: 2.5em 0;
+}
+
 /* for the view all viability modal */
 .view-all-viabilities .ui-slider {
   display: inline-block;
-  width: 75%;
+  width: 100%;
   float: right;
   margin-top: 1em;
 }
 
 .view-all-viabilities .viability-icon {
   display: inline-block;
-  max-width: 20%;
+  
 }
 
 .view-all-viabilities .viability-icon img {
@@ -219,6 +223,13 @@ div#begin-info-right button {
 }
 
 .slider-container {width : 80%; margin: 0px auto;}
+.view-all-viabilities .slider-container {
+  width:100%;
+}
+
+.view-all-viabilities .slider-container .col-sm-2 {
+  padding:0;
+}
 
 .sliderLabel{
     margin-bottom:5px;
@@ -229,9 +240,10 @@ div#begin-info-right button {
     text-align : center;
 }
 
-.slider-end-labels {
+.modalContainer .slider-end-labels {
   padding-bottom: 1em;
 }
+
 
 .value-entered .ui-slider-range {
   background: #00A550; /* For browsers that do not support gradients */
@@ -259,6 +271,14 @@ span.yes-way {
 
 span.no-way {
   float: left;
+}
+
+.viabilityLink.moreLink img{
+  float: right;
+  margin-top: .5em;
+}
+.viabilityLink.moreLink img:hover{
+  cursor: pointer; cursor: hand;
 }
 
 #formKeyFeatures {

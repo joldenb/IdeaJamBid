@@ -27,7 +27,7 @@ html
           h3 #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)} solves the problem of #{idea.problem} by #{idea.description}.
         .row.mobile-only
           .idea-summary-data#idea-summary-waste-values
-            a.btn.btn-default( type="button" id="viabilityModalButton"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") Score Now
+            a.btn.btn-default.viabilityModalButton( type="button"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") Score Now
             br
 
         .idea-summary-left
@@ -109,7 +109,7 @@ html
         .row.desktop-only
           .idea-summary-data#idea-summary-waste-values
             h4 Idea Viability Scores
-            a.btn.btn-default( type="button" id="viabilityModalButton"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") Score Now
+            a.btn.btn-default.viabilityModalButton( type="button"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") Score Now
             br
 
   #titleModal.modal.fade.annotate-modal(role="dialog")
@@ -242,17 +242,15 @@ html
       .modal-content
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
-          .modal-title 
-            h2 Idea Viability Scores
+          .modal-title
+            h2 Score Areas
         .modal-body
           .view-all-viabilities
               include ../partials/viability-overview-modal.jade
           .view-specific-viability
         .modal-footer.view-all-button
-            button.btn.btn-info.modal-expand-collapse Expand
             button.btn.btn-info.modal-view-all View All
-            button.btn.btn-info.cancel-button(data-dismiss="modal") Cancel
-            button.btn.btn-success#viabilitySubmit(data-viability-category="view-all") Submit
+            button.btn.btn-success#viabilitySubmit(data-viability-category="view-all") Next
 
   #addProblemModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -512,7 +510,7 @@ html
       // as the user went through more than one in a row. I tried the jquery unbind and off
       // functions
       $("#viabilitySubmit").remove();
-      $("<button class='btn btn-success' id='viabilitySubmit'>Submit</button>")
+      $("<button class='btn btn-success' id='viabilitySubmit'>Next</button>")
       .appendTo("#viabilityModal .modal-footer.view-all-button")
       .click(function(event){
 
@@ -598,6 +596,22 @@ html
         });
         $.post('/update-all-viabilities', data, function(returnData, status){
           if(status=="success"){
+            if($(".first-four-viabilities").is(":visible")){
+              $(".first-four-viabilities").hide();
+              $(".second-four-viabilities").show();
+            } else if($(".second-four-viabilities").is(":visible")){
+              $(".second-four-viabilities").hide();
+              $(".third-four-viabilities").show();
+            } else if($(".third-four-viabilities").is(":visible")){
+              $(".third-four-viabilities").hide();
+              $(".fourth-four-viabilities").show();
+            } else if($(".fourth-four-viabilities").is(":visible")){
+              $(".fourth-four-viabilities").hide();
+              $(".first-four-viabilities").show();
+            } else {
+              $(".first-four-viabilities").show();
+            }
+          } else {
             window.location.reload(true);
           }
         });
@@ -768,94 +782,8 @@ html
         if($("#"+formName + " textarea").val() != "The problem of "){
           data[problemName] = $("#"+formName + " textarea").val();
         }
-        $.post('/' + postPath, data, function(returnData, status){
-          //dont do anything with this return data, because we need to get the modal version
-          // of the nextCategory page
-          
-          if(nextCategory == "view-all"){
-            window.location.reload(true);
-          } else {
-            $.get("/" + nextCategory, {isModal : true}, function(returnData, status){
-              $("#viabilityModal .modal-body .view-specific-viability").html("")
-              $("#viabilityModal .modal-body .view-specific-viability").html(returnData);
-              $("#viabilityModal .modal-title h2").text(nextCategory.charAt(0).toUpperCase() + nextCategory.slice(1));
-              $.get('/get-all-viability-scores', function(sliderData, status){
-                var sliderVal;
-                //get the correct value out of sliderData
-                $("#viabilityModal .modal-title img").remove();
-
-                switch(nextCategory) {
-                case "performability" : 
-                  sliderVal = sliderData['performOne'];
-                  $("<img src='/perfIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-                  break;
-                case "affordability" : 
-                  sliderVal = sliderData['affordOne'];
-                  $("<img src='/affordIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-                  break;
-                case "featurability" : 
-                  sliderVal = sliderData['featureOne'];
-                  $("<img src='/perfIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-                  break;
-                case "deliverability" : 
-                  sliderVal = sliderData['deliverOne'];
-                  $("<img src='/deliverabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-                  break;
-                case "useability" : 
-                  sliderVal = sliderData['useabilityOne'];
-                  $("<img src='/perfIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-                  break;
-                case "maintainability" : 
-                  sliderVal = sliderData['maintainOne'];
-                  $("<img src='/maintainabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-                  break;
-                case "durability" : 
-                  sliderVal = sliderData['durabilityOne'];
-                  $("<img src='/durabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-                  break;
-                case "imageability" : 
-                  sliderVal = sliderData['imageOne'];
-                  $("<img src='/imageabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-                  break;
-                case "complexity" : 
-                  sliderVal = sliderData['complexOne'];
-                  $("<img src='/complexityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-                  break;
-                case "precision" : 
-                  sliderVal = sliderData['precisionOne'];
-                  $("<img src='/precisionIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-                  break;
-                case "variability" : 
-                  sliderVal = sliderData['variabilityOne'];
-                  $("<img src='/variabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-                  break;
-                case "sensitivity" : 
-                  sliderVal = sliderData['sensitivityOne'];
-                  $("<img src='/sensitivityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-                  break;
-                case "immaturity" : 
-                  sliderVal = sliderData['immatureOne'];
-                  $("<img src='/immaturityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-                  break;
-                case "dangerous" : 
-                  sliderVal = sliderData['dangerOne'];
-                  $("<img src='/dangerIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-                  break;
-                case "skills" : 
-                  sliderVal = sliderData['skillsOne'];
-                  $("<img src='/skillsIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-                  break;
-                }
-                if(sliderVal){
-                  valueEntered = true;
-                } else {
-                  valueEntered = false;
-                  sliderVal = 50;
-                }
-                getNextSliderConfig(nextCategory, valueEntered, sliderVal);
-              });
-            });
-          }
+        $.post('/' + postPath, data, function(returnData, status){          
+          $("#viabilityModal .modal-view-all").click();
         });
 
       });
@@ -970,7 +898,8 @@ html
         $("#viabilityModal .modal-body .view-specific-viability").html("")
         //$("#viabilitySubmit").attr("data-viability-category", "view-all");
         $("#viabilityModal .view-all-viabilities").show();
-        $("#viabilityModal .modal-title h2").text("Idea Viability Scores");
+        $("#viabilityModal .modal-title h2").text("Score Areas");
+        $("#viabilityModal .modal-title img").remove();
         
         $.get('/get-all-viability-scores', function(returnData, status){
           $("#perfSlider").slider("destroy");
@@ -1023,25 +952,26 @@ html
 
         $("#openViabilityModal").click(function(event){
           $("#whatsLeftModal").modal('hide');
-          $('#viabilityModalButton').click();
+          $('.viabilityModalButton').click();
         })
 
         $("#viewComponentsTab").click(function(event){
           $("#whatsLeftModal").modal('hide');
           $('a').filter(function(index) { return $(this).text() === "Components"; }).click();
         })
+    
+        $(".viabilityModalButton").click(function(event){
+          $.get('/get-all-viability-scores', function(returnData, status){
+            $(".view-all-viabilities .ui-slider").html("");
+            initializeAllSliders(returnData);
+            if(status != "success"){
+              alert("review not created correctly");
+            }
+          });
+        });
 
     });
 
-    $("#viabilityModalButton").click(function(event){
-      $.get('/get-all-viability-scores', function(returnData, status){
-        $(".view-all-viabilities .ui-slider").html("");
-        initializeAllSliders(returnData);
-        if(status != "success"){
-          alert("review not created correctly");
-        }
-      });
-    });
 
     $("#viabilityModal .cancel-button").click(function(event){
         $("#perfSlider").slider("destroy");

@@ -1,221 +1,101 @@
 form(role='form', id="viability-overview" action="/get-all-viability-scores", method="post", data-idea-doc=idea)
   .form-group
       if(viabilities)
-        - for (var counter = 0; counter < 4; counter++) {
-          if(counter % 2 === 0)
-            .row
-              each offset in [0,1]
-                if (viabilities[counter + offset])
-                  .col-sm-6
-                    .slider-container
-                      div(id=viabilities[counter + offset].iconId class="viability-icon")
-                        .viabilityLink(href="/" + viabilities[counter + offset].link)
-                          img(src="/" + viabilities[counter + offset].iconId + ".png" height="75" width="75")
-                        a.plus-overlay()
-                          img(height="75" width="75")
-                      div(id=viabilities[counter + offset].sliderId)
-                      label(id=viabilities[counter + offset].labelId) #{viabilities[counter + offset].name}
-                    br
-        - }
-        .additional-viabilities
-          - for (var counter = 4; counter < viabilities.length; counter++) {
+        .first-four-viabilities
+            - for (var counter = 0; counter < 4; counter++) {
+              if(counter % 2 === 0)
+                .row
+                  each offset in [0,1]
+                    if (viabilities[counter + offset])
+                      .col-sm-6
+                        .slider-container
+                            .col-sm-2
+                                span(id=viabilities[counter + offset].iconId class="viability-icon")
+                                    .viabilityLink(href="/" + viabilities[counter + offset].link)
+                                        img(src="/" + viabilities[counter + offset].iconId + ".png" height="75" width="75")
+                                    a.plus-overlay()
+                                        img(height="75" width="75")
+                                label(id=viabilities[counter + offset].labelId) #{viabilities[counter + offset].name}
+                            .col-sm-10
+                                .slider-end-labels
+                                    span.no-way Low
+                                    span.yes-way High
+                                div(id=viabilities[counter + offset].sliderId)
+                                div.viabilityLink.moreLink(href="/" + viabilities[counter + offset].link)
+                                    img(src="/plus-overlay.png" height="25" width="25")
+                        br
+            - }
+        .second-four-viabilities.additional-viabilities
+          - for (var counter = 4; counter < 8; counter++) {
             if(counter % 2 === 0)
               .row
                 each offset in [0,1]
                   if (viabilities[counter + offset])
-                    .col-sm-6
-                      .slider-container
-                        div(id=viabilities[counter + offset].iconId class="viability-icon")
-                          .viabilityLink(href="/" + viabilities[counter + offset].link)
-                            img(src="/" + viabilities[counter + offset].iconId + ".png" height="75" width="75")
-                          a.plus-overlay()
-                            img(height="75" width="75")
-                        div(id=viabilities[counter + offset].sliderId)
-                        label(id=viabilities[counter + offset].labelId) #{viabilities[counter + offset].name}
-                      br
+                      .col-sm-6
+                        .slider-container
+                            .col-sm-2
+                                span(id=viabilities[counter + offset].iconId class="viability-icon")
+                                    .viabilityLink(href="/" + viabilities[counter + offset].link)
+                                        img(src="/" + viabilities[counter + offset].iconId + ".png" height="75" width="75")
+                                    a.plus-overlay()
+                                        img(height="75" width="75")
+                                label(id=viabilities[counter + offset].labelId) #{viabilities[counter + offset].name}
+                            .col-sm-10
+                                .slider-end-labels
+                                    span.no-way Low
+                                    span.yes-way High
+                                div(id=viabilities[counter + offset].sliderId)
+                                div.viabilityLink.moreLink(href="/" + viabilities[counter + offset].link)
+                                    img(src="/plus-overlay.png" height="25" width="25")
+                        br
+          - }
+        .third-four-viabilities.additional-viabilities
+          - for (var counter = 8; counter < 12; counter++) {
+            if(counter % 2 === 0)
+              .row
+                each offset in [0,1]
+                  if (viabilities[counter + offset])
+                      .col-sm-6
+                        .slider-container
+                            .col-sm-2
+                                span(id=viabilities[counter + offset].iconId class="viability-icon")
+                                    .viabilityLink(href="/" + viabilities[counter + offset].link)
+                                        img(src="/" + viabilities[counter + offset].iconId + ".png" height="75" width="75")
+                                    a.plus-overlay()
+                                        img(height="75" width="75")
+                                label(id=viabilities[counter + offset].labelId) #{viabilities[counter + offset].name}
+                            .col-sm-10
+                                .slider-end-labels
+                                    span.no-way Low
+                                    span.yes-way High
+                                div(id=viabilities[counter + offset].sliderId)
+                                div.viabilityLink.moreLink(href="/" + viabilities[counter + offset].link)
+                                    img(src="/plus-overlay.png" height="25" width="25")
+                        br
+          - }
+        .fourth-four-viabilities.additional-viabilities
+          - for (var counter = 12; counter < viabilities.length; counter++) {
+            if(counter % 2 === 0)
+              .row
+                each offset in [0,1]
+                  if (viabilities[counter + offset])
+                      .col-sm-6
+                        .slider-container
+                            .col-sm-2
+                                span(id=viabilities[counter + offset].iconId class="viability-icon")
+                                    .viabilityLink(href="/" + viabilities[counter + offset].link)
+                                        img(src="/" + viabilities[counter + offset].iconId + ".png" height="75" width="75")
+                                    a.plus-overlay()
+                                        img(height="75" width="75")
+                                label(id=viabilities[counter + offset].labelId) #{viabilities[counter + offset].name}
+                            .col-sm-10
+                                .slider-end-labels
+                                    span.no-way Low
+                                    span.yes-way High
+                                div(id=viabilities[counter + offset].sliderId)
+                                div.viabilityLink.moreLink(href="/" + viabilities[counter + offset].link)
+                                    img(src="/plus-overlay.png" height="25" width="25")
+                        br
           - }
 
-
-    //-   .slider-container
-    //-     #perfIcon.viability-icon
-    //-       if Object.keys(user).length != 0
-    //-         a.viabilityLink(href="/performability")
-    //-           img(src="/perfIcon.png" height="75" width="75")
-    //-         a.plus-overlay()
-    //-           img(height="75" width="75")
-    //-       else
-    //-         img(src="/perfIcon.png" height="75" width="75")
-    //-     #perfSlider
-    //-     label#perfLabel Performability
-    //-   br
-    //-   .slider-container
-    //-     #affordIcon.viability-icon
-    //-       if Object.keys(user).length != 0
-    //-         a.viabilityLink(href="/affordability")
-    //-           img(src="/affordIcon.png" height="75" width="75")
-    //-         a.plus-overlay()
-    //-           img(height="75" width="75")
-    //-       else
-    //-         img(src="/affordIcon.png" height="75" width="75")
-    //-     #affordSlider
-    //-     label#affordLabel Affordability
-    //-   br
-    //-   .slider-container
-    //-     #featureIcon.viability-icon
-    //-       if Object.keys(user).length != 0
-    //-         a.viabilityLink(href="/featurability")
-    //-           img(src="/perfIcon.png" height="75" width="75")
-    //-         a.plus-overlay()
-    //-           img()
-    //-       else
-    //-         img(src="/perfIcon.png" height="75" width="75")
-    //-     #featureSlider
-    //-     label#featureLabel Featurability
-    //-   br
-    //-   .slider-container
-    //-     #deliverIcon.viability-icon
-    //-       if Object.keys(user).length != 0
-    //-         a.viabilityLink(href="/deliverability")
-    //-           img(src="/deliverabilityIcon.png" height="75" width="75")
-    //-         a.plus-overlay()
-    //-           img(height="75" width="75")
-    //-       else
-    //-         img(src="/deliverabilityIcon.png" height="75" width="75")
-    //-     #deliverSlider
-    //-     label#deliverLabel Deliverability
-    //-   br
-    //-   .slider-container
-    //-     #useabilityIcon.viability-icon
-    //-       if Object.keys(user).length != 0
-    //-         a.viabilityLink(href="/useability")
-    //-           img(src="/useabilityIcon.png" height="75" width="75")
-    //-         a.plus-overlay()
-    //-           img(height="75" width="75")
-    //-       else
-    //-         img(src="/useabilityIcon.png" height="75" width="75")
-    //-     #useabilitySlider
-    //-     label#useabilityLabel Useability
-    //-   br
-    //-   .slider-container
-    //-     #maintainIcon.viability-icon
-    //-       if Object.keys(user).length != 0
-    //-         a.viabilityLink(href="/maintainability")
-    //-           img(src="/maintainabilityIcon.png" height="75" width="75")
-    //-         a.plus-overlay()
-    //-           img(height="75" width="75")
-    //-       else
-    //-         img(src="/maintainabilityIcon.png" height="75" width="75")
-    //-     #maintainSlider
-    //-     label#maintainabilityLabel Maintainability
-    //-   br
-    //-   .slider-container
-    //-     #dangerIcon.viability-icon
-    //-       if Object.keys(user).length != 0
-    //-         a.viabilityLink(href="/dangerous")
-    //-           img(src="/dangerIcon.png" height="75" width="75")
-    //-         a.plus-overlay()
-    //-           img(height="75" width="75")
-    //-       else
-    //-         img(src="/dangerIcon.png" height="75" width="75")
-    //-     #dangerSlider
-    //-     label#dangerousLabel Danger
-    //-   br
-
-    //- .viability-right-column
-    //-   .slider-container
-    //-     #durabilityIcon.viability-icon      
-    //-       if Object.keys(user).length != 0
-    //-         a.viabilityLink(href="/durability")
-    //-           img(src="/durabilityIcon.png" height="75" width="75")
-    //-         a.plus-overlay()
-    //-           img(height="75" width="75")
-    //-       else
-    //-         img(src="/durabilityIcon.png" height="75" width="75")
-    //-     #durabilitySlider
-    //-     label#durabilityLabel Durability
-    //-   br
-    //-   .slider-container
-    //-     #imageIcon.viability-icon
-    //-       if Object.keys(user).length != 0
-    //-         a.viabilityLink(href="/imageability")
-    //-           img(src="/imageabilityIcon.png" height="75" width="75")
-    //-         a.plus-overlay()
-    //-           img(height="75" width="75")
-    //-       else
-    //-         img(src="/imageabilityIcon.png" height="75" width="75")
-    //-     #imageSlider
-    //-     label#imageabilityLabel Imageability
-    //-   br
-    //-   .slider-container
-    //-     #complexIcon.viability-icon
-    //-       if Object.keys(user).length != 0
-    //-         a.viabilityLink(href="/complexity")
-    //-           img(src="/complexityIcon.png" height="75" width="75")
-    //-         a.plus-overlay()
-    //-           img(height="75" width="75")
-    //-       else
-    //-         img(src="/complexityIcon.png" height="75" width="75")
-    //-     #complexSlider
-    //-     label#complexityLabel Complexity
-    //-   br
-    //-   .slider-container
-    //-     #precisionIcon.viability-icon
-    //-       if Object.keys(user).length != 0
-    //-         a.viabilityLink(href="/precision")
-    //-           img(src="/precisionIcon.png" height="75" width="75")
-    //-         a.plus-overlay()
-    //-           img(height="75" width="75")
-    //-       else
-    //-         img(src="/precisionIcon.png" height="75" width="75")
-    //-     #precisionSlider
-    //-     label#precisionLabel Precision
-    //-   br
-    //-   .slider-container
-    //-     #variabilityIcon.viability-icon
-    //-       if Object.keys(user).length != 0
-    //-         a.viabilityLink(href="/variability")
-    //-           img(src="/variabilityIcon.png" height="75" width="75")
-    //-         a.plus-overlay()
-    //-           img(height="75" width="75")
-    //-       else
-    //-         img(src="/variabilityIcon.png" height="75" width="75")
-    //-     #variabilitySlider
-    //-     label#variabilityLabel Variability
-    //-   br
-    //-   .slider-container
-    //-     #sensitivityIcon.viability-icon
-    //-       if Object.keys(user).length != 0
-    //-         a.viabilityLink(href="/sensitivity")
-    //-           img(src="/sensitivityIcon.png" height="75" width="75")
-    //-         a.plus-overlay()
-    //-           img(height="75" width="75")
-    //-       else
-    //-         img(src="/sensitivityIcon.png" height="75" width="75")
-    //-     #sensitivitySlider
-    //-     label#sensitivityLabel Sensitivity
-    //-   br
-    //-   .slider-container
-    //-     #immatureIcon.viability-icon
-    //-       if Object.keys(user).length != 0
-    //-         a.viabilityLink(href="/immaturity")
-    //-           img(src="/immaturityIcon.png" height="75" width="75")
-    //-         a.plus-overlay()
-    //-           img(height="75" width="75")
-    //-       else
-    //-         img(src="/immaturityIcon.png" height="75" width="75")
-    //-     #immatureSlider
-    //-     label#immaturityLabel Immaturity
-    //-   br
-    //-   .slider-container
-    //-     #skillsIcon.viability-icon
-    //-       if Object.keys(user).length != 0
-    //-         a.viabilityLink(href="/skills")
-    //-           img(src="/skillsIcon.png" height="75" width="75")
-    //-         a.plus-overlay()
-    //-           img(height="75" width="75")
-    //-       else
-    //-         img(src="/skillsIcon.png" height="75" width="75")
-    //-     #skillsSlider
-    //-     label#skillsLabel Skills
-    //-   br
   input(type="hidden", name="_csrf", value="#{csrfToken}")
