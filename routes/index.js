@@ -1237,7 +1237,7 @@ router.post('/save-idea-name', csrfProtection, function(req, res) {
     { multi: false, new : true },
     function (err, idea) {
       console.log('The raw response from Mongo was ', idea);
-      res.redirect('/ideas/' + idea.name);
+      res.json({"newUrl" : '/ideas/' + idea.name});
   });
 });
 

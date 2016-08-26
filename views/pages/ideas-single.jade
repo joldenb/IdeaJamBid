@@ -116,7 +116,6 @@ html
     .modal-dialog
       .modal-content
         .modal-header
-          button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
             h2 Name Your Idea
         .modal-body
@@ -127,8 +126,7 @@ html
               p (ex. "Flux Capacitor")
               p.charactersRemaining
             .modal-footer
-              button.btn.btn-info(data-dismiss="modal") Cancel
-              button.btn.btn-success#submit(type='submit') Save
+              button.btn.btn-success#titleSubmit(type='submit') Save
 
   #viewAllImperfections.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -1011,6 +1009,28 @@ html
           window.location.reload(true);
         });      
     });
+
+    $("#titleSubmit").click(function(event){
+      event.preventDefault();
+      if($("#saveIdeaName input[name='inventionName']").val() == "My idea is named " &&
+        $("#titleRequiredMessage").length == 0){
+          $("<p id='titleRequiredMessage'>A title is required</p>").insertBefore("#saveIdeaName input[name='inventionName']");
+      } else {
+        $.post('/save-idea-name', 
+          {
+            _csrf : $('[name="_csrf"]').val(),
+            inventionName : $("#saveIdeaName input[name='inventionName']").val(),
+          },
+          function(resp) {
+            if(resp['newUrl']){
+              window.location = resp['newUrl'];
+            } else {
+              window.location.reload(true);
+            }
+          });
+      }
+    })
+
 
     $("#componentSubmit").click(function(event){
       event.preventDefault();
