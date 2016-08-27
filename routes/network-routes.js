@@ -362,6 +362,15 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                 reviewScores[key] = IdeaReview.averageViabilityScores(value);
               });
 
+
+              _.each(allIdeas, function(ideaKey, index){
+                if(Object.keys(reviewScores).indexOf(allIdeas[index]) == -1){
+                  reviewScores[allIdeas[index]] = 0;
+                }
+              });
+
+
+
               // reviewScores is an object with idea seed ids as the keys and
               // the average review score as the value. we need to sort them,
               // take the highest 6 or so, then set the corresponding idea objects
@@ -788,6 +797,14 @@ router.get('/aptitudes/:aptitudeName', csrfProtection, function(req, res){
                 //value should be an array of review objects
                 reviewScores[key] = IdeaReview.averageViabilityScores(value);
               });
+
+
+              _.each(allIdeas, function(ideaKey, index){
+                if(Object.keys(reviewScores).indexOf(allIdeas[index]) == -1){
+                  reviewScores[allIdeas[index]] = 0;
+                }
+              });
+              
 
               // reviewScores is an object with idea seed ids as the keys and
               // the average review score as the value. we need to sort them,

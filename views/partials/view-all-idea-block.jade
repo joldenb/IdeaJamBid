@@ -14,7 +14,10 @@
 		.userName 
 			p #{accountNickname || accountName || user.nickname}
 		.suggestion-category
-			p <b>Viability: </b>#{suggestionProblem} 
+			if suggestionProblem == 0
+				p No Reviews Yet
+			else
+				p <b>Viability: </b>#{suggestionProblem} 
 			p <b>Description: </b>#{problemCategory}
 	.footer.view-all-ideas
 		if ideaLink
