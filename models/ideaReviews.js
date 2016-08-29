@@ -174,7 +174,7 @@ IdeaReview.statics.averageViabilityScores = function(reviewObjects){
 	_.each(reviewAverages, function(score, index){
 		total += score;
 	});
-	if(total > 0){
+	if(reviewAverages.length > 0){
 		overallAverage = total / (reviewAverages.length);
 	}
 
