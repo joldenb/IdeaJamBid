@@ -59,5 +59,22 @@
 	.view-all-viabilities .slider-container label {
 		margin: .6em !important;
 	}
+
+  .container.view-idea-suggestions .row, .container.network-profile .row{
+    padding: 0;
+  }
+
+  .container.view-idea-suggestions .row, .container.network-profile .row .col-md-4 {
+    margin: 0 0 2.5em 0;
+  }
+
+  ul.idea-summary-problem-list {
+    padding-left: 0;
+  }
+
+  ul.idea-summary-problem-list li {
+    margin-bottom: 1em;
+  }
+
 }
 

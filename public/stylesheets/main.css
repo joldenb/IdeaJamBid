@@ -598,8 +598,7 @@ canvas {
 }
 
 .idea-summary-data {
-  margin:1em;
-  padding:1em;
+  margin: 1em;
 }
 
 .idea-summary-left {
@@ -1012,7 +1011,7 @@ button.suggestion-tactics, button.suggestion-targets {
     float: none !important;
 }
 
-@media (max-width: 700px) { 
+@media (max-width: 768px) { 
   .navbar-toggle {
       display: block;
   }
@@ -1024,7 +1023,7 @@ button.suggestion-tactics, button.suggestion-targets {
   }  
 }
 
-@media (min-width: 700px) { 
+@media (min-width: 768px) { 
   .navbar-header .navbar-brand {
     display: none;
   }
