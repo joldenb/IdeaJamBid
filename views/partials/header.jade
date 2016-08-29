@@ -44,10 +44,10 @@
       span.newUserName Howdy Guest      
 
     if headshot
-      button.btn.dropdown-toggle(type='button', data-toggle='dropdown')
+      button.btn.dropdown-toggle(type='button')
         div(class="placeholder" style="height: 40px; width: 40px; background-image : url('" + headshot + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;")      
     else
-      button.btn.dropdown-toggle(type='button', data-toggle='dropdown')
+      button.btn.dropdown-toggle(type='button')
         div(class="placeholder" style="height: 40px; width: 40px; background-image : url('/avatar.png');  background-position: center center; background-repeat: no-repeat; background-size: cover;")      
      ul.dropdown-menu(id="test")
       if Object.keys(user).length != 0
@@ -62,4 +62,18 @@
           a.home-login.btn.btn-success( href="/ideas" ) View All Ideas
         li
           a.home-logout.btn.btn-default( href="/" ) Log In
+
+
+    include ../partials/js-includes.jade
+    script(type="text/javascript").
+
+      $(".dropdown-toggle").click(function(event){
+        console.log("clicked");
+        var customNav = $('.custom-nav');
+        if(customNav.hasClass("open")) {
+          customNav.removeClass("open");
+        } else {
+          customNav.addClass("open");
+        }
+      });
      
