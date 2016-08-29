@@ -1087,3 +1087,11 @@ button.suggestion-tactics, button.suggestion-targets {
 .dropdown-menu {
     width: 300px !important;
 }
+
+.pagefooter {
+  text-align: center;
+}
+
+.termsCenter {
+  text-align: center;
+}
