@@ -64,16 +64,17 @@
           a.home-logout.btn.btn-default( href="/" ) Log In
 
 
-    include ../partials/js-includes.jade
-    script(type="text/javascript").
+    include 
+      script(src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js')
+      script(type="text/javascript").
 
-      $(".dropdown-toggle").click(function(event){
-        console.log("clicked");
-        var customNav = $('.custom-nav');
-        if(customNav.hasClass("open")) {
-          customNav.removeClass("open");
-        } else {
-          customNav.addClass("open");
-        }
-      });
+        $(".dropdown-toggle").click(function(event){
+          console.log("clicked");
+          var customNav = $('.custom-nav');
+          if(customNav.hasClass("open")) {
+            customNav.removeClass("open");
+          } else {
+            customNav.addClass("open");
+          }
+        });
      
