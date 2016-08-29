@@ -32,35 +32,30 @@ html
 
     .col-md-4.existingIdeas
       h3 #{profileAccount.nickname}'s Ideas:
-      if accountIdeaSeeds
+      if accountIdeaSeeds.length > 0
         ul
           each val, index in accountIdeaSeeds
-            if val[0]
+            if val.name
               li
-                if Object.keys(user).length != 0
-                  a(href="/ideas/" + val[0])
-                    h4.idea-text-name= val[0]
-                  span.idea-text-date= val[1]
-                else
-                  a(href="/ideas/" + val[0])
-                    h4.idea-text-name= val[0]
-                  span.idea-text-date= val[1]
+                a(href="/ideas/" + val.name)
+                  h4.idea-text-name= val.name
+                span.idea-text-date= val['creationDate']
 
       else
         h4 None so far.
-      if Object.keys(user).length != 0
+      if Object.keys(user).length != 0 && user.id == profileAccount.id
         a.home-login.btn.btn-success( href="/introduce-idea" ) Begin a New Idea > 
 
     .col-md-4.contributedIdeas
       h3 #{profileAccount.nickname}'s Contributions
-      if reviewNames
+      if reviewNames.length > 0
         ul
           each val, index in reviewNames
-            if val[0]
+            if val.name
               li
-                a(href="/ideas/" + val[0])
-                  h4.idea-text-name= val[0]
-                span.idea-text-date= val[1]
+                a(href="/ideas/" + val.name)
+                  h4.idea-text-name= val.name
+                span.idea-text-date= val['creationDate']
       else
         h4 None so far.
       a.home-login.btn.btn-success( href="/ideas" ) View All Ideas
