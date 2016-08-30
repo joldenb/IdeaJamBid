@@ -58,7 +58,24 @@ var mongodbUri = process.env.MONGOATLAS_URI || process.env.MONGOLAB_URI || 'loca
 
 console.log("mongodbUri:" + mongodbUri);
 
-mongoose.connect(mongodbUri);
+if(process.env.MONGOATLAS_URI){
+  mongoose.connect(mongodbUri, {
+      replset: {
+        ssl: true,
+        sslValidate: false
+      }
+    }, function(err) {
+      if (err) {
+        console.log(err);
+        process.exit();
+      }
+      else {
+        console.log("Everything is ok :D");
+      }
+    });
+} else {
+  mongoose.connect(mongodbUri);
+}
 var db = mongoose.connection;
 app.use(session({
     secret: 'foo', store: new MongoStore({ mongooseConnection: mongoose.connection})
