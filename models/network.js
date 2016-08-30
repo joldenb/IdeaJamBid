@@ -5,6 +5,8 @@ var ObjectId = mongoose.Schema.Types.ObjectId;
 
 var Network = new Schema({
 	name : String,
+	profilePic : String,
+	description : String,
 	type : String //either school, company, or city/state
 }, { autoIndex: false });
 

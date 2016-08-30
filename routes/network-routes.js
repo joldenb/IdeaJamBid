@@ -669,6 +669,8 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                                     inventorAptitudes :  aptitudes,
                                     accountNameAndURLs : accountNameAndURLs,
                                     networkName : network.name,
+                                    networkImage : network.profilePic,
+                                    networkDescr : network.description,
                                     imperfections: imperfections,
                                     suggestions: suggestions,
                                     headshot: headshotURL
@@ -996,4 +998,55 @@ router.get('/aptitudes/:aptitudeName', csrfProtection, function(req, res){
     });
   });
 });
+
+
+////////////////////////////////////////////////
+// Add a jam profile picture 
+////////////////////////////////////////////////
+router.post('/add-network-profile-pic', csrfProtection,  function(req, res) {
+  
+  if(!req.user){
+    res.redirect('/');
+  } else {
+    
+    IdeaImage.find({"filename" : {$regex : ".*"+req.body.filename+".*"}}, function(err, images){
+
+      var newFileName = req.body.filename + "-" + (images.length + 1).toString();
+
+      var image = new IdeaImage({ imageMimetype : req.body.type,
+        filename : newFileName, uploader : req.user.username, amazonURL : req.body.fileUrl });
+
+      if(req.body["exif[Orientation]"]){
+        image.orientation = parseInt(req.body["exif[Orientation]"]);
+      }
+      
+      image.save(function(err, newImage){
+        if (err) {
+          console.log(err);
+        } else {
+          Network.find( {"name" : req.body.networkName},
+            function (err, networks) {
+              if(networks.length > 0){
+                network = networks[0];
+                network.profilePic = newImage.amazonURL;
+                network.save(function (err) {
+                  res.sendStatus(200);
+                  return;
+                });
+              }
+              else {
+                res.sendStatus(200);
+                return;
+              }
+          });
+        }
+      });
+
+    }); //end of idea image query
+  }
+});
+
+
+
 module.exports = router;
+

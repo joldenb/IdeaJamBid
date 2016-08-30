@@ -1109,3 +1109,7 @@ button.suggestion-tactics, button.suggestion-targets {
 .viabilityStatus {
   margin:0 1em;
 }
+
+.networkProfilePic {
+  width:100%;
+}
