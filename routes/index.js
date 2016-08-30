@@ -429,30 +429,77 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
                     creationDate.getFullYear().toString();
                   item['creationDate'] = formattedDate;
                 });
-                return res.render('pages/imagineer', {
-                  csrfToken: req.csrfToken(),
-                  reviewNames : reviewedIdeas,
-                  headshot : headshotURL,
-                  headshotStyle : headshotStyle,
-                  user : req.user || {},
-                  profileAccount: account,
-                  aptitudes : myAptitudes,
-                  schoolNetwork : schoolNetwork,
-                  locationNetwork : locationNetwork,
-                  companyNetwork : companyNetwork,
-                  accountIdeaSeeds : originalIdeas || [],
-                  masterSchoolNetworkList : masterSchoolNetworkList,
-                  masterSchoolNetworkString : JSON.stringify(masterSchoolNetworkList)
-                                          .replace(/\\n/g, "\\n")
-                                          .replace(/'/g, "\\'")
-                                          .replace(/"/g, '\\"')
-                                          .replace(/\\&/g, "\\&")
-                                          .replace(/\\r/g, "\\r")
-                                          .replace(/\\t/g, "\\t")
-                                          .replace(/\\b/g, "\\b")
-                                          .replace(/\\f/g, "\\f")
+                if(account.headshots[0]){
+                  IdeaImage.findById(account.headshots[0], function(err, accountHeadshot){
+                    switch (accountHeadshot["orientation"]) {
+                      case 1 :
+                        accountHeadshot.style = "";
+                        break;
+                      case 6 :
+                        accountHeadshot.style = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                        break;
+                      case 3 :
+                        accountHeadshot.style = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                        break;
+                      case 8 :
+                        accountHeadshot.style = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                        break;
+                    }
 
-                });
+                    return res.render('pages/imagineer', {
+                      csrfToken: req.csrfToken(),
+                      reviewNames : reviewedIdeas,
+                      headshot : headshotURL,
+                      headshotStyle : headshotStyle,
+                      user : req.user || {},
+                      profileAccount: account,
+                      accountHeadshot : accountHeadshot,
+                      aptitudes : myAptitudes,
+                      schoolNetwork : schoolNetwork,
+                      locationNetwork : locationNetwork,
+                      companyNetwork : companyNetwork,
+                      accountIdeaSeeds : originalIdeas || [],
+                      masterSchoolNetworkList : masterSchoolNetworkList,
+                      masterSchoolNetworkString : JSON.stringify(masterSchoolNetworkList)
+                                              .replace(/\\n/g, "\\n")
+                                              .replace(/'/g, "\\'")
+                                              .replace(/"/g, '\\"')
+                                              .replace(/\\&/g, "\\&")
+                                              .replace(/\\r/g, "\\r")
+                                              .replace(/\\t/g, "\\t")
+                                              .replace(/\\b/g, "\\b")
+                                              .replace(/\\f/g, "\\f")
+
+                    });
+                  });
+                } else {
+                  var accountHeadshot;
+                  return res.render('pages/imagineer', {
+                    csrfToken: req.csrfToken(),
+                    reviewNames : reviewedIdeas,
+                    headshot : headshotURL,
+                    headshotStyle : headshotStyle,
+                    user : req.user || {},
+                    profileAccount: account,
+                    accountHeadshot : accountHeadshot,
+                    aptitudes : myAptitudes,
+                    schoolNetwork : schoolNetwork,
+                    locationNetwork : locationNetwork,
+                    companyNetwork : companyNetwork,
+                    accountIdeaSeeds : originalIdeas || [],
+                    masterSchoolNetworkList : masterSchoolNetworkList,
+                    masterSchoolNetworkString : JSON.stringify(masterSchoolNetworkList)
+                                            .replace(/\\n/g, "\\n")
+                                            .replace(/'/g, "\\'")
+                                            .replace(/"/g, '\\"')
+                                            .replace(/\\&/g, "\\&")
+                                            .replace(/\\r/g, "\\r")
+                                            .replace(/\\t/g, "\\t")
+                                            .replace(/\\b/g, "\\b")
+                                            .replace(/\\f/g, "\\f")
+
+                  });
+                }
               });  
             });
           });

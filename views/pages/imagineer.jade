@@ -9,7 +9,10 @@ html
   div.container
     .row
       .col-sm-3
-        img(src="/avatar.png" height="100" width="100")
+        if accountHeadshot.amazonURL
+          img(src=accountHeadshot.amazonURL height="100" width="100" style=accountHeadshot.style)
+        else
+          img(src="/avatar.png" height="100" width="100")
       .col-sm-5
         h2 #{profileAccount.nickname}
         h4 Einstein Points: #{profileAccount.einsteinPoints}
