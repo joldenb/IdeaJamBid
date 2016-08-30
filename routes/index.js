@@ -2820,9 +2820,8 @@ router.get('/clear-session-idea', csrfProtection, function(req, res){
   if(req.session.idea){
     req.session.idea = null;
     req.session.save();
-  } else {
-    res.sendStatus(200)
-  }
+  } 
+  res.sendStatus(200)
 });
 /*****************************************************************
 ******************************************************************

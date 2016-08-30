@@ -25,14 +25,14 @@
             div(class="placeholder" style="height: 40px; width: 40px; background-image : url('/avatar.png');  background-position: center center; background-repeat: no-repeat; background-size: cover;")
       if Object.keys(user).length != 0
         li
-          a.home-logout.btn.btn-default( href="/ideas" ) View All Ideas
+          a.home-logout.btn.btn-default( href="/jam/dsw" ) DSW Jam
         li
           a.home-logout.btn.btn-default( href="/imagineer-picture/") Edit Profile
         li
           a.home-logout.btn.btn-default( href="/logout" ) Log Out
       else 
         li
-          a.home-login.btn.btn-success( href="/ideas" ) View All Ideas
+          a.home-login.btn.btn-success( href="/jam/dsw" ) DSW Jam
         li
           a.home-logout.btn.btn-default( href="/" ) Log In
 
@@ -52,20 +52,19 @@
      ul.dropdown-menu(id="test")
       if Object.keys(user).length != 0
         li
-          a.home-logout.btn.btn-default( href="/ideas" ) View All Ideas
+          a.home-logout.btn.btn-default( href="/jam/dsw" ) DSW Jam
         li
           a.home-logout.btn.btn-default( href="/imagineer-picture/") Edit Profile
         li
           a.home-logout.btn.btn-default( href="/logout" ) Log Out
       else 
         li
-          a.home-login.btn.btn-success( href="/ideas" ) View All Ideas
+          a.home-login.btn.btn-success( href="/jam/dsw" ) DSW Jam
         li
           a.home-logout.btn.btn-default( href="/" ) Log In
 
 
     include 
-      script(src='https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js')
       script(type="text/javascript").
 
         $(".dropdown-toggle").click(function(event){
