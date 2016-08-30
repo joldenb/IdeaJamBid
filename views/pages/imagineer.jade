@@ -9,8 +9,9 @@ html
   div.container
     .row
       .col-sm-3
-        if accountHeadshot.amazonURL
-          img(src=accountHeadshot.amazonURL height="100" width="100" style=accountHeadshot.style)
+        if accountHeadshot
+          div(class="imagineerProfilePic" style="height: 100px; width: 100px; background-image : url('" + accountHeadshot.amazonURL + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + accountHeadshot.style)
+          
         else
           img(src="/avatar.png" height="100" width="100")
       .col-sm-5

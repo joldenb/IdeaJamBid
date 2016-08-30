@@ -1133,3 +1133,7 @@ button.suggestion-tactics, button.suggestion-targets {
 .aptitude-footer {
   text-align: right;
 }
+
+.imagineerProfilePic {
+  border-radius: 50px;
+}
