@@ -1,27 +1,27 @@
 .suggestion-element.view-all-ideas-block
-	.idea-image.view-all-ideas(style="background-image : url('" + '#{ideaImage || "/lightbulb.png"}' + "');"+ideaImageStyle)
-	.title-description.view-all-ideas
-		if ideaLink && ideaName
-			h3 <b></b> #[a(href=ideaLink) #{ideaName || 'No Idea Name'}]
-		else
-			h3 <b></b>#{ideaName || 'No Idea Name'}
-		if(inventorImage)
-			a(href='/imagineer/' + accountNickname)
-				img(src=inventorImage height="50" width="50" style=inventorImageStyle)
-		else
-			a(href='/imagineer/' + accountNickname)
-				img(src="/avatar.png" height="50" width="50")
-		.userName 
-			p #{accountNickname || accountName || user.nickname}
-		.suggestion-category
-			if suggestionProblem == 0
-				p No Reviews Yet
-			else
-				p <b>Viability: </b>#{suggestionProblem} 
-			p <b>Description: </b>#{problemCategory}
-	.footer.view-all-ideas
-		if ideaLink
-			a(href=ideaLink)
-				.btn.btn-default IMPROVE THIS IDEA!
-		else
-			.btn.btn-default IMPROVE THIS IDEA!
+  .idea-image.view-all-ideas(style="background-image : url('" + '#{ideaImage || "/lightbulb.png"}' + "');"+ideaImageStyle)
+    if(inventorImage)
+      a(href='/imagineer/' + accountNickname)
+        img(src=inventorImage height="50" width="50" style=inventorImageStyle class="view-all-overlay")
+    else
+      a(href='/imagineer/' + accountNickname)
+        img(src="/avatar.png" height="50" width="50" class="view-all-overlay")
+  .title-description.view-all-ideas
+    if ideaLink && ideaName
+      h3 <b></b> #[a(href=ideaLink) #{ideaName || 'No Idea Name'}]
+    else
+      h3 <b></b>#{ideaName || 'No Idea Name'}
+    .userName 
+      p #{accountNickname || accountName || user.nickname}
+    .suggestion-category
+      if suggestionProblem == 0
+        p <b>Viability:</b> #[a(href=ideaLink) #{ideaName || 'Score Now'}]
+      else
+        p <b>Viability: </b>#{suggestionProblem} 
+      p <b>Description: </b>#{problemCategory}
+  .footer.view-all-ideas
+    if ideaLink
+      a(href=ideaLink)
+        .btn.btn-default IMPROVE THIS IDEA!
+    else
+      .btn.btn-default IMPROVE THIS IDEA!  

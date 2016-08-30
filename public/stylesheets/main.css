@@ -1113,3 +1113,10 @@ button.suggestion-tactics, button.suggestion-targets {
 .networkProfilePic {
   width:100%;
 }
+
+.view-all-overlay {
+  position: relative;
+  top: 190px;
+  border-radius: 50px;
+  left: 10px;  
+}
