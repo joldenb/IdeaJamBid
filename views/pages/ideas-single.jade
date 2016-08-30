@@ -248,6 +248,7 @@ html
           .view-specific-viability
         .modal-footer.view-all-button
             button.btn.btn-info.modal-view-all View All
+            span.viabilityStatus 1/4
             button.btn.btn-success#viabilitySubmit(data-viability-category="view-all") Next
 
   #addProblemModal.modal.fade.annotate-modal(role="dialog")
@@ -597,15 +598,18 @@ html
             if($(".first-four-viabilities").is(":visible")){
               $(".first-four-viabilities").hide();
               $(".second-four-viabilities").show();
+              $(".viabilityStatus").text("2/4");
             } else if($(".second-four-viabilities").is(":visible")){
               $(".second-four-viabilities").hide();
               $(".third-four-viabilities").show();
+              $(".viabilityStatus").text("3/4");
             } else if($(".third-four-viabilities").is(":visible")){
               $(".third-four-viabilities").hide();
               $(".fourth-four-viabilities").show();
+              $(".viabilityStatus").text("4/4");
             } else if($(".fourth-four-viabilities").is(":visible")){
               $(".fourth-four-viabilities").hide();
-              $(".first-four-viabilities").show();
+              window.location.reload(true);
             } else {
               $(".first-four-viabilities").show();
             }
@@ -921,7 +925,7 @@ html
       }
     });
 
-    $(window).load(function(){
+    $(document).ready(function(){
         if("!{idea.name}" == ""){
           $('#titleModal').modal('show');
         }
