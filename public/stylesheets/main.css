@@ -17,7 +17,8 @@ body {
   bottom: 0;
   right: 0;
   position: absolute;
-  z-index: -1;   
+  z-index: -1;
+  height: 100%;
 }
 }
 .modal {
@@ -1097,6 +1098,14 @@ button.suggestion-tactics, button.suggestion-targets {
   text-align: center;
 }
 
+.homepage {
+  min-height: 100%;
+  margin-bottom: -50px;
+}
+
+.error-page {
+  text-align: center;
+}
 .viabilityStatus {
   margin:0 1em;
 }
