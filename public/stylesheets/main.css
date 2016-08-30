@@ -1120,3 +1120,16 @@ button.suggestion-tactics, button.suggestion-targets {
   border-radius: 50px;
   left: 10px;  
 }
+
+.profileHeader {
+  display: inline-block;
+  font: 18px;
+}
+
+#profile-edit-top-row .network-link {
+  margin: 1em;
+}
+
+.aptitude-footer {
+  text-align: right;
+}
