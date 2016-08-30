@@ -76,5 +76,10 @@
     margin-bottom: 1em;
   }
 
+  .homepage .btn {
+    width: 100%;
+    margin: .2em;
+  }
+
 }
 
