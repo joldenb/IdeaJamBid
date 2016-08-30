@@ -6,12 +6,14 @@ html
   if user  
     .header.navbar.navbar-default
       include ../partials/header.jade
-  div.profile-info.container
-    .col-md-4.profile-left-column
-      div#begin-info
-        h2 #{profileAccount.nickname}'s Profile
+  div.container
+    .row
+      .col-sm-3
+        img(src="/avatar.png" height="100" width="100")
+      .col-sm-5
+        h2 #{profileAccount.nickname}
         h4 Einstein Points: #{profileAccount.einsteinPoints}
-      div#begin-info-right
+      .col-sm-4
         .profileSchool
           if schoolNetwork
             h4 School :  #[a(class="network-link") #{schoolNetwork}]
@@ -21,7 +23,6 @@ html
         .profileLocation
           if locationNetwork
             h4 Location : #[a(class="network-link") #{locationNetwork}]
-      div#begin-info-aptitudes.aptitudeList
         .profileAptitudes
           if aptitudes && aptitudes.length > 0
             h3 Aptitudes : 
@@ -30,8 +31,8 @@ html
                 li(data-apt-id="#{aptitude.identifier}")
                   a(href="/aptitudes/" + aptitude.title) #{aptitude.title}
 
-    .col-md-4.existingIdeas
-      h3 #{profileAccount.nickname}'s Ideas:
+    .row
+      h3 Ideas
       if accountIdeaSeeds.length > 0
         ul
           each val, index in accountIdeaSeeds
@@ -46,8 +47,8 @@ html
       if Object.keys(user).length != 0 && user.id == profileAccount.id
         a.home-login.btn.btn-success( href="/introduce-idea" ) Begin a New Idea > 
 
-    .col-md-4.contributedIdeas
-      h3 #{profileAccount.nickname}'s Contributions
+    .row
+      h3 Contributions
       if reviewNames.length > 0
         ul
           each val, index in reviewNames
