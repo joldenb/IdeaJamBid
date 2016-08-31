@@ -229,7 +229,7 @@ div#begin-info-right button {
 }
 
 .view-all-viabilities .slider-container .col-sm-2 {
-  padding:0;
+  padding:1.2em 0;
 }
 
 .sliderLabel{
@@ -276,7 +276,7 @@ span.no-way {
 
 .viabilityLink.moreLink img{
   float: right;
-  margin-top: .5em;
+  margin-top: 0em;
 }
 .viabilityLink.moreLink img:hover{
   cursor: pointer; cursor: hand;
@@ -724,8 +724,8 @@ a.plus-overlay img{
 
 #viabilityModal label {
   color : #EAE7DE;
-  padding: .3em 0;
-  margin: .6em 0;
+  padding: 0;
+  margin: 0;
   border-radius: 5px;
 }
 
@@ -1126,4 +1126,15 @@ button.suggestion-tactics, button.suggestion-targets {
 
 .imagineerProfilePic {
   border-radius: 50px;
+}
+
+.slider-container .row{
+  margin: 0;
+}
+
+.viabilityLink h4 {
+  text-decoration: underline;
+  cursor: pointer; 
+  cursor: hand;
+  margin:0;
 }

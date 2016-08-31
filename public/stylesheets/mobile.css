@@ -81,5 +81,13 @@
     margin: .2em;
   }
 
+	.slider-container .row{
+	  margin: 1.5em 0;
+	}
+
+	.slider-container .row .col-xs-4{
+  	margin-top: .5em;
+	}
+
 }
 
