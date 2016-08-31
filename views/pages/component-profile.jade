@@ -8,6 +8,24 @@ html
 
   .component-summary.container
     .col-md-4
+      if(!imageURLs)
+        div
+          img(src="/avatar.png" height="150" width="150")
+      .imagesList
+        if(imageURLs)
+          if !component['mainImage']
+            form(role='form', id="formImageUpload" action="/add-component-image", method="post", data-idea-doc=idea, enctype="multipart/form-data")
+              .form-group
+                input#fileInput(type="file", name="picture")
+                input(type="hidden" id="image-component-identifier" name="imageComponent", value="#{component['identifier']}")
+                input(type="hidden" id="image-component" name="componentProfilePage", value="true")
+                input(type="hidden", name="_csrf", value="#{csrfToken}")
+
+          each imageURL, index in imageURLs
+            if index == 0
+              .image-summary-image
+                img(src=imageURL[1] height="300" width="400")
+
       if component['text'] && component['number']
         .component-name
           h1 Component # #{component['number']} : #{component['text']}
@@ -19,58 +37,39 @@ html
       else if component['text']
         .component-name
           h1 #{component['text']}
-      else
-        h1 No Component Title
+        
       if !component['text']
-        button(type="button" id="compTitleModalButton" class="btn btn-primary" data-toggle="modal" data-target="#addTitleModal") Add One
+        button(type="button" id="compTitleModalButton" class="btn btn-primary" data-toggle="modal" data-target="#addTitleModal") Add Component Title
+      else
+        p Contributed by #[a(href='/imagineer/'+ componentContributor.nickname) #{componentContributor.nickname}]
   
-      h4 Part of "#{idea.name}"
-      .imagesList
-        if(imageURLs)
-          h4 Uploaded Images
-          if !component['mainImage']
-            form(role='form', id="formImageUpload" action="/add-component-image", method="post", data-idea-doc=idea, enctype="multipart/form-data")
-              .form-group
-                p Upload Component Image
-                |  
-                input#fileInput(type="file", name="picture")
-                input(type="hidden" id="image-component-identifier" name="imageComponent", value="#{component['identifier']}")
-                input(type="hidden" id="image-component" name="componentProfilePage", value="true")
-                input(type="hidden", name="_csrf", value="#{csrfToken}")
-
-          each imageURL, index in imageURLs
-            if index == 0
-              .image-summary-image
-                img(src=imageURL[1] height="300" width="400")
-                p(style="margin-top:1em;") Other images containing this component
-            if index < 3 && index > 0
-              img.imageListItems(src=imageURL[1] style=imageURL[2])
-          .view-all-images-btn
-            a.btn.btn-default( href="/image-upload" ) View All Images
-
+      h4 Part of <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b> by #[a(href='/imagineer/'+ ideaInventor.nickname) #{ideaInventor.nickname}]
 
     .edit-column.col-md-8
       .component-descriptions
-        h3 Description(s)
+        if component.text
+          h3 The #{component.text.toLowerCase()} of <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b> is described as:
+        else
+          h3 This component of <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b> is described as:
         if( component['descriptions'].length > 0)
           ul
             each description, index in component['descriptions']
               li #{index+1}. #{description}
-              br
         else
           ul
             li.no-descriptions No Descriptions Yet
             br
         form(role='form', id="addDescription" action="/add-description", method="post", data-idea-doc=idea)
-          h5#new-idea-description Add a New Description:
-          |  
-          input.form-control(name="description", id="description",
-            placeholder='Describe the new component...')
-          input(type="hidden", name="_csrf", value="#{csrfToken}")
-          |  
-          button.btn.btn-success#submit(type='submit') Submit
+          .row
+            .col-sm-8
+              input.form-control(name="description", id="description",
+              placeholder='Add description')
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+            .col-sm-4
+              button.btn.btn-success#submit(type='submit') Save
 
       .related-components
+        br
         h4 Related Components
         each component in relatedComponents
           if component[0]['text']            
@@ -102,13 +101,15 @@ html
 
       .idea-function-column
         if(problem != "none")
-          h4 Related Problem
+          br
+          h4 Related Imperfection
           #idea-summary-problems
             .row
               div.col-xs-12
                 include ../partials/problem-summary-element.jade
 
         .component-variants
+          br
           h4 Included in Variants
           if variantDates.length > 0
             each variantDate in variantDates
@@ -161,14 +162,15 @@ html
           .modal-header
             button(type="button", class="close" data-dismiss="modal") &times;
             .modal-title 
-              h2 Add a Component Title:
+              h2 Add a title for this component:
           .modal-body
             form(role='form', id="addComponentTitle" action="/add-component-title", method="post", data-idea-doc=idea)
               .form-group
                 input(type="hidden", name="_csrf", value="#{csrfToken}")
                 input.form-control(name="compTitle", id="compTitle",
-                  placeholder='Pizza hydrator')
+                  placeholder='Enter title here')
                 input(type="hidden" id="component-identifier" name="component-identifier" value="#{component['identifier']}")
+                p Ex. "Pizza hydrator"
 
               .modal-footer
                 button.btn.btn-info(data-dismiss="modal") Cancel

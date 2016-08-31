@@ -3083,42 +3083,139 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
             return [new Date(parseInt(item.name.substr(-13))).toString(), item.name];
           });
 
+          Account.findOne({"username" : idea.inventorName}, function(err, ideaInventor){
+            Account.findOne({"username" : component.creator}, function(err, componentContributor){
+              if(component['problemID']){
+                IdeaProblem.findOne({"_id" : component['problemID']}, function(err, problem){
 
-          if(component['problemID']){
-            IdeaProblem.findOne({"_id" : component['problemID']}, function(err, problem){
+                  //Get problem creator picture
+                  Account.findOne({"username": problem['creator']}, function(err, problemCreator){
 
-              //Get problem creator picture
-              Account.findOne({"username": problem['creator']}, function(err, problemCreator){
+                    //assumes the first headshot in the user's array of headshots is their
+                    // primary one for display
+                    if(problemCreator['headshots']){
+                      var problemHeadshotID = problemCreator['headshots'][0];
+                      var problemHeadshotURL = '';
+                    } else {
+                      var problemHeadshotID, problemHeadshotURL, problemHeadshotStyle;
+                    }
 
-                //assumes the first headshot in the user's array of headshots is their
-                // primary one for display
-                if(problemCreator['headshots']){
-                  var problemHeadshotID = problemCreator['headshots'][0];
-                  var problemHeadshotURL = '';
-                } else {
-                  var problemHeadshotID, problemHeadshotURL, problemHeadshotStyle;
-                }
+                    problem['wholeCreator'] = {
+                      'nickname' : problemCreator['nickname']
+                    };
 
-                problem['wholeCreator'] = {
-                  'nickname' : problemCreator['nickname']
-                };
+                    //first get the images that the component is in
+                    if(component.images.length > 0 || problemHeadshotID){
+                      var imageIDs = _.map(component.images, function(item){ return item['imageID']});
 
-                //first get the images that the component is in
-                if(component.images.length > 0 || problemHeadshotID){
-                  var imageIDs = _.map(component.images, function(item){ return item['imageID']});
+                      // add main component image to list of id's to be retrieved
+                      if(component.mainImage){
+                        imageIDs.unshift(component.mainImage);
+                      }
+                      if(problemHeadshotID){
+                        imageIDs.push(problemHeadshotID);
+                      }
 
-                  // add main component image to list of id's to be retrieved
-                  if(component.mainImage){
-                    imageIDs.unshift(component.mainImage);
-                  }
-                  if(problemHeadshotID){
-                    imageIDs.push(problemHeadshotID);
-                  }
+                      IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
+                        var imageURLs = [];
+                        for(var i = 0; i < images.length; i++){
+                          if(images[i] && images[i]['amazonURL']){
+                            var imageStyle = "";
+                            switch (images[i]["orientation"]) {
+                              case 1 :
+                                imageStyle = "";
+                                break;
+                              case 2 :
+                                imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                                break;
+                              case 3 :
+                                imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                                break;
+                              case 4 :
+                                imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                                break;
+                            }
+                            var filename = images[i]["filename"];
+                            //if it's the main component image, put in the first spot of the array so it's big on
+                            // the component profile page
+                            if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
+                              imageURLs.unshift([
+                                filename,
+                                images[i]["amazonURL"],
+                                imageStyle
+                              ]);
+                            } else if( images[i].id.toString() == problemCreator['headshots'][0]){
+                              problemHeadshotURL = images[i]["amazonURL"];
+                              problemHeadshotStyle = imageStyle;
+                            } else {
+                              imageURLs.push([
+                                filename,
+                                images[i]["amazonURL"],
+                                imageStyle
+                              ]);
+                            }
+                          }
+                        }
+                        problem['headshot'] = {
+                          'url' : problemHeadshotURL,
+                          'style' : problemHeadshotStyle
+                        };
 
-                  IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
-                    var imageURLs = [];
-                    for(var i = 0; i < images.length; i++){
-                      if(images[i] && images[i]['amazonURL']){
+                        res.render('pages/component-profile', {
+                          csrfToken: req.csrfToken(),
+                          user : req.user || {},
+                          headshot : headshotURL,
+                          headshotStyle : headshotStyle,
+                          idea : idea._doc,
+                          ideaInventor : ideaInventor,
+                          componentContributor : componentContributor,
+                          problemHeadshotURL : problemHeadshotURL,
+                          component : component,
+                          problem : problem,
+                          variantDates : variantDates,
+                          imageURLs : imageURLs,
+                          components : components,
+                          relatedComponents : relatedComponents
+                        });
+                      });//end of image query
+
+                    // in case theres no images
+                    } else {
+                          res.render('pages/component-profile', {
+                            csrfToken: req.csrfToken(),
+                            user : req.user || {},
+                            headshot : headshotURL,
+                            headshotStyle : headshotStyle,
+                            problemHeadshotURL : problemHeadshotURL,
+                            idea : idea._doc,
+                            ideaInventor : ideaInventor,
+                            componentContributor : componentContributor,
+                            components : components,
+                            component : component,
+                            problem : problem,
+                            variantDates : variantDates,
+                            //problemAreas  : problemAreas,
+                            imageURLs : [],
+                            relatedComponents : relatedComponents
+                            //components : components,
+                            //listOfProblems : listOfProblems
+                          });
+                    }
+                  }); // end of problem creator query
+                });// end of problem query
+              } else {
+                  //first get the images that the component is in
+                  if(component.images.length > 0 || component.mainImage){
+                    var imageIDs = _.map(component.images || [], function(item){ return item['imageID']});
+
+                    // add main component image to list of id's to be retrieved
+                    if(component.mainImage){
+                      imageIDs.unshift(component.mainImage);
+                    }
+
+                    IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
+                      var imageURLs = [];
+                      for(var i = 0; i < images.length; i++){
                         var imageStyle = "";
                         switch (images[i]["orientation"]) {
                           case 1 :
@@ -3134,152 +3231,66 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
                             imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
                             break;
                         }
-                        var filename = images[i]["filename"];
-                        //if it's the main component image, put in the first spot of the array so it's big on
-                        // the component profile page
-                        if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
-                          imageURLs.unshift([
-                            filename,
-                            images[i]["amazonURL"],
-                            imageStyle
-                          ]);
-                        } else if( images[i].id.toString() == problemCreator['headshots'][0]){
-                          problemHeadshotURL = images[i]["amazonURL"];
-                          problemHeadshotStyle = imageStyle;
-                        } else {
-                          imageURLs.push([
-                            filename,
-                            images[i]["amazonURL"],
-                            imageStyle
-                          ]);
+                        if(images[i] && images[i]["amazonURL"]){
+                          var filename = images[i]["filename"];
+                          //if it's the main component image, put in the first spot of the array so it's big on
+                          // the component profile page
+                          if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
+                            imageURLs.unshift([
+                              filename,
+                              images[i]["amazonURL"],
+                              imageStyle
+                            ]);
+                          } else {
+                            imageURLs.push([
+                              filename,
+                              images[i]["amazonURL"],
+                              imageStyle
+                            ]);
+                          }
                         }
                       }
-                    }
-                    problem['headshot'] = {
-                      'url' : problemHeadshotURL,
-                      'style' : problemHeadshotStyle
-                    };
-
-                    res.render('pages/component-profile', {
-                      csrfToken: req.csrfToken(),
-                      user : req.user || {},
-                      headshot : headshotURL,
-                      headshotStyle : headshotStyle,
-                      idea : idea._doc,
-                      problemHeadshotURL : problemHeadshotURL,
-                      component : component,
-                      problem : problem,
-                      variantDates : variantDates,
-                      imageURLs : imageURLs,
-                      components : components,
-                      relatedComponents : relatedComponents
-                    });
-                  });//end of image query
-
-                // in case theres no images
-                } else {
                       res.render('pages/component-profile', {
                         csrfToken: req.csrfToken(),
                         user : req.user || {},
                         headshot : headshotURL,
                         headshotStyle : headshotStyle,
-                        problemHeadshotURL : problemHeadshotURL,
                         idea : idea._doc,
+                        ideaInventor : ideaInventor,
+                        componentContributor : componentContributor,
                         components : components,
                         component : component,
-                        problem : problem,
+                        problem : "none",
                         variantDates : variantDates,
-                        //problemAreas  : problemAreas,
-                        imageURLs : [],
+                        imageURLs : imageURLs,
                         relatedComponents : relatedComponents
                         //components : components,
                         //listOfProblems : listOfProblems
                       });
-                }
-              }); // end of problem creator query
-            });// end of problem query
-          } else {
-              //first get the images that the component is in
-              if(component.images.length > 0 || component.mainImage){
-                var imageIDs = _.map(component.images || [], function(item){ return item['imageID']});
 
-                // add main component image to list of id's to be retrieved
-                if(component.mainImage){
-                  imageIDs.unshift(component.mainImage);
-                }
+                    });//end of image query
 
-                IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
-                  var imageURLs = [];
-                  for(var i = 0; i < images.length; i++){
-                    var imageStyle = "";
-                    switch (images[i]["orientation"]) {
-                      case 1 :
-                        imageStyle = "";
-                        break;
-                      case 2 :
-                        imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                        break;
-                      case 3 :
-                        imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                        break;
-                      case 4 :
-                        imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                        break;
-                    }
-                    if(images[i] && images[i]["amazonURL"]){
-                      var filename = images[i]["filename"];
-                      //if it's the main component image, put in the first spot of the array so it's big on
-                      // the component profile page
-                      if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
-                        imageURLs.unshift([
-                          filename,
-                          images[i]["amazonURL"],
-                          imageStyle
-                        ]);
-                      } else {
-                        imageURLs.push([
-                          filename,
-                          images[i]["amazonURL"],
-                          imageStyle
-                        ]);
-                      }
-                    }
+                  // in case theres no images
+                  } else {
+                        res.render('pages/component-profile', {
+                          csrfToken: req.csrfToken(),
+                          user : req.user || {},
+                          headshot : headshotURL,
+                          headshotStyle : headshotStyle,
+                          idea : idea._doc,
+                          ideaInventor : ideaInventor,
+                          components : components,
+                          componentContributor : componentContributor,
+                          component : component,
+                          variantDates : variantDates,
+                          problem : "none",
+                          relatedComponents : relatedComponents,
+                          imageURLs : []
+                        });
                   }
-                  res.render('pages/component-profile', {
-                    csrfToken: req.csrfToken(),
-                    user : req.user || {},
-                    headshot : headshotURL,
-                    headshotStyle : headshotStyle,
-                    idea : idea._doc,
-                    components : components,
-                    component : component,
-                    problem : "none",
-                    variantDates : variantDates,
-                    imageURLs : imageURLs,
-                    relatedComponents : relatedComponents
-                    //components : components,
-                    //listOfProblems : listOfProblems
-                  });
-
-                });//end of image query
-
-              // in case theres no images
-              } else {
-                    res.render('pages/component-profile', {
-                      csrfToken: req.csrfToken(),
-                      user : req.user || {},
-                      headshot : headshotURL,
-                      headshotStyle : headshotStyle,
-                      idea : idea._doc,
-                      components : components,
-                      component : component,
-                      variantDates : variantDates,
-                      problem : "none",
-                      relatedComponents : relatedComponents,
-                      imageURLs : []
-                    });
               }
-          }
+          }); //end of component contributor
+          }); //end of idea inventor query
         }); // end of other component query
       });
 

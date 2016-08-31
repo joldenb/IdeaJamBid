@@ -465,9 +465,6 @@ img.summary-image {
   width: 20%;
 }
 
-#formImageUpload input {
-  margin: 2em auto;
-}
 
 .imageListItems {
     height: 20%;
@@ -626,19 +623,19 @@ canvas {
 }
 
 #new-idea-description {
-  color: white;
   text-align: left;
   font-weight: normal;
 }
 
 .component-descriptions {
   margin: 0 auto;
-  background-color: #414142;
-  color: white;
+  color: black;
+  font-family: Roboto Slab, serif; 
 }
 
-.component-descriptions h3, .component-descriptions ul li {
-  padding: 1em;
+.component-descriptions form {
+  font-family: Roboto;
+  letter-spacing: 1px;
 }
 
 .component-summary .half-column {
@@ -705,13 +702,6 @@ a.plus-overlay img{
   color: black;
   font-size: 14px;
   text-align: center;
-}
-
-form#addDescription {
-  padding: 0 3em 3em;
-}
-form#addDescription #submit{
-  margin-top: 1em;
 }
 
 .no-descriptions {
