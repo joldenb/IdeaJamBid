@@ -201,9 +201,6 @@ div#begin-info-right button {
   padding: 0;
 }
 
-.view-all-viabilities .row {
-  margin: 2.5em 0;
-}
 
 /* for the view all viability modal */
 .view-all-viabilities .ui-slider {
@@ -223,14 +220,8 @@ div#begin-info-right button {
   width: 100%;
 }
 
-.slider-container {width : 80%; margin: 0px auto;}
-.view-all-viabilities .slider-container {
-  width:100%;
-}
 
-.view-all-viabilities .slider-container .col-sm-2 {
-  padding:1.2em 0;
-}
+
 
 .sliderLabel{
     margin-bottom:5px;
@@ -1128,13 +1119,22 @@ button.suggestion-tactics, button.suggestion-targets {
   border-radius: 50px;
 }
 
-.slider-container .row{
-  margin: 0;
-}
 
-.viabilityLink h4 {
+.viabilityLink h3 {
   text-decoration: underline;
   cursor: pointer; 
   cursor: hand;
   margin:0;
+}
+
+.view-all-viabilities .col-sm-6 {
+  margin-top : 2em;
+}
+
+.slider-container .col-xs-7 {
+  padding:0;
+}
+
+.row.slider-row {
+  margin-top:1em;
 }
