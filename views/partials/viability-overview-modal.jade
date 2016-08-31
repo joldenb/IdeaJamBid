@@ -15,11 +15,12 @@ form(role='form', id="viability-overview" action="/get-all-viability-scores", me
                                         img(src="/" + viabilities[counter + offset].iconId + ".png" height="75" width="75")
                                     a.plus-overlay()
                                         img(height="75" width="75")
-                                label(id=viabilities[counter + offset].labelId) #{viabilities[counter + offset].name}
+                                label(id=viabilities[counter + offset].labelId) 
+                                  h4 #{viabilities[counter + offset].name}
                             .col-sm-10
                                 .slider-end-labels
-                                    span.no-way Low
-                                    span.yes-way High
+                                    span.no-way= viabilities[counter + offset].low
+                                    span.yes-way= viabilities[counter + offset].high
                                 div(id=viabilities[counter + offset].sliderId)
                                 div.viabilityLink.moreLink(href="/" + viabilities[counter + offset].link)
                                     img(src="/plus-overlay.png" height="25" width="25")
@@ -42,8 +43,8 @@ form(role='form', id="viability-overview" action="/get-all-viability-scores", me
                                 label(id=viabilities[counter + offset].labelId) #{viabilities[counter + offset].name}
                             .col-sm-10
                                 .slider-end-labels
-                                    span.no-way Low
-                                    span.yes-way High
+                                    span.no-way= viabilities[counter + offset].low
+                                    span.yes-way= viabilities[counter + offset].high
                                 div(id=viabilities[counter + offset].sliderId)
                                 div.viabilityLink.moreLink(href="/" + viabilities[counter + offset].link)
                                     img(src="/plus-overlay.png" height="25" width="25")
@@ -66,8 +67,8 @@ form(role='form', id="viability-overview" action="/get-all-viability-scores", me
                                 label(id=viabilities[counter + offset].labelId) #{viabilities[counter + offset].name}
                             .col-sm-10
                                 .slider-end-labels
-                                    span.no-way Low
-                                    span.yes-way High
+                                    span.no-way= viabilities[counter + offset].low
+                                    span.yes-way= viabilities[counter + offset].high
                                 div(id=viabilities[counter + offset].sliderId)
                                 div.viabilityLink.moreLink(href="/" + viabilities[counter + offset].link)
                                     img(src="/plus-overlay.png" height="25" width="25")
@@ -90,8 +91,8 @@ form(role='form', id="viability-overview" action="/get-all-viability-scores", me
                                 label(id=viabilities[counter + offset].labelId) #{viabilities[counter + offset].name}
                             .col-sm-10
                                 .slider-end-labels
-                                    span.no-way Low
-                                    span.yes-way High
+                                    span.no-way= viabilities[counter + offset].low
+                                    span.yes-way= viabilities[counter + offset].high
                                 div(id=viabilities[counter + offset].sliderId)
                                 div.viabilityLink.moreLink(href="/" + viabilities[counter + offset].link)
                                     img(src="/plus-overlay.png" height="25" width="25")

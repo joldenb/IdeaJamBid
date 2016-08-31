@@ -972,6 +972,23 @@ html
           });
         });
 
+
+        $(".upvote").click(function(event){      
+          event.preventDefault();
+
+            $.post('/upvote-imperfection', 
+            {
+              _csrf : $('[name="_csrf"]').val(),
+              problem : $(this)[0].children[0].dataset['problemId']
+            },
+            function(data, response) {
+              window.location.reload(true);          
+            });
+          
+
+          return false;
+        });        
+
     });
 
 

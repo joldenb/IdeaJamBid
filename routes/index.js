@@ -62,70 +62,100 @@ var targetConstants =
 var viabilities = [
     {
       name: "performability",
-      prefix: "perf"
+      prefix: "perf",
+      low: "Incapable",
+      high: "Effective"
     }, 
     {
       name: "affordability",
-      prefix: "afford"
+      prefix: "afford",
+      low: "Expensive",
+      high: "Economical"
     }, 
     {
       name: "featurability",
       prefix: "feature",
-      iconId: "perfIcon" 
+      iconId: "perfIcon",
+      low : "Bland",
+      high : "Multifaceted" 
     },
     {
       name: "deliverability",
       prefix: "deliver",
-      iconId: "deliverabilityIcon"
+      iconId: "deliverabilityIcon",
+      low: "Unaccessible",
+      high: "Available"
     }, 
     {
       name: "useability",
-      prefix: "useability"
+      prefix: "useability",
+      low: "Impractical",
+      high: "Pragmatic"
     }, 
     {
       name: "maintainability",
       prefix: "maintain",
-      iconId: "maintainabilityIcon"
+      iconId: "maintainabilityIcon",
+      low: "Untenable",
+      high: "Sustainable"
     }, 
     {
       name: "danger",
       link: "dangerous",
-      prefix: "danger"
+      prefix: "danger",
+      low : "Harmless",
+      high : "Hazardous"
     }, 
     {
       name: "durability",
-      prefix: "durability"
+      prefix: "durability",
+      low: "Unreliable",
+      high: "Enduring"
     }, 
     {
       name: "imageability",
       prefix: "imageability",
-      sliderId: "imageSlider"
+      sliderId: "imageSlider",
+      low: "Undesirable",
+      high: "Appealing"
     }, 
     {
       name: "complexity",
       prefix: "complexity",
-      sliderId: "complexSlider"
+      sliderId: "complexSlider",
+      low: "Simple",
+      high: "Complicated"
     }, 
     {
       name: "precision",
-      prefix: "precision"
+      prefix: "precision",
+      low: "Lenient",
+      high: "Fussy"
     }, 
     {
       name: "variability",
-      prefix: "variability"
+      prefix: "variability",
+      low: "Consistent",
+      high: "Dynamic"
     }, 
     {
       name: "sensitivity",
-      prefix: "sensitivity"
+      prefix: "sensitivity",
+      low: "Reliable",
+      high: "Fragile"
     }, 
     {
       name: "immaturity",
       prefix: "immaturity",
-      sliderId: "immatureSlider"
+      sliderId: "immatureSlider",
+      low: "Developed",
+      high: "Raw"
     }, 
     {
       name: "skills",
-      prefix: "skills"
+      prefix: "skills",
+      low: "Easy",
+      high: "Onerous"
     }
   ];
 
@@ -1195,10 +1225,10 @@ router.post('/upvote-imperfection', csrfProtection, function(req, res) {
 
   IdeaProblem.findById(problemId,
     function (err, problem) {
-      if(problem.upvotes.indexOf(req.user.id) == -1) {
+//      if(problem.upvotes.indexOf(req.user.id) == -1) {
         problem.upvotes.push(req.user.id);
         problem.save(function (err) {});
-      }
+      //}
   });
 
   res.sendStatus(200);

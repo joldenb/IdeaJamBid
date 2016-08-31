@@ -254,12 +254,12 @@ div#begin-info-right button {
   background: linear-gradient(to right, #EAE8DE , #00A550);
 }
 
-.ui-slider-handle {
-  display: none;
-}
-
 .ui-corner-all {
   border-radius : 0px;
+}
+
+.ui-slider-handle.ui-state-default {
+  border-radius: .6em;
 }
 
 #viabilityModal .modal-content {
