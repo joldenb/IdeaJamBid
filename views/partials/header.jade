@@ -5,7 +5,8 @@
       span(class="icon-bar")
       span(class="icon-bar")
       span(class="icon-bar")
-    a(class="navbar-brand" href="/") IdeaJam
+    a(class="navbar-brand" href="/")
+      img(src="/IdeaJam-2.png")
     
   div(class="collapse navbar-collapse" id="bs-example-navbar-collapse-1")
     ul(class="nav navbar-nav navbar-right")
@@ -37,7 +38,8 @@
           a.home-logout.btn.btn-default( href="/" ) Log In
 
   .dropdown.custom-nav
-    a(class="navbar-brand" href="/") IdeaJam
+    a(class="navbar-brand" href="/")
+      img(src="/IdeaJam-2.png")
     if Object.keys(user).length != 0
       span.newUserName Howdy #{user.nickname}
     else

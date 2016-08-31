@@ -1138,3 +1138,8 @@ button.suggestion-tactics, button.suggestion-targets {
 .row.slider-row {
   margin-top:1em;
 }
+
+.navbar-brand img{
+  max-width: 300px;
+  display: inline;
+}
