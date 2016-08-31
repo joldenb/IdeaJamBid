@@ -1,6 +1,6 @@
 .suggestion-element.variant-suggestion-block.problem-summary-block
   .title-description.variant-suggestion
-    div.row.imperfection-row.problem-row(id="#{problem.identifier}" onclick='clickRow("#{problem.identifier}", "#{problem.id}")')
+    div.row.imperfection-row.problem-row(id="#{problem.identifier}")
       .col-sm-1.click-row
         if(problem.headshot && problem.headshot.url)
           a(href='/imagineer/' + problem.wholeCreator.nickname)
@@ -21,24 +21,24 @@
           div Description: #{problem.text}
 
       .col-sm-2.problem-row-padding.upvote
-        a(id="upvote-#{problem.identifier}" onclick='upvoteImperfection("#{problem.identifier}", "#{problem.id}")')
+        a(id="upvote-#{problem.identifier}")
           div.glyphicon.glyphicon-fire 
         span #{problem.upvotes.length || 0}
 
     
     script(type="text/javascript").
 
-      function clickRow(identifier, id) {
-        if ($.contains($("#!{problem.identifier}")[0], this.event.target)) {
+      $(".click-row").click(function(event){
+        if ($.contains($("#!{problem.identifier}")[0], event.target)) {
           window.document.location = "/imperfection-profile/" + "!{problem.identifier}";    
-        }      
-      }
+        }
+      });
 
-      function upvoteImperfection(identifier, id) {
-        this.event.preventDefault();
+      $(".upvote").click(function(event){      
+        event.preventDefault();
 
         var selector = "#upvote-" + "!{problem.identifier}";
-        if ($.contains($(selector)[0], this.event.target)) {
+        if ($.contains($(selector)[0], event.target)) {
           $.post('/upvote-imperfection', 
           {
             _csrf : $('[name="_csrf"]').val(),
@@ -49,5 +49,5 @@
           });
         }
 
-        return false;      
-      }
+        return false;
+      });

@@ -1192,7 +1192,6 @@ router.post('/upvote-imperfection', csrfProtection, function(req, res) {
   }
 
   var problemId = req.body.problem;
-  debugger;
 
   IdeaProblem.findById(problemId,
     function (err, problem) {
