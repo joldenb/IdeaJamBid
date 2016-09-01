@@ -268,6 +268,10 @@ var postViabilityFormInfo = function postViabilityFormInfo(req,res, sliderValue,
           });
       });
     } else {
+      if(!req.body[sliderValue] && !req.body[reviewProblem]){
+        res.redirect('/view-all-viabilities');
+      }
+
       // if there's a slider value
       if(req.body[sliderValue]){
         IdeaReview.findOne({_id : req.session.ideaReview._id}, function(err, review){
