@@ -1119,6 +1119,11 @@ button.suggestion-tactics, button.suggestion-targets {
   border-radius: 50px;
 }
 
+#componentsViewAllLink {
+  cursor: pointer; 
+  cursor: hand;
+  font-size: .8em;
+}
 
 .viabilityLink h3 {
   text-decoration: underline;

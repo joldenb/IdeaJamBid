@@ -31,7 +31,8 @@ html
             br
 
         .idea-summary-left
-          h4.underline#componentsHeader Components
+          h4#componentsHeader Components 
+            span.underline#componentsViewAllLink View All
           .row 
             .col-xs-10
               if components
@@ -53,6 +54,8 @@ html
                       else
                         li
                           h4 #{component['descriptions'][0]}
+                  li
+
             .col-xs-2
               button(type="button" id="componentModalButton"  class="btn secondary-btn btn-default" data-toggle="modal" data-target="#addComponentModal")
                 span.glyphicon.glyphicon-plus
@@ -291,14 +294,6 @@ html
               input#componentDescription.form-control(type="text", name="componentDescription", value='The way it works is ')
               p (ex. "it initiates the sequence automatically")
               p.compDescrCharRemaining
-          form(role='form', id="formImageUpload" action="/add-component-image", method="post", data-idea-doc=idea, enctype="multipart/form-data")
-            .form-group
-              h4 Component Image
-              |  
-              input#fileInput(type="file", name="picture")
-              input(type="hidden" id="image-component" name="imageComponent")
-              input(type="hidden" id="component-idea-name" name="componentIdeaName" value="#{idea.name}")
-              input(type="hidden", name="_csrf", value="#{csrfToken}")
             .modal-footer
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#componentSubmit(type='submit') Save
@@ -1010,7 +1005,7 @@ html
         $("#skillsSlider").slider("destroy");
     });
 
-    $("#componentsHeader").click(function(event){
+    $("#componentsViewAllLink").click(function(event){
       $('#viewAllComponents').modal('show');
     })
 
@@ -1052,10 +1047,8 @@ html
       }
     })
 
-
     $("#componentSubmit").click(function(event){
       event.preventDefault();
-
 
       $.post('/add-idea-component', 
         {
@@ -1064,17 +1057,12 @@ html
           componentDescription : $("#componentDescription").val().slice(20)
         },
         function(data, response) {
-          if(document.getElementById("fileInput").files.length != 0){
-            $("#image-component").val( data['identifier'] );
-            // This doesnt work for some reason....
-            document.getElementById("formImageUpload").submit();
-          }
           $("#idea-summary-components ul")
             .append("<li><a href='/component-profile/"+ data['identifier'] +"'><h4>"+ data['number'] + " : " + data['text'] + "</h4></a></li>");
           $("#componentName").val('');
           $("#componentDescription").val('');
           $("#addComponentModal").modal('hide');
-          //window.location.reload(true);
+          window.location.reload(true);
         });      
     });
 
