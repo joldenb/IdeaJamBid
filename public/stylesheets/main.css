@@ -1039,6 +1039,15 @@ button.suggestion-tactics, button.suggestion-targets {
   .custom-nav button.btn div {
     border-radius: 50px;
   }  
+
+  .mobileOnly {
+    display: none;
+  }  
+
+  .desktopOnly {
+    display: block;
+  }  
+
 }
 
 .navbar-collapse {
@@ -1147,4 +1156,21 @@ button.suggestion-tactics, button.suggestion-targets {
 .navbar-brand img{
   max-width: 300px;
   display: inline;
+}
+
+.jamH2 {
+  font-family: Roboto Slab, serif;
+  font-weight: 200 !important;
+  font-size: 30px;
+  margin-top: 20px;
+  margin-bottom: 10px;  
+}
+
+.jamNav {
+  display: inline-block;  
+  font-size: 24px;
+}
+
+.jamNav li {
+  display: inline-block !important;  
 }

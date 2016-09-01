@@ -6,9 +6,17 @@ html
     .header.navbar.navbar-default
       include ../partials/header.jade
 
-
     .container.network-profile.jam-page
-      h2 #{networkName}
+      span.jamH2 #{networkName} 
+        .navbar.jamNav.desktopOnly
+          .navbar-inner
+            ul.nav
+              li
+                a(href='#ideaSection').underline Ideas
+              li
+                a(href='#imperfectionSection').underline Imperfections
+              li
+                a(href='#suggestionSection').underline Suggestions      
 
       if !networkImage
         form(role='form', id="jamProfilePicForm" action="/add-network-profile-pic", method="post", enctype="multipart/form-data")
@@ -21,7 +29,6 @@ html
             br
       else
         img(class="networkProfilePic" src="#{networkImage}")
-
 
       //- h3 Jam Leaders
       //- each inventor, index in topInventors
@@ -68,7 +75,7 @@ html
       //-           - inventorAptitudeIds = topInventors[index + 2].aptitudes
       //-           include ../partials/inventor-block.jade
 
-      h3 Top Jam Ideas
+      h3#ideaSection Top Jam Ideas
       if ideas.length > 0
         each idea, index in ideas
           - var ideaName
@@ -127,7 +134,7 @@ html
         
       br
 
-      h3 Top Imperfections
+      h3#imperfectionSection Top Imperfections
       .row.imperfection-row
         .idea-summary-data#idea-summary-problems
           ul.idea-summary-problem-list
@@ -140,7 +147,7 @@ html
 
       br
 
-      h3 Top Suggestions
+      h3#suggestionSection Top Suggestions
       .row.imperfection-row
         .idea-summary-data#idea-summary-problems
           ul.idea-summary-problem-list
@@ -195,6 +202,20 @@ html
             |  
             a(href="/forgot-password/")
               h4 Forget your password?
+
+  #footer.mobileOnly
+    .col-xs-12.navbar-default.navbar-fixed-bottom.jamBottomNav
+      #bottomNav.row
+        .col-xs-4.text-center
+          a(href='#ideaSection')
+            | Ideas
+        .col-xs-4.text-center
+          a(href='#imperfectionSection')
+            | Imperfections
+        .col-xs-4.text-center
+          a(href='#suggestionSection')
+            | Suggestions
+
 
 
   include ../partials/js-includes.jade

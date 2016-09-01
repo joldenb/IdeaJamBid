@@ -89,5 +89,25 @@
 		max-width: 180px;
 	}
 
+  .mobileOnly {
+    display: block;
+  }
+
+  .desktopOnly {
+    display: none;
+  }
+
+  .jamBottomNav {
+    background-color: #414142;
+  }
+
+  .jamBottomNav a {
+    color: white;
+  }
+
+  #bottomNav {
+    padding: 1%;
+  }
+
 }
 
