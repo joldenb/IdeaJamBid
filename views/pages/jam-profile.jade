@@ -2,7 +2,7 @@ doctype html
 html
   head
     include ../partials/head.jade
-  body
+  body#topSection
     .header.navbar.navbar-default
       include ../partials/header.jade
 
@@ -206,16 +206,22 @@ html
   #footer.mobileOnly
     .col-xs-12.navbar-default.navbar-fixed-bottom.jamBottomNav
       #bottomNav.row
-        .col-xs-4.text-center
-          a(href='#ideaSection')
-            | Ideas
-        .col-xs-4.text-center
-          a(href='#imperfectionSection')
-            | Imperfections
-        .col-xs-4.text-center
-          a(href='#suggestionSection')
-            | Suggestions
-
+        .col-xs-3.text-center
+          a(href='#ideaSection').glyphicon.glyphicon-flash
+            | 
+            div Ideas
+        .col-xs-3.text-center
+          a(href='#imperfectionSection').glyphicon.glyphicon-wrench
+            | 
+            div Imperfections
+        .col-xs-3.text-center
+          a(href='#suggestionSection').glyphicon.glyphicon-comment
+            | 
+            div Suggestions
+        .col-xs-3.text-center
+          a(href='#topSection').glyphicon.glyphicon-home
+            | 
+            div Home
 
 
   include ../partials/js-includes.jade
