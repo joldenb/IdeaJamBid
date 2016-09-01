@@ -27,7 +27,7 @@ html
           h3 #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)} solves the problem of #{idea.problem} by #{idea.description}.
         .row.mobile-only
           .idea-summary-data#idea-summary-waste-values
-            a.btn.btn-default.viabilityModalButton( type="button"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") Score Now
+            a.btn.btn-default(type="button"  class="btn btn-default" href="/view-all-viabilities") Score Now
             br
 
         .idea-summary-left
@@ -269,10 +269,9 @@ html
               p (ex. "It draws too much power")
               p.charactersRemaining
               h4 Imperfection Area:
-              select.form-control#problemArea
-                  option(value="None Selected") None Selected
-                  each value in problemAreas
-                    option(value=value) #{value}
+              select.form-control#problemArea(required)
+                each value in problemAreas
+                  option(value=value) #{value}
 
             .modal-footer
               button.btn.btn-info(data-dismiss="modal") Cancel

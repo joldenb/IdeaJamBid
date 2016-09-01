@@ -115,5 +115,49 @@
     padding: 3%;
   }
 
+	.view-all-viabilities-mobile, .scoreIdea {
+		text-align: center;
+	}
+
+	.view-all-viabilities .specific-viability-score {
+		display : inline;
+	}
+
+	.view-all-viabilities .viability-score img{
+		vertical-align: initial;
+	}
+
+	.scoreIdea .close-viability img{
+		margin-top : 1em;
+	}
+
+	.view-all-viabilities .row.make-suggestion {
+		margin: 1em 0;
+	}
+
+	.view-all-viabilities .viability-problem-statement {
+		margin : 0 1em;
+	}
+
+	.view-all-viabilities .viability-score {
+		margin-top : 1em;
+	}	
+
+	.container-fluid.scoreIdea.view-all-viabilities {
+		padding-bottom: 10em;
+	}
+
+  .mobile-viability-form .save-buttons .btn{
+  	margin: 1em;
+  }
+
+  .mobile-viability-form {
+  	max-width:90%;
+  }
+
+  .slider-end-labels {
+  	padding-bottom: 2em;
+  }
+
 }
 

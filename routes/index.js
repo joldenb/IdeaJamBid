@@ -64,98 +64,113 @@ var viabilities = [
       name: "performability",
       prefix: "perf",
       low: "Incapable",
-      high: "Effective"
+      high: "Effective",
+      reviewScore : "performOne"
     }, 
     {
       name: "affordability",
       prefix: "afford",
       low: "Expensive",
-      high: "Economical"
+      high: "Economical",
+      reviewScore : "affordOne"
     }, 
     {
       name: "featurability",
       prefix: "feature",
       iconId: "perfIcon",
       low : "Bland",
-      high : "Multifaceted" 
+      high : "Multifaceted",
+      reviewScore : "featureOne"
     },
     {
       name: "deliverability",
       prefix: "deliver",
       iconId: "deliverabilityIcon",
       low: "Unaccessible",
-      high: "Available"
-    }, 
+      high: "Available",
+      reviewScore : "deliverOne"
+    },
     {
       name: "useability",
       prefix: "useability",
       low: "Impractical",
-      high: "Pragmatic"
-    }, 
+      high: "Pragmatic",
+      reviewScore : "useabilityOne"
+    },
     {
       name: "maintainability",
       prefix: "maintain",
       iconId: "maintainabilityIcon",
       low: "Untenable",
-      high: "Sustainable"
-    }, 
+      high: "Sustainable",
+      reviewScore : "maintainOne"
+    },
     {
       name: "danger",
       link: "dangerous",
       prefix: "danger",
       low : "Harmless",
-      high : "Hazardous"
-    }, 
+      high : "Hazardous",
+      reviewScore : "dangerOne"
+    },
     {
       name: "durability",
       prefix: "durability",
       low: "Unreliable",
-      high: "Enduring"
-    }, 
+      high: "Enduring",
+      reviewScore : "durabilityOne"
+    },
     {
       name: "imageability",
       prefix: "imageability",
       sliderId: "imageSlider",
       low: "Undesirable",
-      high: "Appealing"
-    }, 
+      high: "Appealing",
+      reviewScore : "imageOne"
+    },
     {
       name: "complexity",
       prefix: "complexity",
       sliderId: "complexSlider",
       low: "Simple",
-      high: "Complicated"
-    }, 
+      high: "Complicated",
+      reviewScore : "complexOne"
+    },
     {
       name: "precision",
       prefix: "precision",
       low: "Lenient",
-      high: "Fussy"
-    }, 
+      high: "Fussy",
+      reviewScore : "precisionOne"
+    },
     {
       name: "variability",
       prefix: "variability",
       low: "Consistent",
-      high: "Dynamic"
-    }, 
+      high: "Dynamic",
+      reviewScore : "variabilityOne"
+    },
     {
       name: "sensitivity",
       prefix: "sensitivity",
       low: "Reliable",
-      high: "Fragile"
-    }, 
+      high: "Fragile",
+      reviewScore : "sensitivityOne"
+    },
     {
       name: "immaturity",
       prefix: "immaturity",
       sliderId: "immatureSlider",
       low: "Developed",
-      high: "Raw"
-    }, 
+      high: "Raw",
+      reviewScore : "immatureOne"
+    },
     {
       name: "skills",
       prefix: "skills",
       low: "Easy",
-      high: "Onerous"
+      high: "Onerous",
+      reviewScore : "skillsOne"
     }
   ];
 
@@ -2824,19 +2839,6 @@ router.post('/edit-component', csrfProtection, function(req, res) {
     });
 });
 
-
-/*****************************************************************
-******************************************************************
-******************************************************************
-* Route for viewing all viabilities
-******************************************************************
-******************************************************************
-*****************************************************************/
-router.get('/view-all-viabilities', csrfProtection, function(req, res) {
-  res.render('partials/viability-overview-modal',
-    { user : req.user || {}, headshot : headshotURL, idea : req.session.idea, csrfToken: req.csrfToken() }
-  );
-});
 
 
 

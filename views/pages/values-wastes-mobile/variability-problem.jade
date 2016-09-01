@@ -1,0 +1,61 @@
+doctype html
+html
+  head
+    include ../../partials/head.jade
+  body
+    .container-fluid.scoreIdea
+      .row
+        .col-xs-2
+        .col-xs-8
+          h2 Variability
+        .col-xs-2
+          a.close-viability(href="/view-all-viabilities")
+            img(src="/close_button.png" height="30" width="30")
+      .row
+        form.mobile-viability-form(role='form', id="formVariability" action="/variability-mobile", method="post",  data-idea-doc=idea)
+          input(type="hidden", name="_csrf", value="#{csrfToken}")
+          h4 What problem with the #{idea.name} creates variability?
+          if(currentReviewerProblem)
+            textarea.form-control(rows='6', cols="75", name="variabilityProblem")
+              | The problem of #{currentReviewerProblem.text}
+          else            
+            textarea.form-control(rows='6', cols="75", name="variabilityProblem")
+              | The problem of 
+          h4 Existing imperfections for the variability of #{idea.name}:
+          if problems.length > 0
+            ul.waste-value-problem-list
+              each problem, index in problems
+                li
+                  h5.problem-text #{index + 1} : #{problem.text}
+                  if problem.identifier
+                    a.btn.btn-default.problem-solve-button(href="/imperfection-profile/" + problem.identifier) Solve this!
+          else
+            p <i>None yet, enter the first one!</i>
+          .save-buttons
+            button.btn.btn-success.btn-lg Save
+
+
+  
+  script(type="text/javascript").
+    var input = document.getElementsByTagName ("textarea");
+
+    // This is for the main solution text input
+    var requiredText = "The problem of ";
+  
+    input[0].addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredText) == -1) {
+            $(this).val(requiredText);
+      }
+      if (this.selectionStart < 15) {
+        this.selectionStart = 15;
+      }
+    }, false);
+
+    input[0].addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredText) == -1) {
+            $(this).val(requiredText);
+      }
+      if (this.selectionStart < 15) {
+        this.selectionStart = 15;
+      }
+    }, false);

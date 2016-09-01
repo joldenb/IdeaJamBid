@@ -1,0 +1,68 @@
+doctype html
+html
+  head
+    include ../../partials/head.jade
+  body
+    .container-fluid.scoreIdea
+      .row
+        .col-xs-2
+        .col-xs-8
+          h2 Performability
+        .col-xs-2
+          a.close-viability(href="/view-all-viabilities")
+            img(src="/close_button.png" height="30" width="30")
+      .row
+        h4.viability-question
+          | Will the #{idea.name} effectively work to solve the problem of #{idea.problem}?
+        br
+        form.mobile-viability-form(role='form', id="formPerformability" action="/performability-mobile", method="post", data-idea-doc=idea)
+          input(type="hidden", name="_csrf", value="#{csrfToken}")
+          .slider-container
+            .slider-end-labels
+              span.no-way Incapable
+              span.yes-way Effective
+            .sliderLabel
+            #slider
+          .save-buttons
+            button.btn.btn-success.btn-lg Save
+            a.btn.btn-success.btn-lg(href='/performability-problem') Describe an Imperfection
+
+  
+  include ../../partials/js-includes.jade
+  script(type="text/javascript").
+    var labelArr = _.range(101).map(function(number){
+      return number.toString();
+    });
+    var initialValue, min=1, max=100, valueEntered = false;
+    initialValue = '#{currentReview.performOne}' || 50;
+
+    ////////////////////////////////////////////
+    // SET UP SLIDER ONE
+    ////////////////////////////////////////////
+    $("#slider").slider({
+      value: initialValue,
+      min: min,
+      max: max,
+      step: 1,
+      slide: function( event, ui ) {
+          valueEntered = true;
+          $(".sliderLabel").text(labelArr[ui.value]);
+          $(".sliderLabel").css("margin-left", (ui.value-min)/(max-min)*100+"%");
+          $(".sliderLabel").css("left", "-50px");
+      }
+    });
+    $(".sliderLabel").text(labelArr[initialValue]);
+    $(".sliderLabel" ).css("margin-left", (initialValue -1)/(max-min)*100+"%");
+    $(".sliderLabel").css("left", "-50px");
+
+    $("button.btn-success").click(function(event){
+      if(valueEntered){
+        var sliderOneValue = $("#slider").slider("value");
+        var inputOne = $("<input>")
+               .attr("type", "hidden")
+               .attr("name", "perfSliderOneValue").val(sliderOneValue);
+        $('#formPerformability').append($(inputOne)).submit();
+      } else {
+        $('#formPerformability').submit();
+      }
+    });
