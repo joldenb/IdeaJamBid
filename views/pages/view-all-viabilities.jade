@@ -13,7 +13,7 @@ html
       each viability, index in viabilities
         - var scoreName = viability.reviewScore
         - var problem = viability.reviewProb
-        .row
+        .row(class="parity-"+index % 2)
           .row.viability-titles
             .col-xs-2
               img.viability-icon(src="/" + viability['iconId'] + ".png")

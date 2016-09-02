@@ -223,15 +223,17 @@
 
   .view-all-viabilities .viability-titles {
   	margin: 1.5em 0;
+  	padding-left: 1em;
   }
 
   .view-all-viabilities .viability-titles h3 {
   	text-decoration: underline;
-  	padding-left:1em;
+
   }
 
   .viability-icon {
-  	width: 4em;
+		width: 3em;
+    padding-top: 1em;
   }
 
 	.waste-value-problem-list li {
@@ -246,6 +248,11 @@
 
 	.scoreIdea {
 		padding-bottom: 7em;
+	}
+
+	.parity-0 {
+		background-color: #b3b3b3;
+		padding-bottom:1em;
 	}
 }
 
