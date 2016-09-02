@@ -189,7 +189,7 @@
 		margin-top : 1em;
 	}	
 
-	.container-fluid.scoreIdea.view-all-viabilities {
+	.container-fluid.view-all-viabilities {
 		padding-bottom: 10em;
 	}
 
@@ -238,5 +238,12 @@
 		margin:1em 0;
 	}
 
+	.scoreIdea h2 {
+		font-size: 23px;
+	}
+
+	.scoreIdea {
+		padding-bottom: 7em;
+	}
 }
 
