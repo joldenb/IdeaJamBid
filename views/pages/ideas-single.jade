@@ -71,7 +71,7 @@ html
                 ul
                   each aptitude in aptitudes
                     li(data-apt-id="#{aptitude.identifier}") 
-                      a(href="/aptitudes/" + aptitude.title) #{aptitude.title}
+                      p #{aptitude.title}
               if inventorName == user.username
                 if !aptitudes || aptitudes.length == 0
                   h4 Aptitudes

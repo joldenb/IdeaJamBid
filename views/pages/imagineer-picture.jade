@@ -57,7 +57,7 @@ html
             ul
               each aptitude in aptitudes
                 li(data-apt-id="#{aptitude.identifier}")
-                  a(href="/aptitudes/" + aptitude.title) #{aptitude.title}
+                  p #{aptitude.title}
           if Object.keys(user).length != 0
             form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
               .form-group
