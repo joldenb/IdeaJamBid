@@ -48,10 +48,6 @@
 		height: 11em;
 	}
 
-	.view-all-viabilities .row {
-		margin: 1em 0;
-	}
-
 	.view-all-viabilities .slider-container label {
 		margin: .6em !important;
 	}
@@ -124,7 +120,7 @@
 	}
 
 	.viability-scores-and-problems {
-		margin: 0 !important;
+		margin: 1em 0!important;
 	}
 
 	.view-all-viabilities .specific-viability-score {
@@ -132,7 +128,7 @@
 	}
 
 	.view-all-viabilities .top-row {
-		margin-bottom: 0;
+		margin-bottom: 0.5em;
 	}
 
 	.specific-score-column {
@@ -222,8 +218,7 @@
   }
 
   .view-all-viabilities .viability-titles {
-  	margin: 1.5em 0;
-  	padding-left: 1em;
+  	margin: 0.5em 0;
   }
 
   .view-all-viabilities .viability-titles h3 {
