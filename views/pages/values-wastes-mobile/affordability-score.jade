@@ -76,12 +76,14 @@ html
       event.preventDefault();
 
       if(valueEntered){
-        var sliderOneValue = $("#sliderOne").slider("value");
-        var inputOne = $("<input>")
-               .attr("type", "hidden")
-               .attr("name", "affordSliderOneValue").val(sliderOneValue);
-        var stop;
-        //$('#formAffordability').append($(inputOne)).submit();
+        $.post('/affordability-mobile', 
+        {
+          _csrf : $('[name="_csrf"]').val(),
+          "affordSliderOneValue" : $("#slider").slider("value")
+        },
+        function(data, response) {
+          window.location = "/affordability-problem";
+        });
       } else {
         window.location = "/affordability-problem";
       }
