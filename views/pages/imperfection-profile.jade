@@ -21,7 +21,7 @@ html
           if locationNetwork
             #[a(class="network-link" href="/jam/#{locationNetwork}") #{locationNetwork}]
 
-      h2 Solve the problem of <b>#{problem.text}:</b>
+      h2 Solve the problem of <b class="problemColor">#{problem.text}:</b>
       .col-sm-6
 
         h3#suggestion-question-header How will you:
@@ -43,7 +43,8 @@ html
                   input.target-inputs(type="checkbox" value=value disabled )
                   | #{value}
 
-          h3#end-of-suggestion-query to help solve the imperfection of
+          h3#end-of-suggestion-query to help solve the imperfection of 
+            <span class="problemColor">#{problem.text}</span>
             h4#suggestion-input-header.suggestion-number 3.
             input.form-control.suggestion-input(type="text", name="suggestionText", value='The solution of ' disabled)
             p.charactersRemaining

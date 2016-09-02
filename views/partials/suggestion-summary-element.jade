@@ -2,9 +2,9 @@
   .title-description.variant-suggestion
     div.row.imperfection-row(id="#{suggestion.document.identifier}")
 
-      .col-sm-2.problem-row-padding.problem-upvote-link       
+      .col-sm-2.problem-row-padding.upvote.problem-upvote-link       
         a(class="upvote-suggestion" id="upvote-#{suggestion.document.identifier}").glyphicon.glyphicon-fire  #{suggestion.document.upvotes.length || 0} <br> Upvote   
-      .col-sm-8.problem-row-padding
+      .col-sm-7.problem-row-padding
         if suggestion.document.descriptions[0]
           div.suggestionStyle Suggestion: The solution of #{suggestion.document.descriptions[0]} 
           <br>
@@ -15,7 +15,7 @@
           div By: Inventor Name 
             img(src="/avatar.png" height="15" width="15")             
 
-      .col-lg-2.click-row.problem-row-padding.problem-right-col
+      .col-sm-3.click-row.problem-row-padding.problem-right-col
         div.suggestionStyle By: #{suggestion.creatorNickname}
 
         div.click-row(style="height: 50px; max-width: 50px; background-image : url('" + suggestion.creatorProfilePic + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + suggestion.profilePicOrientation)

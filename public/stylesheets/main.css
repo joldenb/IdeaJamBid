@@ -1225,6 +1225,7 @@ button.suggestion-tactics, button.suggestion-targets {
 .problem-upvote-link {
   font-size: 1.2em;
   font-family: Roboto Slab, serif;
+  text-align: center;
 }
 
 .problem-upvote-link div {

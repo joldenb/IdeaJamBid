@@ -1,30 +1,23 @@
 .suggestion-element.variant-suggestion-block.problem-summary-block.imperfection-element
   .title-description.variant-suggestion
     div.row.imperfection-row.problem-row(id="#{problem.identifier}")
-      .col-sm-1.click-row
+
+      .col-sm-2.problem-row-padding.upvote.problem-upvote-link  
+        a(class="upvote-suggestion" id="upvote-#{problem.identifier}" data-problem-id="#{problem.id}").glyphicon.glyphicon-fire  #{problem.upvotes.length || 0} <br> Upvote
+
+      .col-sm-7.problem-row-padding.click-row
+        if problem['text']
+          div Description: #{problem.text}
+
+      .col-sm-3.click-row
+        div #{problem.wholeCreator.nickname}
+
         if(problem.headshot && problem.headshot.url)
           a(href='/imagineer/' + problem.wholeCreator.nickname)
             div(style="height: 50px; width: 50px; background-image : url('" + problem.headshot.url + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + problem.headshot.style)
         else
           a(href='/imagineer/' + problem.wholeCreator.nickname)
             img(src="/avatar.png" height="50" width="50")
-
-      .col-sm-2.problem-row-padding.upvote
-        a(id="upvote-#{problem.identifier}" data-problem-id="#{problem.id}")
-          div.glyphicon.glyphicon-fire 
-        span #{problem.upvotes.length || 0}
-
-      .col-sm-2.click-row.problem-row-padding
-        span #{problem.wholeCreator.nickname}
-
-      .col-sm-3.problem-row-padding.click-row
-        if problem['date']
-          div #{moment(problem.date).format('MM/DD/YY')}
-
-      .col-sm-4.problem-row-padding.click-row
-        if problem['text']
-          div Description: #{problem.text}
-
     
     script(type="text/javascript").
 

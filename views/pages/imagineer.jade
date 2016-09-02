@@ -59,7 +59,7 @@ html
             if val.name
               li
                 a(href="/ideas/" + val.name)
-                  h4.idea-text-name= val.name
+                  h4.idea-text-name= val.name + "By: Someone else"
                 span.idea-text-date= val['creationDate']
       else
         h4 None so far.
