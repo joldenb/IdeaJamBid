@@ -2,13 +2,21 @@ doctype html
 html
   head
     include ../partials/head.jade
-  body
+  body#topSection
     .header.navbar.navbar-default
       include ../partials/header.jade
 
-
     .container.network-profile.jam-page
-      h2 #{networkName}
+      span.jamH2 #{networkName} 
+        .navbar.jamNav.desktopOnly
+          .navbar-inner
+            ul.nav
+              li
+                a(href='#ideaSection').underline Ideas
+              li
+                a(href='#imperfectionSection').underline Imperfections
+              li
+                a(href='#suggestionSection').underline Suggestions      
 
       if !networkImage
         form(role='form', id="jamProfilePicForm" action="/add-network-profile-pic", method="post", enctype="multipart/form-data")
@@ -21,7 +29,6 @@ html
             br
       else
         img(class="networkProfilePic" src="#{networkImage}")
-
 
       //- h3 Jam Leaders
       //- each inventor, index in topInventors
@@ -68,14 +75,13 @@ html
       //-           - inventorAptitudeIds = topInventors[index + 2].aptitudes
       //-           include ../partials/inventor-block.jade
 
-      h3 Top Jam Ideas
+      h3#ideaSection Top Jam Ideas
       if ideas.length > 0
         each idea, index in ideas
           - var ideaName
           - var ideaLink
           - var problemCategory
-          - var suggestionProblem
-          - var accountName
+          - var viabilityScore
           - var ideaImage
           - var ideaImageStyle
           - var inventorImage
@@ -86,10 +92,9 @@ html
               .col-md-4
                 if(ideas[index])
                   - ideaName = ideas[index][0] || ""
-                  - ideaLink = ideas[index][6]
+                  - ideaLink = ideas[index][6] || ""
                   - problemCategory = ideas[index][1] || ""
-                  - suggestionProblem = ideas[index][2]
-                  - accountName = ideas[index][3]
+                  - viabilityScore = ideas[index][2] || ""
                   - ideaImage = ideas[index][4] || ""
                   - ideaImageStyle = ideas[index][5]
                   - inventorImage = ideas[index][7] || ""
@@ -101,8 +106,7 @@ html
                   - ideaName = ideas[index + 1][0] || ""
                   - ideaLink = ideas[index + 1][6]
                   - problemCategory = ideas[index + 1][1] || ""
-                  - suggestionProblem = ideas[index + 1 ][2]
-                  - accountName = ideas[index + 1][3] || ""
+                  - viabilityScore = ideas[index + 1 ][2]
                   - ideaImage = ideas[index + 1][4] || ""
                   - ideaImageStyle = ideas[index + 1][5] || ""
                   - inventorImage = ideas[index + 1][7] || ""
@@ -112,10 +116,9 @@ html
               .col-md-4
                 if(ideas[index + 2 ])
                   - ideaName = ideas[index + 2 ][0] || ""
-                  - ideaLink = ideas[index + 2 ][6]
+                  - ideaLink = ideas[index + 2 ][6] || ""
                   - problemCategory = ideas[index + 2 ][1] || ""
-                  - suggestionProblem = ideas[index + 2][2]
-                  - accountName = ideas[index + 2 ][3] || ""
+                  - viabilityScore = ideas[index + 2][2] || ""
                   - ideaImage = ideas[index + 2 ][4] || ""
                   - ideaImageStyle = ideas[index + 2][5] || ""
                   - inventorImage = ideas[index + 2 ][7] || ""
@@ -127,7 +130,7 @@ html
         
       br
 
-      h3 Top Imperfections
+      h3#imperfectionSection Top Imperfections
       .row.imperfection-row
         .idea-summary-data#idea-summary-problems
           ul.idea-summary-problem-list
@@ -140,7 +143,7 @@ html
 
       br
 
-      h3 Top Suggestions
+      h3#suggestionSection Top Suggestions
       .row.imperfection-row
         .idea-summary-data#idea-summary-problems
           ul.idea-summary-problem-list
@@ -196,6 +199,25 @@ html
             a(href="/forgot-password/")
               h4 Forget your password?
 
+  #footer.mobileOnly
+    .col-xs-12.navbar-default.navbar-fixed-bottom.jamBottomNav
+      #bottomNav.row     
+        .col-xs-2.text-center
+          a(href='#ideaSection').glyphicon.glyphicon-flash
+            | 
+            div Ideas
+        .col-xs-4.text-center
+          a(href='#imperfectionSection').glyphicon.glyphicon-wrench
+            | 
+            div Imperfections
+        .col-xs-4.text-center
+          a(href='#suggestionSection').glyphicon.glyphicon-comment
+            | 
+            div Suggestions
+        .col-xs-2.text-center
+          a(href='#topSection').glyphicon.glyphicon-home
+            | 
+            div Home   
 
   include ../partials/js-includes.jade
   script(src='/exif.js')

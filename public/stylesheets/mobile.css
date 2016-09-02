@@ -44,16 +44,8 @@
 		display: none;
 	}
 
-	.view-all-viabilities .viability-icon {
-	  max-width:15%;
-	}
-
 	.view-all-viabilities .col-sm-6 {
-		min-height: 9em;
-	}
-
-	.view-all-viabilities .row {
-		margin: 0;
+		height: 11em;
 	}
 
 	.view-all-viabilities .slider-container label {
@@ -81,5 +73,212 @@
     margin: .2em;
   }
 
+	.slider-container .row{
+	  margin: 1.5em 0;
+	}
+
+	.slider-container .row .col-xs-3{
+  	padding: 0;
+	}
+
+	.slider-container {
+		margin-bottom:1em;
+	}
+
+	.navbar-brand img {
+		max-width: 180px;
+	}
+
+  .mobileOnly {
+    display: block;
+  }
+
+  .desktopOnly {
+    display: none;
+  }
+
+  .jamBottomNav {
+    background-color: #414142;
+  }
+
+  .jamBottomNav a {
+    color: white;
+  }
+
+  .jamBottomNav a div {
+    color: white;
+    font-size: 10px;
+    margin-top: 1em;
+  }
+
+  #bottomNav {
+    padding: 3%;
+  }
+
+	.view-all-viabilities-mobile, .scoreIdea .viability-scores-and-problems {
+		text-align: center;
+	}
+
+	.viability-scores-and-problems {
+		margin: 1em 0!important;
+	}
+
+	.view-all-viabilities .specific-viability-score {
+		display : inline;
+	}
+
+	.view-all-viabilities .top-row {
+		margin-bottom: 0.5em;
+	}
+
+	.specific-score-column {
+		text-align: center;
+	}
+
+	.specific-score-column img{
+		width: 40%;
+	}
+
+	.specific-imperfection-column {
+    margin: 0 !important;
+  }
+
+  .specific-imperfection-column div {
+  	padding: 0 !important;
+  }
+
+	.specific-imperfection-column:active {
+		border: 1px solid #414142;
+		border-radius: 5px;
+	}
+
+	.edit-imperfection {
+		width:50%;
+	}
+
+	.specific-score-column:active {
+		border: 1px solid #414142;
+		border-radius: 5px;
+	}
+
+	.view-all-viabilities .viability-score img{
+		vertical-align: initial;
+	}
+
+	.close-viability img {
+		margin-top : 1.4em;
+	}
+
+	.scoreIdea .viability-icon {
+		margin-top: 1em;
+	}
+
+	.view-all-viabilities .row.make-suggestion{
+		margin: 1em 0 0 0 ;
+	}
+
+	.view-all-viabilities .viability-problem-statement {
+		margin : 0 1em;
+	}
+
+	.view-all-viabilities .specific-viability-score {
+		margin-top : 1em;
+	}	
+
+	.container-fluid.view-all-viabilities {
+		padding-bottom: 10em;
+	}
+
+	.save-buttons {
+		text-align: center;
+	}
+
+  .mobile-viability-form .save-buttons .btn{
+  	margin: 1em 0;
+  }
+
+  .mobile-viability-form .save-buttons .btn.btn-success {
+  	width: 100%;
+	}
+  .mobile-viability-form {
+  	max-width:90%;
+  	margin-top:2em;
+  }
+
+  .slider-end-labels {
+  	padding-bottom: 2em;
+  }
+
+  .scoreIdea {
+  	
+  }
+
+  .viability-score p, .add-imperfection-btn p {
+  	margin: 0;
+  }
+
+  .view-all-viabilities .viability-titles {
+  	margin: 0.5em 0;
+  }
+
+  .view-all-viabilities .viability-titles h3 {
+  	text-decoration: underline;
+  	display: inline-block;
+  }
+
+  .view-all-viabilities .viability-title-link img {
+  	width:25px;
+  	margin-top:-1em;
+  }
+
+  .view-all-viabilities .viability-title-link h3 {
+  	margin-top:1em;
+  }
+
+  .viability-icon {
+		width: 3em;
+    padding-top: 1em;
+  }
+
+	.waste-value-problem-list li {
+		margin:1em 0;
+	}
+
+	.scoreIdea h2 {
+		font-size: 23px;
+		padding-top: .5em;
+		padding-left: .5em;
+	}
+
+	.scoreIdea {
+		padding-bottom: 7em;
+	}
+
+	.parity-0 {
+		background-color: #b3b3b3;
+		padding-bottom:1em;
+	}
+
+	/* Below is for view all ideas */
+	.container.view-idea-suggestions {
+		max-width:100%;
+	}
+
+	.view-idea-suggestions .row .view-all-idea-block {
+		padding: 2em 0;
+	}
+
+	.container.view-idea-suggestions .row {
+		margin: 0;
+	}
+
+	.footer.view-all-ideas .btn {
+		position: absolute;
+    width: 80%;
+    left: 10%;
+    height: 50%;
+    top: 25%;
+    transform: initial;
+  }
 }
 

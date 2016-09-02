@@ -62,70 +62,115 @@ var targetConstants =
 var viabilities = [
     {
       name: "performability",
-      prefix: "perf"
+      prefix: "perf",
+      low: "Incapable",
+      high: "Effective",
+      reviewScore : "performOne"
     }, 
     {
       name: "affordability",
-      prefix: "afford"
+      prefix: "afford",
+      low: "Expensive",
+      high: "Economical",
+      reviewScore : "affordOne"
     }, 
     {
       name: "featurability",
       prefix: "feature",
-      iconId: "perfIcon" 
+      iconId: "perfIcon",
+      low : "Bland",
+      high : "Multifaceted",
+      reviewScore : "featureOne"
     },
     {
       name: "deliverability",
       prefix: "deliver",
-      iconId: "deliverabilityIcon"
-    }, 
+      iconId: "deliverabilityIcon",
+      low: "Unaccessible",
+      high: "Available",
+      reviewScore : "deliverOne"
+    },
     {
       name: "useability",
-      prefix: "useability"
-    }, 
+      prefix: "useability",
+      low: "Impractical",
+      high: "Pragmatic",
+      reviewScore : "useabilityOne"
+    },
     {
       name: "maintainability",
       prefix: "maintain",
-      iconId: "maintainabilityIcon"
-    }, 
+      iconId: "maintainabilityIcon",
+      low: "Untenable",
+      high: "Sustainable",
+      reviewScore : "maintainOne"
+    },
     {
       name: "danger",
       link: "dangerous",
-      prefix: "danger"
-    }, 
+      prefix: "danger",
+      low : "Harmless",
+      high : "Hazardous",
+      reviewScore : "dangerOne"
+    },
     {
       name: "durability",
-      prefix: "durability"
-    }, 
+      prefix: "durability",
+      low: "Unreliable",
+      high: "Enduring",
+      reviewScore : "durabilityOne"
+    },
     {
       name: "imageability",
       prefix: "imageability",
-      sliderId: "imageSlider"
-    }, 
+      sliderId: "imageSlider",
+      low: "Undesirable",
+      high: "Appealing",
+      reviewScore : "imageOne"
+    },
     {
       name: "complexity",
       prefix: "complexity",
-      sliderId: "complexSlider"
-    }, 
+      sliderId: "complexSlider",
+      low: "Simple",
+      high: "Complicated",
+      reviewScore : "complexOne"
+    },
     {
       name: "precision",
-      prefix: "precision"
-    }, 
+      prefix: "precision",
+      low: "Lenient",
+      high: "Fussy",
+      reviewScore : "precisionOne"
+    },
     {
       name: "variability",
-      prefix: "variability"
-    }, 
+      prefix: "variability",
+      low: "Consistent",
+      high: "Dynamic",
+      reviewScore : "variabilityOne"
+    },
     {
       name: "sensitivity",
-      prefix: "sensitivity"
-    }, 
+      prefix: "sensitivity",
+      low: "Reliable",
+      high: "Fragile",
+      reviewScore : "sensitivityOne"
+    },
     {
       name: "immaturity",
       prefix: "immaturity",
-      sliderId: "immatureSlider"
-    }, 
+      sliderId: "immatureSlider",
+      low: "Developed",
+      high: "Raw",
+      reviewScore : "immatureOne"
+    },
     {
       name: "skills",
-      prefix: "skills"
+      prefix: "skills",
+      low: "Easy",
+      high: "Onerous",
+      reviewScore : "skillsOne"
     }
   ];
 
@@ -429,30 +474,77 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
                     creationDate.getFullYear().toString();
                   item['creationDate'] = formattedDate;
                 });
-                return res.render('pages/imagineer', {
-                  csrfToken: req.csrfToken(),
-                  reviewNames : reviewedIdeas,
-                  headshot : headshotURL,
-                  headshotStyle : headshotStyle,
-                  user : req.user || {},
-                  profileAccount: account,
-                  aptitudes : myAptitudes,
-                  schoolNetwork : schoolNetwork,
-                  locationNetwork : locationNetwork,
-                  companyNetwork : companyNetwork,
-                  accountIdeaSeeds : originalIdeas || [],
-                  masterSchoolNetworkList : masterSchoolNetworkList,
-                  masterSchoolNetworkString : JSON.stringify(masterSchoolNetworkList)
-                                          .replace(/\\n/g, "\\n")
-                                          .replace(/'/g, "\\'")
-                                          .replace(/"/g, '\\"')
-                                          .replace(/\\&/g, "\\&")
-                                          .replace(/\\r/g, "\\r")
-                                          .replace(/\\t/g, "\\t")
-                                          .replace(/\\b/g, "\\b")
-                                          .replace(/\\f/g, "\\f")
+                if(account.headshots[0]){
+                  IdeaImage.findById(account.headshots[0], function(err, accountHeadshot){
+                    switch (accountHeadshot["orientation"]) {
+                      case 1 :
+                        accountHeadshot.style = "";
+                        break;
+                      case 6 :
+                        accountHeadshot.style = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                        break;
+                      case 3 :
+                        accountHeadshot.style = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                        break;
+                      case 8 :
+                        accountHeadshot.style = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                        break;
+                    }
 
-                });
+                    return res.render('pages/imagineer', {
+                      csrfToken: req.csrfToken(),
+                      reviewNames : reviewedIdeas,
+                      headshot : headshotURL,
+                      headshotStyle : headshotStyle,
+                      user : req.user || {},
+                      profileAccount: account,
+                      accountHeadshot : accountHeadshot,
+                      aptitudes : myAptitudes,
+                      schoolNetwork : schoolNetwork,
+                      locationNetwork : locationNetwork,
+                      companyNetwork : companyNetwork,
+                      accountIdeaSeeds : originalIdeas || [],
+                      masterSchoolNetworkList : masterSchoolNetworkList,
+                      masterSchoolNetworkString : JSON.stringify(masterSchoolNetworkList)
+                                              .replace(/\\n/g, "\\n")
+                                              .replace(/'/g, "\\'")
+                                              .replace(/"/g, '\\"')
+                                              .replace(/\\&/g, "\\&")
+                                              .replace(/\\r/g, "\\r")
+                                              .replace(/\\t/g, "\\t")
+                                              .replace(/\\b/g, "\\b")
+                                              .replace(/\\f/g, "\\f")
+
+                    });
+                  });
+                } else {
+                  var accountHeadshot;
+                  return res.render('pages/imagineer', {
+                    csrfToken: req.csrfToken(),
+                    reviewNames : reviewedIdeas,
+                    headshot : headshotURL,
+                    headshotStyle : headshotStyle,
+                    user : req.user || {},
+                    profileAccount: account,
+                    accountHeadshot : accountHeadshot,
+                    aptitudes : myAptitudes,
+                    schoolNetwork : schoolNetwork,
+                    locationNetwork : locationNetwork,
+                    companyNetwork : companyNetwork,
+                    accountIdeaSeeds : originalIdeas || [],
+                    masterSchoolNetworkList : masterSchoolNetworkList,
+                    masterSchoolNetworkString : JSON.stringify(masterSchoolNetworkList)
+                                            .replace(/\\n/g, "\\n")
+                                            .replace(/'/g, "\\'")
+                                            .replace(/"/g, '\\"')
+                                            .replace(/\\&/g, "\\&")
+                                            .replace(/\\r/g, "\\r")
+                                            .replace(/\\t/g, "\\t")
+                                            .replace(/\\b/g, "\\b")
+                                            .replace(/\\f/g, "\\f")
+
+                  });
+                }
               });  
             });
           });
@@ -673,148 +765,186 @@ router.get('/ideas', csrfProtection, function(req, res){
       var headshotURL = headshotData['headshotURL'];
       var headshotStyle = headshotData['headshotStyle'];
 
-      IdeaSeed.find({}).sort({$natural: -1})
+      IdeaSeed.find({"name" : {$exists : true}}).sort({$natural: -1})
         .exec(function(err, ideas){
         var wasteValueScores = [0, 0];
 
-        //get the first image for each idea for now
-        var imageList = _.map(ideas, function(idea){
-          return idea.images[0];
+        var totalReviewList = [];
+        _.each(ideas, function(idea){
+          totalReviewList = totalReviewList.concat(idea.ideaReviews);
         });
 
-        IdeaImage.find({"_id" : { $in : imageList}}, function(err, images){
-          if(err){ console.log("error is " + err)}
-          var currentImage;
-          var currentImageStyle;
-          var ideaList = _.map(ideas, function(idea){
-            wasteValueScores = IdeaSeed.getWasteValueScores(idea);
-
-            //get the image document corresponding to the first image ID
-            // for each individual idea
-            for (var i = 0; i < images.length; i++){
-              if(idea.images.length > 0 &&
-                idea.images[0].toString() == images[i].id.toString()){
-                currentImage = images[i]._doc["amazonURL"] || "";
-                currentImageStyle = "";
-                switch (images[i]._doc["orientation"]) {
-                  case 1 :
-                    currentImageStyle = "";
-                    break;
-                  case 2 :
-                    currentImageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                    break;
-                  case 3 :
-                    currentImageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                    break;
-                  case 4 :
-                    currentImageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                    break;
-                }
-                break;
-              } else if (idea.images.length == 0){
-                currentImage = "";
-                currentImageStyle = "";
-                break;
-              }
+        IdeaReview.find({"_id" : {$in : totalReviewList}}, function(err, reviews){
+          /* This will be an object of idea seed id's and average review scores*/
+          var reviewScores = {};
+          _.each(reviews, function(review, index, list){
+            //group reviews by idea seed id, then hand each list of reviews to the
+            // idea review function to average the scores, and hand back an average
+            // for that idea seed. reviewScores will be an object with the keys being
+            // object id's and the values being a list of review objects
+            if(reviewScores[review.ideaSeedId.toString()]){
+              reviewScores[review.ideaSeedId.toString()].push(review);
+            } else {
+              reviewScores[review.ideaSeedId.toString()] = [review];
             }
-
-            return [
-              idea['name'], //String
-              idea['description'], //String
-              wasteValueScores, //array of two numbers
-              idea['inventorName'],
-              currentImage,
-              currentImageStyle
-            ];
           });
 
-          var inventorList = _.map(ideaList, function(idea){
-            return idea[3];
-          })
+          //each iteration, replace the list of review objects with
+          // one average review score, so we can rank them and select
+          // the top few
+          _.each(reviewScores, function(value,key, list){
+            //value should be an array of review objects
+            reviewScores[key] = IdeaReview.averageViabilityScores(value);
+          });
 
-          Account.find({"username" : {$in : inventorList}},
-            function(err, accounts){
-              if(err){ console.log("error is " + err)}
-              var accountPictures = _.map(accounts, function(account){
-                if(account.headshots){
-                  return account.headshots[0];
-                } else {
-                  return "";
+
+          _.each(ideas, function(anIdea, index){
+            if(Object.keys(reviewScores).indexOf(anIdea.id.toString()) == -1){
+              reviewScores[anIdea.id.toString()] = 0;
+            }
+          });
+
+          //get the first image for each idea for now
+          var imageList = _.map(ideas, function(idea){
+            return idea.images[0];
+          });
+
+          IdeaImage.find({"_id" : { $in : imageList}}, function(err, images){
+            if(err){ console.log("error is " + err)}
+            var currentImage;
+            var currentImageStyle;
+            var ideaList = _.map(ideas, function(idea){
+              reviewScores[idea.id.toString()] = Math.round(reviewScores[idea.id.toString()]);
+
+              //get the image document corresponding to the first image ID
+              // for each individual idea
+              for (var i = 0; i < images.length; i++){
+                if(idea.images.length > 0 &&
+                  idea.images[0].toString() == images[i].id.toString()){
+                  currentImage = images[i]._doc["amazonURL"] || "";
+                  currentImageStyle = "";
+                  switch (images[i]._doc["orientation"]) {
+                    case 1 :
+                      currentImageStyle = "";
+                      break;
+                    case 2 :
+                      currentImageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                      break;
+                    case 3 :
+                      currentImageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                      break;
+                    case 4 :
+                      currentImageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                      break;
+                  }
+                  break;
+                } else if (idea.images.length == 0){
+                  currentImage = "";
+                  currentImageStyle = "";
+                  break;
                 }
-              });
+              }
+              var blockDescription = idea.name.charAt(0).toUpperCase() + idea.name.slice(1) + " solves the problem of " + idea.problem + " by " + idea.description + ".";
+              return [
+                idea['name'], //String
+                blockDescription, //String
+                reviewScores[idea.id.toString()], //array of two numbers
+                idea['inventorName'],
+                currentImage,
+                currentImageStyle
+              ];
+            });
 
-              accountPictures = _.without(accountPictures, "");
-              IdeaImage.find({"_id" : {$in : accountPictures}}, function(err, profilePictures){
+            var inventorList = _.map(ideaList, function(idea){
+              return idea[3];
+            })
+
+            Account.find({"username" : {$in : inventorList}},
+              function(err, accounts){
                 if(err){ console.log("error is " + err)}
-                if(profilePictures){
-                  //find which ideaList item is connected to the right profile picture
-                  for(var j=0; j < ideaList.length; j++){
-                    //find the account with the right username
-                    for(var k = 0; k < accounts.length; k++){
-                      if(accounts[k].username == ideaList[j][3]){
-                        //find the profile picture with the id that matches the accounts
-                        // first profile picture ID and attach it to the ideaList
-                        if(accounts[k].headshots && accounts[k].headshots[0]){
-                          for(var n = 0; n < profilePictures.length; n++){
-                            if(profilePictures[n]["id"].toString() == accounts[k].headshots[0].toString()
-                              && profilePictures[n]["amazonURL"]){
-                              ideaList[j].push(profilePictures[n]["amazonURL"]);
-                              var creatorHeadshotStyle = "";
-                              switch (profilePictures[n]["orientation"]) {
-                                case 1 :
-                                  ideaList[j].push("");
-                                  break;
-                                case 3 :
-                                  ideaList[j].push("-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);");
-                                  break;
-                                case 6 :
-                                  ideaList[j].push("-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);");
-                                  break;
-                                case 8 :
-                                  ideaList[j].push("-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);");
-                                  break;
+                var accountPictures = _.map(accounts, function(account){
+                  if(account.headshots){
+                    return account.headshots[0];
+                  } else {
+                    return "";
+                  }
+                });
+
+                accountPictures = _.without(accountPictures, "");
+                IdeaImage.find({"_id" : {$in : accountPictures}}, function(err, profilePictures){
+                  if(err){ console.log("error is " + err)}
+                  if(profilePictures){
+                    //find which ideaList item is connected to the right profile picture
+                    for(var j=0; j < ideaList.length; j++){
+                      //find the account with the right username
+                      for(var k = 0; k < accounts.length; k++){
+                        if(accounts[k].username == ideaList[j][3]){
+                          //find the profile picture with the id that matches the accounts
+                          // first profile picture ID and attach it to the ideaList
+                          if(accounts[k].headshots && accounts[k].headshots[0]){
+                            for(var n = 0; n < profilePictures.length; n++){
+                              if(profilePictures[n]["id"].toString() == accounts[k].headshots[0].toString()
+                                && profilePictures[n]["amazonURL"]){
+                                ideaList[j].push(profilePictures[n]["amazonURL"]);
+                                var creatorHeadshotStyle = "";
+                                switch (profilePictures[n]["orientation"]) {
+                                  case 1 :
+                                    ideaList[j].push("");
+                                    break;
+                                  case 3 :
+                                    ideaList[j].push("-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);");
+                                    break;
+                                  case 6 :
+                                    ideaList[j].push("-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);");
+                                    break;
+                                  case 8 :
+                                    ideaList[j].push("-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);");
+                                    break;
+                                }
+
                               }
-
                             }
+                          } else {
+                            ideaList[j].push("");
+                            ideaList[j].push("");
                           }
-                        } else {
-                          ideaList[j].push("");
-                          ideaList[j].push("");
-                        }
 
-                        //tack on the account nick name to display in the block
-                        if(accounts[k].nickname){
-                          ideaList[j].push(accounts[k].nickname);
-                        } else {
-                          ideaList[j].push("User");
+                          //tack on the account nick name to display in the block
+                          if(accounts[k].nickname){
+                            ideaList[j].push(accounts[k].nickname);
+                          } else {
+                            ideaList[j].push("User");
+                          }
+
                         }
 
                       }
-
                     }
-                  }
 
-                  res.render('pages/ideas', {
-                    csrfToken: req.csrfToken(),
-                    user : req.user || {} || {},
-                    headshot : headshotURL,
-                    headshotStyle : headshotStyle,
-                    ideas : ideaList
-                  });
-                } else {
-                  res.render('pages/ideas', {
-                    csrfToken: req.csrfToken(),
-                    user : req.user || {} || {},
-                    headshot : headshotURL,
-                    headshotStyle : headshotStyle,
-                    ideas : ideaList
-                  });
-                }
-              });
-            }
-          )
+                    res.render('pages/ideas', {
+                      csrfToken: req.csrfToken(),
+                      user : req.user || {} || {},
+                      headshot : headshotURL,
+                      headshotStyle : headshotStyle,
+                      ideas : ideaList,
+                      reviewScores : reviewScores
+                    });
+                  } else {
+                    res.render('pages/ideas', {
+                      csrfToken: req.csrfToken(),
+                      user : req.user || {} || {},
+                      headshot : headshotURL,
+                      headshotStyle : headshotStyle,
+                      ideas : ideaList,
+                      reviewScores : reviewScores
+                    });
+                  }
+                });
+              }
+            );
+          });
         });
-      });
+      }); //end of idea seed query
     });
 });
 
@@ -1148,10 +1278,10 @@ router.post('/upvote-imperfection', csrfProtection, function(req, res) {
 
   IdeaProblem.findById(problemId,
     function (err, problem) {
-      if(problem.upvotes.indexOf(req.user.id) == -1) {
+//      if(problem.upvotes.indexOf(req.user.id) == -1) {
         problem.upvotes.push(req.user.id);
         problem.save(function (err) {});
-      }
+      //}
   });
 
   res.sendStatus(200);
@@ -2748,19 +2878,6 @@ router.post('/edit-component', csrfProtection, function(req, res) {
 });
 
 
-/*****************************************************************
-******************************************************************
-******************************************************************
-* Route for viewing all viabilities
-******************************************************************
-******************************************************************
-*****************************************************************/
-router.get('/view-all-viabilities', csrfProtection, function(req, res) {
-  res.render('partials/viability-overview-modal',
-    { user : req.user || {}, headshot : headshotURL, idea : req.session.idea, csrfToken: req.csrfToken() }
-  );
-});
-
 
 
 
@@ -3036,42 +3153,139 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
             return [new Date(parseInt(item.name.substr(-13))).toString(), item.name];
           });
 
+          Account.findOne({"username" : idea.inventorName}, function(err, ideaInventor){
+            Account.findOne({"username" : component.creator}, function(err, componentContributor){
+              if(component['problemID']){
+                IdeaProblem.findOne({"_id" : component['problemID']}, function(err, problem){
 
-          if(component['problemID']){
-            IdeaProblem.findOne({"_id" : component['problemID']}, function(err, problem){
+                  //Get problem creator picture
+                  Account.findOne({"username": problem['creator']}, function(err, problemCreator){
 
-              //Get problem creator picture
-              Account.findOne({"username": problem['creator']}, function(err, problemCreator){
+                    //assumes the first headshot in the user's array of headshots is their
+                    // primary one for display
+                    if(problemCreator['headshots']){
+                      var problemHeadshotID = problemCreator['headshots'][0];
+                      var problemHeadshotURL = '';
+                    } else {
+                      var problemHeadshotID, problemHeadshotURL, problemHeadshotStyle;
+                    }
 
-                //assumes the first headshot in the user's array of headshots is their
-                // primary one for display
-                if(problemCreator['headshots']){
-                  var problemHeadshotID = problemCreator['headshots'][0];
-                  var problemHeadshotURL = '';
-                } else {
-                  var problemHeadshotID, problemHeadshotURL, problemHeadshotStyle;
-                }
+                    problem['wholeCreator'] = {
+                      'nickname' : problemCreator['nickname']
+                    };
 
-                problem['wholeCreator'] = {
-                  'nickname' : problemCreator['nickname']
-                };
+                    //first get the images that the component is in
+                    if(component.images.length > 0 || problemHeadshotID){
+                      var imageIDs = _.map(component.images, function(item){ return item['imageID']});
 
-                //first get the images that the component is in
-                if(component.images.length > 0 || problemHeadshotID){
-                  var imageIDs = _.map(component.images, function(item){ return item['imageID']});
+                      // add main component image to list of id's to be retrieved
+                      if(component.mainImage){
+                        imageIDs.unshift(component.mainImage);
+                      }
+                      if(problemHeadshotID){
+                        imageIDs.push(problemHeadshotID);
+                      }
 
-                  // add main component image to list of id's to be retrieved
-                  if(component.mainImage){
-                    imageIDs.unshift(component.mainImage);
-                  }
-                  if(problemHeadshotID){
-                    imageIDs.push(problemHeadshotID);
-                  }
+                      IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
+                        var imageURLs = [];
+                        for(var i = 0; i < images.length; i++){
+                          if(images[i] && images[i]['amazonURL']){
+                            var imageStyle = "";
+                            switch (images[i]["orientation"]) {
+                              case 1 :
+                                imageStyle = "";
+                                break;
+                              case 2 :
+                                imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                                break;
+                              case 3 :
+                                imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                                break;
+                              case 4 :
+                                imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                                break;
+                            }
+                            var filename = images[i]["filename"];
+                            //if it's the main component image, put in the first spot of the array so it's big on
+                            // the component profile page
+                            if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
+                              imageURLs.unshift([
+                                filename,
+                                images[i]["amazonURL"],
+                                imageStyle
+                              ]);
+                            } else if( images[i].id.toString() == problemCreator['headshots'][0]){
+                              problemHeadshotURL = images[i]["amazonURL"];
+                              problemHeadshotStyle = imageStyle;
+                            } else {
+                              imageURLs.push([
+                                filename,
+                                images[i]["amazonURL"],
+                                imageStyle
+                              ]);
+                            }
+                          }
+                        }
+                        problem['headshot'] = {
+                          'url' : problemHeadshotURL,
+                          'style' : problemHeadshotStyle
+                        };
 
-                  IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
-                    var imageURLs = [];
-                    for(var i = 0; i < images.length; i++){
-                      if(images[i] && images[i]['amazonURL']){
+                        res.render('pages/component-profile', {
+                          csrfToken: req.csrfToken(),
+                          user : req.user || {},
+                          headshot : headshotURL,
+                          headshotStyle : headshotStyle,
+                          idea : idea._doc,
+                          ideaInventor : ideaInventor,
+                          componentContributor : componentContributor,
+                          problemHeadshotURL : problemHeadshotURL,
+                          component : component,
+                          problem : problem,
+                          variantDates : variantDates,
+                          imageURLs : imageURLs,
+                          components : components,
+                          relatedComponents : relatedComponents
+                        });
+                      });//end of image query
+
+                    // in case theres no images
+                    } else {
+                          res.render('pages/component-profile', {
+                            csrfToken: req.csrfToken(),
+                            user : req.user || {},
+                            headshot : headshotURL,
+                            headshotStyle : headshotStyle,
+                            problemHeadshotURL : problemHeadshotURL,
+                            idea : idea._doc,
+                            ideaInventor : ideaInventor,
+                            componentContributor : componentContributor,
+                            components : components,
+                            component : component,
+                            problem : problem,
+                            variantDates : variantDates,
+                            //problemAreas  : problemAreas,
+                            imageURLs : [],
+                            relatedComponents : relatedComponents
+                            //components : components,
+                            //listOfProblems : listOfProblems
+                          });
+                    }
+                  }); // end of problem creator query
+                });// end of problem query
+              } else {
+                  //first get the images that the component is in
+                  if(component.images.length > 0 || component.mainImage){
+                    var imageIDs = _.map(component.images || [], function(item){ return item['imageID']});
+
+                    // add main component image to list of id's to be retrieved
+                    if(component.mainImage){
+                      imageIDs.unshift(component.mainImage);
+                    }
+
+                    IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
+                      var imageURLs = [];
+                      for(var i = 0; i < images.length; i++){
                         var imageStyle = "";
                         switch (images[i]["orientation"]) {
                           case 1 :
@@ -3087,152 +3301,66 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
                             imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
                             break;
                         }
-                        var filename = images[i]["filename"];
-                        //if it's the main component image, put in the first spot of the array so it's big on
-                        // the component profile page
-                        if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
-                          imageURLs.unshift([
-                            filename,
-                            images[i]["amazonURL"],
-                            imageStyle
-                          ]);
-                        } else if( images[i].id.toString() == problemCreator['headshots'][0]){
-                          problemHeadshotURL = images[i]["amazonURL"];
-                          problemHeadshotStyle = imageStyle;
-                        } else {
-                          imageURLs.push([
-                            filename,
-                            images[i]["amazonURL"],
-                            imageStyle
-                          ]);
+                        if(images[i] && images[i]["amazonURL"]){
+                          var filename = images[i]["filename"];
+                          //if it's the main component image, put in the first spot of the array so it's big on
+                          // the component profile page
+                          if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
+                            imageURLs.unshift([
+                              filename,
+                              images[i]["amazonURL"],
+                              imageStyle
+                            ]);
+                          } else {
+                            imageURLs.push([
+                              filename,
+                              images[i]["amazonURL"],
+                              imageStyle
+                            ]);
+                          }
                         }
                       }
-                    }
-                    problem['headshot'] = {
-                      'url' : problemHeadshotURL,
-                      'style' : problemHeadshotStyle
-                    };
-
-                    res.render('pages/component-profile', {
-                      csrfToken: req.csrfToken(),
-                      user : req.user || {},
-                      headshot : headshotURL,
-                      headshotStyle : headshotStyle,
-                      idea : idea._doc,
-                      problemHeadshotURL : problemHeadshotURL,
-                      component : component,
-                      problem : problem,
-                      variantDates : variantDates,
-                      imageURLs : imageURLs,
-                      components : components,
-                      relatedComponents : relatedComponents
-                    });
-                  });//end of image query
-
-                // in case theres no images
-                } else {
                       res.render('pages/component-profile', {
                         csrfToken: req.csrfToken(),
                         user : req.user || {},
                         headshot : headshotURL,
                         headshotStyle : headshotStyle,
-                        problemHeadshotURL : problemHeadshotURL,
                         idea : idea._doc,
+                        ideaInventor : ideaInventor,
+                        componentContributor : componentContributor,
                         components : components,
                         component : component,
-                        problem : problem,
+                        problem : "none",
                         variantDates : variantDates,
-                        //problemAreas  : problemAreas,
-                        imageURLs : [],
+                        imageURLs : imageURLs,
                         relatedComponents : relatedComponents
                         //components : components,
                         //listOfProblems : listOfProblems
                       });
-                }
-              }); // end of problem creator query
-            });// end of problem query
-          } else {
-              //first get the images that the component is in
-              if(component.images.length > 0 || component.mainImage){
-                var imageIDs = _.map(component.images || [], function(item){ return item['imageID']});
 
-                // add main component image to list of id's to be retrieved
-                if(component.mainImage){
-                  imageIDs.unshift(component.mainImage);
-                }
+                    });//end of image query
 
-                IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
-                  var imageURLs = [];
-                  for(var i = 0; i < images.length; i++){
-                    var imageStyle = "";
-                    switch (images[i]["orientation"]) {
-                      case 1 :
-                        imageStyle = "";
-                        break;
-                      case 2 :
-                        imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                        break;
-                      case 3 :
-                        imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                        break;
-                      case 4 :
-                        imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                        break;
-                    }
-                    if(images[i] && images[i]["amazonURL"]){
-                      var filename = images[i]["filename"];
-                      //if it's the main component image, put in the first spot of the array so it's big on
-                      // the component profile page
-                      if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
-                        imageURLs.unshift([
-                          filename,
-                          images[i]["amazonURL"],
-                          imageStyle
-                        ]);
-                      } else {
-                        imageURLs.push([
-                          filename,
-                          images[i]["amazonURL"],
-                          imageStyle
-                        ]);
-                      }
-                    }
+                  // in case theres no images
+                  } else {
+                        res.render('pages/component-profile', {
+                          csrfToken: req.csrfToken(),
+                          user : req.user || {},
+                          headshot : headshotURL,
+                          headshotStyle : headshotStyle,
+                          idea : idea._doc,
+                          ideaInventor : ideaInventor,
+                          components : components,
+                          componentContributor : componentContributor,
+                          component : component,
+                          variantDates : variantDates,
+                          problem : "none",
+                          relatedComponents : relatedComponents,
+                          imageURLs : []
+                        });
                   }
-                  res.render('pages/component-profile', {
-                    csrfToken: req.csrfToken(),
-                    user : req.user || {},
-                    headshot : headshotURL,
-                    headshotStyle : headshotStyle,
-                    idea : idea._doc,
-                    components : components,
-                    component : component,
-                    problem : "none",
-                    variantDates : variantDates,
-                    imageURLs : imageURLs,
-                    relatedComponents : relatedComponents
-                    //components : components,
-                    //listOfProblems : listOfProblems
-                  });
-
-                });//end of image query
-
-              // in case theres no images
-              } else {
-                    res.render('pages/component-profile', {
-                      csrfToken: req.csrfToken(),
-                      user : req.user || {},
-                      headshot : headshotURL,
-                      headshotStyle : headshotStyle,
-                      idea : idea._doc,
-                      components : components,
-                      component : component,
-                      variantDates : variantDates,
-                      problem : "none",
-                      relatedComponents : relatedComponents,
-                      imageURLs : []
-                    });
               }
-          }
+          }); //end of component contributor
+          }); //end of idea inventor query
         }); // end of other component query
       });
 

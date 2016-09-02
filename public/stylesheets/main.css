@@ -201,9 +201,6 @@ div#begin-info-right button {
   padding: 0;
 }
 
-.view-all-viabilities .row {
-  margin: 2.5em 0;
-}
 
 /* for the view all viability modal */
 .view-all-viabilities .ui-slider {
@@ -223,14 +220,8 @@ div#begin-info-right button {
   width: 100%;
 }
 
-.slider-container {width : 80%; margin: 0px auto;}
-.view-all-viabilities .slider-container {
-  width:100%;
-}
 
-.view-all-viabilities .slider-container .col-sm-2 {
-  padding:0;
-}
+
 
 .sliderLabel{
     margin-bottom:5px;
@@ -254,12 +245,12 @@ div#begin-info-right button {
   background: linear-gradient(to right, #EAE8DE , #00A550);
 }
 
-.ui-slider-handle {
-  display: none;
-}
-
 .ui-corner-all {
   border-radius : 0px;
+}
+
+.ui-slider-handle.ui-state-default {
+  border-radius: .6em;
 }
 
 #viabilityModal .modal-content {
@@ -276,7 +267,7 @@ span.no-way {
 
 .viabilityLink.moreLink img{
   float: right;
-  margin-top: .5em;
+  margin-top: 0em;
 }
 .viabilityLink.moreLink img:hover{
   cursor: pointer; cursor: hand;
@@ -327,7 +318,21 @@ table.suggestion-table .col-md-4 {
 
 .title-description.view-all-ideas, .title-description.inventor-block {
   height : 35%;
-  padding-left: 1em;
+  padding-left: 1em;  
+}
+
+.view-all-idea-description {
+  height: 5em;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  overflow: hidden;  
+}
+
+.title-description.view-all-ideas h3 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
 }
 
 .footer.view-all-ideas {
@@ -465,9 +470,6 @@ img.summary-image {
   width: 20%;
 }
 
-#formImageUpload input {
-  margin: 2em auto;
-}
 
 .imageListItems {
     height: 20%;
@@ -626,19 +628,19 @@ canvas {
 }
 
 #new-idea-description {
-  color: white;
   text-align: left;
   font-weight: normal;
 }
 
 .component-descriptions {
   margin: 0 auto;
-  background-color: #414142;
-  color: white;
+  color: black;
+  font-family: Roboto Slab, serif; 
 }
 
-.component-descriptions h3, .component-descriptions ul li {
-  padding: 1em;
+.component-descriptions form {
+  font-family: Roboto;
+  letter-spacing: 1px;
 }
 
 .component-summary .half-column {
@@ -707,13 +709,6 @@ a.plus-overlay img{
   text-align: center;
 }
 
-form#addDescription {
-  padding: 0 3em 3em;
-}
-form#addDescription #submit{
-  margin-top: 1em;
-}
-
 .no-descriptions {
   font-style: italic;
 }
@@ -734,8 +729,8 @@ form#addDescription #submit{
 
 #viabilityModal label {
   color : #EAE7DE;
-  padding: .3em 0;
-  margin: .6em 0;
+  padding: 0;
+  margin: 0;
   border-radius: 5px;
 }
 
@@ -1058,6 +1053,15 @@ button.suggestion-tactics, button.suggestion-targets {
   .custom-nav button.btn div {
     border-radius: 50px;
   }  
+
+  .mobileOnly {
+    display: none;
+  }  
+
+  .desktopOnly {
+    display: block;
+  }  
+
 }
 
 .navbar-collapse {
@@ -1119,4 +1123,92 @@ button.suggestion-tactics, button.suggestion-targets {
   top: 190px;
   border-radius: 50px;
   left: 10px;  
+}
+
+.profileHeader {
+  display: inline-block;
+  font: 18px;
+}
+
+#profile-edit-top-row .network-link {
+  margin: 1em;
+}
+
+.aptitude-footer {
+  text-align: right;
+}
+
+.imagineerProfilePic {
+  border-radius: 50px;
+}
+
+#componentsViewAllLink {
+  cursor: pointer; 
+  cursor: hand;
+  font-size: .8em;
+}
+
+.viabilityLink h3 {
+  text-decoration: underline;
+  cursor: pointer; 
+  cursor: hand;
+  margin:0;
+}
+
+.view-all-viabilities .col-sm-6 {
+  margin-top : 2em;
+}
+
+.slider-container .col-xs-7 {
+  padding:0;
+}
+
+.row.slider-row {
+  margin-top:1em;
+}
+
+.navbar-brand img{
+  max-width: 300px;
+  display: inline;
+}
+
+.jamH2 {
+  font-family: Roboto Slab, serif;
+  font-weight: 200 !important;
+  font-size: 30px;
+  margin-top: 20px;
+  margin-bottom: 10px;  
+}
+
+.jamNav {
+  display: inline-block;  
+  font-size: 24px;
+}
+
+.jamNav li {
+  display: inline-block !important;  
+}
+
+.btn-vision {
+  background-color: #AFDDD1; 
+}
+
+.btn-electric {
+  background-color: #D6DE26;
+  color:#414142;
+}
+
+.btn-electric:hover{
+  color : #D6DE26;
+  background-color:#414142;
+}
+
+.btn-industry{
+  background-color: #414142;
+  color: #EAE7DE;
+}
+
+.btn-industry:hover{
+  background-color: #EAE7DE;
+  color: #414142;
 }

@@ -19,30 +19,8 @@ var uploading = multer({
   dest: '../uploads/'
 });
 
-////////////////////////////////////////////////
-// Waste Value Summary
-////////////////////////////////////////////////
-router.get('/waste-values-summary', csrfProtection, function(req, res) {
-
-  if(!req.session.idea){
-    res.redirect('/');
-    return;
-  }
-  ideaSeedHelpers.getUserHeadshot(req).then(function(headshotData){
-    var headshotURL = headshotData['headshotURL'];
-    var headshotStyle = headshotData['headshotStyle'];
-    IdeaSeed.findById(req.session.idea,function(err, idea){
-      currentIdea = idea._doc;
-      if(req.session.ideaReview){ var reviewing = true; }
-      else { var reviewing = false; }
-      res.render('pages/waste-values', {
-        csrfToken: req.csrfToken(),
-        user : req.user || {}, idea : currentIdea,
-        headshot : headshotURL,
-        reviewing :  reviewing});
-    });
-  });
-});
+                  
+                  
 
 ////////////////////////////////////////////////
 // Performability

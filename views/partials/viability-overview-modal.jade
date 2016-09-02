@@ -9,20 +9,24 @@ form(role='form', id="viability-overview" action="/get-all-viability-scores", me
                     if (viabilities[counter + offset])
                       .col-sm-6
                         .slider-container
-                            .col-sm-2
+                          .row
+                            .col-xs-3
                                 span(id=viabilities[counter + offset].iconId class="viability-icon")
                                     .viabilityLink(href="/" + viabilities[counter + offset].link)
                                         img(src="/" + viabilities[counter + offset].iconId + ".png" height="75" width="75")
-                                    a.plus-overlay()
-                                        img(height="75" width="75")
-                                label(id=viabilities[counter + offset].labelId) #{viabilities[counter + offset].name}
-                            .col-sm-10
-                                .slider-end-labels
-                                    span.no-way Low
-                                    span.yes-way High
-                                div(id=viabilities[counter + offset].sliderId)
+                            .col-xs-7
+                              .viabilityLink(href="/" + viabilities[counter + offset].link)
+                                label(id=viabilities[counter + offset].labelId) 
+                                  h3 #{viabilities[counter + offset].name}
+                            .col-xs-2
                                 div.viabilityLink.moreLink(href="/" + viabilities[counter + offset].link)
-                                    img(src="/plus-overlay.png" height="25" width="25")
+                                    img(src="/question-mark.png" height="25" width="25")
+                          .row.slider-row
+                            .col-xs-12
+                                .slider-end-labels
+                                    span.no-way= viabilities[counter + offset].low
+                                    span.yes-way= viabilities[counter + offset].high
+                                div(id=viabilities[counter + offset].sliderId)
                         br
             - }
         .second-four-viabilities.additional-viabilities
@@ -33,20 +37,24 @@ form(role='form', id="viability-overview" action="/get-all-viability-scores", me
                   if (viabilities[counter + offset])
                       .col-sm-6
                         .slider-container
-                            .col-sm-2
+                          .row
+                            .col-xs-3
                                 span(id=viabilities[counter + offset].iconId class="viability-icon")
                                     .viabilityLink(href="/" + viabilities[counter + offset].link)
                                         img(src="/" + viabilities[counter + offset].iconId + ".png" height="75" width="75")
-                                    a.plus-overlay()
-                                        img(height="75" width="75")
-                                label(id=viabilities[counter + offset].labelId) #{viabilities[counter + offset].name}
-                            .col-sm-10
-                                .slider-end-labels
-                                    span.no-way Low
-                                    span.yes-way High
-                                div(id=viabilities[counter + offset].sliderId)
+                            .col-xs-7
+                              .viabilityLink(href="/" + viabilities[counter + offset].link)
+                                label(id=viabilities[counter + offset].labelId) 
+                                  h3 #{viabilities[counter + offset].name}
+                            .col-xs-2
                                 div.viabilityLink.moreLink(href="/" + viabilities[counter + offset].link)
-                                    img(src="/plus-overlay.png" height="25" width="25")
+                                    img(src="/question-mark.png" height="25" width="25")
+                          .row.slider-row
+                            .col-xs-12
+                                .slider-end-labels
+                                    span.no-way= viabilities[counter + offset].low
+                                    span.yes-way= viabilities[counter + offset].high
+                                div(id=viabilities[counter + offset].sliderId)
                         br
           - }
         .third-four-viabilities.additional-viabilities
@@ -57,20 +65,24 @@ form(role='form', id="viability-overview" action="/get-all-viability-scores", me
                   if (viabilities[counter + offset])
                       .col-sm-6
                         .slider-container
-                            .col-sm-2
+                          .row
+                            .col-xs-3
                                 span(id=viabilities[counter + offset].iconId class="viability-icon")
                                     .viabilityLink(href="/" + viabilities[counter + offset].link)
                                         img(src="/" + viabilities[counter + offset].iconId + ".png" height="75" width="75")
-                                    a.plus-overlay()
-                                        img(height="75" width="75")
-                                label(id=viabilities[counter + offset].labelId) #{viabilities[counter + offset].name}
-                            .col-sm-10
-                                .slider-end-labels
-                                    span.no-way Low
-                                    span.yes-way High
-                                div(id=viabilities[counter + offset].sliderId)
+                            .col-xs-7
+                              .viabilityLink(href="/" + viabilities[counter + offset].link)
+                                label(id=viabilities[counter + offset].labelId) 
+                                  h3 #{viabilities[counter + offset].name}
+                            .col-xs-2
                                 div.viabilityLink.moreLink(href="/" + viabilities[counter + offset].link)
-                                    img(src="/plus-overlay.png" height="25" width="25")
+                                    img(src="/question-mark.png" height="25" width="25")
+                          .row.slider-row
+                            .col-xs-12
+                                .slider-end-labels
+                                    span.no-way= viabilities[counter + offset].low
+                                    span.yes-way= viabilities[counter + offset].high
+                                div(id=viabilities[counter + offset].sliderId)
                         br
           - }
         .fourth-four-viabilities.additional-viabilities
@@ -81,20 +93,24 @@ form(role='form', id="viability-overview" action="/get-all-viability-scores", me
                   if (viabilities[counter + offset])
                       .col-sm-6
                         .slider-container
-                            .col-sm-2
+                          .row
+                            .col-xs-3
                                 span(id=viabilities[counter + offset].iconId class="viability-icon")
                                     .viabilityLink(href="/" + viabilities[counter + offset].link)
                                         img(src="/" + viabilities[counter + offset].iconId + ".png" height="75" width="75")
-                                    a.plus-overlay()
-                                        img(height="75" width="75")
-                                label(id=viabilities[counter + offset].labelId) #{viabilities[counter + offset].name}
-                            .col-sm-10
-                                .slider-end-labels
-                                    span.no-way Low
-                                    span.yes-way High
-                                div(id=viabilities[counter + offset].sliderId)
+                            .col-xs-7
+                              .viabilityLink(href="/" + viabilities[counter + offset].link)
+                                label(id=viabilities[counter + offset].labelId) 
+                                  h3 #{viabilities[counter + offset].name}
+                            .col-xs-2
                                 div.viabilityLink.moreLink(href="/" + viabilities[counter + offset].link)
-                                    img(src="/plus-overlay.png" height="25" width="25")
+                                    img(src="/question-mark.png" height="25" width="25")
+                          .row.slider-row
+                            .col-xs-12
+                                .slider-end-labels
+                                    span.no-way= viabilities[counter + offset].low
+                                    span.yes-way= viabilities[counter + offset].high
+                                div(id=viabilities[counter + offset].sliderId)
                         br
           - }
 

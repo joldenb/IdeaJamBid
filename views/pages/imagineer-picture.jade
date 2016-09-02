@@ -7,62 +7,53 @@ html
     include ../partials/header.jade
 
   .container.row#profile-edit-top-row
-    .col-md-6
+    .col-md-5
       .imagesList
         if(imageURLs)
-          h3 Current Picture
           each imageURL, index in imageURLs
             if imageURL[0] == profilePictureFilename
               .image-summary-image.img-responsive
                 div(id='#{imageURL[0]}' style="height: 300px; max-width: 400px; background-image : url('" + '#{imageURL[1] || "/avatar.png"}' + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + "#{imageURL[2]}")
-          if imageURLs.length > 1
-            h3 Select a different Picture
-            each imageURL, index in imageURLs
-              if imageURL[0] != profilePictureFilename
-                a
-                  img.imageListItems(src=imageURL[1], id=imageURL[0] style=imageURL[2])
-            .view-all-images-btn
-              a#resetPicture.btn.btn-default() Set Profile Image
       form(role='form', id="headshotForm" action="/add-profile-headshot", method="post", data-idea-doc=idea, enctype="multipart/form-data")
         .form-group
-          h3 Upload a new User Profile Picture
-          |  
           input#headshotButton(type="file", name="picture")
           input(type="hidden", name="_csrf", value="#{csrfToken}")
           br
-      a.home-logout.btn.btn-default( href="/imagineer/" + user.nickname) User Profile
+      a.home-logout.btn.btn-default( href="/imagineer/" + user.nickname) View Profile
 
-    .col-md-6
-      h3 Attributes
+    .col-md-7
       div#begin-info-right
         .profileSchool
           if schoolNetwork
-            h4 School :  #[a(class="network-link") #{schoolNetwork}]
+            .profileHeader School :  #[a(class="network-link") #{schoolNetwork}]
             if Object.keys(user).length != 0
-              a(class="btn btn-default" href="#" id="schoolModalButton" data-toggle="modal" data-target="#schoolModal") Edit Jam
+              a(class="btn btn-default secondary-btn" href="#" id="schoolModalButton" data-toggle="modal" data-target="#schoolModal")
+                span.glyphicon.glyphicon-pencil
           else
             if Object.keys(user).length != 0
               button(type="button" id="schoolModalButton" class="btn btn-default" data-toggle="modal" data-target="#schoolModal") Add your School
         .profileCompany
           if companyNetwork
-            h4 Company :  #[a(class="network-link") #{companyNetwork}]
+            .profileHeader Company :  #[a(class="network-link") #{companyNetwork}]
             if Object.keys(user).length != 0
-              a(class="btn btn-default" href="#" id="companyModalButton" data-toggle="modal" data-target="#companyModal") Edit Jam
+              a(class="btn btn-default secondary-btn" href="#" id="companyModalButton" data-toggle="modal" data-target="#companyModal")
+                span.glyphicon.glyphicon-pencil
           else
             if Object.keys(user).length != 0
               button(type="button" id="companyModalButton" class="btn btn-default" data-toggle="modal" data-target="#companyModal") Add your Company
         .profileLocation
           if locationNetwork
-            h4 Location : #[a(class="network-link") #{locationNetwork}]
+            .profileHeader Location : #[a(class="network-link") #{locationNetwork}]
             if Object.keys(user).length != 0
-              a(class="btn btn-default" href="#" id="locationModalButton") Edit Jam
+              a(class="btn btn-default secondary-btn" href="#" id="locationModalButton")
+                span.glyphicon.glyphicon-pencil
           else
             if Object.keys(user).length != 0
               button(type="button" id="locationModalButton" class="btn btn-default" ) Add your Location
       div#begin-info-aptitudes.aptitudeList
         .profileAptitudes
           if aptitudes
-            h3 Aptitudes : 
+            h3 Your Aptitudes : 
             ul
               each aptitude in aptitudes
                 li(data-apt-id="#{aptitude.identifier}")
@@ -71,47 +62,12 @@ html
             form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
               .form-group
                 |  
-                input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
+                input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='What are you good at?', autocomplete="on")
                 input(type="hidden", name="_csrf", value="#{csrfToken}")
-              .modal-footer
-                button.btn.btn-success#aptitudeSubmit(type='submit') Save
+              .aptitude-footer
+                button.btn.btn-success.secondary-btn#aptitudeSubmit(type='submit')
+                  span.glyphicon.glyphicon-plus
           
-  #profile-edit-bottom-row.row
-    .col-md-6.existingIdeas
-      h3 Your Ideas:
-      if accountIdeaSeeds
-        ul
-          each val, index in accountIdeaSeeds
-            if val[0]
-              li
-                if Object.keys(user).length != 0
-                  a(href="/ideas/" + val[0])
-                    h4.idea-text-name= val[0]
-                  span.idea-text-date= val[1]
-                else
-                  a(href="/ideas/" + val[0])
-                    h4.idea-text-name= val[0]
-                  span.idea-text-date= val[1]
-
-      else
-        h4 None so far.
-      if Object.keys(user).length != 0
-        a.home-login.btn.btn-success( href="/introduce-idea" ) Begin a New Idea > 
-
-    .col-md-6.contributedIdeas
-      h3 Your Contributions
-      if reviewNames
-        ul
-          each val, index in reviewNames
-            if val[0]
-              li
-                a(href="/ideas/" + val[0])
-                  h4.idea-text-name= val[0]
-                span.idea-text-date= val[1]
-      else
-        h4 None so far.
-      a.home-login.btn.btn-success( href="/ideas" ) View All Ideas
-
   #schoolModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
       .modal-content

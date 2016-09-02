@@ -336,7 +336,7 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
             IdeaSeed.find({$and: [{"_id" : { $in : allIdeas}}, {"name": {$ne: null}}]}, function(err, ideas){
 
             _.each(ideas, function(idea){
-              totalReviewList = totalReviewList.concat(idea.ideaReviews);                  
+              totalReviewList = totalReviewList.concat(idea.ideaReviews);
             });
 
             IdeaReview.find({"_id" : {$in : totalReviewList}}, function(err, reviews){

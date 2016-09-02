@@ -21,7 +21,7 @@
           div Description: #{problem.text}
 
       .col-sm-2.problem-row-padding.upvote
-        a(id="upvote-#{problem.identifier}")
+        a(id="upvote-#{problem.identifier}" data-problem-id="#{problem.id}")
           div.glyphicon.glyphicon-fire 
         span #{problem.upvotes.length || 0}
 
@@ -34,20 +34,3 @@
         }
       });
 
-      $(".upvote").click(function(event){      
-        event.preventDefault();
-
-        var selector = "#upvote-" + "!{problem.identifier}";
-        if ($.contains($(selector)[0], event.target)) {
-          $.post('/upvote-imperfection', 
-          {
-            _csrf : $('[name="_csrf"]').val(),
-            problem : "!{problem.id}"
-          },
-          function(data, response) {
-            window.location.reload(true);          
-          });
-        }
-
-        return false;
-      });

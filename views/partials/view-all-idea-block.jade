@@ -8,17 +8,18 @@
         img(src="/avatar.png" height="50" width="50" class="view-all-overlay")
   .title-description.view-all-ideas
     if ideaLink && ideaName
-      h3 <b></b> #[a(href=ideaLink) #{ideaName || 'No Idea Name'}]
+      a(href=ideaLink) 
+        h3 #{ideaName || 'No Idea Name'}
     else
-      h3 <b></b>#{ideaName || 'No Idea Name'}
+      h3 #{ideaName || 'No Idea Name'}
     .userName 
-      p #{accountNickname || accountName || user.nickname}
+      p #{accountNickname || "No name available"}
     .suggestion-category
-      if suggestionProblem == 0
-        p <b>Viability:</b> #[a(href=ideaLink) #{ideaName || 'Score Now'}]
+      if viabilityScore == 0
+        p <b>Viability:</b> #[a(href=ideaLink) 'Score Now']
       else
-        p <b>Viability: </b>#{suggestionProblem} 
-      p <b>Description: </b>#{problemCategory}
+        p <b>Viability: </b>#{viabilityScore} 
+      p.view-all-idea-description <b>Description: </b>#{problemCategory}
   .footer.view-all-ideas
     if ideaLink
       a(href=ideaLink)

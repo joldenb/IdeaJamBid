@@ -1,0 +1,88 @@
+doctype html
+html
+  head
+    include ../../partials/head.jade
+  body
+    .container-fluid.scoreIdea
+      .row
+        .col-xs-2
+          img.viability-icon(src="/" + viabilityIcon + ".png")
+        .col-xs-8
+          h2 Variability
+        .col-xs-2
+          a.close-viability(href="/view-all-viabilities")
+            img(src="/close_button.png" height="30" width="30")
+      .row
+        form.mobile-viability-form(role='form', id="formVariability" action="/variability-mobile", method="post",  data-idea-doc=idea)
+          h4.viability-question
+            | Will use or production of the #{idea.name} change based upon specific scenarios or circumstances when solving the problem of #{idea.problem}?
+          br
+          input(type="hidden", name="_csrf", value="#{csrfToken}")
+          .slider-container
+            .slider-end-labels
+              span.no-way Consistent
+              span.yes-way Dynamic
+            .sliderLabel
+            #slider
+          .save-buttons
+            a.btn.btn-industry.btn-lg Describe an Imperfection
+            button.btn.btn-success.btn-lg Save
+
+  
+  include ../../partials/js-includes.jade
+  script(type="text/javascript").
+    var labelArr = _.range(101).map(function(number){
+      return number.toString();
+    });
+    var initialValue, min=1, max=100, valueEntered = false;
+    initialValue = '#{currentReview.variabilityOne}' || 50;
+
+    ////////////////////////////////////////////
+    // SET UP SLIDER ONE
+    ////////////////////////////////////////////
+    $("#slider").slider({
+      value: initialValue,
+      min: min,
+      max: max,
+      step: 1,
+      slide: function( event, ui ) {
+          valueEntered = true;
+          $(".sliderLabel").text(labelArr[ui.value]);
+          $(".sliderLabel").css("margin-left", (ui.value-min)/(max-min)*100+"%");
+          $(".sliderLabel").css("left", "-50px");
+      }
+    });
+    $(".sliderLabel").text(labelArr[initialValue]);
+    $(".sliderLabel" ).css("margin-left", (initialValue -1)/(max-min)*100+"%");
+    $(".sliderLabel").css("left", "-50px");
+
+    $('#slider').draggable();
+
+    $("button.btn-success").click(function(event){
+      if(valueEntered){
+        var sliderOneValue = $("#slider").slider("value");
+        var inputOne = $("<input>")
+               .attr("type", "hidden")
+               .attr("name", "variabilitySliderOneValue").val(sliderOneValue);
+        $('#formVariability').append($(inputOne)).submit();
+      } else {
+        $('#formVariability').submit();
+      }
+    });
+
+    $("a.btn.btn-industry.btn-lg").click(function(event){
+      event.preventDefault();
+      
+      if(valueEntered){
+        $.post('/variability-mobile', 
+        {
+          _csrf : $('[name="_csrf"]').val(),
+          "variabilitySliderOneValue" : $("#slider").slider("value")
+        },
+        function(data, response) {
+          window.location = '/variability-problem';
+        });
+      } else {
+        window.location = '/variability-problem';
+      }
+    })
