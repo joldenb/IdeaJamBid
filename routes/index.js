@@ -765,148 +765,186 @@ router.get('/ideas', csrfProtection, function(req, res){
       var headshotURL = headshotData['headshotURL'];
       var headshotStyle = headshotData['headshotStyle'];
 
-      IdeaSeed.find({}).sort({$natural: -1})
+      IdeaSeed.find({"name" : {$exists : true}}).sort({$natural: -1})
         .exec(function(err, ideas){
         var wasteValueScores = [0, 0];
 
-        //get the first image for each idea for now
-        var imageList = _.map(ideas, function(idea){
-          return idea.images[0];
+        var totalReviewList = [];
+        _.each(ideas, function(idea){
+          totalReviewList = totalReviewList.concat(idea.ideaReviews);
         });
 
-        IdeaImage.find({"_id" : { $in : imageList}}, function(err, images){
-          if(err){ console.log("error is " + err)}
-          var currentImage;
-          var currentImageStyle;
-          var ideaList = _.map(ideas, function(idea){
-            wasteValueScores = IdeaSeed.getWasteValueScores(idea);
-
-            //get the image document corresponding to the first image ID
-            // for each individual idea
-            for (var i = 0; i < images.length; i++){
-              if(idea.images.length > 0 &&
-                idea.images[0].toString() == images[i].id.toString()){
-                currentImage = images[i]._doc["amazonURL"] || "";
-                currentImageStyle = "";
-                switch (images[i]._doc["orientation"]) {
-                  case 1 :
-                    currentImageStyle = "";
-                    break;
-                  case 2 :
-                    currentImageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                    break;
-                  case 3 :
-                    currentImageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                    break;
-                  case 4 :
-                    currentImageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                    break;
-                }
-                break;
-              } else if (idea.images.length == 0){
-                currentImage = "";
-                currentImageStyle = "";
-                break;
-              }
+        IdeaReview.find({"_id" : {$in : totalReviewList}}, function(err, reviews){
+          /* This will be an object of idea seed id's and average review scores*/
+          var reviewScores = {};
+          _.each(reviews, function(review, index, list){
+            //group reviews by idea seed id, then hand each list of reviews to the
+            // idea review function to average the scores, and hand back an average
+            // for that idea seed. reviewScores will be an object with the keys being
+            // object id's and the values being a list of review objects
+            if(reviewScores[review.ideaSeedId.toString()]){
+              reviewScores[review.ideaSeedId.toString()].push(review);
+            } else {
+              reviewScores[review.ideaSeedId.toString()] = [review];
             }
-
-            return [
-              idea['name'], //String
-              idea['description'], //String
-              wasteValueScores, //array of two numbers
-              idea['inventorName'],
-              currentImage,
-              currentImageStyle
-            ];
           });
 
-          var inventorList = _.map(ideaList, function(idea){
-            return idea[3];
-          })
+          //each iteration, replace the list of review objects with
+          // one average review score, so we can rank them and select
+          // the top few
+          _.each(reviewScores, function(value,key, list){
+            //value should be an array of review objects
+            reviewScores[key] = IdeaReview.averageViabilityScores(value);
+          });
 
-          Account.find({"username" : {$in : inventorList}},
-            function(err, accounts){
-              if(err){ console.log("error is " + err)}
-              var accountPictures = _.map(accounts, function(account){
-                if(account.headshots){
-                  return account.headshots[0];
-                } else {
-                  return "";
+
+          _.each(ideas, function(anIdea, index){
+            if(Object.keys(reviewScores).indexOf(anIdea.id.toString()) == -1){
+              reviewScores[anIdea.id.toString()] = 0;
+            }
+          });
+
+          //get the first image for each idea for now
+          var imageList = _.map(ideas, function(idea){
+            return idea.images[0];
+          });
+
+          IdeaImage.find({"_id" : { $in : imageList}}, function(err, images){
+            if(err){ console.log("error is " + err)}
+            var currentImage;
+            var currentImageStyle;
+            var ideaList = _.map(ideas, function(idea){
+              reviewScores[idea.id.toString()] = Math.round(reviewScores[idea.id.toString()]);
+
+              //get the image document corresponding to the first image ID
+              // for each individual idea
+              for (var i = 0; i < images.length; i++){
+                if(idea.images.length > 0 &&
+                  idea.images[0].toString() == images[i].id.toString()){
+                  currentImage = images[i]._doc["amazonURL"] || "";
+                  currentImageStyle = "";
+                  switch (images[i]._doc["orientation"]) {
+                    case 1 :
+                      currentImageStyle = "";
+                      break;
+                    case 2 :
+                      currentImageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+                      break;
+                    case 3 :
+                      currentImageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+                      break;
+                    case 4 :
+                      currentImageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+                      break;
+                  }
+                  break;
+                } else if (idea.images.length == 0){
+                  currentImage = "";
+                  currentImageStyle = "";
+                  break;
                 }
-              });
+              }
+              var blockDescription = idea.name.charAt(0).toUpperCase() + idea.name.slice(1) + " solves the problem of " + idea.problem + " by " + idea.description + ".";
+              return [
+                idea['name'], //String
+                blockDescription, //String
+                reviewScores[idea.id.toString()], //array of two numbers
+                idea['inventorName'],
+                currentImage,
+                currentImageStyle
+              ];
+            });
 
-              accountPictures = _.without(accountPictures, "");
-              IdeaImage.find({"_id" : {$in : accountPictures}}, function(err, profilePictures){
+            var inventorList = _.map(ideaList, function(idea){
+              return idea[3];
+            })
+
+            Account.find({"username" : {$in : inventorList}},
+              function(err, accounts){
                 if(err){ console.log("error is " + err)}
-                if(profilePictures){
-                  //find which ideaList item is connected to the right profile picture
-                  for(var j=0; j < ideaList.length; j++){
-                    //find the account with the right username
-                    for(var k = 0; k < accounts.length; k++){
-                      if(accounts[k].username == ideaList[j][3]){
-                        //find the profile picture with the id that matches the accounts
-                        // first profile picture ID and attach it to the ideaList
-                        if(accounts[k].headshots && accounts[k].headshots[0]){
-                          for(var n = 0; n < profilePictures.length; n++){
-                            if(profilePictures[n]["id"].toString() == accounts[k].headshots[0].toString()
-                              && profilePictures[n]["amazonURL"]){
-                              ideaList[j].push(profilePictures[n]["amazonURL"]);
-                              var creatorHeadshotStyle = "";
-                              switch (profilePictures[n]["orientation"]) {
-                                case 1 :
-                                  ideaList[j].push("");
-                                  break;
-                                case 3 :
-                                  ideaList[j].push("-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);");
-                                  break;
-                                case 6 :
-                                  ideaList[j].push("-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);");
-                                  break;
-                                case 8 :
-                                  ideaList[j].push("-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);");
-                                  break;
+                var accountPictures = _.map(accounts, function(account){
+                  if(account.headshots){
+                    return account.headshots[0];
+                  } else {
+                    return "";
+                  }
+                });
+
+                accountPictures = _.without(accountPictures, "");
+                IdeaImage.find({"_id" : {$in : accountPictures}}, function(err, profilePictures){
+                  if(err){ console.log("error is " + err)}
+                  if(profilePictures){
+                    //find which ideaList item is connected to the right profile picture
+                    for(var j=0; j < ideaList.length; j++){
+                      //find the account with the right username
+                      for(var k = 0; k < accounts.length; k++){
+                        if(accounts[k].username == ideaList[j][3]){
+                          //find the profile picture with the id that matches the accounts
+                          // first profile picture ID and attach it to the ideaList
+                          if(accounts[k].headshots && accounts[k].headshots[0]){
+                            for(var n = 0; n < profilePictures.length; n++){
+                              if(profilePictures[n]["id"].toString() == accounts[k].headshots[0].toString()
+                                && profilePictures[n]["amazonURL"]){
+                                ideaList[j].push(profilePictures[n]["amazonURL"]);
+                                var creatorHeadshotStyle = "";
+                                switch (profilePictures[n]["orientation"]) {
+                                  case 1 :
+                                    ideaList[j].push("");
+                                    break;
+                                  case 3 :
+                                    ideaList[j].push("-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);");
+                                    break;
+                                  case 6 :
+                                    ideaList[j].push("-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);");
+                                    break;
+                                  case 8 :
+                                    ideaList[j].push("-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);");
+                                    break;
+                                }
+
                               }
-
                             }
+                          } else {
+                            ideaList[j].push("");
+                            ideaList[j].push("");
                           }
-                        } else {
-                          ideaList[j].push("");
-                          ideaList[j].push("");
-                        }
 
-                        //tack on the account nick name to display in the block
-                        if(accounts[k].nickname){
-                          ideaList[j].push(accounts[k].nickname);
-                        } else {
-                          ideaList[j].push("User");
+                          //tack on the account nick name to display in the block
+                          if(accounts[k].nickname){
+                            ideaList[j].push(accounts[k].nickname);
+                          } else {
+                            ideaList[j].push("User");
+                          }
+
                         }
 
                       }
-
                     }
-                  }
 
-                  res.render('pages/ideas', {
-                    csrfToken: req.csrfToken(),
-                    user : req.user || {} || {},
-                    headshot : headshotURL,
-                    headshotStyle : headshotStyle,
-                    ideas : ideaList
-                  });
-                } else {
-                  res.render('pages/ideas', {
-                    csrfToken: req.csrfToken(),
-                    user : req.user || {} || {},
-                    headshot : headshotURL,
-                    headshotStyle : headshotStyle,
-                    ideas : ideaList
-                  });
-                }
-              });
-            }
-          )
+                    res.render('pages/ideas', {
+                      csrfToken: req.csrfToken(),
+                      user : req.user || {} || {},
+                      headshot : headshotURL,
+                      headshotStyle : headshotStyle,
+                      ideas : ideaList,
+                      reviewScores : reviewScores
+                    });
+                  } else {
+                    res.render('pages/ideas', {
+                      csrfToken: req.csrfToken(),
+                      user : req.user || {} || {},
+                      headshot : headshotURL,
+                      headshotStyle : headshotStyle,
+                      ideas : ideaList,
+                      reviewScores : reviewScores
+                    });
+                  }
+                });
+              }
+            );
+          });
         });
-      });
+      }); //end of idea seed query
     });
 });
 

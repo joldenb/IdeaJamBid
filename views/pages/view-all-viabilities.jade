@@ -20,6 +20,7 @@ html
             .col-xs-10
               a.viability-title-link
                 h3 #{viability.name.charAt(0).toUpperCase() + viability.name.slice(1)}
+                img(src="/question-mark.png")
           .row.viability-scores-and-problems
             if currentReview[scoreName]
               .col-xs-4.viability-score.specific-score-column

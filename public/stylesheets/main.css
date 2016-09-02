@@ -318,7 +318,21 @@ table.suggestion-table .col-md-4 {
 
 .title-description.view-all-ideas, .title-description.inventor-block {
   height : 35%;
-  padding-left: 1em;
+  padding-left: 1em;  
+}
+
+.view-all-idea-description {
+  height: 5em;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  overflow: hidden;  
+}
+
+.title-description.view-all-ideas h3 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
 }
 
 .footer.view-all-ideas {
