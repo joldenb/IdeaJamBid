@@ -464,9 +464,14 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                     ideaLink = "";
                   }
 
+                  var blockDescription;
+                  if(idea.name){
+                    blockDescription = idea.name.charAt(0).toUpperCase() + idea.name.slice(1) + " solves the problem of " + idea.problem + " by " + idea.description + ".";
+                  }
+
                   return [
                     idea['name'], //String
-                    idea['description'], //String
+                    blockDescription || 'View profile for description', //String
                     wasteValueScores, //array of two numbers
                     idea['inventorName'],
                     currentImage || "",
@@ -524,12 +529,15 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
 
                                   }
                                 }
-                                //tack on the account nick name to display in the block
-                                if(accounts[k].nickname){
-                                  ideaList[j].push(accounts[k].nickname);
-                                } else {
-                                  ideaList[j].push("User");
-                                }
+                              } else {
+                                ideaList[j].push("") // no image url
+                                ideaList[j].push("") // no image style
+                              }
+                              //tack on the account nick name to display in the block
+                              if(accounts[k].nickname){
+                                ideaList[j].push(accounts[k].nickname);
+                              } else {
+                                ideaList[j].push("User");
                               }
                             }
 

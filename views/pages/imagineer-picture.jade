@@ -226,7 +226,7 @@ html
     });
 
     $("a.network-link").click(function(event){
-      var urlPath = $(this).text().split(" ").join("-")
+      var urlPath = $(this).text();
       window.location.pathname = "/jam/" + urlPath;
     });
 

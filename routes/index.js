@@ -392,7 +392,7 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
   }
 
 
-  Account.find({"nickname" : userNickname}, function(err, accounts){
+  Account.find({"nickname" : {$regex : ".*"+userNickname+".*"}}, function(err, accounts){
 
     if (err || accounts.length == 0){
       console.log('Error is ' + err);
