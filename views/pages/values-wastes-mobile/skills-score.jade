@@ -67,3 +67,20 @@ html
         $('#formSkills').submit();
       }
     });
+
+    $("a.btn.btn-industry.btn-lg").click(function(event){
+      event.preventDefault();
+      
+      if(valueEntered){
+        $.post('/skills-mobile', 
+        {
+          _csrf : $('[name="_csrf"]').val(),
+          "skillsSliderOneValue" : $("#slider").slider("value")
+        },
+        function(data, response) {
+          window.location = '/skills-problem';
+        });
+      } else {
+        window.location = '/skills-problem';
+      }
+    })

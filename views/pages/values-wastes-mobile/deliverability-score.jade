@@ -25,7 +25,7 @@ html
             .sliderLabel
             #slider
           .save-buttons
-            a.btn.btn-industry.btn-lg(href='/deliverability-problem') Describe an Imperfection
+            a.btn.btn-industry.btn-lg Describe an Imperfection
             button.btn.btn-success.btn-lg Save
 
   
@@ -67,3 +67,20 @@ html
         $('#formDeliverability').submit();
       }
     });
+
+    $("a.btn.btn-industry.btn-lg").click(function(event){
+      event.preventDefault();
+      
+      if(valueEntered){
+        $.post('/deliverability-mobile', 
+        {
+          _csrf : $('[name="_csrf"]').val(),
+          "deliverSliderOneValue" : $("#slider").slider("value")
+        },
+        function(data, response) {
+          window.location = '/deliverability-problem';
+        });
+      } else {
+        window.location = '/deliverability-problem';
+      }
+    })

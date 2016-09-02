@@ -26,7 +26,7 @@ html
             #affordSliderOne
           .save-buttons
             .row
-              a.btn.btn-industry.btn-lg(href='/affordability-problem') Describe an Imperfection
+              a.btn.btn-industry.btn-lg Describe an Imperfection
             .row
               button.btn.btn-success.btn-lg Save
 
@@ -69,3 +69,18 @@ html
         $('#formAffordability').submit();
       }
     });
+
+    $("a.btn.btn-industry.btn-lg").click(function(event){
+      event.preventDefault();
+
+      if(valueEntered){
+        var sliderOneValue = $("#affordSliderOne").slider("value");
+        var inputOne = $("<input>")
+               .attr("type", "hidden")
+               .attr("name", "affordSliderOneValue").val(sliderOneValue);
+        var stop;
+        //$('#formAffordability').append($(inputOne)).submit();
+      } else {
+        window.location = "/affordability-problem";
+      }
+    })

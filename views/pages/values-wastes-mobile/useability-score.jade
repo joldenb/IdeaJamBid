@@ -25,7 +25,7 @@ html
             .sliderLabel
             #slider
           .save-buttons
-            a.btn.btn-industry.btn-lg(href='/useability-problem') Describe an Imperfection
+            a.btn.btn-industry.btn-lg Describe an Imperfection
             button.btn.btn-success.btn-lg Save
 
   
@@ -67,3 +67,20 @@ html
         $('#formUseability').submit();
       }
     });
+
+    $("a.btn.btn-industry.btn-lg").click(function(event){
+      event.preventDefault();
+      
+      if(valueEntered){
+        $.post('/useability-mobile', 
+        {
+          _csrf : $('[name="_csrf"]').val(),
+          "useabilitySliderOneValue" : $("#slider").slider("value")
+        },
+        function(data, response) {
+          window.location = '/useability-problem';
+        });
+      } else {
+        window.location = '/useability-problem';
+      }
+    })

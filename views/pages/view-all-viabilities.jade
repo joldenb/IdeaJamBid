@@ -4,15 +4,12 @@ html
     include ../partials/head.jade
   body
     .container-fluid.view-all-viabilities
-      .row
-        .col-xs-2
-        .col-xs-8
+      .row.top-row
+        .col-xs-10
           h3 Viability Scores
         .col-xs-2
           a.close-viability(href="/ideas/#{idea.name}")
             img(src="/close_button.png" height="30" width="30")
-      .row
-        .col-sm-12
       each viability, index in viabilities
         - var scoreName = viability.reviewScore
         - var problem = viability.reviewProb
@@ -24,13 +21,13 @@ html
               a.viability-title-link
                 h3 #{viability.name.charAt(0).toUpperCase() + viability.name.slice(1)}
           .row.viability-scores-and-problems
-            .col-xs-4.viability-score
-              if currentReview[scoreName]
-                .specific-score-column            
-                  a(href='/' + viability.name + '-score')
-                    h3.specific-viability-score #{currentReview[scoreName]} 
-                    img(src="/pencil.png" height="20" width="20")
-              else 
+            if currentReview[scoreName]
+              .col-xs-4.viability-score.specific-score-column
+                a(href='/' + viability.name + '-score')
+                  h3.specific-viability-score #{currentReview[scoreName]} 
+                  img(src="/pencil.png")
+            else 
+              .col-xs-4.viability-score
                 a.btn.btn-lg(href="/" + viability.name + "-score")
                   p Score
             .col-xs-8

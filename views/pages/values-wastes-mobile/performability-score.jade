@@ -67,3 +67,20 @@ html
         $('#formPerformability').submit();
       }
     });
+
+    $("a.btn.btn-industry.btn-lg").click(function(event){
+      event.preventDefault();
+      
+      if(valueEntered){
+        $.post('/performability-mobile', 
+        {
+          _csrf : $('[name="_csrf"]').val(),
+          "perfSliderOneValue" : $("#slider").slider("value")
+        },
+        function(data, response) {
+          window.location = '/performability-problem';
+        });
+      } else {
+        window.location = '/performability-problem';
+      }
+    })

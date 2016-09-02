@@ -67,3 +67,20 @@ html
         $('#formImmaturity').submit();
       }
     });
+
+    $("a.btn.btn-industry.btn-lg").click(function(event){
+      event.preventDefault();
+      
+      if(valueEntered){
+        $.post('/immaturity-mobile', 
+        {
+          _csrf : $('[name="_csrf"]').val(),
+          "immaturitySliderOneValue" : $("#slider").slider("value")
+        },
+        function(data, response) {
+          window.location = '/immaturity-problem';
+        });
+      } else {
+        window.location = '/immaturity-problem';
+      }
+    })

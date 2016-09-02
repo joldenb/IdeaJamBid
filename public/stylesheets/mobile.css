@@ -131,13 +131,19 @@
 		display : inline;
 	}
 
+	.view-all-viabilities .top-row {
+		margin-bottom: 0;
+	}
+
 	.specific-score-column {
-		margin-top: 1em;
-		padding: 2em .5em;	
+		text-align: center;
+	}
+
+	.specific-score-column img{
+		width: 40%;
 	}
 
 	.specific-imperfection-column {
-    padding: 1.5em .5em;
     margin: 0 !important;
   }
 
@@ -221,6 +227,7 @@
 
   .view-all-viabilities .viability-titles h3 {
   	text-decoration: underline;
+  	padding-left:1em;
   }
 
   .viability-icon {
