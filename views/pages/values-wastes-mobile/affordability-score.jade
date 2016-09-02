@@ -6,16 +6,17 @@ html
     .container-fluid.scoreIdea
       .row
         .col-xs-2
+          img.viability-icon(src="/" + viabilityIcon + ".png")
         .col-xs-8
           h2 Affordability
         .col-xs-2
           a.close-viability(href="/view-all-viabilities")
             img(src="/close_button.png" height="30" width="30")
       .row
-        h4.viability-question
-          | Will the #{idea.name} stay within reasonable cost expectations when solving the problem of #{idea.name}?
-        br
         form.mobile-viability-form(role='form', id="formAffordability" action="/affordability-mobile", method="post", data-idea-doc=idea)
+          h4.viability-question
+            | Will the #{idea.name} stay within reasonable cost expectations when solving the problem of #{idea.name}?
+          br
           input(type="hidden", name="_csrf", value="#{csrfToken}")
           .slider-container
             .slider-end-labels
@@ -24,8 +25,10 @@ html
             #affordLabelOne.sliderLabel
             #affordSliderOne
           .save-buttons
-            button.btn.btn-success.btn-lg Save
-            a.btn.btn-success.btn-lg(href='/affordability-problem') Describe an Imperfection
+            .row
+              a.btn.btn-industry.btn-lg(href='/affordability-problem') Describe an Imperfection
+            .row
+              button.btn.btn-success.btn-lg Save
 
   
   include ../../partials/js-includes.jade

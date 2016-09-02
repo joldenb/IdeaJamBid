@@ -6,16 +6,17 @@ html
     .container-fluid.scoreIdea
       .row
         .col-xs-2
+          img.viability-icon(src="/" + viabilityIcon + ".png")
         .col-xs-8
           h2 Deliverability
         .col-xs-2
           a.close-viability(href="/view-all-viabilities")
             img(src="/close_button.png" height="30" width="30")
       .row
-        h4.viability-question
-          | Will the #{idea.name} be ready on demand when and where the user wants it to solve the problem of #{idea.problem}?
-        br
         form.mobile-viability-form(role='form', id="formDeliverability" action="/deliverability-mobile", method="post", data-idea-doc=idea)
+          h4.viability-question
+            | Will the #{idea.name} be ready on demand when and where the user wants it to solve the problem of #{idea.problem}?
+          br
           input(type="hidden", name="_csrf", value="#{csrfToken}")
           .slider-container
             .slider-end-labels
@@ -24,8 +25,8 @@ html
             .sliderLabel
             #slider
           .save-buttons
+            a.btn.btn-industry.btn-lg(href='/deliverability-problem') Describe an Imperfection
             button.btn.btn-success.btn-lg Save
-            a.btn.btn-success.btn-lg(href='/deliverability-problem') Describe an Imperfection
 
   
   include ../../partials/js-includes.jade

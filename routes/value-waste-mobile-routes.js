@@ -151,11 +151,22 @@ var viabilities = [
     }
   ];
 
+var getViabilityIcon = function getViabilityIcon(problemArea){
+  for (var via in viabilities) {
+    if(viabilities[via]["reviewProb"]==problemArea && !viabilities[via]['iconId']) {
+      return viabilities[via].prefix + "Icon";
+    } else if(viabilities[via]["reviewProb"]==problemArea && viabilities[via]['iconId']){
+      return viabilities[via]['iconId'];
+    }
+  }
+};
+
 var getMobileScorePage = function getMobileScorePage(req, res, problemArea, templateRoute){
   if(!req.session.idea){
     res.redirect('/');
     return;
   }
+  var viabilityIcon = getViabilityIcon(problemArea);
   IdeaSeed.findById(req.session.idea,function(err, idea){
     IdeaProblem.find({"ideaSeed" : idea.id, "creator" : req.user.username, problemArea : problemArea}, function(err, problems){
       IdeaReview.find({"reviewer" : req.user.username, "ideaSeedId" : idea.id}, function(err, currentReview){
@@ -167,6 +178,7 @@ var getMobileScorePage = function getMobileScorePage(req, res, problemArea, temp
             user : req.user || {},
             idea : idea,
             problems : problems,
+            viabilityIcon : viabilityIcon,
             currentReview :  currentReview[0]
           });
         // if no review by this user for this idea
@@ -184,6 +196,7 @@ var getMobileProblemPage = function getMobileProblemPage(req, res, problemArea, 
     res.redirect('/view-all-ideas');
     return;
   }
+  var viabilityIcon = getViabilityIcon(problemArea);
   IdeaSeed.findById(req.session.idea,function(err, idea){
     IdeaProblem.find({"ideaSeed" : idea.id, problemArea : problemArea}, function(err, problems){
       var currentReviewerProblem;
@@ -202,6 +215,7 @@ var getMobileProblemPage = function getMobileProblemPage(req, res, problemArea, 
             user : req.user || {},
             idea : idea,
             problems : problems,
+            viabilityIcon : viabilityIcon,
             currentReviewerProblem : currentReviewerProblem,
             currentReview :  currentReview[0]
           });
@@ -329,6 +343,11 @@ router.get('/view-all-viabilities', csrfProtection, function(req, res) {
     return;
   }
 
+  for (var via in viabilities) {
+    if(!viabilities[via]['iconId']) {
+       viabilities[via]['iconId'] = viabilities[via].prefix + "Icon";
+    }
+  }
   ideaSeedHelpers.getUserHeadshot(req).then(function(headshotData){
     var headshotURL = headshotData['headshotURL'];
     var headshotStyle = headshotData['headshotStyle'];

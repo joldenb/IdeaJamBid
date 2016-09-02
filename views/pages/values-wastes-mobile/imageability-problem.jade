@@ -6,6 +6,7 @@ html
     .container-fluid.scoreIdea
       .row
         .col-xs-2
+          img.viability-icon(src="/" + viabilityIcon + ".png")
         .col-xs-8
           h2 Imageability
         .col-xs-2
@@ -29,7 +30,7 @@ html
                 li
                   h5.problem-text #{index + 1} : #{problem.text}
                   if problem.identifier
-                    a.btn.btn-default.problem-solve-button(href="/imperfection-profile/" + problem.identifier) Solve this!
+                    a.btn.btn-electric.problem-solve-button(href="/imperfection-profile/" + problem.identifier) Solve this!
           else
             p <i>None yet, enter the first one!</i>
           .save-buttons

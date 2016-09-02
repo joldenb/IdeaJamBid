@@ -1174,3 +1174,27 @@ button.suggestion-tactics, button.suggestion-targets {
 .jamNav li {
   display: inline-block !important;  
 }
+
+.btn-vision {
+  background-color: #AFDDD1; 
+}
+
+.btn-electric {
+  background-color: #D6DE26;
+  color:#414142;
+}
+
+.btn-electric:hover{
+  color : #D6DE26;
+  background-color:#414142;
+}
+
+.btn-industry{
+  background-color: #414142;
+  color: #EAE7DE;
+}
+
+.btn-industry:hover{
+  background-color: #EAE7DE;
+  color: #414142;
+}

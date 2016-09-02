@@ -3,7 +3,7 @@ html
   head
     include ../partials/head.jade
   body
-    .container-fluid.scoreIdea.view-all-viabilities
+    .container-fluid.view-all-viabilities
       .row
         .col-xs-2
         .col-xs-8
@@ -17,30 +17,174 @@ html
         - var scoreName = viability.reviewScore
         - var problem = viability.reviewProb
         .row
-          .row
-            .col-xs-12
-              a(href="")
-                h3 #{viability.name}
-          .row
+          .row.viability-titles
+            .col-xs-2
+              img.viability-icon(src="/" + viability['iconId'] + ".png")
+            .col-xs-10
+              a.viability-title-link
+                h3 #{viability.name.charAt(0).toUpperCase() + viability.name.slice(1)}
+          .row.viability-scores-and-problems
             .col-xs-4.viability-score
               if currentReview[scoreName]
-                h3.specific-viability-score #{currentReview[scoreName]} 
-                a(href='/' + viability.name + '-score')
-                  img(src="/pencil.png" height="20" width="20")
+                .specific-score-column            
+                  a(href='/' + viability.name + '-score')
+                    h3.specific-viability-score #{currentReview[scoreName]} 
+                    img(src="/pencil.png" height="20" width="20")
               else 
                 a.btn.btn-lg(href="/" + viability.name + "-score")
                   p Score
             .col-xs-8
               if problems[problem]
-                .row
-                  h4.viability-problem-statement #{problems[problem]['text'].substring(0,15)+ "..."}
+                .row.specific-imperfection-column
                   a(href='/' + viability.name + '-problem')
-                    img(src="/pencil.png" height="20" width="20")
+                    .col-xs-9
+                      h4.viability-problem-statement #{problems[problem]['text'].substring(0,15)+ "..."}
+                    .col-xs-3
+                      img.edit-imperfection(src="/pencil.png")
                 .row.make-suggestion
-                  a.btn(href='/imperfection-profile/' + problems[problem]['identifier']) Suggestion a solution!
+                  a.btn.btn-electric(href='/imperfection-profile/' + problems[problem]['identifier']) Suggestion a solution!
               else 
-                a.btn.btn-lg(href="/" + viability.name + "-problem")
+                a.btn.btn-lg.add-imperfection-btn.btn-industry(href="/" + viability.name + "-problem")
                   p Add imperfection
+
+  #descrModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Viability
+        .modal-body
+          h4 Will the #{idea.name} stay within reasonable cost expectations when solving the problem of #{idea.name}?
+        .modal-footer
+          button.btn.btn-electric.btn-lg(data-dismiss="modal") Ok
+
 
   include ../partials/js-includes.jade
   script(type="text/javascript").
+    $(".viability-title-link").click(function(event){
+      switch($(this).text().toLowerCase()){
+        case "performability" : 
+          $("#descrModal .modal-title")
+            .empty()
+            .append("<h2>" + $(this).text() + "</h2>");
+          $("#descrModal .modal-body")
+            .empty()
+            .append("<h4>Will the !{idea.name} effectively work to solve the problem of !{idea.problem}?</h4>");
+          break;
+        case "affordability" : 
+          $("#descrModal .modal-title")
+            .empty()
+            .append("<h2>" + $(this).text() + "</h2>");
+          $("#descrModal .modal-body")
+            .empty()
+            .append("<h4>Will the #{idea.name} stay within reasonable cost expectations when solving the problem of #{idea.problem}?</h4>");
+          break;
+        case "featurability" : 
+          $("#descrModal .modal-title")
+            .empty()
+            .append("<h2>" + $(this).text() + "</h2>");
+          $("#descrModal .modal-body")
+            .empty()
+            .append("<h4>Will the #{idea.name} provide enough added benefit to solve the problem of #{idea.problem}?</h4>");
+          break;
+        case "deliverability" : 
+          $("#descrModal .modal-title")
+            .empty()
+            .append("<h2>" + $(this).text() + "</h2>");
+          $("#descrModal .modal-body")
+            .empty()
+            .append("<h4>Will the #{idea.name} be ready on demand when and where the user wants it to solve the problem of #{idea.problem}?</h4>");
+          break;
+        case "useability" : 
+          $("#descrModal .modal-title")
+            .empty()
+            .append("<h2>" + $(this).text() + "</h2>");
+          $("#descrModal .modal-body")
+            .empty()
+            .append("<h4>Will the #{idea.name} be quickly and easily learned and implemented when solving the problem of #{idea.problem}?</h4>");
+          break;
+        case "maintainability" : 
+          $("#descrModal .modal-title")
+            .empty()
+            .append("<h2>" + $(this).text() + "</h2>");
+          $("#descrModal .modal-body")
+            .empty()
+            .append("<h4>How easy will the #{idea.name} be to keep in service when solving the problem of #{idea.problem}?</h4>");
+          break;
+        case "durability" : 
+          $("#descrModal .modal-title")
+            .empty()
+            .append("<h2>" + $(this).text() + "</h2>");
+          $("#descrModal .modal-body")
+            .empty()
+            .append("<h4>Is the #{idea.name} robust enough to withstand abuse when solving the problem of #{idea.problem}?</h4>");
+          break;
+        case "imageability" : 
+          $("#descrModal .modal-title")
+            .empty()
+            .append("<h2>" + $(this).text() + "</h2>");
+          $("#descrModal .modal-body")
+            .empty()
+            .append("<h4>Will the #{idea.name} convey an image of quality and prestige when solving the problem of #{idea.problem}?</h4>");
+          break;
+        case "complexity" : 
+          $("#descrModal .modal-title")
+            .empty()
+            .append("<h2>" + $(this).text() + "</h2>");
+          $("#descrModal .modal-body")
+            .empty()
+            .append("<h4>Will the #{idea.name} require a large number of steps to produce, assemble, ship or use to solve the problem of #{idea.problem}?</h4>");
+          break;
+        case "precision" : 
+          $("#descrModal .modal-title")
+            .empty()
+            .append("<h2>" + $(this).text() + "</h2>");
+          $("#descrModal .modal-body")
+            .empty()
+            .append("<h4>Will the #{idea.name} require specific timing, precise sequence or much practice to solve the problem of #{idea.problem}?</h4>");
+          break;
+        case "variability" : 
+          $("#descrModal .modal-title")
+            .empty()
+            .append("<h2>" + $(this).text() + "</h2>");
+          $("#descrModal .modal-body")
+            .empty()
+            .append("<h4>Will use or production of the #{idea.name} change based upon specific scenarios or circumstances when solving the problem of #{idea.problem}?</h4>");
+          break;
+        case "sensitivity" : 
+          $("#descrModal .modal-title")
+            .empty()
+            .append("<h2>" + $(this).text() + "</h2>");
+          $("#descrModal .modal-body")
+            .empty()
+            .append("<h4>Will usage or the environment easily disturb or damage the #{idea.name} while solving the problem of #{idea.problem}?</h4>");
+          break;
+        case "immaturity" : 
+          $("#descrModal .modal-title")
+            .empty()
+            .append("<h2>" + $(this).text() + "</h2>");
+          $("#descrModal .modal-body")
+            .empty()
+            .append("<h4>Will the design, manufacture, or production of the #{idea.name} require new or unproven technology, processes or materials to solve the problem of #{idea.problem}?</h4>");
+          break;
+        case "dangerous" : 
+          $("#descrModal .modal-title")
+            .empty()
+            .append("<h2>" + $(this).text() + "</h2>");
+          $("#descrModal .modal-body")
+            .empty()
+            .append("<h4>Will the #{idea.name} require human or environmental protections to reduce potential harm?</h4>");
+          break;
+        case "skills" : 
+          $("#descrModal .modal-title")
+            .empty()
+            .append("<h2>" + $(this).text() + "</h2>");
+          $("#descrModal .modal-body")
+            .empty()
+            .append("<h4>Will the #{idea.name} require many specific skills to solve the problem of #{idea.problem}?</h4>");
+          break;
+      }
+      $("#descrModal").modal('show');
+    });
+

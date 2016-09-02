@@ -49,7 +49,7 @@
 	}
 
 	.view-all-viabilities .row {
-		margin: 0;
+		margin: 1em 0;
 	}
 
 	.view-all-viabilities .slider-container label {
@@ -85,6 +85,10 @@
   	padding: 0;
 	}
 
+	.slider-container {
+		margin-bottom:1em;
+	}
+
 	.navbar-brand img {
 		max-width: 180px;
 	}
@@ -115,31 +119,67 @@
     padding: 3%;
   }
 
-	.view-all-viabilities-mobile, .scoreIdea {
+	.view-all-viabilities-mobile, .scoreIdea .viability-scores-and-problems {
 		text-align: center;
+	}
+
+	.viability-scores-and-problems {
+		margin: 0 !important;
 	}
 
 	.view-all-viabilities .specific-viability-score {
 		display : inline;
 	}
 
+	.specific-score-column {
+		margin-top: 1em;
+		padding: 2em .5em;	
+	}
+
+	.specific-imperfection-column {
+    padding: 1.5em .5em;
+    margin: 0 !important;
+  }
+
+  .specific-imperfection-column div {
+  	padding: 0 !important;
+  }
+
+	.specific-imperfection-column:active {
+		border: 1px solid #414142;
+		border-radius: 5px;
+	}
+
+	.edit-imperfection {
+		width:50%;
+	}
+
+	.specific-score-column:active {
+		border: 1px solid #414142;
+		border-radius: 5px;
+	}
+
 	.view-all-viabilities .viability-score img{
 		vertical-align: initial;
 	}
 
-	.scoreIdea .close-viability img{
-		margin-top : 1em;
+	.close-viability img {
+		margin-top : 1.4em;
 	}
 
-	.view-all-viabilities .row.make-suggestion {
-		margin: 1em 0;
+	.scoreIdea .viability-icon {
+		margin-top: 1em;
+	}
+
+	.view-all-viabilities .row.make-suggestion{
+		margin: 1em 0 0 0 ;
 	}
 
 	.view-all-viabilities .viability-problem-statement {
 		margin : 0 1em;
 	}
 
-	.view-all-viabilities .viability-score {
+	.view-all-viabilities .specific-viability-score {
 		margin-top : 1em;
 	}	
 
@@ -147,17 +187,49 @@
 		padding-bottom: 10em;
 	}
 
+	.save-buttons {
+		text-align: center;
+	}
+
   .mobile-viability-form .save-buttons .btn{
-  	margin: 1em;
+  	margin: 1em 0;
   }
 
+  .mobile-viability-form .save-buttons .btn.btn-success {
+  	width: 100%;
+	}
   .mobile-viability-form {
   	max-width:90%;
+  	margin-top:2em;
   }
 
   .slider-end-labels {
   	padding-bottom: 2em;
   }
+
+  .scoreIdea {
+  	
+  }
+
+  .viability-score p, .add-imperfection-btn p {
+  	margin: 0;
+  }
+
+  .view-all-viabilities .viability-titles {
+  	margin: 1.5em 0;
+  }
+
+  .view-all-viabilities .viability-titles h3 {
+  	text-decoration: underline;
+  }
+
+  .viability-icon {
+  	width: 4em;
+  }
+
+	.waste-value-problem-list li {
+		margin:1em 0;
+	}
 
 }
 
