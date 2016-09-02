@@ -280,5 +280,10 @@
     top: 25%;
     transform: initial;
   }
+
+  .problem-upvote-link {
+    text-align: center;
+  }
+
 }
 

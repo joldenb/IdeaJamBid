@@ -22,9 +22,9 @@ html
                 span.glyphicon.glyphicon-plus
 
         if idea.name && inventorName == user.username
-          h3 #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)} solves the problem of #[a(href='/introduce-idea') #{idea.problem}] by #[a(href='/accomplish') #{idea.description}].
+          h3 <b>#{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}</b> solves the <span class="problemColor">problem of #[a(href='/introduce-idea') #{idea.problem}]</span> by #[a(href='/accomplish') <span class="solutionColor">#{idea.description}]</span>.
         else if idea.name 
-          h3 #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)} solves the problem of #{idea.problem} by #{idea.description}.
+          h3 <b>#{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}</b> solves the <span class="problemColor">problem of #{idea.problem}</span> by <span class="solutionColor">#{idea.description}</span>.
         .row.mobile-only
           if inventorName != user.username
             .idea-summary-data#idea-summary-waste-values

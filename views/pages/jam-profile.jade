@@ -3,11 +3,23 @@ html
   head
     include ../partials/head.jade
   body#topSection
-    .header.navbar.navbar-default
+    .header.navbar.navbar-default.jamTopNav
       include ../partials/header.jade
 
+    if !networkImage
+      form(role='form', id="jamProfilePicForm" action="/add-network-profile-pic", method="post", enctype="multipart/form-data")
+        .form-group
+          h3 Upload a new Profile Picture
+          |  
+          input#profilePicButton(type="file", name="picture")
+          input(type="hidden", name="networkName", value="#{networkName}")
+          input(type="hidden", name="_csrf", value="#{csrfToken}")
+          br
+    else
+      img(class="networkProfilePic" src="#{networkImage}")
+
     .container.network-profile.jam-page
-      span.jamH2 #{networkName} 
+      span.jamH2
         .navbar.jamNav.desktopOnly
           .navbar-inner
             ul.nav
@@ -17,18 +29,6 @@ html
                 a(href='#imperfectionSection').underline Imperfections
               li
                 a(href='#suggestionSection').underline Suggestions      
-
-      if !networkImage
-        form(role='form', id="jamProfilePicForm" action="/add-network-profile-pic", method="post", enctype="multipart/form-data")
-          .form-group
-            h3 Upload a new Profile Picture
-            |  
-            input#profilePicButton(type="file", name="picture")
-            input(type="hidden", name="networkName", value="#{networkName}")
-            input(type="hidden", name="_csrf", value="#{csrfToken}")
-            br
-      else
-        img(class="networkProfilePic" src="#{networkImage}")
 
       //- h3 Jam Leaders
       //- each inventor, index in topInventors
@@ -75,7 +75,7 @@ html
       //-           - inventorAptitudeIds = topInventors[index + 2].aptitudes
       //-           include ../partials/inventor-block.jade
 
-      h3#ideaSection Top Jam Ideas
+      h3#ideaSection Top #{networkName} Ideas
       if ideas.length > 0
         each idea, index in ideas
           - var ideaName
@@ -130,7 +130,7 @@ html
         
       br
 
-      h3#imperfectionSection Top Imperfections
+      h3#imperfectionSection Top #{networkName} Imperfections
       .row.imperfection-row
         .idea-summary-data#idea-summary-problems
           ul.idea-summary-problem-list
@@ -143,7 +143,7 @@ html
 
       br
 
-      h3#suggestionSection Top Suggestions
+      h3#suggestionSection Top #{networkName} Suggestions
       .row.imperfection-row
         .idea-summary-data#idea-summary-problems
           ul.idea-summary-problem-list

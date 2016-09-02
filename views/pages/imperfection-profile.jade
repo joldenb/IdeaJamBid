@@ -6,55 +6,65 @@ html
   .header.navbar.navbar-default
     include ../partials/header.jade
 
-  .row.imperfection-summary
-    .col-sm-12
-      h1 #{problem.text}
-      h5 By: #{problemCreator.nickname}, #{problem.date}
-      .return-button
-        a.home-logout.btn.btn-default( href="/ideas/#{idea.name}") Idea Summary
-  .row.imperfection-summary
-    #existing-suggestion-list.edit-column.col-sm-6
-      h1 Suggestions
-      if( suggestions.length > 0)
-        ul
-          each suggestion, identifier in wholeSuggestionBlockInfo
-            li.row 
-              div.col-xs-12()
-                include ../partials/suggestion-summary-element.jade
-      else
-        ul
-          li.no-descriptions No Descriptions Yet
-    .col-sm-6
-      h1 Make a New Suggestion
-      h3#suggestion-question-header How will you:
-      form(role='form', id="formSuggestion" action="/suggestion-submit-new", method="post", data-idea-doc=idea)
-        .form-group
-          input(type="hidden", name="_csrf", value="#{csrfToken}")
-          div#suggestion-tactics(class="btn-group" role="group" aria-label="suggestionTactic" data-toggle="buttons")
-            h4.suggestion-number 1.
-            each value in tactics
-              label.btn.btn-primary.suggestion-tactics
-                input(type="checkbox" value=value)
-                | #{value}
+  .container
+    .row.imperfection-summary
+      h1 Improve 
+        a( href="/ideas/#{idea.name}") #{idea.name}  
+      span by: 
+        a.nickname( href="/imagineer/#{problemCreator.nickname}") 
+          img(src="/avatar.png" height="30" width="30") 
+          span #{problemCreator.nickname}   
+          if schoolNetwork
+            #[a(class="network-link" href="/jam/#{schoolNetwork}") #{schoolNetwork}]   
+          if companyNetwork
+            #[a(class="network-link" href="/jam/#{companyNetwork}") #{companyNetwork}]   
+          if locationNetwork
+            #[a(class="network-link" href="/jam/#{locationNetwork}") #{locationNetwork}]
+
+      h2 Solve the problem of <b>#{problem.text}:</b>
+      .col-sm-6
+
+        h3#suggestion-question-header How will you:
+        form(role='form', id="formSuggestion" action="/suggestion-submit-new", method="post", data-idea-doc=idea)
+          .form-group
+            input(type="hidden", name="_csrf", value="#{csrfToken}")
+            div#suggestion-tactics(class="btn-group" role="group" aria-label="suggestionTactic" data-toggle="buttons")
+              h4.suggestion-number 1.
+              each value in tactics
+                label.btn.btn-primary.suggestion-tactics
+                  input(type="checkbox" value=value)
+                  | #{value}
 
 
-          div#suggestion-targets(class="btn-group" role="group" aria-label="suggestionTarget" data-toggle="buttons")
-            h4.suggestion-number 2.
-            each value in targets
-              label.btn.btn-primary.suggestion-targets.disabled(style="background-color : #00A550 !important;")
-                input.target-inputs(type="checkbox" value=value disabled )
-                | #{value}
+            div#suggestion-targets(class="btn-group" role="group" aria-label="suggestionTarget" data-toggle="buttons")
+              h4.suggestion-number 2.
+              each value in targets
+                label.btn.btn-primary.suggestion-targets.disabled(style="background-color : #00A550 !important;")
+                  input.target-inputs(type="checkbox" value=value disabled )
+                  | #{value}
 
-        h3#end-of-suggestion-query to help solve the imperfection of #{problem.text}?
-          h4#suggestion-input-header.suggestion-number 3.
-          input.form-control.suggestion-input(type="text", name="suggestionText", value='The solution of ' disabled)
-          p.charactersRemaining
-        .modal-footer
-          label#add-picture-button.btn.btn-primary
-            input(type="file" name="picture" style="display: none;")
-            | Add a Picture
-          button#reset-suggestion-form.btn.btn-info Start Over
-          button.btn.btn-success#submit(type='submit') Save
+          h3#end-of-suggestion-query to help solve the imperfection of
+            h4#suggestion-input-header.suggestion-number 3.
+            input.form-control.suggestion-input(type="text", name="suggestionText", value='The solution of ' disabled)
+            p.charactersRemaining
+          .modal-footer
+            label#add-picture-button.btn.btn-primary
+              input(type="file" name="picture" style="display: none;")
+              | Add a Picture
+            button#reset-suggestion-form.btn.btn-info Start Over
+            button.btn.btn-success#submit(type='submit') Save
+      .col-sm-6
+        #existing-suggestion-list.edit-column
+          h1 Suggestions
+          if( suggestions.length > 0)
+            ul
+              each suggestion, identifier in wholeSuggestionBlockInfo
+                li.row 
+                  div.col-xs-12()
+                    include ../partials/suggestion-summary-element.jade
+          else
+            ul
+              li.no-descriptions No Descriptions Yet
 
 include ../partials/js-includes.jade
 script(src='/exif.js')

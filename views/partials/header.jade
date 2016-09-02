@@ -12,10 +12,10 @@
     ul(class="nav navbar-nav navbar-right")
       if Object.keys(user).length != 0
         li
-          span.userName Howdy #{user.nickname}
+          span.userName #{user.nickname}
       else
         li
-          span.userName Howdy Guest
+          span.userName Welcome Imagineer!
       if headshot && Object.keys(user).length != 0
         li.profile-headshot-list-item
           .profile-headshot
@@ -41,9 +41,9 @@
     a(class="navbar-brand" href="/")
       img(src="/IdeaJam-2.png")
     if Object.keys(user).length != 0
-      span.newUserName Howdy #{user.nickname}
+      span.newUserName #{user.nickname}
     else
-      span.newUserName Howdy Guest      
+      span.newUserName Welcome Imagineer!      
 
     if headshot
       button.btn.dropdown-toggle(type='button')

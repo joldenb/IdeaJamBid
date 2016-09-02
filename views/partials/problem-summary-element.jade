@@ -1,4 +1,4 @@
-.suggestion-element.variant-suggestion-block.problem-summary-block
+.suggestion-element.variant-suggestion-block.problem-summary-block.imperfection-element
   .title-description.variant-suggestion
     div.row.imperfection-row.problem-row(id="#{problem.identifier}")
       .col-sm-1.click-row
@@ -8,6 +8,11 @@
         else
           a(href='/imagineer/' + problem.wholeCreator.nickname)
             img(src="/avatar.png" height="50" width="50")
+
+      .col-sm-2.problem-row-padding.upvote
+        a(id="upvote-#{problem.identifier}" data-problem-id="#{problem.id}")
+          div.glyphicon.glyphicon-fire 
+        span #{problem.upvotes.length || 0}
 
       .col-sm-2.click-row.problem-row-padding
         span #{problem.wholeCreator.nickname}
@@ -19,11 +24,6 @@
       .col-sm-4.problem-row-padding.click-row
         if problem['text']
           div Description: #{problem.text}
-
-      .col-sm-2.problem-row-padding.upvote
-        a(id="upvote-#{problem.identifier}" data-problem-id="#{problem.id}")
-          div.glyphicon.glyphicon-fire 
-        span #{problem.upvotes.length || 0}
 
     
     script(type="text/javascript").

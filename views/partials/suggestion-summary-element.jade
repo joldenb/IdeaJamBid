@@ -1,35 +1,33 @@
 .suggestion-element.variant-suggestion-block.problem-summary-block
   .title-description.variant-suggestion
     div.row.imperfection-row(id="#{suggestion.document.identifier}")
-      .col-lg-1.click-row(style="height: 50px; max-width: 50px; background-image : url('" + suggestion.creatorProfilePic + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + suggestion.profilePicOrientation)
+
+      .col-sm-2.problem-row-padding.problem-upvote-link       
+        a(class="upvote-suggestion" id="upvote-#{suggestion.document.identifier}").glyphicon.glyphicon-fire  #{suggestion.document.upvotes.length || 0} <br> Upvote   
+      .col-sm-8.problem-row-padding
+        if suggestion.document.descriptions[0]
+          div.suggestionStyle Suggestion: The solution of #{suggestion.document.descriptions[0]} 
+          <br>
+          if suggestion.document.ideaSeed && suggestion.document.identifier
+            a(href='/component-profile/'+ suggestion.document.identifier)
+
+          div For: My Idea Name
+          div By: Inventor Name 
+            img(src="/avatar.png" height="15" width="15")             
+
+      .col-lg-2.click-row.problem-row-padding.problem-right-col
+        div.suggestionStyle By: #{suggestion.creatorNickname}
+
+        div.click-row(style="height: 50px; max-width: 50px; background-image : url('" + suggestion.creatorProfilePic + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + suggestion.profilePicOrientation)
+
         if(suggestion.creatorProfilePic)
           a(href='/imagineer/' + suggestion.creatorNickname)
         else
           a(href='/imagineer/' + suggestion.creatorNickname)
             img(src="/avatar.png" height="50" width="50")
 
-      .col-lg-2.click-row.problem-row-padding
-        span #{suggestion.creatorNickname}
-
-      .col-sm-3.problem-row-padding
         if suggestion.document['date']
-          span #{moment(suggestion.document.date).format('MM/DD/YY')}
-        //- if problem['date']
-        //-   div #{moment(problem.date).format('MM/DD/YYYY')}
-
-      .col-sm-4.problem-row-padding
-        if suggestion.document.category
-          div Category: #{suggestion.document.category}
-        if suggestion.document.descriptions[0]
-          div Description: #{suggestion.document.descriptions[0]}
-          if suggestion.document.ideaSeed && suggestion.document.identifier
-            a(href='/component-profile/'+ suggestion.document.identifier) More...
-
-
-      .col-sm-2.problem-row-padding.upvote
-        a(class="upvote-suggestion" id="upvote-#{suggestion.document.identifier}")
-          div.glyphicon.glyphicon-fire 
-        span #{suggestion.document.upvotes.length || 0}
+          div #{moment(suggestion.document.date).format('MM/DD/YY')}        
 
     include ../partials/js-includes.jade
     script(type="text/javascript").
@@ -38,7 +36,7 @@
         event.preventDefault();
         var selector = "#upvote-" + "!{suggestion.document.identifier}";
 
-        if ($.contains($(selector)[0], event.target)) {
+        if ($.contains($(selector)[0], event.target) || ($(selector)[0] == event.target)) {
           $.post('/upvote-suggestion', 
           {
             _csrf : $('[name="_csrf"]').val(),

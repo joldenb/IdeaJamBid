@@ -1139,7 +1139,7 @@ button.suggestion-tactics, button.suggestion-targets {
 }
 
 .imagineerProfilePic {
-  border-radius: 50px;
+
 }
 
 #componentsViewAllLink {
@@ -1211,4 +1211,59 @@ button.suggestion-tactics, button.suggestion-targets {
 .btn-industry:hover{
   background-color: #EAE7DE;
   color: #414142;
+}
+
+.nickname {
+  font-size: 1.2em;
+  font-family: Roboto Slab, serif;
+}
+
+.suggestion-element.variant-suggestion-block {
+  background-color: rgba(176, 221, 209, 0.33);
+}
+
+.imperfection-element {
+  background-color: rgba(199, 67, 69, 0.36) !important;
+}
+
+.problem-upvote-link {
+  font-size: 1.2em;
+  font-family: Roboto Slab, serif;
+}
+
+.problem-upvote-link div {
+  font-size: 1.2em;
+  font-family: Roboto Slab, serif;
+  cursor: pointer; cursor: hand;
+}
+
+.upvote-suggestion {
+  text-decoration: none !important;
+}
+
+.problem-right-col {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.problem-right-col div {
+  border-radius: 50px;
+  margin: 0 auto;
+}
+
+.problemColor {
+  color: #C64143;
+}
+
+.solutionColor {
+  color: #439d85;
+}
+
+.jamTopNav {
+  margin-bottom: 0;
+}
+
+.suggestionStyle {
+  font-size: 1.2em;
+  font-family: Roboto Slab, serif;
 }

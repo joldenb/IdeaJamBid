@@ -2983,6 +2983,12 @@ router.get('/begin-contributor-review', csrfProtection, function(req, res){
 ******************************************************************
 *****************************************************************/
 router.get('/imperfection-profile/:identifier', csrfProtection, function(req, res){
+  var masterSchoolNetworkList = [],
+      schoolNetwork = "",
+      masterCompanyNetworkList = [],
+      companyNetwork = "",
+      masterLocationNetworkList = [],
+      locationNetwork = "";
 
   //coming from jam page
   if (!req.session.idea && req.params.identifier) {
@@ -3013,6 +3019,42 @@ router.get('/imperfection-profile/:identifier', csrfProtection, function(req, re
           res.redirect('/');
           return;
         }
+
+        Network.find({}, function(err, networks){
+
+          _.each(networks, function(element, index, list){
+            if(element['type'] == 'school'){
+              masterSchoolNetworkList.push(element);
+              //get school name if it exists
+              if(problemCreator.networks
+                && problemCreator.networks['school']
+                && problemCreator.networks['school'].toString() == element['id'].toString()){
+                  schoolNetwork = element['name'];
+              }
+            }
+
+            if(element['type'] == 'company'){
+              masterCompanyNetworkList.push(element);
+              //get company name if it exists
+              if(problemCreator.networks
+                && problemCreator.networks['company']
+                && problemCreator.networks['company'].toString() == element['id'].toString()){
+                  companyNetwork = element['name'];
+              }
+            }
+
+            if(element['type'] == 'location'){
+              masterLocationNetworkList.push(element);
+              //get company name if it exists
+              if(problemCreator.networks
+                && problemCreator.networks['location']
+                && problemCreator.networks['location'].toString() == element['id'].toString()){
+                  locationNetwork = element['name'];
+              }
+            }
+          }); 
+        });
+
         Component.find({
           "problemID" : ideaProblem.id
           }, function(err, suggestions){
@@ -3082,7 +3124,10 @@ router.get('/imperfection-profile/:identifier', csrfProtection, function(req, re
                   user : req.user || {},
                   suggestions: suggestions,
                   targets: targetConstants,
-                  tactics: tacticConstants
+                  tactics: tacticConstants,
+                  schoolNetwork : schoolNetwork,
+                  locationNetwork : locationNetwork,
+                  companyNetwork : companyNetwork                  
                 });
               }); //end of idea image query
             }); // end of account query

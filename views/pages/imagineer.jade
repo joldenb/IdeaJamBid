@@ -10,7 +10,7 @@ html
     .row
       .col-sm-3
         if accountHeadshot
-          div(class="imagineerProfilePic" style="height: 100px; width: 100px; background-image : url('" + accountHeadshot.amazonURL + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + accountHeadshot.style)
+          div(class="imagineerProfilePic" style="height: 300px; max-width: 400px; background-image : url('" + accountHeadshot.amazonURL + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + accountHeadshot.style)
           
         else
           img(src="/avatar.png" height="100" width="100")
