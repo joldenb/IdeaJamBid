@@ -26,9 +26,13 @@ html
         else if idea.name 
           h3 #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)} solves the problem of #{idea.problem} by #{idea.description}.
         .row.mobile-only
-          .idea-summary-data#idea-summary-waste-values
-            a.btn.btn-default(type="button"  class="btn btn-default" href="/view-all-viabilities") Score Now
-            br
+          if inventorName != user.username
+            .idea-summary-data#idea-summary-waste-values
+              a.btn.btn-default(type="button"  class="btn btn-default" href="/view-all-viabilities") Score Now
+              br
+          else
+            .idea-summary-data#idea-summary-waste-values
+              h4 You can only score someone else's ideas (right now)
 
         .idea-summary-left
           h4#componentsHeader Components 
