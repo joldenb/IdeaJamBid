@@ -79,7 +79,7 @@ html
         $.post('/affordability-mobile', 
         {
           _csrf : $('[name="_csrf"]').val(),
-          "affordSliderOneValue" : $("#slider").slider("value")
+          "affordSliderOneValue" : $("#sliderOne").slider("value")
         },
         function(data, response) {
           window.location = "/affordability-problem";

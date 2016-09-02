@@ -200,6 +200,9 @@ var getMobileProblemPage = function getMobileProblemPage(req, res, problemArea, 
   IdeaSeed.findById(req.session.idea,function(err, idea){
     IdeaProblem.find({"ideaSeed" : idea.id, problemArea : problemArea}, function(err, problems){
       var currentReviewerProblem;
+      problems = _.filter(problems, function(problem){
+        return  problem.text || problem.text != "";
+      });
       _.each(problems, function(problem, index){
         if(problem.creator == req.user.username){
           currentReviewerProblem = problem;
