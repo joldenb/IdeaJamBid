@@ -22,28 +22,31 @@ html
                 h3 #{viability.name.charAt(0).toUpperCase() + viability.name.slice(1)}
                 img(src="/question-mark.png")
           .row.viability-scores-and-problems
-            if currentReview[scoreName]
+          if currentReview[scoreName]
+            .row.viability-scores-and-problems
               .col-xs-4.viability-score.specific-score-column
                 a(href='/' + viability.name + '-score')
                   h3.specific-viability-score #{currentReview[scoreName]} 
                   img(src="/pencil.png")
-            else 
-              .col-xs-4.viability-score
+              .col-xs-8
+                if problems[problem]
+                  .row.specific-imperfection-column
+                    a(href='/' + viability.name + '-problem')
+                      .col-xs-9
+                        h4.viability-problem-statement #{problems[problem]['text'].substring(0,15)+ "..."}
+                      .col-xs-3
+                        img.edit-imperfection(src="/pencil.png")
+                else
+                  a.btn.btn-lg.add-imperfection-btn.btn-industry(href="/" + viability.name + "-problem")
+                    p Add imperfection
+            if problems[problem]
+              .row.make-suggestion
+                a.btn.btn-electric(href='/imperfection-profile/' + problems[problem]['identifier']) Suggestion a solution!
+          else
+            .row.viability-scores-and-problems
+              .col-xs-12.viability-score
                 a.btn.btn-lg(href="/" + viability.name + "-score")
                   p Score
-            .col-xs-8
-              if problems[problem]
-                .row.specific-imperfection-column
-                  a(href='/' + viability.name + '-problem')
-                    .col-xs-9
-                      h4.viability-problem-statement #{problems[problem]['text'].substring(0,15)+ "..."}
-                    .col-xs-3
-                      img.edit-imperfection(src="/pencil.png")
-                .row.make-suggestion
-                  a.btn.btn-electric(href='/imperfection-profile/' + problems[problem]['identifier']) Suggestion a solution!
-              else 
-                a.btn.btn-lg.add-imperfection-btn.btn-industry(href="/" + viability.name + "-problem")
-                  p Add imperfection
 
   #descrModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
