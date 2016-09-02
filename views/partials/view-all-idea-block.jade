@@ -13,7 +13,7 @@
     else
       h3 #{ideaName || 'No Idea Name'}
     .userName 
-      p #{accountNickname || accountName || user.nickname}
+      p #{accountNickname || "No name available"}
     .suggestion-category
       if viabilityScore == 0
         p <b>Viability:</b> #[a(href=ideaLink) 'Score Now']
