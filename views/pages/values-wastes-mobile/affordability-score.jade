@@ -23,7 +23,7 @@ html
               span.no-way Expensive
               span.yes-way Economical
             #affordLabelOne.sliderLabel
-            #affordSliderOne
+            #sliderOne
           .save-buttons
             .row
               a.btn.btn-industry.btn-lg Describe an Imperfection
@@ -42,7 +42,7 @@ html
     ////////////////////////////////////////////
     // SET UP SLIDER ONE
     ////////////////////////////////////////////
-    $("#affordSliderOne").slider({
+    $("#sliderOne").slider({
       value: initialValue,
       min: min,
       max: max,
@@ -57,6 +57,8 @@ html
     $(".sliderLabel").text(labelArr[initialValue]);
     $(".sliderLabel" ).css("margin-left", (initialValue -1)/(max-min)*100+"%");
     $(".sliderLabel").css("left", "-50px");
+
+    $('#slider').draggable();
 
     $("button.btn-success").click(function(event){
       if(valueEntered){

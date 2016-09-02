@@ -56,6 +56,8 @@ html
     $(".sliderLabel" ).css("margin-left", (initialValue -1)/(max-min)*100+"%");
     $(".sliderLabel").css("left", "-50px");
 
+    $('#slider').draggable();
+
     $("button.btn-success").click(function(event){
       if(valueEntered){
         var sliderOneValue = $("#slider").slider("value");
