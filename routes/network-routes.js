@@ -426,6 +426,7 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                         break;
                       } else if (idea.images.length == 0){
                         currentImage = "";
+                        currentImageStyle = "";
                         break;
                       }
                     }

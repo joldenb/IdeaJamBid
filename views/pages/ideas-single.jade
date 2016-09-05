@@ -1205,8 +1205,9 @@ html
       var fr   = new FileReader;
       
       fr.onloadend = function() {
+        var exif = EXIF.readFromBinaryFile(this.result);
         if(file.size < 3000000){
-          getSignedRequest(file, csrf);
+          getSignedRequest(file, csrf, exif);
         } else if (file.size > 3000000){
           alert('Please choose an image smaller than 3 MB.')
         } else {
@@ -1220,14 +1221,14 @@ html
 
     };
 
-    function uploadFile(file, signedRequest, url, csrf){
+    function uploadFile(file, signedRequest, url, csrf, exif){
       const xhr = new XMLHttpRequest();
       xhr.open('PUT', signedRequest);
       xhr.onreadystatechange = function() {
         if(xhr.readyState === 4){
           if(xhr.status === 200 && (file.type=="application/pdf")){
             var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type,
-              "_csrf" : csrf };
+              "_csrf" : csrf, exif : exif };
             $.post('/receipt-upload', data , function(response, status){
               if(status == 200){
                 window.location.reload();
@@ -1244,7 +1245,7 @@ html
       xhr.send(file);
     }
 
-    function getSignedRequest(file, csrf){
+    function getSignedRequest(file, csrf,exif){
       const xhr = new XMLHttpRequest();
       xhr.open('GET', '/sign-s3?file-name='+file.name + '&file-type='+ file.type);
       xhr.onreadystatechange = function() {
@@ -1256,7 +1257,7 @@ html
             } else {
               response = JSON.parse(xhr.responseText);
             }
-            uploadFile(file, response.signedRequest, response.url, csrf);
+            uploadFile(file, response.signedRequest, response.url, csrf, exif);
           }
           else{
             alert('Could not get signed URL.');

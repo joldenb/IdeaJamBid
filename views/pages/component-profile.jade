@@ -176,7 +176,7 @@ html
                 button.btn.btn-info(data-dismiss="modal") Cancel
                 button.btn.btn-success(type='submit') Save
 
-
+  script(src='/exif.js')
   include ../partials/js-includes.jade
   script(type="text/javascript").
     $("#modalButton").click(function(){
@@ -249,31 +249,38 @@ html
       })
     });
 
-    if($("#fileInput").length > 0){
-      document.getElementById("fileInput").onchange = function(event) {
-        const files = document.getElementById('fileInput').files;
-        const file = files[0];
-        if(file == null){
-          return alert('No file selected.');
-        }
+    document.getElementById("fileInput").onchange = function(event) {
+      const files = document.getElementById('fileInput').files;
+      const file = files[0];
+      if(file == null){
+        return alert('No file selected.');
+      }
+      var fr   = new FileReader;
+      
+      fr.onloadend = function() {
+        // get EXIF data
+        var exif = EXIF.readFromBinaryFile(this.result);
 
         if(file.size < 3000000){
-          getSignedRequest(file);
+          getSignedRequest(file, exif);
         } else if (file.size > 3000000){
           alert('Please choose an image smaller than 3 MB.')
         } else {
           alert('An error ocurred with this image.')
         }
-      };
-    }
 
-    function uploadFile(file, signedRequest, url){
+      };
+      fr.readAsArrayBuffer(file); // read the file
+    }
+  
+
+    function uploadFile(file, signedRequest, url, exif){
       const xhr = new XMLHttpRequest();
       xhr.open('PUT', signedRequest);
       xhr.onreadystatechange = function() {
         if(xhr.readyState === 4){
           if(xhr.status === 200 && (file.type=="image/jpeg" || file.type=="image/png")){
-            var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type, "_csrf" : $('[name="_csrf"]').val(),
+            var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type, "_csrf" : $('[name="_csrf"]').val(, exif : exif),
             "componentProfilePage" : true, imageComponent : $("#image-component-identifier").val() };
             $.post('/add-component-image', data , function(response, status){
               window.location.replace(response["redirectURL"]);
@@ -287,7 +294,7 @@ html
       xhr.send(file);
     }
 
-    function getSignedRequest(file){
+    function getSignedRequest(file, exif){
       const xhr = new XMLHttpRequest();
       xhr.open('GET', '/sign-s3?file-name='+file.name + '&file-type='+ file.type);
       xhr.onreadystatechange = function() {
@@ -299,7 +306,7 @@ html
             } else {
               response = JSON.parse(xhr.responseText);
             }
-            uploadFile(file, response.signedRequest, response.url);
+            uploadFile(file, response.signedRequest, response.url, exif);
           }
           else{
             alert('Could not get signed URL.');
