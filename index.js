@@ -126,7 +126,7 @@ var limiter = new RateLimit({
 	}
 });
 
-
+console.log("node version: " + process.version);
 console.log("environment " + process.env.NODE_ENV);
 
 if(process.env.NODE_ENV == "production"){
