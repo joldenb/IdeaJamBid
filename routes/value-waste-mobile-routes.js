@@ -597,7 +597,7 @@ router.get('/sensitivity-problem', csrfProtection, function(req, res) {
 });
 
 router.post('/sensitivity-mobile', csrfProtection, function(req, res) {
-  postViabilityFormInfo(req,res, "sensitivitySliderOneValue", "sensitivityOne", "sensitivityProblem", "Area : Sensitivity"), '/immaturity-score';
+  postViabilityFormInfo(req,res, "sensitivitySliderOneValue", "sensitivityOne", "sensitivityProblem", "Area : Sensitivity", '/immaturity-score');
 });
 ////////////////////////////////////////////////
 // Immaturity
