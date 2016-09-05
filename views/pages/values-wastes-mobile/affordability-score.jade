@@ -30,7 +30,7 @@ html
               a.btn.btn-industry.btn-lg Describe an Imperfection
             .row
               .col-xs-6
-                button.btn.btn-vision.btn-lg(href='/view-all-viabilities') View All
+                button.btn.btn-vision.btn-lg View All
               .col-xs-6
                 button.btn.btn-success.btn-lg Continue
 
@@ -100,3 +100,9 @@ html
         $(".mobile-viability-help-text").show(300);
       }
     });
+
+    $(".btn.btn-vision").click(function(event){
+      event.preventDefault();
+      window.location = '/view-all-viabilities';
+    })
+
