@@ -51,7 +51,7 @@
 	}
 
 	.close-viability img {
-		margin-top : 1.4em;
+		margin-top : 27px;
 	}
 
 	.scoreIdea .viability-icon {
@@ -115,6 +115,10 @@
   	display: inline-block;
   }
 
+	.viability-title-link {
+		padding-left: 0;
+	}
+
   .view-all-viabilities .viability-title-link img, .viability-title-link img {
   	width:25px;
   	margin-top:-1em;
@@ -142,7 +146,6 @@
 	.scoreIdea h2 {
 		font-size: 23px;
 		padding-top: .5em;
-		padding-left: .5em;
 	}
 
 	.scoreIdea {
