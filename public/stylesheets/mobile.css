@@ -213,70 +213,7 @@
   	padding-bottom: 2em;
   }
 
-  .scoreIdea {
-  	
-  }
-
-  .viability-score p, .add-imperfection-btn p {
-  	margin: 0;
-  }
-
-  .view-all-viabilities .viability-titles {
-  	margin: 0.5em 0;
-  }
-
-  .view-all-viabilities .viability-titles h3 {
-  	text-decoration: underline;
-  	display: inline-block;
-  }
-
-  .view-all-viabilities .viability-title-link img {
-  	width:25px;
-  	margin-top:-1em;
-  }
-
-  .view-all-viabilities .viability-title-link h3 {
-  	margin-top:1em;
-  }
-
-  .viability-icon {
-		width: 3em;
-    padding-top: 1em;
-  }
-
-	.waste-value-problem-list li {
-		margin:1em 0;
-	}
-
-	.scoreIdea h2 {
-		font-size: 23px;
-		padding-top: .5em;
-		padding-left: .5em;
-	}
-
-	.scoreIdea {
-		padding-bottom: 7em;
-	}
-
-	.parity-0 {
-		background-color: #b3b3b3;
-		padding-bottom:1em;
-	}
-
-	/* Below is for view all ideas */
-	.container.view-idea-suggestions {
-		max-width:100%;
-	}
-
-	.view-idea-suggestions .row .view-all-idea-block {
-		padding: 2em 0;
-	}
-
-	.container.view-idea-suggestions .row {
-		margin: 0;
-	}
-
-	.footer.view-all-ideas .btn {
+  	.footer.view-all-ideas .btn {
 		position: absolute;
     width: 80%;
     left: 10%;

@@ -7,15 +7,16 @@ html
       .row
         .col-xs-2
           img.viability-icon(src="/" + viabilityIcon + ".png")
-        .col-xs-8
+        .col-xs-8.viability-title-link
           h2 Deliverability
+          img(src="/question-mark.png")
         .col-xs-2
           a.close-viability(href="/view-all-viabilities")
             img(src="/close_button.png" height="30" width="30")
       .row
         form.mobile-viability-form(role='form', id="formDeliverability" action="/deliverability-mobile", method="post", data-idea-doc=idea)
           input(type="hidden", name="_csrf", value="#{csrfToken}")
-          h4 What problem prevents the #{idea.name} from being deliverable on demand?
+          h4.mobile-viability-help-text What problem prevents the #{idea.name} from being deliverable on demand?
           if(currentReviewerProblem)
             textarea.form-control(rows='6', cols="75", name="deliverProblem")
               | The problem of #{currentReviewerProblem.text}
@@ -38,6 +39,7 @@ html
 
 
   
+  include ../../partials/js-includes.jade
   script(type="text/javascript").
     var input = document.getElementsByTagName ("textarea");
 
@@ -61,3 +63,12 @@ html
         this.selectionStart = 15;
       }
     }, false);
+
+    
+    $(".viability-title-link").click(function(event){
+      if($(".mobile-viability-help-text").is(":visible")){
+        $(".mobile-viability-help-text").hide(300);
+      } else {
+        $(".mobile-viability-help-text").show(300);
+      }
+    });

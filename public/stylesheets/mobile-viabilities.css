@@ -17,6 +17,7 @@
 
 	.specific-score-column {
 		text-align: center;
+		margin-top:20px;
 	}
 
 	.specific-score-column img{
@@ -58,7 +59,7 @@
 	}
 
 	.view-all-viabilities .row.make-suggestion{
-		margin: 1em 0 0 0 ;
+		margin: 1em 0;
 	}
 
 	.view-all-viabilities .viability-problem-statement {
@@ -81,7 +82,7 @@
   	margin: 1em 0;
   }
 
-  .mobile-viability-form .save-buttons .btn.btn-success {
+  .mobile-viability-form .save-buttons .btn.btn-success,  .mobile-viability-form .save-buttons .btn.btn-vision{
   	width: 100%;
 	}
   .mobile-viability-form {
@@ -97,6 +98,10 @@
   	
   }
 
+  .add-imperfection-btn {
+  	width:100%;
+  }
+
   .viability-score p, .add-imperfection-btn p {
   	margin: 0;
   }
@@ -105,12 +110,12 @@
   	margin: 0.5em 0;
   }
 
-  .view-all-viabilities .viability-titles h3 {
+  .view-all-viabilities .viability-titles .specific-viability-name {
   	text-decoration: underline;
   	display: inline-block;
   }
 
-  .view-all-viabilities .viability-title-link img {
+  .view-all-viabilities .viability-title-link img, .viability-title-link img {
   	width:25px;
   	margin-top:-1em;
   	margin-left: .5em;
@@ -118,6 +123,11 @@
 
   .view-all-viabilities .viability-title-link h3 {
   	margin-top:1em;
+  }
+
+  .viability-title-link h2 {
+  	display: inline-block;
+  	text-decoration: underline;
   }
 
   .viability-icon {
@@ -139,14 +149,6 @@
 		padding-bottom: 7em;
 	}
 
-	.parity-0 {
-		background-color: #b3b3b3;
-		padding-bottom:1em;
-	}
-
-	.parity-1 {
-		padding-bottom:1em;
-	}
 
 	/* Below is for view all ideas */
 	.container.view-idea-suggestions {
@@ -172,6 +174,27 @@
 
   .col-xs-12.viability-score a, .row.make-suggestion .col-xs-12 a {
   	width:100%;
+  }
+
+  .average-score-number, .specific-viability-score {
+  	background-color : #D6DE26;
+  	border: 1px solid transparent;
+  	border-radius : 20px;
+  	color: #414142;
+  	padding:0px 8px;
+  }
+
+  .mobile-viability-help-text {
+  	display: none;
+  }
+
+  .view-all-viabilities .row.single-viability {
+  	border-top: 2px solid #c6c6c6;
+  }
+
+  .already-scored {
+  	background-color: #D6DE26;
+  	padding-bottom: .5em;
   }
 
  }

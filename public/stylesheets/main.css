@@ -1187,6 +1187,11 @@ button.suggestion-tactics, button.suggestion-targets {
 
 .btn-vision {
   background-color: #AFDDD1; 
+  color: #414142;
+}
+
+.btn-vision:hover {
+  background-color: #9dc6bc;
 }
 
 .btn-electric {

@@ -7,14 +7,15 @@ html
       .row
         .col-xs-2
           img.viability-icon(src="/" + viabilityIcon + ".png")
-        .col-xs-8
+        .col-xs-8.viability-title-link
           h2 Useability
+          img(src="/question-mark.png")
         .col-xs-2
           a.close-viability(href="/view-all-viabilities")
             img(src="/close_button.png" height="30" width="30")
       .row
         form.mobile-viability-form(role='form', id="formUseability" action="/useability-mobile", method="post",  data-idea-doc=idea)
-          h4.viability-question
+          h4.viability-question.mobile-viability-help-text
             | Will the #{idea.name} be quickly and easily learned and implemented when solving the problem of #{idea.problem}?
           br
           input(type="hidden", name="_csrf", value="#{csrfToken}")
@@ -25,8 +26,13 @@ html
             .sliderLabel
             #slider
           .save-buttons
-            a.btn.btn-industry.btn-lg Describe an Imperfection
-            button.btn.btn-success.btn-lg Save
+            .row
+              a.btn.btn-industry.btn-lg Describe an Imperfection
+            .row
+              .col-xs-6
+                button.btn.btn-vision.btn-lg View All
+              .col-xs-6
+                button.btn.btn-success.btn-lg Continue
 
   
   include ../../partials/js-includes.jade
@@ -86,3 +92,18 @@ html
         window.location = '/useability-problem';
       }
     })
+
+    
+    $(".viability-title-link").click(function(event){
+      if($(".mobile-viability-help-text").is(":visible")){
+        $(".mobile-viability-help-text").hide(300);
+      } else {
+        $(".mobile-viability-help-text").show(300);
+      }
+    });
+
+    $(".btn.btn-vision").click(function(event){
+      event.preventDefault();
+      window.location = '/view-all-viabilities';
+    })
+
