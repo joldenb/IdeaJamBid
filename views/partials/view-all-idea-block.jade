@@ -1,11 +1,12 @@
 .suggestion-element.view-all-ideas-block
-  .idea-image.view-all-ideas(style="background-image : url('" + '#{ideaImage || "/lightbulb.png"}' + "');"+ideaImageStyle)
-    if(inventorImage)
-      a(href='/imagineer/' + accountNickname)
-        img(src=inventorImage height="50" width="50" style=inventorImageStyle class="view-all-overlay")
-    else
-      a(href='/imagineer/' + accountNickname)
-        img(src="/avatar.png" height="50" width="50" class="view-all-overlay")
+  .idea-image.view-all-ideas.view-all-ideas-wrapper
+    .idea-image.view-all-ideas(style="background-image : url('" + '#{ideaImage || "/lightbulb.png"}' + "');"+ideaImageStyle)
+  if(inventorImage)
+    a(href='/imagineer/' + accountNickname)
+      img(src=inventorImage height="50" width="50" style=inventorImageStyle class="view-all-overlay")
+  else
+    a(href='/imagineer/' + accountNickname)
+      img(src="/avatar.png" height="50" width="50" class="view-all-overlay")
   .title-description.view-all-ideas
     if ideaLink && ideaName
       a(href=ideaLink) 

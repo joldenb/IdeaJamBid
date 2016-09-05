@@ -310,14 +310,22 @@ table.suggestion-table .col-md-4 {
   padding: 2em;
 }
 
-.idea-image.view-all-ideas{
-  height: 50%;
+.view-all-ideas{
+  max-width:100%;
+  overflow: hidden;
   background-size: cover;
   background-position: 50%;
+  height : 100%;
+}
+
+.view-all-ideas-wrapper {
+  height: 50%;
+  background-color: #a0a0a0;
 }
 
 .title-description.view-all-ideas, .title-description.inventor-block {
   height : 35%;
+  margin-top : -40px;
   padding-left: 1em;  
 }
 
@@ -339,6 +347,7 @@ table.suggestion-table .col-md-4 {
   height: 15%;
   background-color: #414142; /*dark gray */
   position: relative;
+  bottom: -30px;
 }
 
 .footer.view-all-ideas .btn, .footer.inventor-block .btn {
@@ -1116,7 +1125,7 @@ button.suggestion-tactics, button.suggestion-targets {
 
 .view-all-overlay {
   position: relative;
-  top: 190px;
+  top: -60px;
   border-radius: 50px;
   left: 10px;  
 }
