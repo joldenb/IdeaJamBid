@@ -328,13 +328,13 @@ var getImageOrientation = function getImageOrientation(string){
 	  case 1 :
 	    returnStyle = "";
 	    break;
-	  case 8 :
+	  case 6 :
 	    returnStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
 	    break;
 	  case 3 :
 	    returnStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
 	    break;
-	  case 6 :
+	  case 8 :
 	    returnStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
 	    break;
 	}
