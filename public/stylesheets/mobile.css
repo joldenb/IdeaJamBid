@@ -40,6 +40,12 @@
     width: 100%;
     font-size: x-large;
 	}
+
+	#idea-summary-waste-values .average-score-number {
+		padding: 6px;
+		text-align : center;
+		margin-top: 10px;
+	}
 	.desktop-only {
 		display: none;
 	}

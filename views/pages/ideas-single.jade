@@ -28,7 +28,15 @@ html
         .row.mobile-only
           if inventorName != user.username
             .idea-summary-data#idea-summary-waste-values
-              a.btn.btn-default(type="button"  class="btn btn-default" href="/view-all-viabilities") Score Now
+              if(Object.keys(review).length > 0)
+                .row
+                  .col-xs-8
+                    h4 Your current score for #{idea.name}: 
+                  .col-xs-3
+                    h3.average-score-number #{averageScore}
+                a.btn.btn-default(type="button"  class="btn btn-default" href="/view-all-viabilities") Keep Scoring
+              else
+                a.btn.btn-default(type="button"  class="btn btn-default" href="/view-all-viabilities") Score Now
               br
           else
             .idea-summary-data#idea-summary-waste-values
