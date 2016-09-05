@@ -476,21 +476,7 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
                 });
                 if(account.headshots[0]){
                   IdeaImage.findById(account.headshots[0], function(err, accountHeadshot){
-                    switch (accountHeadshot["orientation"]) {
-                      case 1 :
-                        accountHeadshot.style = "";
-                        break;
-                      case 6 :
-                        accountHeadshot.style = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                        break;
-                      case 3 :
-                        accountHeadshot.style = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                        break;
-                      case 8 :
-                        accountHeadshot.style = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                        break;
-                    }
-
+                    accountHeadshot.style = ideaSeedHelpers.getImageOrientation(accountHeadshot['orientation']);
                     return res.render('pages/imagineer', {
                       csrfToken: req.csrfToken(),
                       reviewNames : reviewedIdeas,
@@ -661,20 +647,7 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
                                 if(images && images.length > 0){
                                   for(var i=0; i < images.length; i++){
                                     var imageStyle = "";
-                                    switch (images[i]["orientation"]) {
-                                      case 1 :
-                                        imageStyle = "";
-                                        break;
-                                      case 2 :
-                                        imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                                        break;
-                                      case 3 :
-                                        imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                                        break;
-                                      case 4 :
-                                        imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                                        break;
-                                    }
+                                    imageStyle =ideaSeedHelpers.getImageOrientation(images[i]["orientation"]);
                                     //get the first image listed in the accounts headshots, use this as the
                                     // primary one to display in the header bar
                                     if(images[i].id.toString() == req.user.headshots[0]){
@@ -823,20 +796,7 @@ router.get('/ideas', csrfProtection, function(req, res){
                   idea.images[0].toString() == images[i].id.toString()){
                   currentImage = images[i]._doc["amazonURL"] || "";
                   currentImageStyle = "";
-                  switch (images[i]._doc["orientation"]) {
-                    case 1 :
-                      currentImageStyle = "";
-                      break;
-                    case 2 :
-                      currentImageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                      break;
-                    case 3 :
-                      currentImageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                      break;
-                    case 4 :
-                      currentImageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                      break;
-                  }
+                  currentImageStyle = ideaSeedHelpers.getImageOrientation(images[i]._doc["orientation"]);
                   break;
                 } else if (idea.images.length == 0){
                   currentImage = "";
@@ -887,20 +847,8 @@ router.get('/ideas', csrfProtection, function(req, res){
                                 && profilePictures[n]["amazonURL"]){
                                 ideaList[j].push(profilePictures[n]["amazonURL"]);
                                 var creatorHeadshotStyle = "";
-                                switch (profilePictures[n]["orientation"]) {
-                                  case 1 :
-                                    ideaList[j].push("");
-                                    break;
-                                  case 3 :
-                                    ideaList[j].push("-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);");
-                                    break;
-                                  case 6 :
-                                    ideaList[j].push("-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);");
-                                    break;
-                                  case 8 :
-                                    ideaList[j].push("-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);");
-                                    break;
-                                }
+                                creatorHeadshotStyle = ideaSeedHelpers.getImageOrientation(profilePictures[n]["orientation"]);
+                                ideaList[j].push(creatorHeadshotStyle);
 
                               }
                             }
@@ -1514,20 +1462,7 @@ router.get('/image-upload', csrfProtection, function(req, res){
             if(image && image._doc && image._doc.amazonURL){
               var filename = image._doc["filename"];
               var imageStyle = "";
-              switch (image["orientation"]) {
-                case 1 :
-                  imageStyle = "";
-                  break;
-                case 2 :
-                  imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                  break;
-                case 3 :
-                  imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                  break;
-                case 4 :
-                  imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                  break;
-              }
+              imageStyle = ideaSeedHelpers.getImageOrientation(image["orientation"]);
               imageURLs.push([
                 filename,
                 image["amazonURL"],
@@ -1808,20 +1743,7 @@ router.get('/view-idea-suggestions', csrfProtection, function(req, res){
         IdeaImage.find({"_id" : {$in : Object.keys(imagesAndComponents)}}, function(err, images){
           var imageList = _.map(images, function(image){
             var imageStyle = "";
-            switch (image["orientation"]) {
-              case 1 :
-                imageStyle = "";
-                break;
-              case 2 :
-                imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                break;
-              case 3 :
-                imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                break;
-              case 4 :
-                imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                break;
-            }
+            imageStyle = ideaSeedHelpers.getImageOrientation(image["orientation"]);
             return [image["filename"], image["uploader"], image["id"], [], image["amazonURL"], imageStyle];
           });
 
@@ -1847,21 +1769,8 @@ router.get('/view-idea-suggestions', csrfProtection, function(req, res){
               var headshotURLs = {};
               for(var j = 0; j < headshots.length; j++){
                 headshotURLs[headshots[j]['uploader']] = [headshots[j]["amazonURL"]];
-                switch (headshots[j]["orientation"]) {
-                  case 1 :
-                    headshotURLs[headshots[j]['uploader']].push("");
-                    break;
-                  case 2 :
-                    headshotURLs[headshots[j]['uploader']].push("-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);");
-                    break;
-                  case 3 :
-                    headshotURLs[headshots[j]['uploader']].push("-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);");
-                    break;
-                  case 4 :
-                    headshotURLs[headshots[j]['uploader']].push("-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);");
-                    break;
-                }
-
+                imageStyle = ideaSeedHelpers.getImageOrientation(headshots[j]["orientation"]);
+                headshotURLs[headshots[j]['uploader']].push(imageStyle);
               }
 
               currentIdea = idea._doc;
@@ -2167,20 +2076,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
                           value.headshot = {};
                           value.headshot.url = headshot.amazonURL;
                           var imageStyle;
-                          switch (headshot["orientation"]) {
-                            case 1 :
-                              imageStyle = "";
-                              break;
-                            case 2 :
-                              imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                              break;
-                            case 3 :
-                              imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                              break;
-                            case 4 :
-                              imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                              break;
-                          }
+                          imageStyle = ideaSeedHelpers.getImageOrientation(headshot["orientation"]);
                           value.headshot.style = imageStyle;
                         });                        
                       }
@@ -2250,20 +2146,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
                             if(image && image._doc && image.amazonURL){
                               var filename = image._doc["filename"];
                               var imageStyle = "";
-                              switch (image["orientation"]) {
-                                case 1 :
-                                  imageStyle = "";
-                                  break;
-                                case 2 :
-                                  imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                                  break;
-                                case 3 :
-                                  imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                                  break;
-                                case 4 :
-                                  imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                                  break;
-                              }
+                              imageStyle = ideaSeedHelpers.getImageOrientation(image["orientation"]);
                               imageURLs.push([
                                 filename,
                                 image["amazonURL"],
@@ -2435,20 +2318,7 @@ router.get('/ideas/:ideaSeedName/variant/:variantname', csrfProtection, function
         IdeaImage.find({"_id" : {$in : Object.keys(imagesAndComponents)}}, function(err, images){
           var imageList = _.map(images, function(image){
             var imageStyle = "";
-            switch (image["orientation"]) {
-              case 1 :
-                imageStyle = "";
-                break;
-              case 2 :
-                imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                break;
-              case 3 :
-                imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                break;
-              case 4 :
-                imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                break;
-            }
+            imageStyle = ideaSeedHelpers.getImageOrientation(image["orientation"]);
             return [image["filename"], image["uploader"], image["id"], [], image["amazonURL"], imageStyle]
           });
 
@@ -2474,21 +2344,9 @@ router.get('/ideas/:ideaSeedName/variant/:variantname', csrfProtection, function
                 var headshotURLs = {};
                 for(var j = 0; j < headshots.length; j++){
                   headshotURLs[headshots[j]['uploader']] = [headshots[j]["amazonURL"]];
-                  switch (headshots[j]["orientation"]) {
-                    case 1 :
-                      headshotURLs[headshots[j]['uploader']].push("");
-                      break;
-                    case 2 :
-                      headshotURLs[headshots[j]['uploader']].push("-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);");
-                      break;
-                    case 3 :
-                      headshotURLs[headshots[j]['uploader']].push("-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);");
-                      break;
-                    case 4 :
-                      headshotURLs[headshots[j]['uploader']].push("-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);");
-                      break;
-                  }
-
+                  var currentImageStyle = "";
+                  currentImageStyle = ideaSeedHelpers.getImageOrientation(headshots[j]["orientation"]);
+                  headshotURLs[headshots[j]['uploader']].push(currentImageStyle);
                 }
 
                 var allSignedOff = true;
@@ -2621,21 +2479,7 @@ router.get('/annotate-image/:image', csrfProtection, function(req, res){
       if(currentImage.amazonURL){
         imageURL = currentImage.amazonURL;
         var imageStyle = "";
-        switch (currentImage["orientation"]) {
-          case 1 :
-            imageStyle = "";
-            break;
-          case 2 :
-            imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-            break;
-          case 3 :
-            imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-            break;
-          case 4 :
-            imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-            break;
-        }
-
+        imageStyle = ideaSeedHelpers.getImageOrientation(currentImage["orientation"]);
         Component.find({"images.imageID" : image.id}, function(err, comps){
           var compArray = [], masterComponentList = [];
           for(var i = 0; i < comps.length; i++){
@@ -2747,20 +2591,7 @@ router.get('/image-modal/:image', csrfProtection, function(req, res){
     if(currentImage["amazonURL"]){
       imageURL = currentImage["amazonURL"];
       var imageStyle = "";
-      switch (currentImage["orientation"]) {
-        case 1 :
-          imageStyle = "";
-          break;
-        case 2 :
-          imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-          break;
-        case 3 :
-          imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-          break;
-        case 4 :
-          imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-          break;
-      }
+      imageStyle = ideaSeedHelpers.getImageOrientation(currentImage["orientation"]);
 
       res.json({
         imgURL : imageURL, imageStyle : imageStyle
@@ -3088,20 +2919,7 @@ router.get('/imperfection-profile/:identifier', csrfProtection, function(req, re
                         if(suggestor.headshots && image.id == suggestor.headshots[0]){
                           wholeSuggestionBlockInfo[suggestion.identifier]['creatorProfilePic'] = image.amazonURL;
                           var imageStyle;
-                          switch (image["orientation"]) {
-                            case 1 :
-                              imageStyle = "";
-                              break;
-                            case 2 :
-                              imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                              break;
-                            case 3 :
-                              imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                              break;
-                            case 4 :
-                              imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                              break;
-                          }
+                          imageStyle = ideaSeedHelpers.getImageOrientation(image["orientation"]);
                           wholeSuggestionBlockInfo[suggestion.identifier]['profilePicOrientation'] = imageStyle;
                         }
                       })
@@ -3236,20 +3054,7 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
                         for(var i = 0; i < images.length; i++){
                           if(images[i] && images[i]['amazonURL']){
                             var imageStyle = "";
-                            switch (images[i]["orientation"]) {
-                              case 1 :
-                                imageStyle = "";
-                                break;
-                              case 2 :
-                                imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                                break;
-                              case 3 :
-                                imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                                break;
-                              case 4 :
-                                imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                                break;
-                            }
+                            imageStyle = ideaSeedHelpers.getImageOrientation(images[i]["orientation"]);
                             var filename = images[i]["filename"];
                             //if it's the main component image, put in the first spot of the array so it's big on
                             // the component profile page
@@ -3332,20 +3137,7 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
                       var imageURLs = [];
                       for(var i = 0; i < images.length; i++){
                         var imageStyle = "";
-                        switch (images[i]["orientation"]) {
-                          case 1 :
-                            imageStyle = "";
-                            break;
-                          case 2 :
-                            imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                            break;
-                          case 3 :
-                            imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                            break;
-                          case 4 :
-                            imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                            break;
-                        }
+                        imageStyle = ideaSeedHelpers.getImageOrientation(images[i]["orientation"]);
                         if(images[i] && images[i]["amazonURL"]){
                           var filename = images[i]["filename"];
                           //if it's the main component image, put in the first spot of the array so it's big on

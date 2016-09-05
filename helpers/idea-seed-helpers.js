@@ -294,13 +294,13 @@ var getUserHeadshot = function getUserHeadshot(req){
 						case 1 :
 							headshotStyle = "";
 							break;
-						case 2 :
+						case 6 :
 							headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
 							break;
 						case 3 :
 							headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
 							break;
-						case 4 :
+						case 8 :
 							headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
 							break;
 					}
@@ -322,6 +322,26 @@ var getUserHeadshot = function getUserHeadshot(req){
 	}); //end of promise
 }
 
+var getImageOrientation = function getImageOrientation(string){
+	var returnStyle = "";
+	switch (string) {
+	  case 1 :
+	    returnStyle = "";
+	    break;
+	  case 6 :
+	    returnStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+	    break;
+	  case 3 :
+	    returnStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+	    break;
+	  case 8 :
+	    returnStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+	    break;
+	}
+	return returnStyle;
+}
+
 exports.getUserHeadshot = getUserHeadshot;
 exports.getApplicationStrength = getApplicationStrength;
 exports.getStrengthData = getStrengthData;
+exports.getImageOrientation = getImageOrientation;

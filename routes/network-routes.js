@@ -293,20 +293,7 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
               var accountName = _.invert(accountHeadshotIDs)[images[j]["id"]];
               if(accountName){
                 var accountHeadshotStyle = "";
-                switch (images[j]["orientation"]) {
-                  case 1 :
-                    accountHeadshotStyle = "";
-                    break;
-                  case 2 :
-                    accountHeadshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                    break;
-                  case 3 :
-                    accountHeadshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                    break;
-                  case 4 :
-                    accountHeadshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                    break;
-                }
+                accountHeadshotStyle = ideaSeedHelpers.getImageOrientation(images[j]["orientation"]);
                 accountNameAndURLs[accountName] = [images[j]["amazonURL"], accountHeadshotStyle];
               }
             }
@@ -435,20 +422,7 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                         idea.images[0].toString() == images[i].id.toString()){
                         currentImage = images[i]._doc["amazonURL"] || "";
                         currentImageStyle = "";
-                        switch (images[i]._doc["orientation"]) {
-                          case 1 :
-                            currentImageStyle = "";
-                            break;
-                          case 2 :
-                            currentImageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                            break;
-                          case 3 :
-                            currentImageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                            break;
-                          case 4 :
-                            currentImageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                            break;
-                        }
+                        currentImageStyle = ideaSeedHelpers.getImageOrientation(images[i]._doc["orientation"]);
                         break;
                       } else if (idea.images.length == 0){
                         currentImage = "";
@@ -512,21 +486,8 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                                     && profilePictures[n]["amazonURL"]){
                                     ideaList[j].push(profilePictures[n]["amazonURL"]);
                                     var creatorHeadshotStyle = "";
-                                    switch (profilePictures[n]["orientation"]) {
-                                      case 1 :
-                                        ideaList[j].push("");
-                                        break;
-                                      case 2 :
-                                        ideaList[j].push("-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);");
-                                        break;
-                                      case 3 :
-                                        ideaList[j].push("-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);");
-                                        break;
-                                      case 4 :
-                                        ideaList[j].push("-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);");
-                                        break;
-                                    }
-
+                                    creatorHeadshotStyle = ideaSeedHelpers.getImageOrientation(profilePictures[n]["orientation"]);
+                                    ideaList[j].push(creatorHeadshotStyle);
                                   }
                                 }
                               } else {
@@ -584,20 +545,7 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                                     if(suggestor.headshots && image.id == suggestor.headshots[0]){
                                       wholeSuggestionBlockInfo[suggestion.identifier]['creatorProfilePic'] = image.amazonURL;
                                       var imageStyle;
-                                      switch (image["orientation"]) {
-                                        case 1 :
-                                          imageStyle = "";
-                                          break;
-                                        case 2 :
-                                          imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                                          break;
-                                        case 3 :
-                                          imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                                          break;
-                                        case 4 :
-                                          imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                                          break;
-                                      }
+                                      imageStyle = ideaSeedHelpers.getImageOrientation(image["orientation"]);
                                       wholeSuggestionBlockInfo[suggestion.identifier]['profilePicOrientation'] = imageStyle;
                                     }
                                   })
@@ -645,20 +593,7 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                                           if(imperfector.headshots && image.id == imperfector.headshots[0]){
                                             wholeImperfectionBlockInfo[imperfection.identifier]['headshot'] = {'url' : image.amazonURL};
                                             var imageStyle;
-                                            switch (image["orientation"]) {
-                                              case 1 :
-                                                imageStyle = "";
-                                                break;
-                                              case 2 :
-                                                imageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                                                break;
-                                              case 3 :
-                                                imageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                                                break;
-                                              case 4 :
-                                                imageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                                                break;
-                                            }
+                                            imageStyle = ideaSeedHelpers.getImageOrientation(image["orientation"]);
                                             wholeImperfectionBlockInfo[imperfection.identifier]['headshot']['style'] = imageStyle;
                                           }
                                         });
@@ -747,20 +682,7 @@ router.get('/aptitudes/:aptitudeName', csrfProtection, function(req, res){
               var accountName = _.invert(accountHeadshotIDs)[images[j]["id"]];
               if(accountName){
                 var accountHeadshotStyle = "";
-                switch (images[j]["orientation"]) {
-                  case 1 :
-                    accountHeadshotStyle = "";
-                    break;
-                  case 2 :
-                    accountHeadshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                    break;
-                  case 3 :
-                    accountHeadshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                    break;
-                  case 4 :
-                    accountHeadshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                    break;
-                }
+                accountHeadshotStyle = ideaSeedHelpers.getImageOrientation(images[j]["orientation"]);
                 accountNameAndURLs[accountName] = [images[j]["amazonURL"], accountHeadshotStyle];
               }
             }
@@ -881,20 +803,7 @@ router.get('/aptitudes/:aptitudeName', csrfProtection, function(req, res){
                         idea.images[0].toString() == images[i].id.toString()){
                         currentImage = images[i]._doc["amazonURL"] || "";
                         currentImageStyle = "";
-                        switch (images[i]._doc["orientation"]) {
-                          case 1 :
-                            currentImageStyle = "";
-                            break;
-                          case 2 :
-                            currentImageStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-                            break;
-                          case 3 :
-                            currentImageStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-                            break;
-                          case 4 :
-                            currentImageStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-                            break;
-                        }
+                        currentImageStyle = ideaSeedHelpers.getImageOrientation(images[i]._doc["orientation"]);
                         break;
                       } else if (idea.images.length == 0){
                         currentImage = "";
@@ -955,21 +864,8 @@ router.get('/aptitudes/:aptitudeName', csrfProtection, function(req, res){
                                     && profilePictures[n]["amazonURL"]){
                                     ideaList[j].push(profilePictures[n]["amazonURL"]);
                                     var creatorHeadshotStyle = "";
-                                    switch (profilePictures[n]["orientation"]) {
-                                      case 1 :
-                                        ideaList[j].push("");
-                                        break;
-                                      case 2 :
-                                        ideaList[j].push("-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);");
-                                        break;
-                                      case 3 :
-                                        ideaList[j].push("-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);");
-                                        break;
-                                      case 4 :
-                                        ideaList[j].push("-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);");
-                                        break;
-                                    }
-
+                                    creatorHeadshotStyle = ideaSeedHelpers.getImageOrientation(profilePictures[n]["orientation"]);
+                                    ideaList[j].push(creatorHeadshotStyle);
                                   }
                                 }
                               }
