@@ -370,6 +370,32 @@ router.get('/view-all-viabilities', csrfProtection, function(req, res) {
         IdeaReview.find({"reviewer" : req.user.username, "ideaSeedId" : idea.id}, function(err, currentReview){
           //if there is a review already for this user and idea
           if(currentReview.length > 0){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
             req.session.ideaReview = currentReview[0];
             res.render('pages/view-all-viabilities', {
               csrfToken: req.csrfToken(),

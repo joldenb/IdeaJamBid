@@ -41,7 +41,8 @@ html
                     p Add imperfection
             if problems[problem]
               .row.make-suggestion
-                a.btn.btn-electric(href='/imperfection-profile/' + problems[problem]['identifier']) Suggestion a solution!
+                .col-xs-12
+                  a.btn.btn-electric(href='/imperfection-profile/' + problems[problem]['identifier']) Suggestion a solution!
           else
             .row.viability-scores-and-problems
               .col-xs-12.viability-score

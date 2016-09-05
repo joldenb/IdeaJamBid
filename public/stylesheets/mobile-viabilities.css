@@ -144,6 +144,10 @@
 		padding-bottom:1em;
 	}
 
+	.parity-1 {
+		padding-bottom:1em;
+	}
+
 	/* Below is for view all ideas */
 	.container.view-idea-suggestions {
 		max-width:100%;
@@ -166,7 +170,8 @@
     transform: initial;
   }
 
-  .col-xs-12.viability-score a{
+  .col-xs-12.viability-score a, .row.make-suggestion .col-xs-12 a {
   	width:100%;
   }
+
  }
