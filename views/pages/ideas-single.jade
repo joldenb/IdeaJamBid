@@ -1247,7 +1247,10 @@ html
 
     function getSignedRequest(file, csrf,exif){
       const xhr = new XMLHttpRequest();
-      xhr.open('GET', '/sign-s3?file-name='+file.name + '&file-type='+ file.type);
+      var filename = file.name.split(".");
+      filename[0] = filename[0] + "-" + Date.now().toString();
+      filename = filename.join(".");
+      xhr.open('GET', '/sign-s3?file-name='+ filename + '&file-type='+ file.type);
       xhr.onreadystatechange = function() {
         if(xhr.readyState === 4){
           if(xhr.status === 200){
