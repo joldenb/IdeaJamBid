@@ -330,7 +330,7 @@ table.suggestion-table .col-md-4 {
 }
 
 .view-all-idea-description {
-  height: 5em;
+  height: 7em;
   text-overflow: ellipsis;
   word-wrap: break-word;
   overflow: hidden;  
@@ -347,7 +347,7 @@ table.suggestion-table .col-md-4 {
   height: 15%;
   background-color: #414142; /*dark gray */
   position: relative;
-  bottom: -30px;
+  bottom: -55px;
 }
 
 .footer.view-all-ideas .btn, .footer.inventor-block .btn {
@@ -1283,11 +1283,11 @@ button.suggestion-tactics, button.suggestion-targets {
   padding: 0 !important;
 }
 
-.viability-row .col-xs-7 {
+.viability-row .col-xs-8 {
   padding-right :0;
 }
 
-.viability-row .col-xs-5 {
+.viability-row .col-xs-4 {
   padding-left:0;
 }
 
