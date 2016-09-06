@@ -9,14 +9,13 @@ html
           img.viability-icon(src="/" + viabilityIcon + ".png")
         .col-xs-8.viability-title-link
           h2 Affordability
-          img(src="/question-mark.png")
         .col-xs-2
           a.close-viability(href="/view-all-viabilities")
             img(src="/close_button.png" height="30" width="30")
       .row
         form.mobile-viability-form(role='form', id="formAffordability" action="/affordability-mobile", method="post", data-idea-doc=idea)
           input(type="hidden", name="_csrf", value="#{csrfToken}")
-          h4.mobile-viability-help-text What cost-related problem prevents the #{idea.name} from being more affordable?
+          h4 What cost-related problem prevents the #{idea.name} from being more affordable?
           if(currentReviewerProblem)
             textarea.form-control(rows='6', cols="75", name="affordProblem")
               | The problem of #{currentReviewerProblem.text}

@@ -16,7 +16,7 @@ html
       .row
         form.mobile-viability-form(role='form', id="formAffordability" action="/affordability-mobile", method="post", data-idea-doc=idea)
           h4.viability-question.mobile-viability-help-text
-            | Will the #{idea.name} stay within reasonable cost expectations when solving the problem of #{idea.name}?
+            | Will the #{idea.name} stay within reasonable cost expectations when solving the problem of #{idea.problem}?
           br
           input(type="hidden", name="_csrf", value="#{csrfToken}")
           .slider-container
