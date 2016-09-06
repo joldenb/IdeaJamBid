@@ -131,24 +131,20 @@ html
       br
 
       h3#imperfectionSection Top #{networkName} Imperfections
-      .row.imperfection-row
-        .idea-summary-data#idea-summary-problems
-          ul.idea-summary-problem-list
-            each problem, identifier in wholeImperfectionBlockInfo
-              if(problem.text && problem['identifier'])
-                li.row.imperfection-row
-                  include ../partials/problem-summary-element.jade
-
-
+      .idea-summary-data#idea-summary-problems
+        ul.idea-summary-problem-list
+          each problem, identifier in wholeImperfectionBlockInfo
+            if(problem.text && problem['identifier'])
+              li
+                include ../partials/problem-summary-element.jade
       br
 
       h3#suggestionSection Top #{networkName} Suggestions
-      .row.imperfection-row
-        .idea-summary-data#idea-summary-problems
-          ul.idea-summary-problem-list
-            each suggestion, identifier in wholeSuggestionBlockInfo             
-              li.row.imperfection-row
-                include ../partials/suggestion-summary-element.jade
+      .idea-summary-data#idea-summary-problems
+        ul.idea-summary-problem-list
+          each suggestion, identifier in wholeSuggestionBlockInfo             
+            li
+              include ../partials/suggestion-summary-element.jade
       br
 
   #loginModal.modal.fade.annotate-modal(role="dialog")

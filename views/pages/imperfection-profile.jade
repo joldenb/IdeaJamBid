@@ -28,9 +28,8 @@ html
           if( suggestions.length > 0)
             ul
               each suggestion, identifier in wholeSuggestionBlockInfo
-                li.row 
-                  div.col-xs-12()
-                    include ../partials/suggestion-summary-element.jade
+                li                
+                  include ../partials/suggestion-summary-element.jade
           else
             ul
               li.no-descriptions No Descriptions Yet

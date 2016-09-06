@@ -117,9 +117,8 @@ html
             ul.idea-summary-problem-list
               each problem, index in problems
                 if(index < 3 && problem.text && problem['identifier'])
-                  li.row
-                    div.col-xs-12
-                      include ../partials/problem-summary-element.jade
+                  li
+                    include ../partials/problem-summary-element.jade
 
             button(type="button" id="problemModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addProblemModal") Add a Problem
             |  
@@ -160,9 +159,8 @@ html
               ul.idea-summary-problem-list
                 each problem, index in problems
                   if(problem.text && problem['identifier'])
-                    li.row
-                      div.col-xs-12
-                        include ../partials/problem-summary-element.jade
+                    li
+                      include ../partials/problem-summary-element.jade
 
               button(type="button" id="problemModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addProblemModal") Add a Problem
         .modal-footer
