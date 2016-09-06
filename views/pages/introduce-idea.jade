@@ -7,30 +7,32 @@ html
     include ../partials/header.jade
 
   .container
-    form(role='form', id="formIntroduceIdea" action="/introduce-idea", method="post", style='max-width: 300px;', data-idea-doc=idea)
-      .form-group
-        h3 What challenge does your idea solve?
-        input(type="hidden", name="_csrf", value="#{csrfToken}")
-        input.form-control(type="text",name="purposeFor", value='The problem of ', id="challenge")
-        p (ex. "time travel")
-        p#charactersRemaining
-        br
-      a.home-logout.btn.btn-default( href="/imagineer/" + user.nickname ) Cancel
-      |  
-      button.btn.btn-success(type='submit') Continue (+5)
-
-
-    br
-    p Hint : Keep it simple here.  You can add more detailed problems later.
+    .row
+      .col-xs-12
+        form(role='form', id="formIntroduceIdea" action="/introduce-idea", method="post", style='max-width: 300px;', data-idea-doc=idea)
+          .form-group
+            h3 What challenge does your idea solve?
+            input(type="hidden", name="_csrf", value="#{csrfToken}")
+            input.form-control(type="text",name="purposeFor", value='The problem of ', id="challenge")
+            p (ex. "time travel")
+            p#charactersRemaining
+          .row
+            .col-xs-4
+              a.home-logout.btn.btn-industry.btn-lg( href="/imagineer/" + user.nickname ) Cancel
+            .col-xs-8
+              button.btn.btn-success.btn-lg.btn-continue(type='submit') Continue
+          .row
+            .col-xs-12
+              .hint Hint : Keep it simple here.  You can add more detailed problems later.
 
   include ../partials/js-includes.jade
   script(type="text/javascript").
-    var input = document.getElementsByTagName ("input");
+    var input = document.getElementsByTagName("input");
 
     // This is for the main solution text input
     var requiredText = "The problem of "
     $("#charactersRemaining").text((200 ) + " characters remaining");
-    input[0].addEventListener ("mousedown", function () {
+    input[1].addEventListener ("mousedown", function () {
       if (String($(this).val()).indexOf(requiredText) == -1) {
             $(this).val(requiredText);
       }
@@ -39,7 +41,7 @@ html
       }
     }, false);
 
-    input[0].addEventListener ("keydown", function () {
+    input[1].addEventListener ("keydown", function () {
       if (String($(this).val()).indexOf(requiredText) == -1) {
             $(this).val(requiredText);
       }

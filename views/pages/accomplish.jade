@@ -14,13 +14,15 @@ html
         input.form-control(type="text" name="purposeHow", value='The solution of ', id="accomplish")
         p (ex. "The solution of channelling 1.21 jigawatts")
         p#charactersRemaining
-        br
-      a.home-logout.btn.btn-default( href="/imagineer/" + user.nickname ) Cancel
-      |  
-      button.btn.btn-success(type='submit') Continue (+5)
+      .row
+        .col-xs-4
+          a.home-logout.btn.btn-industry.btn-lg( href="/imagineer/" + user.nickname ) Cancel
+        .col-xs-8
+          button.btn.btn-success.btn-lg.btn-continue(type='submit') Continue
+      .row
+        .col-xs-12
+          .hint Hint : You can describe more later!
 
-    br
-    p Hint : You can describe more later!
 
   include ../partials/js-includes.jade
   script(type="text/javascript").
@@ -29,7 +31,7 @@ html
     // This is for the main solution text input
     var requiredText = "The solution of "
     $("#charactersRemaining").text((200 ) + " characters remaining");
-    input[0].addEventListener ("mousedown", function () {
+    input[1].addEventListener ("mousedown", function () {
       if (String($(this).val()).indexOf(requiredText) == -1) {
             $(this).val(requiredText);
       }
@@ -38,7 +40,7 @@ html
       }
     }, false);
 
-    input[0].addEventListener ("keydown", function () {
+    input[1].addEventListener ("keydown", function () {
       if (String($(this).val()).indexOf(requiredText) == -1) {
             $(this).val(requiredText);
       }

@@ -228,5 +228,9 @@
     transform: initial;
   }
 
+ .contributions-row .btn, .original-ideas-row .btn, .btn-continue {
+ 	width: 100%;
+ }
+
 }
 

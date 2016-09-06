@@ -1205,11 +1205,11 @@ button.suggestion-tactics, button.suggestion-targets {
 
 .btn-electric {
   background-color: #D6DE26;
-  color:#414142;
+  color:#414142 !important;
 }
 
 .btn-electric:hover{
-  color : #D6DE26;
+  color : #D6DE26 !important;
   background-color:#414142;
 }
 
@@ -1303,4 +1303,8 @@ button.suggestion-tactics, button.suggestion-targets {
   display: inline-block;
   width: 2.5em;
   height: 2.5em;
+}
+
+.hint {
+  margin-top: 1em;
 }

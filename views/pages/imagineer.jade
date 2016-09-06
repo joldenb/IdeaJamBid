@@ -16,54 +16,56 @@ html
           img(src="/avatar.png" height="100" width="100")
       .col-sm-5
         h2 #{profileAccount.nickname}
-        h4 Einstein Points: #{profileAccount.einsteinPoints}
+        h4 Einstein Points #{profileAccount.einsteinPoints}
       .col-sm-4
         .profileSchool
           if schoolNetwork
-            h4 School :  #[a(class="network-link") #{schoolNetwork}]
+            h4 School  #[a(class="network-link") #{schoolNetwork}]
         .profileCompany
           if companyNetwork
-            h4 Company :  #[a(class="network-link") #{companyNetwork}]
+            h4 Company  #[a(class="network-link") #{companyNetwork}]
         .profileLocation
           if locationNetwork
-            h4 Location : #[a(class="network-link") #{locationNetwork}]
+            h4 Location #[a(class="network-link") #{locationNetwork}]
         .profileAptitudes
           if aptitudes && aptitudes.length > 0
-            h3 Aptitudes : 
+            h3 Aptitudes 
             ul
               each aptitude in aptitudes
                 li(data-apt-id="#{aptitude.identifier}")
                   p #{aptitude.title}
 
-    .row
-      h3 Ideas
-      if accountIdeaSeeds.length > 0
-        ul
-          each val, index in accountIdeaSeeds
-            if val.name
-              li
-                a(href="/ideas/" + val.name)
-                  h4.idea-text-name= val.name
-                span.idea-text-date= val['creationDate']
+    .row.original-ideas-row
+      .col-xs-12
+        h3 Original Ideas
+        if accountIdeaSeeds.length > 0
+          ul
+            each val, index in accountIdeaSeeds
+              if val.name
+                li
+                  a(href="/ideas/" + val.name)
+                    h4.idea-text-name= val.name
+                  span.idea-text-date= val['creationDate']
 
-      else
-        h4 None so far.
-      if Object.keys(user).length != 0 && user.id == profileAccount.id
-        a.home-login.btn.btn-success( href="/introduce-idea" ) Begin a New Idea > 
+        else
+          h4 None so far.
+        if Object.keys(user).length != 0 && user.id == profileAccount.id
+          a.home-login.btn.btn-success.btn-lg( href="/introduce-idea" ) Begin a New Idea
 
-    .row
-      h3 Contributions
-      if reviewNames.length > 0
-        ul
-          each val, index in reviewNames
-            if val.name
-              li
-                a(href="/ideas/" + val.name)
-                  h4.idea-text-name= val.name + "By: Someone else"
-                span.idea-text-date= val['creationDate']
-      else
-        h4 None so far.
-      a.home-login.btn.btn-success( href="/ideas" ) View All Ideas
+    .row.contributions-row
+      .col-xs-12
+        h3 Contributions
+        if reviewNames.length > 0
+          ul
+            each val, index in reviewNames
+              if val.name
+                li
+                  a(href="/ideas/" + val.name)
+                    h4.idea-text-name= val.name + "By: Someone else"
+                  span.idea-text-date= val['creationDate']
+        else
+          h4 None so far.
+        a.home-login.btn.btn-industry.btn-lg( href="/ideas" ) View All Ideas
 
   #schoolModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
