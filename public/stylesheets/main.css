@@ -1278,3 +1278,29 @@ button.suggestion-tactics, button.suggestion-targets {
   font-size: 1.2em;
   font-family: Roboto Slab, serif;
 }
+
+.viability-row {
+  padding: 0 !important;
+}
+
+.viability-row .col-xs-7 {
+  padding-right :0;
+}
+
+.viability-row .col-xs-5 {
+  padding-left:0;
+}
+
+.view-all-idea-viability {
+  background-color: #D6DE26;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  color: #414142;
+  padding-top: 12px;
+  padding-left: 2px;
+  text-align: center;
+  margin-top: -15px;
+  display: inline-block;
+  width: 2.5em;
+  height: 2.5em;
+}

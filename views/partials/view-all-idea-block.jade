@@ -14,13 +14,19 @@
     else
       h3 #{ideaName || 'No Idea Name'}
     .userName 
-      p #{accountNickname || "No name available"}
+      a(href='/imagineer/' + accountNickname)
+        p #{accountNickname || "No name available"}
     .suggestion-category
       if viabilityScore == 0
-        p <b>Viability:</b> #[a(href=ideaLink) Score Now]
+        h4 <b>Viability:</b> #[a(href=ideaLink) Score Now]
       else
-        p <b>Viability: </b>#{viabilityScore} 
-      p.view-all-idea-description <b>Description: </b>#{problemCategory}
+        .row.viability-row
+          .col-xs-7
+            h4 Viability Score :
+          .col-xs-5
+            h4
+              span.view-all-idea-viability #{viabilityScore} 
+      p.view-all-idea-description #{problemCategory}
   .footer.view-all-ideas
     if ideaLink
       a(href=ideaLink)

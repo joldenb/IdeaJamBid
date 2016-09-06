@@ -184,7 +184,6 @@ router.post('/save-aptitude', csrfProtection, function(req, res) {
             idea.aptitudes.push(existingAptitudes[0].id); //use the first existing record
             idea.save(function (err) {});
         });
-        console.log
         res.sendStatus(200);
       } else {
         var newAptitude = new Aptitude({
@@ -216,7 +215,6 @@ router.post('/save-aptitude', csrfProtection, function(req, res) {
             account.aptitudes.push(existingAptitudes[0].id); //use the first existing record
             account.save(function (err) {});
         });
-        console.log
         res.sendStatus(200);
       } else {
         var newAptitude = new Aptitude({
@@ -420,13 +418,11 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                     for (var i = 0; i < images.length; i++){
                       if(idea.images.length > 0 &&
                         idea.images[0].toString() == images[i].id.toString()){
-                        console.log("setting image url for " + idea.name + " as " + images[i]._doc["amazonURL"]);
                         currentImage = images[i]._doc["amazonURL"] || "";
                         currentImageStyle = "";
                         currentImageStyle = ideaSeedHelpers.getImageOrientation(images[i]._doc["orientation"]);
                         break;
                       } else if (idea.images.length == 0){
-                        console.log("there are no images for " + idea.name );
                         currentImage = "";
                         currentImageStyle = "";
                         break;
