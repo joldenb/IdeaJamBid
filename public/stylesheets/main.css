@@ -479,11 +479,8 @@ img.summary-image {
   width: 20%;
 }
 
-
 .imageListItems {
-    height: 20%;
-    width: 20%;
-    margin: 1em;
+  width: 100%;
 }
 
 .half-column {
@@ -1262,12 +1259,16 @@ button.suggestion-tactics, button.suggestion-targets {
   margin: 0 auto;
 }
 
-.problemColor {
-  color: #C64143;
+.upload-image-div {
+  text-align: center;
+  padding: 1.5em;
+  border: 3px solid #337ab7;
+  border-radius : 5px;
 }
 
-.solutionColor {
-  color: #439d85;
+.glyphicon.glyphicon-cloud-upload {
+  font-size: 100px;
+  margin-top:-10px;
 }
 
 .jamTopNav {
@@ -1307,4 +1308,21 @@ button.suggestion-tactics, button.suggestion-targets {
 
 .hint {
   margin-top: 1em;
+}
+
+.image-container {
+  overflow: hidden;
+  margin:1em;
+}
+
+.ideaSeedThumbnails {
+  width: 20%;
+  height:20%;
+  margin:1em;
+}
+
+@media screen and (min-width: 800px) {
+  .container.image-upload .close-viability img {
+    margin-top: 20px;
+  }
 }

@@ -9,17 +9,21 @@ html
   .container-fluid.idea-summary
     .row
       .col-sm-4
-        .imagesList
-          if(imageURLs)
+        if(imageURLs.length > 0)
+          .imagesList
             each imageURL, index in imageURLs
               if index == 0
                 .image-summary-image
                   div(id='#{imageURL[0]}' style="height: 300px; max-width: 400px; background-image : url('" + '#{imageURL[1] || "/avatar.png"}' + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + "#{imageURL[2]}")
               if index < 3 && index > 0
-                img.imageListItems(src=imageURL[1]  style=imageURL[2])
+                img.ideaSeedThumbnails(src=imageURL[1]  style=imageURL[2])
             span.view-all-images-btn
               a.btn.secondary-btn.btn-default( href="/image-upload" )
                 span.glyphicon.glyphicon-plus
+        else
+          a(href="/image-upload")
+            .upload-image-div
+              span.glyphicon.glyphicon-cloud-upload
 
         if idea.name && inventorName == user.username
           h3 <b>#{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}</b> solves the <span class="problemColor">problem of #[a(href='/introduce-idea') #{idea.problem}]</span> by #[a(href='/accomplish') <span class="solutionColor">#{idea.description}]</span>.
@@ -97,15 +101,15 @@ html
           button(type="button" id="emailShareButton" class="btn secondary-btn btn-default pull-right clearfix" data-toggle="modal" data-target="#shareModal")
             span.glyphicon.glyphicon-envelope   
 
-        if inventorName == user.username
-          .row.patent-strength-row
-            h4 Is #{idea.name} ready to file?
-              a#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal")  What's Left?
+        //- if inventorName == user.username
+        //-   .row.patent-strength-row
+        //-     h4 Is #{idea.name} ready to file?
+        //-       a#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal")  What's Left?
 
-            .app-strength-bar.col-md-8
-              .app-strength(class="#{appStrengthClass}") #{appStrengthText}
-            .col-md-4
-              a.btn.btn-default#file-patent(data-toggle="modal" data-target="#filePatentModal") File My Patent
+        //-     .app-strength-bar.col-md-8
+        //-       .app-strength(class="#{appStrengthClass}") #{appStrengthText}
+        //-     .col-md-4
+        //-       a.btn.btn-default#file-patent(data-toggle="modal" data-target="#filePatentModal") File My Patent
 
         .row
           .idea-summary-data#idea-summary-problems
@@ -1078,7 +1082,7 @@ html
     });
 
     // This is for the idea name
-    var inputName = $("#saveIdeaName input")[0];
+    var inputName = $("#saveIdeaName input")[1];
     var requiredNameText = "My idea is named "
     $("#saveIdeaName .charactersRemaining").text((30) + " characters remaining");
     inputName.addEventListener ("mousedown", function () {
@@ -1103,7 +1107,7 @@ html
     }, false);
 
     // This is for the problem input
-    var inputProb = $("#addIdeaProblem input")[0];
+    var inputProb = $("#addIdeaProblem input")[1];
     var requiredProbText = "The problem is "
     $("#addIdeaProblem .charactersRemaining").text((200) + " characters remaining");
     inputProb.addEventListener ("mousedown", function () {

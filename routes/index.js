@@ -1012,12 +1012,12 @@ router.post('/accomplish', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
   }
-  IdeaSeed.update({_id : req.session.idea}, {
+  IdeaSeed.findByIdAndUpdate(req.session.idea, {
     description : req.body.purposeHow.slice(16)},
-    { multi: false }, function (err, raw) {
-      console.log('The raw response from Mongo was ', raw);
+    { multi: false }, function (err, document) {
+      console.log('The raw response from Mongo was ', document);
+      res.redirect("/ideas/yet-to-be-named");
   });
-  res.redirect('/image-upload');
 });
 
 /*****************************************************************
@@ -1447,54 +1447,35 @@ router.get('/image-upload', csrfProtection, function(req, res){
     res.redirect('/');
     return;
   }
+
   ideaSeedHelpers.getUserHeadshot(req).then(function(headshotData){
       var headshotURL = headshotData['headshotURL'];
       var headshotStyle = headshotData['headshotStyle'];
 
     IdeaSeed.findById(req.session.idea,function(err, idea){
       var imageURLs = [];
-      currentIdea = idea._doc;
-      if (idea._doc.images.length != 0){
-        for (var i =0; i < idea._doc.images.length; i++){
-          var j = 0;
-          IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
-            j++;
-            if(image && image._doc && image._doc.amazonURL){
-              var filename = image._doc["filename"];
-              var imageStyle = "";
-              imageStyle = ideaSeedHelpers.getImageOrientation(image["orientation"]);
-              imageURLs.push([
-                filename,
-                image["amazonURL"],
-                image._doc["uploader"],
-                imageStyle
-              ]);
-            }
-            if (j == idea._doc.images.length){
-              if(req.session.ideaReview && idea.inventorName != req.user.username){ var reviewing = true; }
-              else { var reviewing = false; }
-              res.render('pages/image-upload', {
-                csrfToken: req.csrfToken(),
-                user : req.user || {},
-                headshot: headshotURL,
-                headshotStyle : headshotStyle,
-                idea : currentIdea,
-                imageURLs : imageURLs,
-                reviewing: reviewing
-              });
-            }
-          });
-        }
-      } else {
-        if(req.session.ideaReview && idea.inventorName != req.user.username){ var reviewing = true; }
-        else { var reviewing = false; }
+      IdeaImage.find({"_id" : {$in : idea.images}}, function(err, imageDocuments){
+        _.each(imageDocuments, function(image, index){
+          var filename = image["filename"];
+          var imageStyle = "";
+          imageStyle = ideaSeedHelpers.getImageOrientation(image["orientation"]);
+          imageURLs.push([
+            filename,
+            image["amazonURL"],
+            image._doc["uploader"],
+            imageStyle
+          ]);
+        });
 
-        res.render('pages/image-upload', { user : req.user || {},
+        res.render('pages/image-upload', {
           csrfToken: req.csrfToken(),
+          user : req.user || {},
           headshot: headshotURL,
           headshotStyle : headshotStyle,
-          idea : currentIdea, imageURLs : [], reviewing: reviewing });
-      }
+          idea : idea,
+          imageURLs : imageURLs
+        });
+      });
     });
   });
 });
@@ -1533,7 +1514,7 @@ router.post('/image-upload', csrfProtection, function(req, res) {
             { _id : req.session.idea },
             { $push : { images : newImage.id }},
             function(err){
-              res.json({"redirectURL" : '/annotate-image/'+newFileName});
+              res.json({"redirectURL" : '/image-upload'});
               return;
             }
         );

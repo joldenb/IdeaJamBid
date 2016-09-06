@@ -3,55 +3,48 @@ html
   head
     include ../partials/head.jade
   body
-  .header.navbar.navbar-default
-    include ../partials/header.jade
 
-  .container
-    h1 Visualize Your Concept
-    form(role='form', id="formImageUpload" action="/image-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
-      .form-group
-        h3 Use a pen and paper to sketch out your idea, take a photo of your sketch, and save it here. You can also save additional diagrams or photographs of your invention.
-        |  
-        input(type="hidden", name="_csrf", value="#{csrfToken}")
-        input#fileInput(type="file", name="picture")
-        br
-        |  
-        if reviewing
-          a.btn.btn-default( href="/ideas/" + idea.name) Continue >
-        else
-          if(imageURLs.length && !idea.name)
-            a.btn.btn-default( href="/ideas/yet-to-be-named" ) Continue >
-          else if(imageURLs.length && idea.name)
-            a.btn.btn-default( href="/ideas/#{idea.name}") Continue >
-          else if(imageURLs.length == 0 && !idea.name)
-            a.btn.btn-default( href="/ideas/yet-to-be-named" ) Skip to Profile
-            |  
-            a.btn.btn-default( href="/ideas/yet-to-be-named" disabled) Continue (+20)
-          else if(imageURLs.length == 0 && idea.name)
-            a.btn.btn-default( href="/ideas/#{idea.name}" ) Skip to Profile
-            |  
-            a.btn.btn-default( href="/ideas/#{idea.name}" disabled) Continue (+20)
-
-
-          
-
-  .imagesList.my-images
-    if(imageURLs)
-      h3 Your Images
-      each imageURL in imageURLs
-        if imageURL[2] == user.nickname
-          a(href="/annotate-image/"+imageURL[0])
-            img.imageListItems(src=imageURL[1] style=imageURL[3])
-
-  .imagesList.other-images
-    if(imageURLs)
-      h3 All Other Uploaded Images
-      h5 (Cannot Annotate)
-      each imageURL in imageURLs
-        if imageURL[2] != user.nickname
-          img.imageListItems(src=imageURL[1] style=imageURL[3])
-
-
+  .container.image-upload
+    .row.top-row
+      .col-xs-10
+        h3.top-row-header Idea Imagery
+      .col-xs-2
+        a.close-viability(href="/ideas/#{idea.name}")
+          img(src="/close_button.png" height="30" width="30")
+  
+    if idea.name && idea.inventorName == user.username
+      .row
+        .col-xs-12
+          form(role='form', id="formImageUpload" action="/image-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
+            .form-group
+              h4 Upload a sketch, photo, or any other image
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+              label.btn.btn-block.btn-file#fileInput
+                h4 Upload Image
+                input(type="file", name="picture" style="display:none;")
+  
+    .imagesList
+      if(imageURLs.length > 0)
+        .row
+          .col-xs-12
+            h4 All Idea Images
+        each imageURL, index in imageURLs
+          if( index % 3 == 0)
+            .row
+              if ( imageURL )
+                .col-md-4
+                  .image-container
+                    img.imageListItems(src=imageURL[1] style=imageURL[3])
+              if ( imageURLs[index+1] )
+                .col-md-4
+                  .image-container
+                    img.imageListItems(src=imageURLs[index+1][1] style=imageURLs[index+1][3])
+              if ( imageURLs[index+2] )
+                .col-md-4
+                  .image-container
+                    img.imageListItems(src=imageURLs[index+2][1] style=imageURLs[index+2][3])
+      else
+        h5 <i>No images uploaded yet</i>
 
   include ../partials/js-includes.jade
   script(src='/exif.js')
@@ -62,8 +55,8 @@ html
       $(".my-images").append("<h4>Click to Annotate.</h4>");
     }
 
-    document.getElementById("fileInput").onchange = function(event) {
-      const files = document.getElementById('fileInput').files;
+    $("#fileInput [type='file']")[0].onchange = function(event) {
+      const files = $("#fileInput [type='file']")[0].files;
       const file = files[0];
       const csrf = $("input[name='_csrf']").val();
       if(file == null){
