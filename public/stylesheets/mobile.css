@@ -232,9 +232,18 @@
     transform: initial;
   }
 
- .contributions-row .btn, .original-ideas-row .btn, .btn-continue {
- 	width: 100%;
- }
+  .contributions-row .btn, .original-ideas-row .btn, .btn-continue {
+    width: 100%;
+  }
+
+  .full-width-mobile {
+    display: inline-block;
+    margin: 10% 0%;
+  }
+
+  .right-jam-col {
+    background-color: grey;
+  } 
 
 }
 

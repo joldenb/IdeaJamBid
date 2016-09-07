@@ -412,7 +412,7 @@ table.suggestion-table .col-md-4 {
 }
 
 
-.container.view-idea-suggestions .row, .container.network-profile .row {
+.container.view-idea-suggestions .row, .container.network-profile .idea-row {
   padding: 2.5em;
 }
 
@@ -945,12 +945,6 @@ button.suggestion-tactics, button.suggestion-targets {
   margin-left: 0;
 }
 
-.upvote {
-  display: inline-block;
-  font-size: 18px;
-  cursor: pointer; cursor: hand;
-}
-
 .upvote .glyphicon-fire {
   margin-left: 5%;
   margin-right: 5%;  
@@ -989,10 +983,6 @@ button.suggestion-tactics, button.suggestion-targets {
 
 .jam-page .idea-summary-problem-list {
   list-style: none;
-}
-
-.jam-page .imperfection-row {
-  padding: 0px !important;  
 }
 
 .mobile-only {
@@ -1225,14 +1215,6 @@ button.suggestion-tactics, button.suggestion-targets {
   font-family: Roboto Slab, serif;
 }
 
-.suggestion-element.variant-suggestion-block {
-  background-color: rgba(176, 221, 209, 0.33);
-}
-
-.imperfection-element {
-  background-color: rgba(199, 67, 69, 0.36) !important;
-}
-
 .problem-upvote-link {
   font-size: 1.2em;
   font-family: Roboto Slab, serif;
@@ -1325,4 +1307,8 @@ button.suggestion-tactics, button.suggestion-targets {
   .container.image-upload .close-viability img {
     margin-top: 20px;
   }
+}
+
+.full-width-mobile {
+  margin: 15% 0%;
 }

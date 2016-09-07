@@ -1,51 +1,40 @@
-.suggestion-element.variant-suggestion-block.problem-summary-block
-  .title-description.variant-suggestion
-    div.row.imperfection-row(id="#{suggestion.document.identifier}")
+div.row.suggestion-element.variant-suggestion-block(id="#{suggestion.document.identifier}")
 
-      .col-sm-2.problem-row-padding.upvote.problem-upvote-link       
-        a(class="upvote-suggestion" id="upvote-#{suggestion.document.identifier}").glyphicon.glyphicon-fire  #{suggestion.document.upvotes.length || 0} <br> Upvote   
-      .col-sm-7.problem-row-padding
-        if suggestion.document.descriptions[0]
-          div.suggestionStyle Suggestion: The solution of #{suggestion.document.descriptions[0]} 
-          <br>
-          if suggestion.document.ideaSeed && suggestion.document.identifier
-            a(href='/component-profile/'+ suggestion.document.identifier)
+  .col-sm-6.problem-row-padding
+    if suggestion.document.descriptions[0]
+      div.suggestionStyle The solution of #{suggestion.document.descriptions[0]} 
+      <br>
+      if suggestion.document.ideaSeed && suggestion.document.identifier
+        a(href='/component-profile/'+ suggestion.document.identifier)
 
-          div For: My Idea Name
-          div By: Inventor Name 
-            img(src="/avatar.png" height="15" width="15")             
+      div For: My Idea Name
+      span By: 
+        a(href='/imagineer/' + suggestion.creatorNickname)
+          span.suggestionStyle #{suggestion.creatorNickname} 
+          img(src="/avatar.png" height="15" width="15")        
 
-      .col-sm-3.click-row.problem-row-padding.problem-right-col
-        div.suggestionStyle By: #{suggestion.creatorNickname}
+  .col-sm-3.upvote      
+    a.btn.btn-vision.btn-block.full-width-mobile(class="upvote-suggestion" id="upvote-#{suggestion.document.identifier}") Upvote #{suggestion.document.upvotes.length || 0} 
 
-        div.click-row(style="height: 50px; max-width: 50px; background-image : url('" + suggestion.creatorProfilePic + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + suggestion.profilePicOrientation)
+  .col-sm-3.upvote      
+    a.btn.btn-electric.btn-block.full-width-mobile(href='/imperfection-profile/') Make a Suggestion
 
-        if(suggestion.creatorProfilePic)
-          a(href='/imagineer/' + suggestion.creatorNickname)
-        else
-          a(href='/imagineer/' + suggestion.creatorNickname)
-            img(src="/avatar.png" height="50" width="50")
+script(type="text/javascript").
 
-        if suggestion.document['date']
-          div #{moment(suggestion.document.date).format('MM/DD/YY')}        
+  $(".upvote-suggestion").click(function(event){
+    event.preventDefault();
+    var selector = "#upvote-" + "!{suggestion.document.identifier}";
 
-    include ../partials/js-includes.jade
-    script(type="text/javascript").
-
-      $(".upvote-suggestion").click(function(event){
-        event.preventDefault();
-        var selector = "#upvote-" + "!{suggestion.document.identifier}";
-
-        if ($.contains($(selector)[0], event.target) || ($(selector)[0] == event.target)) {
-          $.post('/upvote-suggestion', 
-          {
-            _csrf : $('[name="_csrf"]').val(),
-            suggestion : "!{suggestion.document.id}"
-          },
-          function(data, response) {
-            window.location.reload(true);
-          });
-        }
-
-        return false;
+    if ($.contains($(selector)[0], event.target) || ($(selector)[0] == event.target)) {
+      $.post('/upvote-suggestion', 
+      {
+        _csrf : $('[name="_csrf"]').val(),
+        suggestion : "!{suggestion.document.id}"
+      },
+      function(data, response) {
+        window.location.reload(true);
       });
+    }
+
+    return false;
+  });
