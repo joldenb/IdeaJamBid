@@ -14,27 +14,7 @@ div.row.suggestion-element.variant-suggestion-block(id="#{suggestion.document.id
           img(src="/avatar.png" height="15" width="15")        
 
   .col-sm-3.upvote      
-    a.btn.btn-vision.btn-block.full-width-mobile(class="upvote-suggestion" id="upvote-#{suggestion.document.identifier}") Upvote #{suggestion.document.upvotes.length || 0} 
+    a.btn.btn-vision.btn-block.full-width-mobile(class="upvote-suggestion" id="upvote-#{suggestion.document.identifier}" data-suggestion-id="#{suggestion.document.id}") Upvote #{suggestion.document.upvotes.length || 0} 
 
   .col-sm-3.upvote      
     a.btn.btn-electric.btn-block.full-width-mobile(href='/imperfection-profile/') Make a Suggestion
-
-script(type="text/javascript").
-
-  $(".upvote-suggestion").click(function(event){
-    event.preventDefault();
-    var selector = "#upvote-" + "!{suggestion.document.identifier}";
-
-    if ($.contains($(selector)[0], event.target) || ($(selector)[0] == event.target)) {
-      $.post('/upvote-suggestion', 
-      {
-        _csrf : $('[name="_csrf"]').val(),
-        suggestion : "!{suggestion.document.id}"
-      },
-      function(data, response) {
-        window.location.reload(true);
-      });
-    }
-
-    return false;
-  });

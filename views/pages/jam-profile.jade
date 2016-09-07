@@ -306,19 +306,35 @@ html
 
     $(document).ready(function(){
 
-      $(".upvote").click(function(event){      
+      $(".upvote-imperfection").click(function(event){  
+        console.log("imperfection");    
         event.preventDefault();
 
-          $.post('/upvote-imperfection', 
-          {
-            _csrf : $('[name="_csrf"]').val(),
-            problem : $(this)[0].children[0].dataset['problemId']
-          },
-          function(data, response) {
-            window.location.reload(true);          
-          });
-        
+        $.post('/upvote-imperfection', 
+        {
+          _csrf : $('[name="_csrf"]').val(),
+          problem : $(this)[0].children[0].dataset['problemId']
+        },
+        function(data, response) {
+          window.location.reload(true);          
+        });
 
         return false;
-      });      
+      });
+        
+      $(".upvote-suggestion").click(function(event){
+        event.preventDefault();
+
+        $.post('/upvote-suggestion', 
+        {
+          _csrf : $('[name="_csrf"]').val(),
+          suggestion : $(this)[0].children[0].dataset['suggestionId']
+        },
+        function(data, response) {
+          window.location.reload(true);
+        });
+
+        return false;
+      });   
+
     });
