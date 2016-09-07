@@ -845,6 +845,10 @@ a.network-link:hover {
   max-width: 100%;
 }
 
+.image-summary-image {
+  overflow: hidden;
+}
+
 .modal-footer {
   clear: both;
 }
@@ -1106,10 +1110,6 @@ button.suggestion-tactics, button.suggestion-targets {
   margin:0 1em;
 }
 
-.networkProfilePic {
-  width:100%;
-}
-
 .view-all-overlay {
   position: relative;
   top: -60px;
@@ -1303,12 +1303,26 @@ button.suggestion-tactics, button.suggestion-targets {
   margin:1em;
 }
 
-@media screen and (min-width: 800px) {
-  .container.image-upload .close-viability img {
-    margin-top: 20px;
-  }
+.return-button {
+  margin : 1em 0 ;
 }
 
 .full-width-mobile {
   margin: 15% 0%;
 }
+
+@media screen and (min-width: 800px) {
+  .container.image-upload .close-viability img {
+    margin-top: 20px;
+  }
+
+  .desktop-network-header-img {
+    width: 100%;
+    overflow: hidden;
+    height: 15em;
+  }
+
+  .mobile-network-header-img { 
+    display: none;
+  }
+

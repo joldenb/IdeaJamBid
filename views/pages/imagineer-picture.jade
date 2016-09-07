@@ -260,6 +260,7 @@ html
     });
 
     document.getElementById("headshotButton").onchange = function(event) {
+      $("<img id='spinner' src='/spinner.gif'>").insertAfter("#headshotForm");
       const files = document.getElementById('headshotButton').files;
       const file = files[0];
       if(file == null){

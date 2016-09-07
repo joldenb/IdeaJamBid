@@ -13,7 +13,7 @@ html
           img(src="/avatar.png" height="150" width="150")
       .imagesList
         if(imageURLs)
-          if !component['mainImage']
+          if !component['mainImage'] && idea.name && idea.inventorName == user.username
             form(role='form', id="formImageUpload" action="/add-component-image", method="post", data-idea-doc=idea, enctype="multipart/form-data")
               .form-group
                 input#fileInput(type="file", name="picture")
@@ -40,10 +40,11 @@ html
         
       if !component['text']
         button(type="button" id="compTitleModalButton" class="btn btn-primary" data-toggle="modal" data-target="#addTitleModal") Add Component Title
-      else
+      else if (componentContributor)
         p Contributed by #[a(href='/imagineer/'+ componentContributor.nickname) #{componentContributor.nickname}]
   
-      h4 Part of <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b> by #[a(href='/imagineer/'+ ideaInventor.nickname) #{ideaInventor.nickname}]
+      if ideaInventor
+        h4 Part of <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b> by #[a(href='/imagineer/'+ ideaInventor.nickname) #{ideaInventor.nickname}]
 
     .edit-column.col-md-8
       .component-descriptions
@@ -58,45 +59,48 @@ html
         else
           ul
             li.no-descriptions No Descriptions Yet
-            br
-        form(role='form', id="addDescription" action="/add-description", method="post", data-idea-doc=idea)
-          .row
-            .col-sm-8
-              input.form-control(name="description", id="description",
-              placeholder='Add description')
-              input(type="hidden", name="_csrf", value="#{csrfToken}")
-            .col-sm-4
-              button.btn.btn-success#submit(type='submit') Save
+        if idea.name && idea.inventorName == user.username
+          form(role='form', id="addDescription" action="/add-description", method="post", data-idea-doc=idea)
+            .row
+              .col-sm-8
+                input.form-control(name="description", id="description",
+                placeholder='Add description')
+                input(type="hidden", name="_csrf", value="#{csrfToken}")
+              .col-sm-4
+                button.btn.btn-success#submit(type='submit') Save
 
       .related-components
-        br
         h4 Related Components
-        each component in relatedComponents
-          if component[0]['text']            
-            if component[0]['identifier']
-              li 
-                a(href="/component-profile/"+component[0]['identifier'])
+        if relatedComponents.length > 0
+          each component in relatedComponents
+            if component[0]['text']            
+              if component[0]['identifier']
+                li 
+                  a(href="/component-profile/"+component[0]['identifier'])
+                    h4.compName #{component[0]['number']} : #{component[0]['text']}
+                  p <b>Relationship</b> 
+                  p #{component[1]}
+              else
+                li 
                   h4.compName #{component[0]['number']} : #{component[0]['text']}
-                p <b>Relationship</b> 
-                p #{component[1]}
+                  p <b>Relationship</b> 
+                  p #{component[1]}
+            else if component[0]['descriptions'].length > 0
+              if component[0]['identifier']
+                li
+                  a(href="/component-profile/"+component[0]['identifier'])
+                    h4.compName #{component[0]['descriptions'][0]}
+                  p <b>Relationship</b> 
+                  p #{component[1]}
             else
-              li 
-                h4.compName #{component[0]['number']} : #{component[0]['text']}
-                p <b>Relationship</b> 
-                p #{component[1]}
-          else if component[0]['descriptions'].length > 0
-            if component[0]['identifier']
-              li
-                a(href="/component-profile/"+component[0]['identifier'])
+                li
                   h4.compName #{component[0]['descriptions'][0]}
-                p <b>Relationship</b> 
-                p #{component[1]}
-          else
-              li
-                h4.compName #{component[0]['descriptions'][0]}
-                p <b>Relationship</b> 
-                p #{component[1]}
-        button(type="button" id="modalButton" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Add New Related Component
+                  p <b>Relationship</b> 
+                  p #{component[1]}
+        else
+          div <i>No related components yet</i>
+        if idea.name && idea.inventorName == user.username
+          button(type="button" id="modalButton" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Add New Related Component
 
 
       .idea-function-column
@@ -106,18 +110,18 @@ html
           #idea-summary-problems
             include ../partials/problem-summary-element.jade
 
-        .component-variants
-          br
-          h4 Included in Variants
-          if variantDates.length > 0
-            each variantDate in variantDates
-              ul.variantDateList
-                li
-                  a(href="/ideas/#{idea.name}/variant/"+variantDate[1]) #{variantDate[0]}
-          else 
-            p <i>Not currently part of any variants</i>
+        //- .component-variants
+        //-   br
+        //-   h4 Included in Variants
+        //-   if variantDates.length > 0
+        //-     each variantDate in variantDates
+        //-       ul.variantDateList
+        //-         li
+        //-           a(href="/ideas/#{idea.name}/variant/"+variantDate[1]) #{variantDate[0]}
+        //-   else 
+        //-     p <i>Not currently part of any variants</i>
       .return-button
-        a.home-logout.btn.btn-default( href="/ideas/#{idea.name}") < Back to Idea Summary
+        a.home-logout.btn.btn-industry.btn-lg( href="/ideas/#{idea.name}") Back to Idea Summary
       br
 
     #myModal.modal.fade.annotate-modal(role="dialog")
@@ -248,6 +252,7 @@ html
     });
 
     document.getElementById("fileInput").onchange = function(event) {
+      $("<img id='spinner' src='/spinner.gif'>").insertAfter("#formImageUpload");
       const files = document.getElementById('fileInput').files;
       const file = files[0];
       if(file == null){

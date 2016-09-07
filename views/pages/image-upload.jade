@@ -56,6 +56,7 @@ html
     }
 
     $("#fileInput [type='file']")[0].onchange = function(event) {
+      $("<img id='spinner' src='/spinner.gif'>").insertAfter("#formImageUpload");
       const files = $("#fileInput [type='file']")[0].files;
       const file = files[0];
       const csrf = $("input[name='_csrf']").val();

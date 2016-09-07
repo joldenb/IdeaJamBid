@@ -245,5 +245,13 @@
     background-color: grey;
   } 
 
+  .mobile-network-header-img {
+    width: 100%;
+  }
+
+  .desktop-network-header-img {
+  	display:none;
+  }
+
 }
 

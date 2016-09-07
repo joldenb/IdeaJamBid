@@ -9,11 +9,12 @@ html
   .container
     .row.imperfection-summary
       h1 Improve
-        a( href="/ideas/#{idea.name}") #{idea.name}  
+        a( href="/ideas/#{idea.name}")  #{idea.name}
       span by: 
         a.nickname( href="/imagineer/#{problemCreator.nickname}") 
           img(src="/avatar.png" height="30" width="30") 
-          span #{problemCreator.nickname}   
+          span #{problemCreator.nickname}
+        div
           if schoolNetwork
             #[a(class="network-link" href="/jam/#{schoolNetwork}") #{schoolNetwork}]   
           if companyNetwork
@@ -23,18 +24,6 @@ html
 
       h2 Solve the problem of <b class="problemColor">#{problem.text}:</b>
       .col-sm-6
-        #existing-suggestion-list.edit-column
-          h1 Suggestions
-          if( suggestions.length > 0)
-            ul
-              each suggestion, identifier in wholeSuggestionBlockInfo
-                li                
-                  include ../partials/suggestion-summary-element.jade
-          else
-            ul
-              li.no-descriptions No Descriptions Yet
-      .col-sm-6
-
         h3#suggestion-question-header How will you:
         form(role='form', id="formSuggestion" action="/suggestion-submit-new", method="post", data-idea-doc=idea)
           .form-group
@@ -65,6 +54,17 @@ html
               | Add a Picture
             button#reset-suggestion-form.btn.btn-info Start Over
             button.btn.btn-success#submit(type='submit') Save
+      .col-sm-6
+        #existing-suggestion-list.edit-column
+          h1 Suggestions
+          if( suggestions.length > 0)
+            ul
+              each suggestion, identifier in wholeSuggestionBlockInfo
+                li                
+                  include ../partials/suggestion-summary-element.jade
+          else
+            ul
+              li.no-descriptions No Descriptions Yet
 
 include ../partials/js-includes.jade
 script(src='/exif.js')

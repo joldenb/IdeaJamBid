@@ -16,7 +16,8 @@ html
           input(type="hidden", name="_csrf", value="#{csrfToken}")
           br
     else
-      img(class="networkProfilePic" src="#{networkImage}")
+      .desktop-network-header-img(style="background-image : url('" + '#{networkImage || "/lightbulb.png"}' + "');"+ideaImageStyle)
+      img.mobile-network-header-img(src='#{networkImage}')
 
     .container.network-profile.jam-page
       span.jamH2
@@ -233,6 +234,7 @@ html
     })
 
     document.getElementById("profilePicButton").onchange = function(event) {
+      $("<img id='spinner' src='/spinner.gif'>").insertAfter("#jamProfilePicForm");
       const files = document.getElementById('profilePicButton').files;
       const file = files[0];
       if(file == null){
