@@ -1989,6 +1989,7 @@ router.post('/login-dsw', csrfProtection, function(req,res, next){
 router.get('/ideas/:ideaName', csrfProtection, function(req, res){
 
   if(!(req.user && req.user.username)) {
+    console.log("not logged in")
     res.redirect('/');
     return;
   }
@@ -2034,6 +2035,9 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
   query.exec(function(err, idea){
 
     if(err || !idea){
+      if(err){
+        console.log("error is " + err);
+      }
       res.redirect('/');
       return;
     }
