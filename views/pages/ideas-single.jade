@@ -1048,7 +1048,7 @@ html
         $.post('/save-idea-name', 
           {
             _csrf : $('[name="_csrf"]').val(),
-            inventionName : $("#saveIdeaName input[name='inventionName']").val(),
+            inventionName : $("#saveIdeaName input[name='inventionName']").val().trim(),
           },
           function(resp) {
             if(resp['newUrl']){

@@ -2038,6 +2038,10 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
       if(err){
         console.log("error is " + err);
       }
+
+      else {
+        console.log("idea not created correctly");
+      }
       res.redirect('/');
       return;
     }
