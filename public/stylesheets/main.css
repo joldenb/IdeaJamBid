@@ -292,6 +292,7 @@ form {
 
 .suggestion-element {
   height: 5.5em;
+  margin-top: 1.5em;
 }
 
 .image-block-element {
@@ -362,8 +363,17 @@ table.suggestion-table .col-md-4 {
 
 .suggestion-element.view-all-ideas-block {
   height:36em;
-  border: 1px solid #B4B4B4;
   background-color: white;
+}
+
+.suggestion-row {
+  border : 3px solid #00A550;
+  border-radius: 5px;
+}
+
+.problem-row {
+ border : 3px solid #C64143; 
+ border-radius: 5px;
 }
 
 .container.network-profile .suggestion-element.view-all-ideas-block {
@@ -791,7 +801,6 @@ img {
 
 .suggestion-element.variant-suggestion-block {
   height:auto;
-  border: 1px solid #B4B4B4;
   background-color: white;
 }
 
@@ -823,6 +832,7 @@ a.network-link:hover {
 .problem-row {
   cursor: pointer;
   cursor: hand;
+  margin-top: 1.5em;
 }
 
 .solve-btn {

@@ -1,4 +1,4 @@
-div.row.suggestion-element.variant-suggestion-block(id="#{suggestion.document.identifier}")
+div.row.suggestion-row.suggestion-element.variant-suggestion-block(id="#{suggestion.document.identifier}")
 
   .col-sm-6.problem-row-padding
     if suggestion.document.descriptions[0]
@@ -14,7 +14,7 @@ div.row.suggestion-element.variant-suggestion-block(id="#{suggestion.document.id
           img(src="/avatar.png" height="15" width="15")        
 
   .col-sm-3.upvote      
-    a.btn.btn-vision.btn-block.full-width-mobile(class="upvote-suggestion" id="upvote-#{suggestion.document.identifier}" data-suggestion-id="#{suggestion.document.id}") Upvote #{suggestion.document.upvotes.length || 0} 
+    a.btn.btn-vision.btn-block.full-width-mobile.btn-lg(class="upvote-suggestion" id="upvote-#{suggestion.document.identifier}" data-suggestion-id="#{suggestion.document.id}") Upvote #{suggestion.document.upvotes.length || 0} 
 
-  .col-sm-3
-    a.btn.btn-electric.btn-block.full-width-mobile(href='/component-profile/' + suggestion.document.identifier) View Suggestion
+  .col-sm-3.right-jam-col
+    a.btn.btn-electric.btn-block.full-width-mobile.btn-lg(href='/component-profile/' + suggestion.document.identifier) View Suggestion

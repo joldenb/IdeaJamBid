@@ -16,10 +16,10 @@ div.row.problem-row.suggestion-element.variant-suggestion-block(id="#{problem.id
             img(src="/avatar.png" height="15" width="15")  
 
   .col-sm-3
-    a.btn.btn-vision.btn-block.full-width-mobile(class="upvote-imperfection" id="upvote-#{problem.identifier}" data-problem-id="#{problem.id}") Upvote #{problem.upvotes.length || 0}
+    a.btn.btn-vision.btn-block.full-width-mobile.btn-lg(class="upvote-imperfection" id="upvote-#{problem.identifier}" data-problem-id="#{problem.id}") Upvote #{problem.upvotes.length || 0}
 
   .col-sm-3.right-jam-col
-    a.btn.btn-electric.btn-block.full-width-mobile(href='/imperfection-profile/' + "#{problem.identifier}") Make a Suggestion
+    a.btn.btn-electric.btn-block.full-width-mobile.btn-lg(href='/imperfection-profile/' + "#{problem.identifier}") Make a Suggestion
 
 script(type="text/javascript").
 
