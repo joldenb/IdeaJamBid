@@ -1193,6 +1193,7 @@ button.suggestion-tactics, button.suggestion-targets {
 .btn-electric {
   background-color: #D6DE26;
   color:#414142 !important;
+  white-space: normal;
 }
 
 .btn-electric:hover{
@@ -1320,6 +1321,8 @@ button.suggestion-tactics, button.suggestion-targets {
     width: 100%;
     overflow: hidden;
     height: 15em;
+    background-repeat: no-repeat;
+    background-position: center;    
   }
 
   .mobile-network-header-img { 

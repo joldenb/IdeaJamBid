@@ -29,17 +29,16 @@ html
       if component['text'] && component['number']
         .component-name
           h1 Component # #{component['number']} : #{component['text']}
-      else if (component['number'])
-        .component-name
-          h1 Component # #{component['number']}
-          if (component['descriptions'][0])
-            h3 #{component['descriptions'][0]}
       else if component['text']
         .component-name
           h1 #{component['text']}
+      else
+        .component-name
+          if (component['descriptions'][0])
+            h3 The suggestion of #{component['descriptions'][0]}
         
       if !component['text']
-        button(type="button" id="compTitleModalButton" class="btn btn-primary" data-toggle="modal" data-target="#addTitleModal") Add Component Title
+        button(type="button" id="compTitleModalButton" class="btn btn-primary" data-toggle="modal" data-target="#addTitleModal") Add Title
       else if (componentContributor)
         p Contributed by #[a(href='/imagineer/'+ componentContributor.nickname) #{componentContributor.nickname}]
   
@@ -69,37 +68,37 @@ html
               .col-sm-4
                 button.btn.btn-success#submit(type='submit') Save
 
-      .related-components
-        h4 Related Components
-        if relatedComponents.length > 0
-          each component in relatedComponents
-            if component[0]['text']            
-              if component[0]['identifier']
-                li 
-                  a(href="/component-profile/"+component[0]['identifier'])
+      if idea.name && idea.inventorName == user.username
+        .related-components
+          h4 Related Components
+          if relatedComponents.length > 0
+            each component in relatedComponents
+              if component[0]['text']            
+                if component[0]['identifier']
+                  li 
+                    a(href="/component-profile/"+component[0]['identifier'])
+                      h4.compName #{component[0]['number']} : #{component[0]['text']}
+                    p <b>Relationship</b> 
+                    p #{component[1]}
+                else
+                  li 
                     h4.compName #{component[0]['number']} : #{component[0]['text']}
-                  p <b>Relationship</b> 
-                  p #{component[1]}
+                    p <b>Relationship</b> 
+                    p #{component[1]}
+              else if component[0]['descriptions'].length > 0
+                if component[0]['identifier']
+                  li
+                    a(href="/component-profile/"+component[0]['identifier'])
+                      h4.compName #{component[0]['descriptions'][0]}
+                    p <b>Relationship</b> 
+                    p #{component[1]}
               else
-                li 
-                  h4.compName #{component[0]['number']} : #{component[0]['text']}
-                  p <b>Relationship</b> 
-                  p #{component[1]}
-            else if component[0]['descriptions'].length > 0
-              if component[0]['identifier']
-                li
-                  a(href="/component-profile/"+component[0]['identifier'])
+                  li
                     h4.compName #{component[0]['descriptions'][0]}
-                  p <b>Relationship</b> 
-                  p #{component[1]}
-            else
-                li
-                  h4.compName #{component[0]['descriptions'][0]}
-                  p <b>Relationship</b> 
-                  p #{component[1]}
-        else
-          div <i>No related components yet</i>
-        if idea.name && idea.inventorName == user.username
+                    p <b>Relationship</b> 
+                    p #{component[1]}
+          else
+            div <i>No related components yet</i>
           button(type="button" id="modalButton" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Add New Related Component
 
 
@@ -251,78 +250,88 @@ html
       })
     });
 
-    document.getElementById("fileInput").onchange = function(event) {
-      $("<img id='spinner' src='/spinner.gif'>").insertAfter("#formImageUpload");
-      const files = document.getElementById('fileInput').files;
-      const file = files[0];
-      if(file == null){
-        return alert('No file selected.');
-      }
-      var fr   = new FileReader;
-      
-      fr.onloadend = function() {
-        // get EXIF data
-        var exif = EXIF.readFromBinaryFile(this.result);
-
-        if(file.size < 3000000){
-          getSignedRequest(file, exif);
-        } else if (file.size > 3000000){
-          alert('Please choose an image smaller than 3 MB.')
-        } else {
-          alert('An error ocurred with this image.')
+    if(document.getElementById("fileInput")){
+      document.getElementById("fileInput").onchange = function(event) {
+        $("<img id='spinner' src='/spinner.gif'>").insertAfter("#formImageUpload");
+        const files = document.getElementById('fileInput').files;
+        const file = files[0];
+        if(file == null){
+          return alert('No file selected.');
         }
-
-      };
-      fr.readAsArrayBuffer(file); // read the file
-    }
-  
-
-    function uploadFile(file, signedRequest, url, exif){
-      const xhr = new XMLHttpRequest();
-      xhr.open('PUT', signedRequest);
-      xhr.onreadystatechange = function() {
-        if(xhr.readyState === 4){
-          if(xhr.status === 200 && (file.type=="image/jpeg" || file.type=="image/png")){
-            var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type, "_csrf" : $('[name="_csrf"]').val(, exif : exif),
-            "componentProfilePage" : true, imageComponent : $("#image-component-identifier").val() };
-            $.post('/add-component-image', data , function(response, status){
-              window.location.replace(response["redirectURL"]);
-            });
-          }
-          else{
-            alert('Could not upload file.');
-          }
-        }
-      };
-      xhr.send(file);
-    }
-
-    function getSignedRequest(file, exif){
-      const xhr = new XMLHttpRequest();
-      var filename = file.name.split(".");
-      filename[0] = filename[0] + "-" + Date.now().toString();
-      filename = filename.join(".");
-      xhr.open('GET', '/sign-s3?file-name='+ filename + '&file-type='+ file.type);
-      xhr.onreadystatechange = function() {
-        if(xhr.readyState === 4){
-          if(xhr.status === 200){
-            var response;
-            if(xhr.responseText == ""){
-              response = JSON.parse('{}');
-            } else {
-              response = JSON.parse(xhr.responseText);
-            }
-            uploadFile(file, response.signedRequest, response.url, exif);
-          }
-          else{
-            alert('Could not get signed URL.');
-          }
-        } 
+        var fr   = new FileReader;
         
-      };
-      xhr.send();
+        fr.onloadend = function() {
+          // get EXIF data
+          var exif = EXIF.readFromBinaryFile(this.result);
+
+          if(file.size < 3000000){
+            getSignedRequest(file, exif);
+          } else if (file.size > 3000000){
+            alert('Please choose an image smaller than 3 MB.')
+          } else {
+            alert('An error ocurred with this image.')
+          }
+
+        };
+        fr.readAsArrayBuffer(file); // read the file
+      }
+    
+
+      function uploadFile(file, signedRequest, url, exif){
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', signedRequest);
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4){
+            if(xhr.status === 200 && (file.type=="image/jpeg" || file.type=="image/png")){
+              var data = {
+                "filename" : file.name,
+                "fileUrl" : url,
+                "type" : file.type,
+                "_csrf" : $('[name="_csrf"]').val(),
+                exif : exif,
+                "componentProfilePage" : true,
+                imageComponent : $("#image-component-identifier").val()
+              };
+              $.post('/add-component-image', data , function(response, status){
+                window.location.replace(response["redirectURL"]);
+              });
+            }
+            else{
+              alert('Could not upload file.');
+            }
+          }
+        };
+        xhr.send(file);
+      }
+
+      function getSignedRequest(file, exif){
+        const xhr = new XMLHttpRequest();
+        var filename = file.name.split(".");
+        filename[0] = filename[0] + "-" + Date.now().toString();
+        filename = filename.join(".");
+        xhr.open('GET', '/sign-s3?file-name='+ filename + '&file-type='+ file.type);
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4){
+            if(xhr.status === 200){
+              var response;
+              if(xhr.responseText == ""){
+                response = JSON.parse('{}');
+              } else {
+                response = JSON.parse(xhr.responseText);
+              }
+              uploadFile(file, response.signedRequest, response.url, exif);
+            }
+            else{
+              alert('Could not get signed URL.');
+            }
+          } 
+          
+        };
+        xhr.send();
+      }
     }
 
+    
     $("#addDescription #submit").click(function(event){
       event.preventDefault();
       var data = {
@@ -337,4 +346,20 @@ html
           alert("Not submitted successfully");
         }
       });
+    });
+
+    $(document).ready(function(){
+      $(".upvote-imperfection").click(function(event){
+        event.preventDefault();
+
+          $.post('/upvote-imperfection', 
+          {
+            _csrf : $('[name="_csrf"]').val(),
+            problem : $(this)[0].dataset['problemId']
+          },
+          function(data, response) {
+            window.location.reload(true);          
+          });
+        return false;
+      });        
     });

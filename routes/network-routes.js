@@ -517,6 +517,12 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                       var suggestions = [];
 
                       Component.find({"ideaSeed" : { $in : allIdeas}}, function(err, components) {
+                        //sort and limit components
+                        components = _.sortBy(components, function(oneComponent){
+                          return oneComponent.upvotes.length;
+                        }).reverse();
+                        components = components.slice(0,5);
+
                         suggestions = components;
                         var suggestionNameList = _.map(suggestions, function(eachOne) { return eachOne.creator;})
 
@@ -566,6 +572,13 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                             var imperfections = [];
 
                             IdeaProblem.find({"ideaSeed" : { $in : allIdeas}}, function(err, imperfections) {
+                              
+                              //sort and limit imperfections
+                              imperfections = _.sortBy(imperfections, function(oneImperfection){
+                                return oneImperfection.upvotes.length;
+                              }).reverse();
+                              imperfections = imperfections.slice(0,5);
+
                               var imperfectionNameList = _.map(imperfections, function(eachOne) { return eachOne.creator;})
 
                               Account.find({"username" : {$in : imperfectionNameList}}, function(err, imperfectors){
