@@ -16,8 +16,9 @@ html
           input(type="hidden", name="_csrf", value="#{csrfToken}")
           br
     else
-      .desktop-network-header-img(style="background-image : url('" + '#{networkImage || "/lightbulb.png"}' + "');"+ideaImageStyle)
-      img.mobile-network-header-img(src='#{networkImage}')
+      a(href="/jam/" + networkName)
+        .desktop-network-header-img(style="background-image : url('" + '#{networkImage || "/lightbulb.png"}' + "');"+ideaImageStyle)
+        img.mobile-network-header-img(src='#{networkImage}')
 
     .container.network-profile.jam-page
       span.jamH2
@@ -138,6 +139,8 @@ html
       br
 
       h3#suggestionSection Top #{networkName} Suggestions
+      div  
+        button(type="button"  class="btn btn-industry" href="/view-all-idea-suggestions/" + networkName) View All
       each suggestion, identifier in wholeSuggestionBlockInfo             
         include ../partials/suggestion-summary-element.jade
       br

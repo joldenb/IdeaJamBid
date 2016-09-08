@@ -1,0 +1,77 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body#topSection
+    .header.navbar.navbar-default.jamTopNav
+      include ../partials/header.jade
+
+    if !networkImage
+      form(role='form', id="jamProfilePicForm" action="/add-network-profile-pic", method="post", enctype="multipart/form-data")
+        .form-group
+          h3 Upload a new Profile Picture
+          |  
+          input#profilePicButton(type="file", name="picture")
+          input(type="hidden", name="networkName", value="#{networkName}")
+          input(type="hidden", name="_csrf", value="#{csrfToken}")
+          br
+    else
+      a(href="/jam/" + networkName)
+        .desktop-network-header-img(style="background-image : url('" + '#{networkImage || "/lightbulb.png"}' + "');"+ideaImageStyle)
+        img.mobile-network-header-img(src='#{networkImage}')
+
+    .container.network-profile.jam-page
+      h2#suggestionSection All Suggestions for #{networkName}
+      each suggestion, identifier in wholeSuggestionBlockInfo             
+        include ../partials/suggestion-summary-element.jade
+
+    //- This is just for the CSRF token
+    form(role='form', method="post", enctype="multipart/form-data", style="display:none;")
+        input(type="hidden", name="_csrf", value="#{csrfToken}")
+  
+
+
+  include ../partials/js-includes.jade
+  script(src='/exif.js')
+  script(type="text/javascript").
+    $(window).load(function(){
+      if("!{dsw}" == "true"){
+        $('#loginModal').modal('show');
+      }
+    });
+
+    $("#ideajam-login").click(function(event){
+      $("#dsw-signup-form").hide();
+      $("#dsw-login-form").show();
+    });
+
+    $("#register-submit").click(function(event){
+      if($("input[name='nickname']").val() == ""){
+        event.preventDefault();
+        $("input[name='nickname']").after("<p> Please enter a name value.</p>");
+      }
+      if($("input[name='username']").val() == ""){
+        event.preventDefault();
+        $("input[name='username']").after("<p> Please enter an email.</p>");
+      }
+    })
+
+
+    $(document).ready(function(){
+
+      $(".upvote-suggestion").click(function(event){
+        event.preventDefault();
+
+        $.post('/upvote-suggestion', 
+        {
+          _csrf : $('[name="_csrf"]').val(),
+          suggestion : $(this)[0].dataset['suggestionId']
+        },
+        function(data, response) {
+          window.location.reload(true);
+        });
+
+        return false;
+      });   
+
+    });

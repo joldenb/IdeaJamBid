@@ -1131,7 +1131,7 @@ router.post('/suggestion-submit-new', csrfProtection, function(req, res) {
             Component.create(newSuggestion,
               function(err, raw){
                 console.log('The raw response from Mongo was ', raw);
-                res.redirect('/imperfection-profile/' + problem.identifier);
+                res.redirect("/view-all-jam-suggestions/dsw");
               }
             );
           }
@@ -1147,7 +1147,7 @@ router.post('/suggestion-submit-new', csrfProtection, function(req, res) {
       Component.create(newSuggestion,
         function(err, raw){
           console.log('No photo uploaded, raw response: ', raw);
-          res.redirect('/imperfection-profile/' + problem.identifier);
+          res.redirect("/view-all-jam-suggestions/dsw");
         }
       );
     }
