@@ -28,6 +28,12 @@ Path D - "The scoring path with a boring name"
 -----
 1.  Click on an idea
 2.  Click score viability categories button
-3.  To be completed
+3.  More coming soon
 
-To be completed
+Path E - "Do you even edit your brofile bro?"
+-----
+1.  Navigate to edit profile
+2.  Add an image
+3.  Add your school, company, and location
+4.  Add an aptitude [***TEXT INPUT***]
+5.  View your completed profile
