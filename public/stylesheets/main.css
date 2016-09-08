@@ -1331,6 +1331,11 @@ button.suggestion-tactics, button.suggestion-targets {
   margin-top:1em;
 }
 
+
+#suggestionSection .btn{
+  margin-left: 1em;
+}
+
 @media screen and (min-width: 800px) {
   .container.image-upload .close-viability img {
     margin-top: 20px;

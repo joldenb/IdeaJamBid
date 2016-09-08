@@ -20,8 +20,11 @@ html
         .desktop-network-header-img(style="background-image : url('" + '#{networkImage || "/lightbulb.png"}' + "');"+ideaImageStyle)
         img.mobile-network-header-img(src='#{networkImage}')
 
+
     .container.network-profile.jam-page
       h2#suggestionSection All Suggestions for #{networkName}
+        a(href="/jam/" + networkName)
+          button(class="btn btn-industry btn-lg") Jam Page
       each suggestion, identifier in wholeSuggestionBlockInfo             
         include ../partials/suggestion-summary-element.jade
 

@@ -139,8 +139,9 @@ html
       br
 
       h3#suggestionSection Top #{networkName} Suggestions
-      div  
-        button(type="button"  class="btn btn-industry" href="/view-all-idea-suggestions/" + networkName) View All
+      a(href="/view-all-jam-suggestions/" + networkName)
+        div
+          button(class="btn btn-industry") View All
       each suggestion, identifier in wholeSuggestionBlockInfo             
         include ../partials/suggestion-summary-element.jade
       br

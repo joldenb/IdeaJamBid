@@ -16,6 +16,7 @@ html
             img(src="/close_button.png" height="30" width="30")
       .row
         form.mobile-viability-form(role='form', id="formAffordability" action="/affordability-mobile", method="post", data-idea-doc=idea)
+          input(type="hidden", name="nextLink", value="#{nextLink}")
           input(type="hidden", name="_csrf", value="#{csrfToken}")
           h4 What cost-related problem prevents the #{idea.name} from being more affordable?
           if(currentReviewerProblem)
