@@ -1222,10 +1222,10 @@ router.post('/upvote-imperfection', csrfProtection, function(req, res) {
 
   IdeaProblem.findById(problemId,
     function (err, problem) {
-//      if(problem.upvotes.indexOf(req.user.id) == -1) {
+      if(problem.upvotes.indexOf(req.user.id) == -1) {
         problem.upvotes.push(req.user.id);
         problem.save(function (err) {});
-      //}
+      }
   });
 
   res.sendStatus(200);

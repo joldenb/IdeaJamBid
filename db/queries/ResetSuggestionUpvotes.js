@@ -1,0 +1,1 @@
+db.getCollection('components').updateMany({},{$set: {"upvotes": [] }})

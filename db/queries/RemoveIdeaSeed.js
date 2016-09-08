@@ -1,0 +1,1 @@
+db.getCollection('ideaseeds').remove({name:"the giant megaphone"})
