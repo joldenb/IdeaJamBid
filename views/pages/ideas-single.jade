@@ -17,18 +17,19 @@ html
                   div(id='#{imageURL[0]}' style="height: 300px; max-width: 400px; background-image : url('" + '#{imageURL[1] || "/avatar.png"}' + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + "#{imageURL[2]}")
               if index < 3 && index > 0
                 img.ideaSeedThumbnails(src=imageURL[1]  style=imageURL[2])
-            span.view-all-images-btn
-              a.btn.secondary-btn.btn-default( href="/image-upload" )
-                span.glyphicon.glyphicon-plus
+          .view-all-images-btn
+            a.btn.secondary-btn.btn-default( href="/image-upload" )
+              span.glyphicon.glyphicon-camera
         else
           a(href="/image-upload")
             .upload-image-div
               span.glyphicon.glyphicon-cloud-upload
 
+        h1 #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
         if idea.name && inventorName == user.username
-          h3 <b>#{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}</b> solves the <span class="problemColor">problem of #[a(href='/introduce-idea') #{idea.problem}]</span> by #[a(href='/accomplish') <span class="solutionColor">#{idea.description}]</span>.
+          h4 <b>#{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}</b> solves the <span class="problemColor">problem of #[a(href='/introduce-idea') #{idea.problem}]</span> by #[a(href='/accomplish') <span class="solutionColor">#{idea.description}]</span>.
         else if idea.name 
-          h3 <b>#{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}</b> solves the <span class="problemColor">problem of #{idea.problem}</span> by <span class="solutionColor">#{idea.description}</span>.
+          h4 <b>#{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}</b> solves the <span class="problemColor">problem of #{idea.problem}</span> by <span class="solutionColor">#{idea.description}</span>.
         .row.mobile-only
           if inventorName != user.username
             .idea-summary-data#idea-summary-waste-values
@@ -45,36 +46,6 @@ html
           else
             .idea-summary-data#idea-summary-waste-values
               h4 You can only score someone else's ideas (right now)
-
-        .idea-summary-left
-          h4#componentsHeader Components 
-            span.underline#componentsViewAllLink View All
-          .row 
-            .col-xs-10
-              if components
-                ul
-                  each component,index in components
-                    if component['text'] && index < 5
-                      if component['identifier']
-                        li 
-                          a(href="/component-profile/"+component['identifier'])
-                            h4 #{component['number']} : #{component['text']}
-                      else
-                        li 
-                          h4 #{component['number']} : #{component['text']}
-                    else if component['descriptions'].length > 0 && index < 5
-                      if component['identifier']
-                        li
-                          a(href="/component-profile/"+component['identifier'])
-                            h4 #{component['descriptions'][0]}
-                      else
-                        li
-                          h4 #{component['descriptions'][0]}
-                  li
-
-            .col-xs-2
-              button(type="button" id="componentModalButton"  class="btn secondary-btn btn-default" data-toggle="modal" data-target="#addComponentModal")
-                span.glyphicon.glyphicon-plus
 
           #idea-summary-aptitudes.aptitudeList
             .profileAptitudes
@@ -112,23 +83,25 @@ html
         //-       a.btn.btn-default#file-patent(data-toggle="modal" data-target="#filePatentModal") File My Patent
 
         .row
-          .idea-summary-data#idea-summary-problems
-            h4#imperfections-header Imperfections
-            ul.idea-summary-problem-list
-              each problem, index in problems
-                if(index < 3 && problem.text && problem['identifier'])
-                  li
-                    include ../partials/problem-summary-element.jade
+          .col-xs-12
+            h3#imperfections-header Imperfections
+        .row.idea-sumamart-buttons
+          .col-xs-4
+            button(type="button"  class="btn btn-industry btn-lg" data-toggle="modal" data-target="#viewAllImperfections") View All
+          .col-xs-8
+            button(type="button" id="problemModalButton"  class="btn btn-default btn-lg" data-toggle="modal" data-target="#addProblemModal") New Imperection
+        each problem, index in problems
+          if(index < 3 && problem.text && problem['identifier'])
+            include ../partials/problem-summary-element.jade
 
-            button(type="button" id="problemModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addProblemModal") Add a Problem
-            |  
-            button(type="button"  class="btn btn-default" data-toggle="modal" data-target="#viewAllImperfections") View All
+
+        .row.idea-sumamart-buttons
+          .col-xs-12
+            .view-all-components-wrapper
+              a.btn.btn-electric.btn-lg.btn-block#componentsViewAllLink(type="button") View All Suggestions
 
         .row.desktop-only
-          .idea-summary-data#idea-summary-waste-values
-            h4 Idea Viability Scores
-            a.btn.btn-default.viabilityModalButton( type="button"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") Score Now
-            br
+          a.btn.btn-default.btn-lg.btn-block( type="button"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") Score Viability Categories
 
   #titleModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -179,19 +152,10 @@ html
               if components
                 ul
                   each component,index in components
-                    if component['text']
-                      if component['identifier']
-                        li 
-                          a(href="/component-profile/"+component['identifier'])
-                            h4 #{component['number']} : #{component['text']}
-                      else
-                        li 
-                          h4 #{component['number']} : #{component['text']}
-                    else if component['descriptions'].length > 0 && index < 5
+                    if component['descriptions'].length > 0
                       if component['identifier']
                         li
-                          a(href="/component-profile/"+component['identifier'])
-                            h4 #{component['descriptions'][0]}
+                          h4 #{component['descriptions'][0]}
                       else
                         li
                           h4 #{component['descriptions'][0]}

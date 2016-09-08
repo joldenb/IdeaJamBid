@@ -253,5 +253,14 @@
   	display:none;
   }
 
+  .idea-summary .problem-row {
+    width: 100%;
+    margin: 0 auto;  	
+  }
+
+  #problemModalButton {
+  	width: 100%;
+  }
+
 }
 

@@ -13,8 +13,5 @@ div.row.suggestion-row.suggestion-element.variant-suggestion-block(id="#{suggest
           span.suggestionStyle #{suggestion.creatorNickname} 
           img(src="/avatar.png" height="15" width="15")        
 
-  .col-sm-3.upvote      
+  .col-sm-6.upvote
     a.btn.btn-vision.btn-block.full-width-mobile.btn-lg(class="upvote-suggestion" id="upvote-#{suggestion.document.identifier}" data-suggestion-id="#{suggestion.document.id}") Upvote #{suggestion.document.upvotes.length || 0} 
-
-  .col-sm-3.right-jam-col
-    a.btn.btn-electric.btn-block.full-width-mobile.btn-lg(href='/component-profile/' + suggestion.document.identifier) View Suggestion
