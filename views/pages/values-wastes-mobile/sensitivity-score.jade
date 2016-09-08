@@ -3,6 +3,8 @@ html
   head
     include ../../partials/head.jade
   body
+    .header.navbar.navbar-default
+        include ../../partials/header.jade
     .container-fluid.scoreIdea
       .row
         .col-xs-2
@@ -18,6 +20,7 @@ html
           h4.viability-question.mobile-viability-help-text
             | Will usage or the environment easily disturb or damage the #{idea.name} while solving the problem of #{idea.problem}?
           br
+          input(type="hidden", name="nextLink", value="#{nextLink}")
           input(type="hidden", name="_csrf", value="#{csrfToken}")
           .slider-container
             .slider-end-labels
@@ -30,9 +33,9 @@ html
               a.btn.btn-industry.btn-lg Describe an Imperfection
             .row
               .col-xs-6
-                button.btn.btn-vision.btn-lg View All
+                button.btn.btn-vision.btn-lg #{bailButtonText}
               .col-xs-6
-                button.btn.btn-success.btn-lg Continue
+                button.btn.btn-success.btn-lg #{nextButtonText}
 
   
   include ../../partials/js-includes.jade

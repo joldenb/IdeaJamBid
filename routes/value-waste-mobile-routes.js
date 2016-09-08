@@ -166,6 +166,27 @@ var getMobileScorePage = function getMobileScorePage(req, res, problemArea, temp
     res.redirect('/');
     return;
   }
+
+  if(!req.session.viabilities){
+    res.redirect('/view-all-viabilities');
+    return;
+  }
+
+  //get the link name, get rid of "-score" at the end
+  var linkName = templateRoute.split("/")[2].substring(0, templateRoute.split("/")[2].length - 6);
+  var nextLink, nextButtonText, bailButtonText;
+  _.each(req.session.viabilities, function(eachOne, index){
+    if(eachOne.link == linkName && req.session.viabilities[index + 1] && index % 4 != 3){
+      nextLink = "/" + req.session.viabilities[index + 1].link + "-score";
+      nextButtonText = "Continue";
+      bailButtonText = "View All"
+    } else if (eachOne.link == linkName) {
+      nextLink = "/ideas/";
+      nextButtonText = "Done!";
+      bailButtonText = "Enter More";
+    }
+  });
+
   var viabilityIcon = getViabilityIcon(problemArea);
   IdeaSeed.findById(req.session.idea,function(err, idea){
     IdeaProblem.find({"ideaSeed" : idea.id, "creator" : req.user.username, problemArea : problemArea}, function(err, problems){
@@ -177,6 +198,9 @@ var getMobileScorePage = function getMobileScorePage(req, res, problemArea, temp
             csrfToken: req.csrfToken(),
             user : req.user || {},
             idea : idea,
+            nextLink : nextLink,
+            nextButtonText : nextButtonText,
+            bailButtonText : bailButtonText,
             problems : problems,
             viabilityIcon : viabilityIcon,
             currentReview :  currentReview[0]
@@ -196,6 +220,23 @@ var getMobileProblemPage = function getMobileProblemPage(req, res, problemArea, 
     res.redirect('/view-all-ideas');
     return;
   }
+
+  if(!req.session.viabilities){
+    res.redirect('/view-all-viabilities');
+    return;
+  }
+
+  //get the link name, get rid of "-score" at the end
+  var linkName = templateRoute.split("/")[2].substring(0, templateRoute.split("/")[2].length - 8);
+  var nextLink;
+  _.each(req.session.viabilities, function(eachOne, index){
+    if(eachOne.link == linkName && req.session.viabilities[index + 1]){
+      nextLink = "/" + req.session.viabilities[index + 1].link + "-score";
+    } else if (eachOne.link == linkName) {
+      nextLink = "/view-all-viabilities";
+    }
+  });
+
   var viabilityIcon = getViabilityIcon(problemArea);
   IdeaSeed.findById(req.session.idea,function(err, idea){
     IdeaProblem.find({"ideaSeed" : idea.id, problemArea : problemArea}, function(err, problems){
@@ -217,6 +258,7 @@ var getMobileProblemPage = function getMobileProblemPage(req, res, problemArea, 
             csrfToken: req.csrfToken(),
             user : req.user || {},
             idea : idea,
+            nextLink : nextLink,
             problems : problems,
             viabilityIcon : viabilityIcon,
             currentReviewerProblem : currentReviewerProblem,
@@ -232,13 +274,20 @@ var getMobileProblemPage = function getMobileProblemPage(req, res, problemArea, 
   });
 };
 
-var postViabilityFormInfo = function postViabilityFormInfo(req,res, sliderValue, reviewScore, reviewProblem, newProblemArea, redirectURL){
+var postViabilityFormInfo = function postViabilityFormInfo(req,res, sliderValue, reviewScore, reviewProblem, newProblemArea){
   if(!(req.user && req.user.username && req.session.ideaReview)) {
     res.redirect('/');
     return;
   }
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
+    
+    // if the persons done entering scores, route them to the idea page and get out of the viability score pages
+    if(req.body.nextLink == "/ideas/"){
+      res.redirect("/ideas/"+ thisIdea.name);
+      return;
+    }
+
     // this is if the inventor is the same as the session user
     // enters info into the ideaSeed model vs the ideaReview model
     if(thisIdea.inventorName == req.user.username){
@@ -286,7 +335,7 @@ var postViabilityFormInfo = function postViabilityFormInfo(req,res, sliderValue,
       });
     } else {
       if(!req.body[sliderValue] && !req.body[reviewProblem]){
-        res.redirect(redirectURL);
+        res.redirect(req.body.nextLink);
       }
 
       // if there's a slider value
@@ -294,7 +343,7 @@ var postViabilityFormInfo = function postViabilityFormInfo(req,res, sliderValue,
         IdeaReview.findOne({_id : req.session.ideaReview._id}, function(err, review){
           review[reviewScore] = req.body[sliderValue];
           review.save(function(err, raw){
-            res.redirect(redirectURL);
+            res.redirect(req.body.nextLink);
           });
         });
       }
@@ -310,7 +359,7 @@ var postViabilityFormInfo = function postViabilityFormInfo(req,res, sliderValue,
           if(problems.length > 0){
             problems[0].text = req.body[reviewProblem];
             problems[0].save(function (err, raw) {
-              res.redirect(redirectURL);
+              res.redirect(req.body.nextLink);
             });
           } else {
             var newProblem = {
@@ -324,7 +373,7 @@ var postViabilityFormInfo = function postViabilityFormInfo(req,res, sliderValue,
               function (err, problem) {
                 if (err) return handleError(err);
                 thisIdea.save(function (err, raw) {
-                    res.redirect(redirectURL);
+                    res.redirect(req.body.nextLink);
                 });
               
             }); //end of problem create
@@ -346,11 +395,34 @@ router.get('/view-all-viabilities', csrfProtection, function(req, res) {
     return;
   }
 
-  for (var via in viabilities) {
-    if(!viabilities[via]['iconId']) {
-       viabilities[via]['iconId'] = viabilities[via].prefix + "Icon";
-    }
+  function shuffle(a) {
+      var j, x, i;
+      for (i = a.length; i; i--) {
+          j = Math.floor(Math.random() * i);
+          x = a[i - 1];
+          a[i - 1] = a[j];
+          a[j] = x;
+      }
   }
+
+  shuffle(viabilities);
+
+  for (var via in viabilities) {
+    if (!viabilities[via]['iconId']) {
+      viabilities[via]['iconId'] = viabilities[via].prefix + "Icon";      
+    }
+    if (!viabilities[via]['sliderId']) {
+      viabilities[via]['sliderId'] = viabilities[via].prefix + "Slider";
+    }
+    if (!viabilities[via]['labelId']) {
+      viabilities[via]['labelId'] = viabilities[via].prefix + "Label";
+    }
+    viabilities[via]['link'] = viabilities[via].link || viabilities[via].name;
+    viabilities[via]['name'] = viabilities[via].name.charAt(0).toUpperCase() + viabilities[via].name.slice(1);
+  };
+
+  req.session.viabilities = viabilities;
+
   ideaSeedHelpers.getUserHeadshot(req).then(function(headshotData){
     var headshotURL = headshotData['headshotURL'];
     var headshotStyle = headshotData['headshotStyle'];
@@ -432,7 +504,7 @@ router.get('/performability-problem', csrfProtection, function(req, res) {
 });
 
 router.post('/performability-mobile', csrfProtection, function(req, res) {
-  postViabilityFormInfo(req,res, "perfSliderOneValue", "performOne", "performProblem", "Area : Performability", '/affordability-score');
+  postViabilityFormInfo(req,res, "perfSliderOneValue", "performOne", "performProblem", "Area : Performability");
 });
 
 
@@ -449,7 +521,7 @@ router.get('/affordability-problem', csrfProtection, function(req, res) {
 });
 
 router.post('/affordability-mobile', csrfProtection, function(req, res) {
-  postViabilityFormInfo(req,res, "affordSliderOneValue", "affordOne", "affordProblem", "Area : Affordability", '/featurability-score');
+  postViabilityFormInfo(req,res, "affordSliderOneValue", "affordOne", "affordProblem", "Area : Affordability");
 });
 
 ////////////////////////////////////////////////
@@ -464,7 +536,7 @@ router.get('/featurability-problem', csrfProtection, function(req, res) {
 });
 
 router.post('/featurability-mobile', csrfProtection, function(req, res) {
-  postViabilityFormInfo(req,res, "featureSliderOneValue", "featureOne", "featureProblem", "Area : Featurability", '/deliverability-score');
+  postViabilityFormInfo(req,res, "featureSliderOneValue", "featureOne", "featureProblem", "Area : Featurability");
 });
 
 ////////////////////////////////////////////////
@@ -479,7 +551,7 @@ router.get('/deliverability-problem', csrfProtection, function(req, res) {
 });
 
 router.post('/deliverability-mobile', csrfProtection, function(req, res) {
-  postViabilityFormInfo(req,res, "deliverSliderOneValue", "deliverOne", "deliverProblem", "Area : Deliverability", '/useability-score');
+  postViabilityFormInfo(req,res, "deliverSliderOneValue", "deliverOne", "deliverProblem", "Area : Deliverability");
 });
 
 ////////////////////////////////////////////////
@@ -494,7 +566,7 @@ router.get('/useability-problem', csrfProtection, function(req, res) {
 });
 
 router.post('/useability-mobile', csrfProtection, function(req, res) {
-  postViabilityFormInfo(req,res, "useabilitySliderOneValue", "useabilityOne", "useabilityProblem", "Area : Useability", '/maintainability-score');
+  postViabilityFormInfo(req,res, "useabilitySliderOneValue", "useabilityOne", "useabilityProblem", "Area : Useability");
 });
 
 ////////////////////////////////////////////////
@@ -509,7 +581,7 @@ router.get('/maintainability-problem', csrfProtection, function(req, res) {
 });
 
 router.post('/maintainability-mobile', csrfProtection, function(req, res) {
-  postViabilityFormInfo(req,res, "maintainabilitySliderOneValue", "maintainOne", "maintainProblem", "Area : Maintainability", '/durability-score');
+  postViabilityFormInfo(req,res, "maintainabilitySliderOneValue", "maintainOne", "maintainProblem", "Area : Maintainability");
 });
 
 ////////////////////////////////////////////////
@@ -524,7 +596,7 @@ router.get('/durability-problem', csrfProtection, function(req, res) {
 });
 
 router.post('/durability-mobile', csrfProtection, function(req, res) {
-  postViabilityFormInfo(req,res, "durabilitySliderOneValue", "durabilityOne", "durabilityProblem", "Area : Durability", '/imageability-score');
+  postViabilityFormInfo(req,res, "durabilitySliderOneValue", "durabilityOne", "durabilityProblem", "Area : Durability");
 });
 
 ////////////////////////////////////////////////
@@ -539,7 +611,7 @@ router.get('/imageability-problem', csrfProtection, function(req, res) {
 });
 
 router.post('/imageability-mobile', csrfProtection, function(req, res) {
-  postViabilityFormInfo(req,res, "imageabilitySliderOneValue", "imageOne", "imageProblem", "Area : Imageability", '/complexity-score');
+  postViabilityFormInfo(req,res, "imageabilitySliderOneValue", "imageOne", "imageProblem", "Area : Imageability");
 });
 
 ////////////////////////////////////////////////
@@ -554,7 +626,7 @@ router.get('/complexity-problem', csrfProtection, function(req, res) {
 });
 
 router.post('/complexity-mobile', csrfProtection, function(req, res) {
-  postViabilityFormInfo(req,res, "complexitySliderOneValue", "complexOne", "complexProblem", "Area : Complexity", '/precision-score');
+  postViabilityFormInfo(req,res, "complexitySliderOneValue", "complexOne", "complexProblem", "Area : Complexity");
 });
 
 ////////////////////////////////////////////////
@@ -569,7 +641,7 @@ router.get('/precision-problem', csrfProtection, function(req, res) {
 });
 
 router.post('/precision-mobile', csrfProtection, function(req, res) {
-  postViabilityFormInfo(req,res, "precisionSliderOneValue", "precisionOne", "precisionProblem", "Area : Precision", '/variability-score');
+  postViabilityFormInfo(req,res, "precisionSliderOneValue", "precisionOne", "precisionProblem", "Area : Precision");
 });
 ////////////////////////////////////////////////
 // Variability
@@ -583,7 +655,7 @@ router.get('/variability-problem', csrfProtection, function(req, res) {
 });
 
 router.post('/variability-mobile', csrfProtection, function(req, res) {
-  postViabilityFormInfo(req,res, "variabilitySliderOneValue", "variabilityOne", "variabilityProblem", "Area : Variability", '/sensitivity-score');
+  postViabilityFormInfo(req,res, "variabilitySliderOneValue", "variabilityOne", "variabilityProblem", "Area : Variability");
 });
 ////////////////////////////////////////////////
 // Sensitivity
@@ -597,7 +669,7 @@ router.get('/sensitivity-problem', csrfProtection, function(req, res) {
 });
 
 router.post('/sensitivity-mobile', csrfProtection, function(req, res) {
-  postViabilityFormInfo(req,res, "sensitivitySliderOneValue", "sensitivityOne", "sensitivityProblem", "Area : Sensitivity", '/immaturity-score');
+  postViabilityFormInfo(req,res, "sensitivitySliderOneValue", "sensitivityOne", "sensitivityProblem", "Area : Sensitivity");
 });
 ////////////////////////////////////////////////
 // Immaturity
@@ -611,7 +683,7 @@ router.get('/immaturity-problem', csrfProtection, function(req, res) {
 });
 
 router.post('/immaturity-mobile', csrfProtection, function(req, res) {
-  postViabilityFormInfo(req,res, "immaturitySliderOneValue", "immatureOne", "immatureProblem", "Area : Immaturity", '/danger-score');
+  postViabilityFormInfo(req,res, "immaturitySliderOneValue", "immatureOne", "immatureProblem", "Area : Immaturity");
 });
 ////////////////////////////////////////////////
 // Dangerous
@@ -625,8 +697,21 @@ router.get('/danger-problem', csrfProtection, function(req, res) {
 });
 
 router.post('/dangerous-mobile', csrfProtection, function(req, res) {
-  postViabilityFormInfo(req,res, "dangerousSliderOneValue", "dangerOne", "dangerProblem", "Area : Danger", '/skills-score');
+  postViabilityFormInfo(req,res, "dangerousSliderOneValue", "dangerOne", "dangerProblem", "Area : Danger");
 });
+
+router.get('/dangerous-score', csrfProtection, function(req, res) {
+  getMobileScorePage(req, res, "Area : Danger", 'pages/values-wastes-mobile/dangerous-score');
+});
+
+router.get('/dangerous-problem', csrfProtection, function(req, res) {
+  getMobileProblemPage(req, res,"Area : Danger", 'pages/values-wastes-mobile/dangerous-problem');
+});
+
+router.post('/dangerous-mobile', csrfProtection, function(req, res) {
+  postViabilityFormInfo(req,res, "dangerousSliderOneValue", "dangerOne", "dangerProblem", "Area : Danger");
+});
+
 ////////////////////////////////////////////////
 // Skill Intensive
 ////////////////////////////////////////////////
@@ -639,7 +724,7 @@ router.get('/skills-problem', csrfProtection, function(req, res) {
 });
 
 router.post('/skills-mobile', csrfProtection, function(req, res) {
-  postViabilityFormInfo(req,res, "skillsSliderOneValue", "skillsOne", "skillsProblem", "Area : Skills", '/view-all-viabilities');
+  postViabilityFormInfo(req,res, "skillsSliderOneValue", "skillsOne", "skillsProblem", "Area : Skills");
 });
 
 module.exports = router;

@@ -3,6 +3,8 @@ html
   head
     include ../partials/head.jade
   body
+    .header.navbar.navbar-default
+      include ../partials/header.jade
     .container-fluid.view-all-viabilities
       .row.top-row
         .col-xs-10
@@ -14,11 +16,13 @@ html
         .col-xs-12
           h4 Current Score : 
             span.average-score-number #{averageScore}
+      - var numberDisplayed = 0;
       each viability, index in viabilities
         - var scoreName = viability.reviewScore
         - var problem = viability.reviewProb
 
-        if !currentReview[scoreName]
+        if !currentReview[scoreName] && numberDisplayed < 4
+          - numberDisplayed = numberDisplayed + 1;
           .row.single-viability
             .row.viability-titles
               .col-xs-2
@@ -32,6 +36,12 @@ html
                   a.btn.btn-lg(href="/" + viability.name + "-score")
                     p Score
 
+      .row.idea-sumamart-buttons
+        .col-xs-12
+          .view-all-components-wrapper
+            a.btn.btn-electric.btn-lg.btn-block#viewCompletedScores(type="button") View Completed Scores
+
+
       .row.already-scored
         .col-xs-12
           h3 Already Scored
@@ -40,7 +50,7 @@ html
         - var scoreName = viability.reviewScore
         - var problem = viability.reviewProb
         if currentReview[scoreName]
-          .row.single-viability
+          .row.single-viability.scored-viabilities
             .row.viability-titles
               .col-xs-2
                 img.viability-icon(src="/" + viability['iconId'] + ".png")
@@ -78,3 +88,10 @@ html
 
   include ../partials/js-includes.jade
   script(type="text/javascript").
+    $(document).ready(function(){
+      $("#viewCompletedScores").click(function(event){
+        $(".row.idea-sumamart-buttons").hide(400);
+        $(".already-scored").show(400);
+        $(".scored-viabilities").show(400);
+      })
+    });

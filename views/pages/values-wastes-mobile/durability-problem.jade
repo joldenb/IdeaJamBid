@@ -3,6 +3,8 @@ html
   head
     include ../../partials/head.jade
   body
+    .header.navbar.navbar-default
+        include ../../partials/header.jade
     .container-fluid.scoreIdea
       .row
         .col-xs-2
@@ -14,6 +16,7 @@ html
             img(src="/close_button.png" height="30" width="30")
       .row
         form.mobile-viability-form(role='form', id="formDurability" action="/durability-mobile", method="post", data-idea-doc=idea)
+          input(type="hidden", name="nextLink", value="#{nextLink}")
           input(type="hidden", name="_csrf", value="#{csrfToken}")
           h4 What problem prevents the #{idea.name} from being more durable?
           if(currentReviewerProblem)

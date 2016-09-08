@@ -68,205 +68,205 @@ html
 include ../partials/js-includes.jade
 script(src='/exif.js')
 script(type="text/javascript").
-  $("#formSuggestion").submit(function(event){
-    event.preventDefault();
-    var tacticVal = $(".suggestion-tactics.selected input").val();
-    var targetVal = $(".suggestion-targets.selected input").val();
-    if(tacticVal && targetVal){
-      var data = {
-        "suggestionText" : $("input[name='suggestionText']").val(),
-        "problemArea" : "!{problem.problemArea}",
-        "problemContributor" : "!{problem.creator}",
-        "problemText" : "!{problem.text}",
-        "tactic"  : tacticVal,
-        "target"  : targetVal,
-        "_csrf"   : $("input[name=_csrf]").val()
+  $(document).ready(function(){
+    $("#formSuggestion").submit(function(event){
+      event.preventDefault();
+      var tacticVal = $(".suggestion-tactics.selected input").val();
+      var targetVal = $(".suggestion-targets.selected input").val();
+      if(tacticVal && targetVal){
+        var data = {
+          "suggestionText" : $("input[name='suggestionText']").val(),
+          "problemArea" : "!{problem.problemArea}",
+          "problemContributor" : "!{problem.creator}",
+          "problemText" : "!{problem.text}",
+          "tactic"  : tacticVal,
+          "target"  : targetVal,
+          "_csrf"   : $("input[name=_csrf]").val()
+        }
+
+        if($("#suggestion-image-preview").length > 0){
+          data['fileUrl'] = $("#suggestion-image-preview")[0].src;
+          data['type'] = $("#suggestion-image-preview")[0].dataset.type;
+          data['filename'] = $("#suggestion-image-preview")[0].dataset.filename;
+        }
+
+        $.post('/suggestion-submit-new', data, function(error, response){
+          window.location = "/view-all-jam-suggestions/dsw";
+        });
+      } else {
+        alert('Tactic and Target Required!!!!!!!!!!!!!');
       }
+    });
 
-      if($("#suggestion-image-preview").length > 0){
-        data['fileUrl'] = $("#suggestion-image-preview")[0].src;
-        data['type'] = $("#suggestion-image-preview")[0].dataset.type;
-        data['filename'] = $("#suggestion-image-preview")[0].dataset.filename;
-      }
-
-      $.post('/suggestion-submit-new', data, function(error, response){
-        window.location = "/view-all-jam-suggestions/dsw";
-      });
-    } else {
-      alert('Tactic and Target Required!!!!!!!!!!!!!');
-    }
-  });
-
-  $(".suggestion-tactics").click(function(event){
-    if($(".suggestion-tactics.active").length > 0){
-      $(".suggestion-tactics.active").removeClass("active");
-    }
-
-    $(this).addClass("selected");
-
-    if($(".suggestion-targets.disabled").length > 0){
-      $(".suggestion-targets.active").removeClass("active");
-    }
-
-    var verb = "";
-    switch($(this).text()){
-      case "Eliminate" :
-        verb = "eliminating ";
-        break;
-      case "Reduce" :
-        verb = "reducing ";
-        break;
-      case "Substitute" :
-        verb = "substituting ";
-        break;
-      case "Separate" :
-        verb = "separating ";
-        break;
-      case "Integrate" :
-        verb = "integrating ";
-        break;
-      case "Re-Use" :
-        verb = "reusing ";
-        break;
-      case "Standardize" :
-        verb = "standardizing ";
-        break;
-      case "Add" :
-        verb = "adding ";
-        break;
-    }
-
-    $("#suggestion-question-header").text("How will you " + $(this).text().toLowerCase() + ":");
-
-    $(".suggestion-input").remove();
-    // This is for the main solution text input
-    var requiredText = "The solution of " + verb;
-    var input = $("<input class='form-control suggestion-input' type='text' name='suggestionText' disabled>")
-        .insertAfter("#suggestion-input-header")
-        .val(requiredText);
-
-    input[0].addEventListener ("mousedown", function () {
-      if (String($(this).val()).indexOf(requiredText) == -1) {
-            $(this).val(requiredText);
-      }
-      if (this.selectionStart < requiredText.length) {
-        this.selectionStart = requiredText.length;
-      }
-    }, false);
-
-    input[0].addEventListener ("keydown", function () {
-      if (String($(this).val()).indexOf(requiredText) == -1) {
-            $(this).val(requiredText);
-      }
-      if (this.selectionStart < requiredText.length) {
-        this.selectionStart = requiredText.length;
-      }
-    }, false);
-
-    $(".disabled").removeAttr("style");
-    $(".disabled").removeClass("disabled");
-    $("#suggestion-tactics").hide(400);
-  });
-
-
-  $(".suggestion-targets").click(function(event){
-
-    if(!$(this).hasClass("disabled")){
-
-      if($(".suggestion-targets.active").length > 0){
-        $(".suggestion-targets.active").removeClass("active");
+    $(".suggestion-tactics").click(function(event){
+      if($(".suggestion-tactics.active").length > 0){
+        $(".suggestion-tactics.active").removeClass("active");
       }
 
       $(this).addClass("selected");
 
-      var verb = $(".suggestion-tactics.selected").text().toLowerCase();
-      $("#suggestion-question-header").text("How will you " + verb + " " + $(this).text().toLowerCase() + " " + $("#end-of-suggestion-query").text());
-      $("#end-of-suggestion-query").remove();
-      $("#suggestion-targets").hide(400);
-
-      document.getElementsByClassName('suggestion-input')[0].disabled = false;
-    } 
-
-  });
-
-
-  if($("#add-picture-button input").length > 0){
-    $("#add-picture-button input").change(function(event) {
-      $("<img id='spinner' src='/spinner.gif'>").insertAfter("#formSuggestion");
-      const files = $("#add-picture-button input")[0].files;
-      const file = files[0];
-      const csrf = $("input[name='_csrf']").val();
-      if(file == null){
-        return alert('No file selected.');
+      if($(".suggestion-targets.disabled").length > 0){
+        $(".suggestion-targets.active").removeClass("active");
       }
-      var fr   = new FileReader;
-      
-      fr.onloadend = function() {
-        // get EXIF data
-        var exif = EXIF.readFromBinaryFile(this.result);
 
-        if(file.size < 3000000){
-          getSignedRequest(file, exif, csrf);
-        } else if (file.size > 3000000){
-          alert('Please choose an image smaller than 3 MB.')
-        } else {
-          alert('An error ocurred with this image.')
+      var verb = "";
+      switch($(this).text()){
+        case "Eliminate" :
+          verb = "eliminating ";
+          break;
+        case "Reduce" :
+          verb = "reducing ";
+          break;
+        case "Substitute" :
+          verb = "substituting ";
+          break;
+        case "Separate" :
+          verb = "separating ";
+          break;
+        case "Integrate" :
+          verb = "integrating ";
+          break;
+        case "Re-Use" :
+          verb = "reusing ";
+          break;
+        case "Standardize" :
+          verb = "standardizing ";
+          break;
+        case "Add" :
+          verb = "adding ";
+          break;
+      }
+
+      $("#suggestion-question-header").text("How will you " + $(this).text().toLowerCase() + ":");
+
+      $(".suggestion-input").remove();
+      // This is for the main solution text input
+      var requiredText = "The solution of " + verb;
+      var input = $("<input class='form-control suggestion-input' type='text' name='suggestionText' disabled>")
+          .insertAfter("#suggestion-input-header")
+          .val(requiredText);
+
+      input[0].addEventListener ("mousedown", function () {
+        if (String($(this).val()).indexOf(requiredText) == -1) {
+              $(this).val(requiredText);
+        }
+        if (this.selectionStart < requiredText.length) {
+          this.selectionStart = requiredText.length;
+        }
+      }, false);
+
+      input[0].addEventListener ("keydown", function () {
+        if (String($(this).val()).indexOf(requiredText) == -1) {
+              $(this).val(requiredText);
+        }
+        if (this.selectionStart < requiredText.length) {
+          this.selectionStart = requiredText.length;
+        }
+      }, false);
+
+      $(".disabled").removeAttr("style");
+      $(".disabled").removeClass("disabled");
+      $("#suggestion-tactics").hide(400);
+    });
+
+
+    $(".suggestion-targets").click(function(event){
+
+      if(!$(this).hasClass("disabled")){
+
+        if($(".suggestion-targets.active").length > 0){
+          $(".suggestion-targets.active").removeClass("active");
         }
 
-      };
+        $(this).addClass("selected");
 
-      fr.readAsArrayBuffer(file); // read the file
+        var verb = $(".suggestion-tactics.selected").text().toLowerCase();
+        $("#suggestion-question-header").text("How will you " + verb + " " + $(this).text().toLowerCase() + " " + $("#end-of-suggestion-query").text());
+        $("#end-of-suggestion-query").remove();
+        $("#suggestion-targets").hide(400);
 
+        document.getElementsByClassName('suggestion-input')[0].disabled = false;
+      } 
 
     });
 
-    function uploadFile(file, signedRequest, url, exif, csrf){
-      const xhr = new XMLHttpRequest();
-      xhr.open('PUT', signedRequest);
-      xhr.onreadystatechange = function() {
-        if(xhr.readyState === 4){
-          if(xhr.status === 200 && (file.type=="image/jpeg" || file.type=="image/png")){
-            var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type,
-              exif : exif, "_csrf" : csrf, suggestionPage : true };
-              $("#spinner").remove();
-              $("<img id='suggestion-image-preview' data-type='"+file.type+"' data-filename='"+file.name+"' src='" + url + "'>").insertAfter("#formSuggestion");
-          }
-          else{
-            alert('Could not upload file.');
-          }
+
+    if($("#add-picture-button input").length > 0){
+      $("#add-picture-button input").change(function(event) {
+        $("<img id='spinner' src='/spinner.gif'>").insertAfter("#formSuggestion");
+        const files = $("#add-picture-button input")[0].files;
+        const file = files[0];
+        const csrf = $("input[name='_csrf']").val();
+        if(file == null){
+          return alert('No file selected.');
         }
-      };
-      xhr.send(file);
-    }
-
-    function getSignedRequest(file, exif, csrf){
-      const xhr = new XMLHttpRequest();
-      var filename = file.name.split(".");
-      filename[0] = filename[0] + "-" + Date.now().toString();
-      filename = filename.join(".");
-      xhr.open('GET', '/sign-s3?file-name='+ filename + '&file-type='+ file.type);
-      xhr.onreadystatechange = function() {
-        if(xhr.readyState === 4 && xhr.responseText != ""){
-          if(xhr.status === 200){
-            var response = JSON.parse(xhr.responseText);
-            uploadFile(file, response.signedRequest, response.url, exif, csrf);
-          }
-          else{
-            alert('Could not get signed URL.');
-          }
-        } 
+        var fr   = new FileReader;
         
-      };
-      xhr.send();
+        fr.onloadend = function() {
+          // get EXIF data
+          var exif = EXIF.readFromBinaryFile(this.result);
+
+          if(file.size < 3000000){
+            getSignedRequest(file, exif, csrf);
+          } else if (file.size > 3000000){
+            alert('Please choose an image smaller than 3 MB.')
+          } else {
+            alert('An error ocurred with this image.')
+          }
+
+        };
+
+        fr.readAsArrayBuffer(file); // read the file
+
+
+      });
+
+      function uploadFile(file, signedRequest, url, exif, csrf){
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', signedRequest);
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4){
+            if(xhr.status === 200 && (file.type=="image/jpeg" || file.type=="image/png")){
+              var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type,
+                exif : exif, "_csrf" : csrf, suggestionPage : true };
+                $("#spinner").remove();
+                $("<img id='suggestion-image-preview' data-type='"+file.type+"' data-filename='"+file.name+"' src='" + url + "'>").insertAfter("#formSuggestion");
+            }
+            else{
+              alert('Could not upload file.');
+            }
+          }
+        };
+        xhr.send(file);
+      }
+
+      function getSignedRequest(file, exif, csrf){
+        const xhr = new XMLHttpRequest();
+        var filename = file.name.split(".");
+        filename[0] = filename[0] + "-" + Date.now().toString();
+        filename = filename.join(".");
+        xhr.open('GET', '/sign-s3?file-name='+ filename + '&file-type='+ file.type);
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4 && xhr.responseText != ""){
+            if(xhr.status === 200){
+              var response = JSON.parse(xhr.responseText);
+              uploadFile(file, response.signedRequest, response.url, exif, csrf);
+            }
+            else{
+              alert('Could not get signed URL.');
+            }
+          } 
+          
+        };
+        xhr.send();
+      }
     }
-  }
-  
-  $("#reset-suggestion-form").click(function(event){
-    window.location.reload();
-  });
+    
+    $("#reset-suggestion-form").click(function(event){
+      window.location.reload();
+    });
 
 
-  $(document).ready(function(){
     $(".upvote-suggestion").click(function(event){
       event.preventDefault();
 

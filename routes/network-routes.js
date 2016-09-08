@@ -707,7 +707,7 @@ router.get('/view-all-jam-suggestions/:networkName', csrfProtection, function(re
 
         var suggestions = [];
 
-        Component.find({"ideaSeed" : { $in : allIdeas}}).sort({$natural:-1}).exec(function(err, components) {
+        Component.find({"ideaSeed" : { $in : allIdeas}}).sort({_id:-1}).exec(function(err, components) {
 
           var suggestions = components;
           var suggestionNameList = _.map(suggestions, function(eachOne) { return eachOne.creator;})
