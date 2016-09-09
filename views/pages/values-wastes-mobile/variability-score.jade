@@ -25,9 +25,9 @@ html
           .slider-container
             .slider-end-labels
               span.no-way Consistent
-              span.yes-way Dynamic
+              span.yes-way Eratic
             .sliderLabel
-            #slider
+            #slider.waste-score
           .save-buttons
             .row
               a.btn.btn-industry.btn-lg Describe an Imperfection
@@ -35,7 +35,7 @@ html
               .col-xs-6
                 button.btn.btn-vision.btn-lg #{bailButtonText}
               .col-xs-6
-                button.btn.btn-success.btn-lg #{nextButtonText}
+                button.btn.btn-success.btn-lg Skip
 
   
   include ../../partials/js-includes.jade
@@ -56,14 +56,16 @@ html
       step: 1,
       slide: function( event, ui ) {
           valueEntered = true;
+          $(".save-buttons .btn-success").text("#{nextButtonText}");
           $(".sliderLabel").text(labelArr[ui.value]);
-          $(".sliderLabel").css("margin-left", (ui.value-min)/(max-min)*100+"%");
+          $(".sliderLabel").css("margin-left", (ui.value +2-min)/(max-min)*100+"%");
           $(".sliderLabel").css("left", "-50px");
       }
     });
-    if('#{currentReview.precisionOne}' != ""){
+    if('#{currentReview.variabilityOne}' != ""){
+      $(".save-buttons .btn-success").text("#{nextButtonText}");
       $(".sliderLabel").text(labelArr[initialValue]);
-      $(".sliderLabel" ).css("margin-left", (initialValue -1)/(max-min)*100+"%");
+      $(".sliderLabel" ).css("margin-left", (initialValue  -1 + 2)/(max-min)*100+"%");
       $(".sliderLabel").css("left", "-50px");
     }
 

@@ -1336,6 +1336,45 @@ button.suggestion-tactics, button.suggestion-targets {
   margin-left: 1em;
 }
 
+.ui-widget-content.value-score {
+  background: red; /* For browsers that do not support gradients */
+  background: -webkit-linear-gradient(left, #C64143 , #00A550); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(right, #C64143, #00A550); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(right, #C64143, #00A550); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to right, #C64143, #00A550); /* Standard syntax */  
+}
+
+
+.ui-widget-content.waste-score {
+  background: red; /* For browsers that do not support gradients */
+  background: -webkit-linear-gradient(left, #00A550, #C64143 ); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(right, #00A550, #C64143); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(right, #00A550, #C64143); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to right, #00A550, #C64143); /* Standard syntax */  
+}
+
+
+.ui-slider-handle {
+  background: #D6DE26 !important;
+}
+
+.sliderLabel {
+  margin-bottom : 1em;
+}
+
+.ui-slider-handle.ui-state-default {
+  border-radius: 1em;
+}
+
+.ui-slider-horizontal .ui-slider-handle {
+  top: -.7em;
+}
+
+.ui-slider .ui-slider-handle {
+  width: 2em;
+  height: 2em;
+}
+
 @media screen and (min-width: 800px) {
   .container.image-upload .close-viability img {
     margin-top: 20px;

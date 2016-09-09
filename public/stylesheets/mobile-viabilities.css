@@ -1,4 +1,9 @@
 @media (max-width: 768px) {
+	.container-fluid.view-all-viabilities {
+		margin-top:-30px;
+	}
+
+
 	.view-all-viabilities-mobile, .scoreIdea .viability-scores-and-problems {
 		text-align: center;
 	}

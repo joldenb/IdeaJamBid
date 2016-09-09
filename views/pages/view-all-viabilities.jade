@@ -16,7 +16,17 @@ html
         .col-xs-12
           h4 Current Score : 
             span.average-score-number #{averageScore}
+        - var numberCompleted = 0;
+        each viability, index in viabilities
+          - var scoreName = viability.reviewScore
+          if currentReview[scoreName]
+            - numberCompleted = numberCompleted + 1;
+        .col-xs-12
+          h4 Completed : #{numberCompleted} / 15
+
+
       - var numberDisplayed = 0;
+      - var numberCompleted = 0;
       each viability, index in viabilities
         - var scoreName = viability.reviewScore
         - var problem = viability.reviewProb
