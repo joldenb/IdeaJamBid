@@ -1109,7 +1109,7 @@ router.post('/suggestion-submit-new', csrfProtection, function(req, res) {
     var ideaSeedId = req.session.idea || problem.ideaSeed;
 
     var newSuggestion = {
-      descriptions : [req.body.suggestionText.slice(16)], //getting rid of "the solution of "
+      descriptions : [req.body.suggestionText.slice(3)], //getting rid of "by "
       category : suggestionCategory,
       creator : req.user.username,
       ideaSeed : ideaSeedId,

@@ -45,14 +45,18 @@ html
           h3#end-of-suggestion-query to help solve the imperfection of 
             <span class="problemColor">#{problem.text}</span>
             h4#suggestion-input-header.suggestion-number 3.
-            input.form-control.suggestion-input(type="text", name="suggestionText", value='The solution of ' disabled)
+            input.form-control.suggestion-input(type="text", name="suggestionText", value='By ' disabled)
             p.charactersRemaining
-          .modal-footer
-            label#add-picture-button.btn.btn-vision
-              input(type="file" name="picture" style="display: none;")
-              | Add a Picture
-            button#reset-suggestion-form.btn.btn-industry(type="button") Start Over
-            button.btn.btn-success#submit(type='submit') Save
+          .row.suggestion-form-buttons
+            .col-xs-6
+              button#reset-suggestion-form.btn.btn-industry.btn-lg.btn-block(type="button") Start Over
+            .col-xs-6.add-picture-btn
+              label#add-picture-button.btn.btn-vision.btn-lg.btn-block
+                input(type="file" name="picture" style="display: none;")
+                | Add Picture
+          .row.suggestion-form-buttons
+            .col-xs-12
+              button.btn.btn-success.btn-lg.btn-block#submit(type='submit') Save
       .col-sm-6
         #existing-suggestion-list.edit-column
           h3 Other Suggestions
@@ -141,7 +145,7 @@ script(type="text/javascript").
 
       $(".suggestion-input").remove();
       // This is for the main solution text input
-      var requiredText = "The solution of " + verb;
+      var requiredText = "By " + verb;
       var input = $("<input class='form-control suggestion-input' type='text' name='suggestionText' disabled>")
           .insertAfter("#suggestion-input-header")
           .val(requiredText);

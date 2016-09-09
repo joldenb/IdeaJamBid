@@ -1375,6 +1375,15 @@ button.suggestion-tactics, button.suggestion-targets {
   height: 2em;
 }
 
+.suggestion-form-buttons  {
+  margin: 1em 0 ;
+}
+
+.add-picture-btn {
+  padding-left: 0;
+}
+
+
 @media screen and (min-width: 800px) {
   .container.image-upload .close-viability img {
     margin-top: 20px;
