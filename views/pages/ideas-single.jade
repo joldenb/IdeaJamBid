@@ -89,7 +89,7 @@ html
           .col-xs-4
             button(type="button"  class="btn btn-industry btn-lg" data-toggle="modal" data-target="#viewAllImperfections") View All
           .col-xs-8
-            button(type="button" id="problemModalButton"  class="btn btn-default btn-lg" data-toggle="modal" data-target="#addProblemModal") New Imperection
+            button(type="button" id="problemModalButton"  class="btn btn-default btn-lg" data-toggle="modal" data-target="#addProblemModal") New Imperfection
         each problem, index in problems
           if(index < 3 && problem.text && problem['identifier'])
             include ../partials/problem-summary-element.jade

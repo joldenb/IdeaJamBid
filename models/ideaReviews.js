@@ -178,6 +178,8 @@ IdeaReview.statics.averageViabilityScores = function(reviewObjects){
 		overallAverage = total / (reviewAverages.length);
 	}
 
+	overallAverage = (100 + overallAverage)/2;
+
 	return overallAverage;
 };
 
