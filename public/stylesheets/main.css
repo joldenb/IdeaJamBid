@@ -1393,3 +1393,18 @@ button.suggestion-tactics, button.suggestion-targets {
   }
 
 }
+
+.aboutPadding {
+  padding: 5%;
+}
+
+.aboutBold {
+  font-weight: 300;
+  font-size: 1.5em;
+}
+
+.about-pic {
+  border-radius: 100%;
+  width: 10em;
+  max-width: 25%;
+}

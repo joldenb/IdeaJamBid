@@ -1,0 +1,346 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body#topSection
+    .header.navbar.navbar-default.jamTopNav
+      include ../partials/header.jade
+
+    if !networkImage
+      form(role='form', id="jamProfilePicForm" action="/add-network-profile-pic", method="post", enctype="multipart/form-data")
+        .form-group
+          h3 Upload a new Profile Picture
+          |  
+          input#profilePicButton(type="file", name="picture")
+          input(type="hidden", name="networkName", value="#{networkName}")
+          input(type="hidden", name="_csrf", value="#{csrfToken}")
+          br
+    else
+      a(href="/jam/" + networkName)
+        .desktop-network-header-img(style="background-image : url('" + '#{networkImage || "/lightbulb.png"}' + "');"+ideaImageStyle)
+        img.mobile-network-header-img(src='#{networkImage}')
+
+    .container.network-profile.jam-page
+      span.jamH2
+        .navbar.jamNav.desktopOnly
+          .navbar-inner
+            ul.nav
+              li
+                a(href='#ideaSection').underline Ideas
+              li
+                a(href='#imperfectionSection').underline Imperfections
+              li
+                a(href='#suggestionSection').underline Suggestions      
+
+      //- h3 Jam Leaders
+      //- each inventor, index in topInventors
+      //-   - var inventorImage
+      //-   - var inventorImageStyle
+      //-   - var inventorName
+      //-   - var inventorPoints
+      //-   - var inventorAptitudeIds
+      //-   - var aptitudes = inventorAptitudes
+      //-   - var profileLinkURL
+      //-   if index % 3 == 0 
+      //-     .row
+      //-       .col-md-4
+      //-         if(topInventors[index])
+      //-           if accountNameAndURLs[topInventors[index].username]
+      //-             - inventorImage = accountNameAndURLs[topInventors[index].username][0]
+      //-             - inventorImageStyle = accountNameAndURLs[topInventors[index].username][1]
+      //-           - inventorName = topInventors[index].nickname
+      //-           - inventorPoints = topInventors[index].einsteinPoints
+      //-           - inventorAptitudeIds = topInventors[index].aptitudes
+      //-           include ../partials/inventor-block.jade
+      //-       .col-md-4
+      //-         if(topInventors[index + 1])
+      //-           if accountNameAndURLs[topInventors[index + 1].username]
+      //-             - inventorImage = accountNameAndURLs[topInventors[index + 1].username][0]
+      //-             - inventorImageStyle = accountNameAndURLs[topInventors[index + 1].username][1]
+      //-           else
+      //-             - inventorImage = ""
+      //-             - inventorImageStyle = ""
+      //-           - inventorName = topInventors[index + 1].nickname
+      //-           - inventorPoints = topInventors[index + 1].einsteinPoints
+      //-           - inventorAptitudeIds = topInventors[index + 1].aptitudes
+      //-           include ../partials/inventor-block.jade
+      //-       .col-md-4
+      //-         if(topInventors[index + 2 ])
+      //-           if accountNameAndURLs[topInventors[index + 2].username]
+      //-             - inventorImage = accountNameAndURLs[topInventors[index + 2].username][0]
+      //-             - inventorImageStyle = accountNameAndURLs[topInventors[index + 2].username][1]
+      //-           else 
+      //-             - inventorImage = ""
+      //-             - inventorImageStyle = ""
+      //-           - inventorName = topInventors[index + 2].nickname
+      //-           - inventorPoints = topInventors[index + 2].einsteinPoints
+      //-           - inventorAptitudeIds = topInventors[index + 2].aptitudes
+      //-           include ../partials/inventor-block.jade
+
+      h3#ideaSection Top #{networkName} Ideas
+      if ideas.length > 0
+        each idea, index in ideas
+          - var ideaName
+          - var ideaLink
+          - var problemCategory
+          - var viabilityScore
+          - var ideaImage
+          - var ideaImageStyle
+          - var inventorImage
+          - var inventorImageStyle
+          - var accountNickname
+          if index % 3 == 0 
+            .row.idea-row
+              .col-md-4
+                if(ideas[index])
+                  - ideaName = ideas[index][0] || ""
+                  - ideaLink = ideas[index][6] || ""
+                  - problemCategory = ideas[index][1] || ""
+                  - viabilityScore = ideas[index][2] || ""
+                  - ideaImage = ideas[index][4] || ""
+                  - ideaImageStyle = ideas[index][5]
+                  - inventorImage = ideas[index][7] || ""
+                  - inventorImageStyle = ideas[index][8] || ""
+                  - accountNickname = ideas[index][9] || ""
+                  include ../partials/view-all-idea-block.jade
+              .col-md-4
+                if(ideas[index + 1])
+                  - ideaName = ideas[index + 1][0] || ""
+                  - ideaLink = ideas[index + 1][6] || ""
+                  - problemCategory = ideas[index + 1][1] || ""
+                  - viabilityScore = ideas[index + 1 ][2] || ""
+                  - ideaImage = ideas[index + 1][4] || ""
+                  - ideaImageStyle = ideas[index + 1][5] || ""
+                  - inventorImage = ideas[index + 1][7] || ""
+                  - inventorImageStyle = ideas[index + 1 ][8] || ""
+                  - accountNickname = ideas[index + 1][9] || ""
+                  include ../partials/view-all-idea-block.jade
+              .col-md-4
+                if(ideas[index + 2 ])
+                  - ideaName = ideas[index + 2 ][0] || ""
+                  - ideaLink = ideas[index + 2 ][6] || ""
+                  - problemCategory = ideas[index + 2 ][1] || ""
+                  - viabilityScore = ideas[index + 2][2] || ""
+                  - ideaImage = ideas[index + 2 ][4] || ""
+                  - ideaImageStyle = ideas[index + 2][5] || ""
+                  - inventorImage = ideas[index + 2 ][7] || ""
+                  - inventorImageStyle = ideas[index + 2 ][8] || ""
+                  - accountNickname = ideas[index + 2][9] || ""
+                  include ../partials/view-all-idea-block.jade
+      else
+        p <i>No ideas in this aptitude area have been reviewed yet.</i>
+        
+      br
+
+      h3#imperfectionSection Top #{networkName} Imperfections
+      each problem, identifier in wholeImperfectionBlockInfo
+        if(problem.text && problem['identifier'])
+          include ../partials/problem-summary-element.jade
+      br
+
+      h3#suggestionSection Top #{networkName} Suggestions
+      a(href="/view-all-jam-suggestions/" + networkName)
+        div
+          button(class="btn btn-industry") View All
+      each suggestion, identifier in wholeSuggestionBlockInfo             
+        include ../partials/suggestion-summary-element.jade
+      br
+
+  #loginModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Score Now
+        .modal-body
+          form#dsw-signup-form(role='form', action="/register-dsw",method="post")
+            .form-group
+              input.form-control(type='text', name="nickname", placeholder='Name' required)
+            .form-group
+              input.form-control(type='email', name="username", placeholder='Email Address' required)
+            .form-group
+              input.form-control(type="hidden", name="password", value='Password' required)
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+            button.btn.btn-default#register-submit(type='submit') Submit
+            |  
+            a(href='/')
+              button.btn.btn-primary(type="button") Cancel
+            h4 Login:
+            a(href="/auth/google",class="btn btn-danger")
+              span.fa.fa-google-plus Google
+            |  
+            a(href="/auth/facebook",class="btn btn-primary")
+              span.fa.fa-facebook Facebook
+            |  
+            a(href="/auth/linkedin",class="btn btn-info")
+              span.fa.fa-linkedin LinkedIn
+            |  
+            a#ideajam-login
+              button.btn.btn-primary(type="button") Idea Jam
+          form#dsw-login-form(role='form', action="/login-dsw",method="post", style='max-width: 300px;display: none;')
+            .form-group
+              input.form-control(type='email', name="username", placeholder='Email Address' required)
+            .form-group
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+              input.form-control(type='password', name="password", placeholder='Password' required)
+            button.btn.btn-default(type='submit') Submit
+            |  
+            a(href='/')
+              button.btn.btn-primary(type="button") Cancel
+            |  
+            a(href="/forgot-password/")
+              h4 Forget your password?
+
+  #footer.mobileOnly
+    .col-xs-12.navbar-default.navbar-fixed-bottom.jamBottomNav
+      #bottomNav.row     
+        .col-xs-2.text-center
+          a(href='#ideaSection').glyphicon.glyphicon-flash
+            | 
+            div Ideas
+        .col-xs-4.text-center
+          a(href='#imperfectionSection').glyphicon.glyphicon-wrench
+            | 
+            div Imperfections
+        .col-xs-4.text-center
+          a(href='#suggestionSection').glyphicon.glyphicon-comment
+            | 
+            div Suggestions
+        .col-xs-2.text-center
+          a(href='#topSection').glyphicon.glyphicon-home
+            | 
+            div Home   
+
+  include ../partials/js-includes.jade
+  script(src='/exif.js')
+  script(type="text/javascript").
+    $(window).load(function(){
+      if("!{dsw}" == "true"){
+        $('#loginModal').modal('show');
+      }
+    });
+
+    $("#ideajam-login").click(function(event){
+      $("#dsw-signup-form").hide();
+      $("#dsw-login-form").show();
+    });
+
+    $("#register-submit").click(function(event){
+      if($("input[name='nickname']").val() == ""){
+        event.preventDefault();
+        $("input[name='nickname']").after("<p> Please enter a name value.</p>");
+      }
+      if($("input[name='username']").val() == ""){
+        event.preventDefault();
+        $("input[name='username']").after("<p> Please enter an email.</p>");
+      }
+    })
+
+    if(document.getElementById("profilePicButton")){
+      document.getElementById("profilePicButton").onchange = function(event) {
+        $("<img id='spinner' src='/spinner.gif'>").insertAfter("#jamProfilePicForm");
+        const files = document.getElementById('profilePicButton').files;
+        const file = files[0];
+        if(file == null){
+          return alert('No file selected.');
+        }
+        var fr   = new FileReader;
+        
+        fr.onloadend = function() {
+          // get EXIF data
+          var exif = EXIF.readFromBinaryFile(this.result);
+
+          if(file.size < 3000000){
+            getSignedRequest(file, exif);
+          } else if (file.size > 3000000){
+            alert('Please choose an image smaller than 3 MB.')
+          } else {
+            alert('An error ocurred with this image.')
+          }
+
+        };
+
+        fr.readAsArrayBuffer(file); // read the file
+      };
+
+      function uploadFile(file, signedRequest, url, exif){
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', signedRequest);
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4){
+            if(xhr.status === 200 && (file.type=="image/jpeg" || file.type=="image/png")){
+              var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type,
+              exif : exif , "_csrf" : $('[name="_csrf"]').val(), networkName : $('[name="networkName"]').val()};
+              $.post('/add-network-profile-pic', data , function(response, status){
+                window.location.reload();
+              });
+            }
+            else{
+              alert('Could not upload file.');
+            }
+          }
+        };
+        xhr.send(file);
+      }
+
+      function getSignedRequest(file, exif){
+        const xhr = new XMLHttpRequest();
+        var filename = file.name.split(".");
+        filename[0] = filename[0] + "-" + Date.now().toString();
+        filename = filename.join(".");
+        xhr.open('GET', '/sign-s3?file-name='+ filename + '&file-type='+ file.type);
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4){
+            if(xhr.status === 200){
+              var response;
+              if(xhr.responseText == ""){
+                response = JSON.parse('{}');
+              } else {
+                response = JSON.parse(xhr.responseText);
+              }
+              uploadFile(file, response.signedRequest, response.url, exif);
+            }
+            else{
+              alert('Could not get signed URL.');
+            }
+          }
+        };
+        xhr.send();
+      }
+    }
+
+    $(document).ready(function(){
+
+      $(".upvote-imperfection").click(function(event){  
+        console.log("imperfection");    
+        event.preventDefault();
+
+        $.post('/upvote-imperfection', 
+        {
+          _csrf : $('[name="_csrf"]').val(),
+          problem : $(this)[0].dataset['problemId']
+        },
+        function(data, response) {
+          window.location.reload(true);          
+        });
+
+        return false;
+      });
+        
+      $(".upvote-suggestion").click(function(event){
+        event.preventDefault();
+
+        $.post('/upvote-suggestion', 
+        {
+          _csrf : $('[name="_csrf"]').val(),
+          suggestion : $(this)[0].dataset['suggestionId']
+        },
+        function(data, response) {
+          window.location.reload(true);
+        });
+
+        return false;
+      });   
+
+    });
