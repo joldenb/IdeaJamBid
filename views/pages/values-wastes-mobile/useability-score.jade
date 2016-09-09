@@ -86,6 +86,7 @@ html
         $.post('/useability-mobile', 
         {
           _csrf : $('[name="_csrf"]').val(),
+          "nextLink" : $("[name='nextLink']").val(),
           "useabilitySliderOneValue" : $("#slider").slider("value")
         },
         function(data, response) {

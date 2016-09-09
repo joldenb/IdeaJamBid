@@ -13,7 +13,7 @@
         h3 #{ideaName || 'No Idea Name'}
     else
       h3 #{ideaName || 'No Idea Name'}
-    .userName 
+    .userName
       a(href='/imagineer/' + accountNickname)
         p #{accountNickname || "No name available"}
     .suggestion-category
@@ -30,6 +30,6 @@
   .footer.view-all-ideas
     if ideaLink
       a(href=ideaLink)
-        .btn.btn-default IMPROVE THIS IDEA!
+        .btn.btn-default Score This Idea
     else
-      .btn.btn-default IMPROVE THIS IDEA!  
+      .btn.btn-default Score This Idea

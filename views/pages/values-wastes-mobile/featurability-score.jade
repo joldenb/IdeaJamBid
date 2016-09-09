@@ -86,6 +86,7 @@ html
         $.post('/featurability-mobile', 
         {
           _csrf : $('[name="_csrf"]').val(),
+          "nextLink" : $("[name='nextLink']").val(),
           "featureSliderOneValue" : $("#slider").slider("value")
         },
         function(data, response) {

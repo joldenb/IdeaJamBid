@@ -86,6 +86,7 @@ html
         $.post('/affordability-mobile', 
         {
           _csrf : $('[name="_csrf"]').val(),
+          "nextLink" : $("[name='nextLink']").val(),
           "affordSliderOneValue" : $("#sliderOne").slider("value")
         },
         function(data, response) {

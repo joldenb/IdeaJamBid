@@ -61,9 +61,12 @@ html
           $(".sliderLabel").css("left", "-50px");
       }
     });
-    $(".sliderLabel").text(labelArr[initialValue]);
-    $(".sliderLabel" ).css("margin-left", (initialValue -1)/(max-min)*100+"%");
-    $(".sliderLabel").css("left", "-50px");
+
+    if('#{currentReview.precisionOne}' != ""){
+      $(".sliderLabel").text(labelArr[initialValue]);
+      $(".sliderLabel" ).css("margin-left", (initialValue -1)/(max-min)*100+"%");
+      $(".sliderLabel").css("left", "-50px");
+    }
 
     $('#slider').draggable();
 
@@ -86,6 +89,7 @@ html
         $.post('/precision-mobile', 
         {
           _csrf : $('[name="_csrf"]').val(),
+          "nextLink" : $("[name='nextLink']").val(),
           "precisionSliderOneValue" : $("#slider").slider("value")
         },
         function(data, response) {

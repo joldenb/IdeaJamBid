@@ -86,6 +86,7 @@ html
         $.post('/maintainability-mobile', 
         {
           _csrf : $('[name="_csrf"]').val(),
+          "nextLink" : $("[name='nextLink']").val(),
           "maintainabilitySliderOneValue" : $("#slider").slider("value")
         },
         function(data, response) {
