@@ -43,8 +43,6 @@ h1, h2, h3, h4 {
 }
 
 .btn {
-  background-color: #00A550;
-  color: white;
   border-style: none;
   border-radius: 2px;
 }
@@ -901,8 +899,13 @@ button.btn.btn-info.modal-view-all {
 }
 
 .navbar-default .navbar-nav>li>a, .navbar-default .navbar-brand {
-  color: #EAE7DE; /* Linen */
+  color: #414142; /* Industry */
 }
+
+#componentsHeader {
+  margin-bottom:.5em;
+}
+
 
 .navbar>.container .navbar-brand, .navbar>.container-fluid .navbar-brand {
   margin-left: 0;
@@ -1194,6 +1197,11 @@ button.suggestion-tactics, button.suggestion-targets {
 
 .jamNav li {
   display: inline-block !important;  
+}
+
+.btn-go {
+  background-color: #00A550; 
+  color: white;
 }
 
 .btn-vision {

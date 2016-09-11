@@ -8,9 +8,9 @@ html
 
   .view-idea-suggestions
     h2 Name : #{idea.name}
-    a.btn.btn-default#file-variant(data-toggle="modal" data-target="#fileVariantModal") File This Variant
+    a.btn.btn-go#file-variant(data-toggle="modal" data-target="#fileVariantModal") File This Variant
     if allSignedOff
-      a.btn.btn-default#generate-variant-application Build Variant Application
+      a.btn.btn-go#generate-variant-application Build Variant Application
     
     .container
       h2 Suggestions
@@ -97,7 +97,7 @@ html
 
     br
     br
-    a.home-logout.btn.btn-default( href="/ideas/" + idea.name) < Back to Idea Summary
+    a.home-logout.btn.btn-go( href="/ideas/" + idea.name) < Back to Idea Summary
 
   #fileVariantModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog

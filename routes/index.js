@@ -277,6 +277,8 @@ router.post('/register-dsw', csrfProtection, function(req, res) {
         var newNickname = req.body.nickname;
       }
 
+
+      // gets a default password value from jam profile page "itcrashed"
       Account.register(new Account({
         firstname : req.body.firstname,
         lastname : req.body.lastname,
@@ -2133,8 +2135,8 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
                 }
                 IdeaReview.find({"reviewer" : req.user.username, "ideaSeedId" : idea.id}, function(err, review){
                   var averageScore = 0;
-                  if(review){
-                    req.session.ideaReview = review;
+                  if(review.length > 0){
+                    req.session.ideaReview = review[0];
                     averageScore = Math.round(IdeaReview.averageViabilityScores(review));
                   }
                   Aptitude.find({"_id" : {$in : idea.aptitudes}}, function(err, myAptitudes){
@@ -2193,6 +2195,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
                                 headshot : headshotURL,
                                 headshotStyle : headshotStyle,
                                 problems : problems,
+                                averageScore : averageScore,
                                 components : components,
                                 viabilities : viabilities,                                          
                                 listOfProblems : listOfProblems });

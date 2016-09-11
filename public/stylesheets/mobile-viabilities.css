@@ -87,7 +87,7 @@
   	margin: 1em 0;
   }
 
-  .mobile-viability-form .save-buttons .btn.btn-success,  .mobile-viability-form .save-buttons .btn.btn-vision{
+  .mobile-viability-form .save-buttons .btn.btn-go,  .mobile-viability-form .save-buttons .btn.btn-vision{
   	width: 100%;
 	}
   .mobile-viability-form {
@@ -177,6 +177,10 @@
     top: 25%;
     transform: initial;
   }
+
+	.footer.view-all-ideas .btn h4{
+		margin-top:3px;
+	}
 
   .col-xs-12.viability-score a, .row.make-suggestion .col-xs-12 a {
   	width:100%;

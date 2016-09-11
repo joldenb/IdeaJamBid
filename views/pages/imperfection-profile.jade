@@ -30,7 +30,7 @@ html
             div#suggestion-tactics(class="btn-group" role="group" aria-label="suggestionTactic" data-toggle="buttons")
               h4.suggestion-number 1.
               each value in tactics
-                label.btn.btn-primary.suggestion-tactics
+                label.btn.btn-go.suggestion-tactics
                   input(type="checkbox" value=value)
                   | #{value}
 
@@ -38,7 +38,7 @@ html
             div#suggestion-targets(class="btn-group" role="group" aria-label="suggestionTarget" data-toggle="buttons")
               h4.suggestion-number 2.
               each value in targets
-                label.btn.btn-primary.suggestion-targets.disabled(style="background-color : #00A550 !important;")
+                label.btn.btn-go.suggestion-targets.disabled(style="background-color : #00A550 !important;")
                   input.target-inputs(type="checkbox" value=value disabled )
                   | #{value}
 
@@ -56,7 +56,7 @@ html
                 | Add Picture
           .row.suggestion-form-buttons
             .col-xs-12
-              button.btn.btn-success.btn-lg.btn-block#submit(type='submit') Save
+              button.btn.btn-go.btn-lg.btn-block#submit(type='submit') Save
       .col-sm-6
         #existing-suggestion-list.edit-column
           h3 Other Suggestions

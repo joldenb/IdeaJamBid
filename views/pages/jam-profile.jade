@@ -150,41 +150,37 @@ html
     .modal-dialog
       .modal-content
         .modal-header
-          button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 Score Now
+            h2 Login
         .modal-body
           form#dsw-signup-form(role='form', action="/register-dsw",method="post")
+            a(href="/auth/google",class="btn btn-danger btn-lg btn-block")
+              span.fa.fa-google-plus Google
+            |  
+            a(href="/auth/facebook",class="btn btn-primary btn-lg btn-block")
+              span.fa.fa-facebook Facebook
+            |  
+            a(href="/auth/linkedin",class="btn btn-info btn-lg btn-block")
+              span.fa.fa-linkedin LinkedIn
+            h4 New Account:
             .form-group
               input.form-control(type='text', name="nickname", placeholder='Name' required)
             .form-group
               input.form-control(type='email', name="username", placeholder='Email Address' required)
             .form-group
-              input.form-control(type="hidden", name="password", value='Password' required)
+              input.form-control(type="hidden", name="password", value='itcrashed' required)
               input(type="hidden", name="_csrf", value="#{csrfToken}")
-            button.btn.btn-default#register-submit(type='submit') Submit
+            button.btn.btn-lg.btn-block.btn-go#register-submit(type='submit') Submit
             |  
             a(href='/')
-              button.btn.btn-primary(type="button") Cancel
-            h4 Login:
-            a(href="/auth/google",class="btn btn-danger")
-              span.fa.fa-google-plus Google
-            |  
-            a(href="/auth/facebook",class="btn btn-primary")
-              span.fa.fa-facebook Facebook
-            |  
-            a(href="/auth/linkedin",class="btn btn-info")
-              span.fa.fa-linkedin LinkedIn
-            |  
-            a#ideajam-login
-              button.btn.btn-primary(type="button") Idea Jam
+              button.btn.btn-primary.btn-lg.btn-block(type="button" style="margin-top: 5px;") Cancel
           form#dsw-login-form(role='form', action="/login-dsw",method="post", style='max-width: 300px;display: none;')
             .form-group
               input.form-control(type='email', name="username", placeholder='Email Address' required)
             .form-group
               input(type="hidden", name="_csrf", value="#{csrfToken}")
               input.form-control(type='password', name="password", placeholder='Password' required)
-            button.btn.btn-default(type='submit') Submit
+            button.btn.btn-go(type='submit') Submit
             |  
             a(href='/')
               button.btn.btn-primary(type="button") Cancel

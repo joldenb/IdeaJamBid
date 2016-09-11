@@ -19,7 +19,7 @@ html
           input#headshotButton(type="file", name="picture")
           input(type="hidden", name="_csrf", value="#{csrfToken}")
           br
-      a.home-logout.btn.btn-default( href="/imagineer/" + user.nickname) View Profile
+      a.home-logout.btn.btn-go( href="/imagineer/" + user.nickname) View Profile
 
     .col-md-7
       div#begin-info-right
@@ -27,29 +27,29 @@ html
           if schoolNetwork
             .profileHeader School :  #[a(class="network-link") #{schoolNetwork}]
             if Object.keys(user).length != 0
-              a(class="btn btn-default secondary-btn" href="#" id="schoolModalButton" data-toggle="modal" data-target="#schoolModal")
+              a(class="btn btn-go secondary-btn" href="#" id="schoolModalButton" data-toggle="modal" data-target="#schoolModal")
                 span.glyphicon.glyphicon-pencil
           else
             if Object.keys(user).length != 0
-              button(type="button" id="schoolModalButton" class="btn btn-default" data-toggle="modal" data-target="#schoolModal") Add your School
+              button(type="button" id="schoolModalButton" class="btn btn-go" data-toggle="modal" data-target="#schoolModal") Add your School
         .profileCompany
           if companyNetwork
             .profileHeader Company :  #[a(class="network-link") #{companyNetwork}]
             if Object.keys(user).length != 0
-              a(class="btn btn-default secondary-btn" href="#" id="companyModalButton" data-toggle="modal" data-target="#companyModal")
+              a(class="btn btn-go secondary-btn" href="#" id="companyModalButton" data-toggle="modal" data-target="#companyModal")
                 span.glyphicon.glyphicon-pencil
           else
             if Object.keys(user).length != 0
-              button(type="button" id="companyModalButton" class="btn btn-default" data-toggle="modal" data-target="#companyModal") Add your Company
+              button(type="button" id="companyModalButton" class="btn btn-go" data-toggle="modal" data-target="#companyModal") Add your Company
         .profileLocation
           if locationNetwork
             .profileHeader Location : #[a(class="network-link") #{locationNetwork}]
             if Object.keys(user).length != 0
-              a(class="btn btn-default secondary-btn" href="#" id="locationModalButton")
+              a(class="btn btn-go secondary-btn" href="#" id="locationModalButton")
                 span.glyphicon.glyphicon-pencil
           else
             if Object.keys(user).length != 0
-              button(type="button" id="locationModalButton" class="btn btn-default" ) Add your Location
+              button(type="button" id="locationModalButton" class="btn btn-go" ) Add your Location
       div#begin-info-aptitudes.aptitudeList
         .profileAptitudes
           if aptitudes

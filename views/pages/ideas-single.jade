@@ -18,7 +18,7 @@ html
               if index < 3 && index > 0
                 img.ideaSeedThumbnails(src=imageURL[1]  style=imageURL[2])
           .view-all-images-btn
-            a.btn.secondary-btn.btn-default( href="/image-upload" )
+            a.btn.secondary-btn.btn-go( href="/image-upload" )
               span.glyphicon.glyphicon-camera
         else
           a(href="/image-upload")
@@ -40,37 +40,54 @@ html
                     h4 Your current score for #{idea.name}: 
                   .col-xs-3
                     h3.average-score-number #{averageScore}
-                a.btn.btn-default(type="button"  class="btn btn-default" href="/view-all-viabilities") Keep Scoring
+                a.btn(type="button"  class="btn btn-go" href="/view-all-viabilities") Keep Scoring
               else
-                a.btn.btn-default(type="button"  class="btn btn-default" href="/view-all-viabilities") Score Now
+                a.btn(type="button"  class="btn btn-go" href="/view-all-viabilities") Score Now
               br
           else
             .idea-summary-data#idea-summary-waste-values
               h4 You can only score someone else's ideas (right now)
+        .row
+          .col-xs-12
+            h4#componentsHeader Components 
+            if components.length > 0
+              ul
+                each component,index in components
+                  if component['text']
+                    li 
+                      p #{component['number']} : #{component['text']}
+                  else if component['descriptions'].length > 0
+                    li
+                      p #{component['descriptions'][0]}
+            else
+              <i>No components yet</i>
+            if inventorName == user.username
+              button(type="button" id="componentModalButton"  class="btn btn-go btn-block btn-lg" data-toggle="modal" data-target="#addComponentModal") Add Component
 
-          #idea-summary-aptitudes.aptitudeList
-            .profileAptitudes
-              if aptitudes && aptitudes.length > 0
-                h4 Aptitudes
-                ul
-                  each aptitude in aptitudes
-                    li(data-apt-id="#{aptitude.identifier}") 
-                      p #{aptitude.title}
-              if inventorName == user.username
-                if !aptitudes || aptitudes.length == 0
+          .col-xs-12
+            #idea-summary-aptitudes.aptitudeList
+              .profileAptitudes
+                if aptitudes && aptitudes.length > 0
                   h4 Aptitudes
-                form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
-                  .form-group
-                    |  
-                    input(type="hidden", name="_csrf", value="#{csrfToken}")
-                    input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
-                  .modal-footer
-                    button.btn.btn-success#aptitudeSubmit(type='submit') Save
+                  ul
+                    each aptitude, aptIndex in aptitudes
+                      li(data-apt-id="#{aptitude.identifier}") 
+                        p #{aptIndex + 1} : #{aptitude.title}
+                if inventorName == user.username
+                  if !aptitudes || aptitudes.length == 0
+                    h4 Aptitudes
+                  form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
+                    .form-group
+                      |  
+                      input(type="hidden", name="_csrf", value="#{csrfToken}")
+                      input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
+                    .modal-footer
+                      button.btn.btn-go.btn-lg#aptitudeSubmit(type='submit') Save
 
 
       .col-sm-8
         //- .row
-        //-   button(type="button" id="emailShareButton" class="btn secondary-btn btn-default pull-right clearfix" data-toggle="modal" data-target="#shareModal")
+        //-   button(type="button" id="emailShareButton" class="btn secondary-btn btn-go pull-right clearfix" data-toggle="modal" data-target="#shareModal")
         //-     span.glyphicon.glyphicon-envelope   
 
         //- if inventorName == user.username
@@ -81,7 +98,7 @@ html
         //-     .app-strength-bar.col-md-8
         //-       .app-strength(class="#{appStrengthClass}") #{appStrengthText}
         //-     .col-md-4
-        //-       a.btn.btn-default#file-patent(data-toggle="modal" data-target="#filePatentModal") File My Patent
+        //-       a.btn.btn-go#file-patent(data-toggle="modal" data-target="#filePatentModal") File My Patent
 
         .row
           .col-xs-12
@@ -90,7 +107,7 @@ html
           .col-xs-4
             button(type="button"  class="btn btn-industry btn-lg" data-toggle="modal" data-target="#viewAllImperfections") View All
           .col-xs-8
-            button(type="button" id="problemModalButton"  class="btn btn-default btn-lg" data-toggle="modal" data-target="#addProblemModal") New Imperfection
+            button(type="button" id="problemModalButton"  class="btn btn-go btn-lg" data-toggle="modal" data-target="#addProblemModal") New Imperfection
         each problem, index in problems
           if(index < 3 && problem.text && problem['identifier'])
             include ../partials/problem-summary-element.jade
@@ -102,7 +119,7 @@ html
               a.btn.btn-electric.btn-lg.btn-block#componentsViewAllLink(type="button") View All Suggestions
 
         .row.desktop-only
-          a.btn.btn-default.btn-lg.btn-block.viabilityModalButton( type="button"  class="btn btn-default" data-toggle="modal" data-target="#viabilityModal") Score Viability Categories
+          a.btn.btn-go.btn-lg.btn-block.viabilityModalButton( type="button"  class="btn btn-go" data-toggle="modal" data-target="#viabilityModal") Score Viability Categories
 
   #titleModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -136,7 +153,7 @@ html
                     li
                       include ../partials/problem-summary-element.jade
 
-              button(type="button" id="problemModalButton"  class="btn btn-default" data-toggle="modal" data-target="#addProblemModal") Add a Problem
+              button(type="button" id="problemModalButton"  class="btn btn-go" data-toggle="modal" data-target="#addProblemModal") Add a Problem
         .modal-footer
           button.btn.btn-info(data-dismiss="modal") Ok
 
@@ -177,42 +194,42 @@ html
                 when "description"
                   if object == ""
                     li Add a brief Description of your idea
-                      a.whats-left-button.btn.btn-default( href="/accomplish" ) Go
+                      a.whats-left-button.btn.btn-go( href="/accomplish" ) Go
                 when "problem"
                   if object == ""
                     li Add a Problem your idea is addressing
-                      a.whats-left-button.btn.btn-default( href="/introduce-idea" ) Go
+                      a.whats-left-button.btn.btn-go( href="/introduce-idea" ) Go
                 when "name"
                   if object == ""
                     li Give your idea a name
-                      a.whats-left-button.btn.btn-default#openTitleModal() Go
+                      a.whats-left-button.btn.btn-go#openTitleModal() Go
                 when "images"
                   if object.length < 2
                     li Upload more images
-                      a.whats-left-button.btn.btn-default( href="/image-upload" ) Go
+                      a.whats-left-button.btn.btn-go( href="/image-upload" ) Go
                 when "issues"
                   if object.length < 4
                     li Enter more issues with your idea
-                      a.whats-left-button.btn.btn-default#openAddProblemModal() Go
+                      a.whats-left-button.btn.btn-go#openAddProblemModal() Go
                 when "viabilityScores"
                   if appStrengthText == "NOT YET..." && object.length < 4
                     li Enter more viability scores
-                      a.whats-left-button.btn.btn-default#openViabilityModal() Go
+                      a.whats-left-button.btn.btn-go#openViabilityModal() Go
                   else if appStrengthText == "ALMOST..." && object.length < 15
                     li Enter more viability scores
-                      a.whats-left-button.btn.btn-default#openViabilityModal() Go
+                      a.whats-left-button.btn.btn-go#openViabilityModal() Go
                 when "imagesWithAnnotations"
                   if object.length < strengthResponse['images'].length 
                     li Add at least one annotation to every image
-                      a.whats-left-button.btn.btn-default( href="/image-upload" ) Go
+                      a.whats-left-button.btn.btn-go( href="/image-upload" ) Go
                 when "problemsWithSuggestions"
                   if object.length < strengthResponse['issues'].length
                     li Add at least one suggestion per issue
-                      a.whats-left-button.btn.btn-default( href="/suggestion-summary" ) Go
+                      a.whats-left-button.btn.btn-go( href="/suggestion-summary" ) Go
                 when "compsWithRelationships"
                   if object.length < strengthResponse['allComponents'].length
                     li Add at least one relationship per component
-                      a.whats-left-button.btn.btn-default#viewComponentsTab() Go
+                      a.whats-left-button.btn.btn-go#viewComponentsTab() Go
         .modal-footer
           button.btn.btn-success(data-dismiss="modal") Ok
 
@@ -273,8 +290,8 @@ html
               p (ex. "it initiates the sequence automatically")
               p.compDescrCharRemaining
             .modal-footer
-              button.btn.btn-info(data-dismiss="modal") Cancel
-              button.btn.btn-success#componentSubmit(type='submit') Save
+              button.btn.btn-go.btn-block.btn-lg#componentSubmit(type='submit') Save
+              button.btn.btn-info.btn-block.btn-lg(data-dismiss="modal") Cancel
 
   #filePatentModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -285,7 +302,7 @@ html
             h2 File a Patent Application
         .modal-body
           if appStrengthClass == "yes col-md-12"
-            a.btn.btn-default#create-application-button( href="/create-application" ) Download Application
+            a.btn.btn-go#create-application-button( href="/create-application" ) Download Application
             br
             if !receipt
               form(role='form', id="prelimReceiptUpload" action="/reciept-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
@@ -300,7 +317,7 @@ html
                 .row
                   a(href="/ideas/#{idea.name}/variant/"+variantDate[1]) #{variantDate[0]}
 
-              a.btn.btn-default( href="/view-idea-suggestions" ) Create a New Variant
+              a.btn.btn-go( href="/view-idea-suggestions" ) Create a New Variant
               br
           else if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
             h4 Enter more information before generating an application.
