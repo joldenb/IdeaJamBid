@@ -350,6 +350,8 @@ var postViabilityFormInfo = function postViabilityFormInfo(req,res, sliderValue,
 
       // if theres a problem entered
       if(req.body[reviewProblem]){
+        req.body[reviewProblem] = req.body[reviewProblem].trim();
+        
         req.body[reviewProblem] = req.body[reviewProblem].slice(15);
         if(req.body[reviewProblem].charAt(req.body[reviewProblem].length-1) == "."){
           req.body[reviewProblem] = req.body[reviewProblem].slice(0,-1);

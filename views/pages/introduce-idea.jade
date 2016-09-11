@@ -20,7 +20,7 @@ html
             .col-xs-4
               a.home-logout.btn.btn-industry.btn-lg( href="/imagineer/" + user.nickname ) Cancel
             .col-xs-8
-              button.btn.btn-success.btn-lg.btn-continue(type='submit') Continue
+              button#submitProlem.btn.btn-go.btn-lg.btn-continue(type='submit') Continue
           .row
             .col-xs-12
               .hint Hint : Keep it simple here.  You can add more detailed problems later.
@@ -52,4 +52,11 @@ html
         $("#charactersRemaining").text((200 + requiredText.length - $(this).val().length) + " characters remaining");
       });
     }, false);
+
+    $("#submitProlem").click(function(event){
+      if($("#challenge").val() == "The problem of "){
+        event.preventDefault();
+        alert("Please enter a problem your idea will solve.");
+      }
+    })
 

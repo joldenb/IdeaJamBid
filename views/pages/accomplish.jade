@@ -18,7 +18,7 @@ html
         .col-xs-4
           a.home-logout.btn.btn-industry.btn-lg( href="/imagineer/" + user.nickname ) Cancel
         .col-xs-8
-          button.btn.btn-success.btn-lg.btn-continue(type='submit') Continue
+          button#accomplishSubmit.btn.btn-success.btn-lg.btn-continue(type='submit') Continue
       .row
         .col-xs-12
           .hint Hint : You can describe more later!
@@ -52,3 +52,9 @@ html
       });
     }, false);
 
+    $("#accomlishSubmit").click(function(event){
+      if($("#accomplish").val() == "The solution of "){
+        event.preventDefault();
+        alert("Please enter a solution your idea will provide.");
+      }
+    })

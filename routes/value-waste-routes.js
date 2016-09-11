@@ -70,6 +70,7 @@ router.post('/performability', csrfProtection, function(req, res) {
       thisIdea.performOne = req.body.perfSliderOneValue;
     }
     if(req.body.performProblem){
+      req.body.performProblem = req.body.performProblem.trim();
       req.body.performProblem = req.body.performProblem.slice(15);
       if(req.body.performProblem.charAt(req.body.performProblem.length-1) == "."){
         req.body.performProblem = req.body.performProblem.slice(0,-1);
@@ -118,6 +119,7 @@ router.post('/performability', csrfProtection, function(req, res) {
         });
       }
       if(req.body.performProblem){
+        req.body.performProblem = req.body.performProblem.trim();
         req.body.performProblem = req.body.performProblem.slice(15);
         if(req.body.performProblem.charAt(req.body.performProblem.length-1) == "."){
           req.body.performProblem = req.body.performProblem.slice(0,-1);
@@ -203,6 +205,7 @@ router.post('/affordability', csrfProtection, function(req, res) {
       thisIdea.affordOne = req.body.affordSliderOneValue;
     }
     if(req.body.affordProblem){
+      req.body.affordProblem = req.body.affordProblem.trim();
       req.body.affordProblem = req.body.affordProblem.slice(15);
       if(req.body.affordProblem.charAt(req.body.affordProblem.length-1) == "."){
         req.body.affordProblem = req.body.affordProblem.slice(0,-1);
@@ -250,6 +253,7 @@ router.post('/affordability', csrfProtection, function(req, res) {
         });
       }
       if(req.body.affordProblem){
+        req.body.affordProblem = req.body.affordProblem.trim();
         req.body.affordProblem = req.body.affordProblem.slice(15);
         if(req.body.affordProblem.charAt(req.body.affordProblem.length-1) == "."){
           req.body.affordProblem = req.body.affordProblem.slice(0,-1);
@@ -341,6 +345,7 @@ router.post('/featurability', csrfProtection, function(req, res) {
       thisIdea.featureOne = req.body.featureSliderOneValue;
     }
     if(req.body.featureProblem){
+      req.body.featureProblem = req.body.featureProblem.trim();
       req.body.featureProblem = req.body.featureProblem.slice(15);
       if(req.body.featureProblem.charAt(req.body.featureProblem.length-1) == "."){
         req.body.featureProblem = req.body.featureProblem.slice(0,-1);
@@ -388,6 +393,7 @@ router.post('/featurability', csrfProtection, function(req, res) {
         });
       }
       if(req.body.featureProblem){
+        req.body.featureProblem = req.body.featureProblem.trim();
         req.body.featureProblem = req.body.featureProblem.slice(15);
         if(req.body.featureProblem.charAt(req.body.featureProblem.length-1) == "."){
           req.body.featureProblem = req.body.featureProblem.slice(0,-1);
@@ -473,6 +479,7 @@ router.post('/deliverability', csrfProtection, function(req, res) {
       thisIdea.deliverOne = req.body.deliverSliderOneValue;
     }
     if(req.body.deliverProblem){
+      req.body.deliverProblem = req.body.deliverProblem.trim();
       req.body.deliverProblem = req.body.deliverProblem.slice(15);
       if(req.body.deliverProblem.charAt(req.body.deliverProblem.length-1) == "."){
         req.body.deliverProblem = req.body.deliverProblem.slice(0,-1);
@@ -520,6 +527,7 @@ router.post('/deliverability', csrfProtection, function(req, res) {
         });
       }
       if(req.body.deliverProblem){
+        req.body.deliverProblem = req.body.deliverProblem.trim();
         req.body.deliverProblem = req.body.deliverProblem.slice(15);
         if(req.body.deliverProblem.charAt(req.body.deliverProblem.length-1) == "."){
           req.body.deliverProblem = req.body.deliverProblem.slice(0,-1);
@@ -608,6 +616,7 @@ router.post('/useability', csrfProtection, function(req, res) {
       thisIdea.useabilityOne = req.body.useabilitySliderOneValue;
     }
     if(req.body.useabilityProblem){
+      req.body.useabilityProblem = req.body.useabilityProblem.trim();
       req.body.useabilityProblem = req.body.useabilityProblem.slice(15);
       if(req.body.useabilityProblem.charAt(req.body.useabilityProblem.length-1) == "."){
         req.body.useabilityProblem = req.body.useabilityProblem.slice(0,-1);
@@ -657,6 +666,7 @@ router.post('/useability', csrfProtection, function(req, res) {
         });
       }
       if(req.body.useabilityProblem){
+        req.body.useabilityProblem = req.body.useabilityProblem.trim();
         req.body.useabilityProblem = req.body.useabilityProblem.slice(15);
         if(req.body.useabilityProblem.charAt(req.body.useabilityProblem.length-1) == "."){
           req.body.useabilityProblem = req.body.useabilityProblem.slice(0,-1);
@@ -745,6 +755,7 @@ router.post('/maintainability', csrfProtection, function(req, res) {
       thisIdea.maintainOne = req.body.maintainabilitySliderOneValue;
     }
     if(req.body.maintainProblem){
+      req.body.maintainProblem = req.body.maintainProblem.trim();
       req.body.maintainProblem = req.body.maintainProblem.slice(15);
       if(req.body.maintainProblem.charAt(req.body.maintainProblem.length-1) == "."){
         req.body.maintainProblem = req.body.maintainProblem.slice(0,-1);
@@ -792,6 +803,7 @@ router.post('/maintainability', csrfProtection, function(req, res) {
         });
       }
       if(req.body.maintainProblem){
+        req.body.maintainProblem = req.body.maintainProblem.trim();
         req.body.maintainProblem = req.body.maintainProblem.slice(15);
         if(req.body.maintainProblem.charAt(req.body.maintainProblem.length-1) == "."){
           req.body.maintainProblem = req.body.maintainProblem.slice(0,-1);
@@ -880,6 +892,7 @@ router.post('/durability', csrfProtection, function(req, res) {
       thisIdea.durabilityOne = req.body.durabilitySliderOneValue;
     }
     if(req.body.durabilityProblem){
+      req.body.durabilityProblem = req.body.durabilityProblem.trim();
       req.body.durabilityProblem = req.body.durabilityProblem.slice(15);
       if(req.body.durabilityProblem.charAt(req.body.durabilityProblem.length-1) == "."){
         req.body.durabilityProblem = req.body.durabilityProblem.slice(0,-1);
@@ -927,6 +940,7 @@ router.post('/durability', csrfProtection, function(req, res) {
         });
       }
       if(req.body.durabilityProblem){
+        req.body.durabilityProblem = req.body.durabilityProblem.trim();
         req.body.durabilityProblem = req.body.durabilityProblem.slice(15);
         if(req.body.durabilityProblem.charAt(req.body.durabilityProblem.length-1) == "."){
           req.body.durabilityProblem = req.body.durabilityProblem.slice(0,-1);
@@ -1015,6 +1029,7 @@ router.post('/imageability', csrfProtection, function(req, res) {
       thisIdea.imageOne = req.body.imageabilitySliderOneValue;
     }
     if(req.body.imageProblem){
+      req.body.imageProblem = req.body.imageProblem.trim();
       req.body.imageProblem = req.body.imageProblem.slice(15);
       if(req.body.imageProblem.charAt(req.body.imageProblem.length-1) == "."){
         req.body.imageProblem = req.body.imageProblem.slice(0,-1);
@@ -1062,6 +1077,7 @@ router.post('/imageability', csrfProtection, function(req, res) {
         });
       }
       if(req.body.imageProblem){
+        req.body.imageProblem = req.body.imageProblem.trim();
         req.body.imageProblem = req.body.imageProblem.slice(15);
         if(req.body.imageProblem.charAt(req.body.imageProblem.length-1) == "."){
           req.body.imageProblem = req.body.imageProblem.slice(0,-1);
@@ -1150,6 +1166,7 @@ router.post('/complexity', csrfProtection, function(req, res) {
       thisIdea.complexOne = req.body.complexitySliderOneValue;
     }
     if(req.body.complexProblem){
+      req.body.complexProblem = req.body.complexProblem.trim();
       req.body.complexProblem = req.body.complexProblem.slice(15);
       if(req.body.complexProblem.charAt(req.body.complexProblem.length-1) == "."){
         req.body.complexProblem = req.body.complexProblem.slice(0,-1);
@@ -1197,6 +1214,7 @@ router.post('/complexity', csrfProtection, function(req, res) {
         });
       }
       if(req.body.complexProblem){
+        req.body.complexProblem = req.body.complexProblem.trim();
         req.body.complexProblem = req.body.complexProblem.slice(15);
         if(req.body.complexProblem.charAt(req.body.complexProblem.length-1) == "."){
           req.body.complexProblem = req.body.complexProblem.slice(0,-1);
@@ -1285,6 +1303,7 @@ router.post('/precision', csrfProtection, function(req, res) {
       thisIdea.precisionOne = req.body.precisionSliderOneValue;
     }
     if(req.body.precisionProblem){
+      req.body.precisionProblem = req.body.precisionProblem.trim();
       req.body.precisionProblem = req.body.precisionProblem.slice(15);
       if(req.body.precisionProblem.charAt(req.body.precisionProblem.length-1) == "."){
         req.body.precisionProblem = req.body.precisionProblem.slice(0,-1);
@@ -1332,6 +1351,7 @@ router.post('/precision', csrfProtection, function(req, res) {
         });
       }
       if(req.body.precisionProblem){
+        req.body.precisionProblem = req.body.precisionProblem.trim();
         req.body.precisionProblem = req.body.precisionProblem.slice(15);
         if(req.body.precisionProblem.charAt(req.body.precisionProblem.length-1) == "."){
           req.body.precisionProblem = req.body.precisionProblem.slice(0,-1);
@@ -1423,6 +1443,7 @@ router.post('/variability', csrfProtection, function(req, res) {
       thisIdea.variabilityOne = req.body.variabilitySliderOneValue;
     }
     if(req.body.variabilityProblem){
+      req.body.variabilityProblem = req.body.variabilityProblem.trim();
       req.body.variabilityProblem = req.body.variabilityProblem.slice(15);
       if(req.body.variabilityProblem.charAt(req.body.variabilityProblem.length-1) == "."){
         req.body.variabilityProblem = req.body.variabilityProblem.slice(0,-1);
@@ -1470,6 +1491,7 @@ router.post('/variability', csrfProtection, function(req, res) {
         });
       }
       if(req.body.variabilityProblem){
+        req.body.variabilityProblem = req.body.variabilityProblem.trim();
         req.body.variabilityProblem = req.body.variabilityProblem.slice(15);
         if(req.body.variabilityProblem.charAt(req.body.variabilityProblem.length-1) == "."){
           req.body.variabilityProblem = req.body.variabilityProblem.slice(0,-1);
@@ -1559,6 +1581,7 @@ router.post('/sensitivity', csrfProtection, function(req, res) {
       thisIdea.sensitivityOne = req.body.sensitivitySliderOneValue;
     }
     if(req.body.sensitivityProblem){
+      req.body.sensitivityProblem = req.body.sensitivityProblem.trim();
       req.body.sensitivityProblem = req.body.sensitivityProblem.slice(15);
       if(req.body.sensitivityProblem.charAt(req.body.sensitivityProblem.length-1) == "."){
         req.body.sensitivityProblem = req.body.sensitivityProblem.slice(0,-1);
@@ -1606,6 +1629,7 @@ router.post('/sensitivity', csrfProtection, function(req, res) {
         });
       }
       if(req.body.sensitivityProblem){
+        req.body.sensitivityProblem = req.body.sensitivityProblem.trim();
         req.body.sensitivityProblem = req.body.sensitivityProblem.slice(15);
         if(req.body.sensitivityProblem.charAt(req.body.sensitivityProblem.length-1) == "."){
           req.body.sensitivityProblem = req.body.sensitivityProblem.slice(0,-1);
@@ -1697,6 +1721,7 @@ router.post('/immaturity', csrfProtection, function(req, res) {
       thisIdea.immatureOne = req.body.immaturitySliderOneValue;
     }
     if(req.body.immatureProblem){
+      req.body.immatureProblem = req.body.immatureProblem.trim();
       req.body.immatureProblem = req.body.immatureProblem.slice(15);
       if(req.body.immatureProblem.charAt(req.body.immatureProblem.length-1) == "."){
         req.body.immatureProblem = req.body.immatureProblem.slice(0,-1);
@@ -1744,6 +1769,7 @@ router.post('/immaturity', csrfProtection, function(req, res) {
         });
       }
       if(req.body.immatureProblem){
+        req.body.immatureProblem = req.body.immatureProblem.trim();
         req.body.immatureProblem = req.body.immatureProblem.slice(15);
         if(req.body.immatureProblem.charAt(req.body.immatureProblem.length-1) == "."){
           req.body.immatureProblem = req.body.immatureProblem.slice(0,-1);
@@ -1831,6 +1857,7 @@ router.post('/dangerous', csrfProtection, function(req, res) {
       thisIdea.dangerOne = req.body.dangerousSliderOneValue;
     }
     if(req.body.dangerProblem){
+      req.body.dangerProblem = req.body.dangerProblem.trim();
       req.body.dangerProblem = req.body.dangerProblem.slice(15);
       if(req.body.dangerProblem.charAt(req.body.dangerProblem.length-1) == "."){
         req.body.dangerProblem = req.body.dangerProblem.slice(0,-1);
@@ -1878,6 +1905,7 @@ router.post('/dangerous', csrfProtection, function(req, res) {
         });
       }
       if(req.body.dangerProblem){
+        req.body.dangerProblem = req.body.dangerProblem.trim();
         req.body.dangerProblem = req.body.dangerProblem.slice(15);
         if(req.body.dangerProblem.charAt(req.body.dangerProblem.length-1) == "."){
           req.body.dangerProblem = req.body.dangerProblem.slice(0,-1);
@@ -1966,6 +1994,7 @@ router.post('/skills', csrfProtection, function(req, res) {
       thisIdea.skillsOne = req.body.skillsSliderOneValue;
     }
     if(req.body.skillsProblem){
+      req.body.skillsProblem = req.body.skillsProblem.trim();
       req.body.skillsProblem = req.body.skillsProblem.slice(15);
       if(req.body.skillsProblem.charAt(req.body.skillsProblem.length-1) == "."){
         req.body.skillsProblem = req.body.skillsProblem.slice(0,-1);
@@ -2013,6 +2042,7 @@ router.post('/skills', csrfProtection, function(req, res) {
         });
       }
       if(req.body.skillsProblem){
+        req.body.skillsProblem = req.body.skillsProblem.trim();
         req.body.skillsProblem = req.body.skillsProblem.slice(15);
         if(req.body.skillsProblem.charAt(req.body.skillsProblem.length-1) == "."){
           req.body.skillsProblem = req.body.skillsProblem.slice(0,-1);

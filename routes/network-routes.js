@@ -42,6 +42,8 @@ router.post('/save-school-network', csrfProtection, function(req, res) {
     return;
   }
   
+  req.body.schoolNetwork = req.body.schoolNetwork.trim();
+
   Network.findOne({"name" : req.body.schoolNetwork}, function(err, schoolNetwork){
       if(err){
         res.json({error: err});
@@ -53,7 +55,11 @@ router.post('/save-school-network', csrfProtection, function(req, res) {
             account.networks['school'] = schoolNetwork.id;
             account.save(function (err) {});
         });
-        res.redirect('/imagineer/' + req.user.username);
+        if(req.user.nickname){
+          res.redirect('/imagineer/' + req.user.nickname);
+        } else {
+          res.redirect('/');
+        }
       } else {
         var newSchool = new Network({
           name : req.body.schoolNetwork,
@@ -66,7 +72,11 @@ router.post('/save-school-network', csrfProtection, function(req, res) {
               account.save(function (err) {});
           });
         });
-        res.redirect('/imagineer/' + req.user.username);
+        if(req.user.nickname){
+          res.redirect('/imagineer/' + req.user.nickname);
+        } else {
+          res.redirect('/');
+        }
       }
   });
 });
@@ -83,6 +93,9 @@ router.post('/save-company-network', csrfProtection, function(req, res) {
     res.redirect('/');
     return;
   }
+
+  req.body.companyNetwork = req.body.companyNetwork.trim();
+
   Network.findOne({"name" : req.body.companyNetwork}, function(err, companyNetwork){
       if(err){
         res.json({error: err});
@@ -94,7 +107,11 @@ router.post('/save-company-network', csrfProtection, function(req, res) {
             account.networks['company'] = companyNetwork.id;
             account.save(function (err) {});
         });
-        res.redirect('/imagineer/' + req.user.username);
+        if(req.user.nickname){
+          res.redirect('/imagineer/' + req.user.nickname);
+        } else {
+          res.redirect('/');
+        }
       } else {
         var newCompany = new Network({
           name : req.body.companyNetwork,
@@ -107,7 +124,11 @@ router.post('/save-company-network', csrfProtection, function(req, res) {
               account.save(function (err) {});
           });
         });
-        res.redirect('/imagineer/' + req.user.username);
+        if(req.user.nickname){
+          res.redirect('/imagineer/' + req.user.nickname);
+        } else {
+          res.redirect('/');
+        }
       }
   });
 });
@@ -125,7 +146,7 @@ router.post('/save-location-network', csrfProtection, function(req, res) {
     return;
   }
   //need to add validation to make sure these both exist.
-  var cityAndState = req.body.locationCity + ", " + req.body.locationState;
+  var cityAndState = req.body.locationCity + ", Colorado";
   Network.findOne({"name" : cityAndState}, function(err, locationNetwork){
       if(err){
         res.json({error: err});
@@ -137,7 +158,11 @@ router.post('/save-location-network', csrfProtection, function(req, res) {
             account.networks['location'] = locationNetwork.id;
             account.save(function (err) {});
         });
-        res.sendStatus(200);
+        if(req.user.nickname){
+          res.redirect('/imagineer/' + req.user.nickname);
+        } else {
+          res.redirect('/');
+        }
       } else {
         var newLocation = new Network({
           name : cityAndState,
@@ -150,7 +175,11 @@ router.post('/save-location-network', csrfProtection, function(req, res) {
               account.save(function (err) {});
           });
         });
-        res.sendStatus(200);
+        if(req.user.nickname){
+          res.redirect('/imagineer/' + req.user.nickname);
+        } else {
+          res.redirect('/');
+        }
       }
   });
 });
@@ -168,6 +197,8 @@ router.post('/save-aptitude', csrfProtection, function(req, res) {
     return;
   }
 
+  req.body.aptitudeTitle = req.body.aptitudeTitle.trim();
+
   //if form got submitted from the idea summary page, it will have
   // an idea name attached to it. otherwise, it gets updated to the
   // current user and it was entered on the user profile page
@@ -184,7 +215,11 @@ router.post('/save-aptitude', csrfProtection, function(req, res) {
             idea.aptitudes.push(existingAptitudes[0].id); //use the first existing record
             idea.save(function (err) {});
         });
-        res.sendStatus(200);
+        if(req.user.nickname){
+          res.redirect('/imagineer/' + req.user.nickname);
+        } else {
+          res.redirect('/');
+        }
       } else {
         var newAptitude = new Aptitude({
           title : aptitudeTitle,
@@ -197,7 +232,11 @@ router.post('/save-aptitude', csrfProtection, function(req, res) {
               idea.save(function (err) {});
           });
         });
-        res.sendStatus(200);
+        if(req.user.nickname){
+          res.redirect('/imagineer/' + req.user.nickname);
+        } else {
+          res.redirect('/');
+        }
       }
     });
 
@@ -215,7 +254,11 @@ router.post('/save-aptitude', csrfProtection, function(req, res) {
             account.aptitudes.push(existingAptitudes[0].id); //use the first existing record
             account.save(function (err) {});
         });
-        res.sendStatus(200);
+        if(req.user.nickname){
+          res.redirect('/imagineer/' + req.user.nickname);
+        } else {
+          res.redirect('/');
+        }
       } else {
         var newAptitude = new Aptitude({
           title : aptitudeTitle,
@@ -228,7 +271,11 @@ router.post('/save-aptitude', csrfProtection, function(req, res) {
               account.save(function (err) {});
           });
         });
-        res.sendStatus(200);
+        if(req.user.nickname){
+          res.redirect('/imagineer/' + req.user.nickname);
+        } else {
+          res.redirect('/');
+        }
       }
     });
   } // end of the user profile update portion

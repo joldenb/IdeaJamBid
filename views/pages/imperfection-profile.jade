@@ -78,25 +78,32 @@ script(type="text/javascript").
       var tacticVal = $(".suggestion-tactics.selected input").val();
       var targetVal = $(".suggestion-targets.selected input").val();
       if(tacticVal && targetVal){
-        var data = {
-          "suggestionText" : $("input[name='suggestionText']").val(),
-          "problemArea" : "!{problem.problemArea}",
-          "problemContributor" : "!{problem.creator}",
-          "problemText" : "!{problem.text}",
-          "tactic"  : tacticVal,
-          "target"  : targetVal,
-          "_csrf"   : $("input[name=_csrf]").val()
-        }
+        if( $("input[name='suggestionText']").val().split(" ").length < 4 && 
+          $("input[name='suggestionText']").val().split(" ")[$("input[name='suggestionText']").val().split(" ").length -1] == ""){
+          window.location.reload();
+        } else {
+          var newSuggestion = $("input[name='suggestionText']").val().trim();
 
-        if($("#suggestion-image-preview").length > 0){
-          data['fileUrl'] = $("#suggestion-image-preview")[0].src;
-          data['type'] = $("#suggestion-image-preview")[0].dataset.type;
-          data['filename'] = $("#suggestion-image-preview")[0].dataset.filename;
-        }
+          var data = {
+            "suggestionText" : newSuggestion,
+            "problemArea" : "!{problem.problemArea}",
+            "problemContributor" : "!{problem.creator}",
+            "problemText" : "!{problem.text}",
+            "tactic"  : tacticVal,
+            "target"  : targetVal,
+            "_csrf"   : $("input[name=_csrf]").val()
+          }
 
-        $.post('/suggestion-submit-new', data, function(error, response){
-          window.location = "/view-all-jam-suggestions/dsw";
-        });
+          if($("#suggestion-image-preview").length > 0){
+            data['fileUrl'] = $("#suggestion-image-preview")[0].src;
+            data['type'] = $("#suggestion-image-preview")[0].dataset.type;
+            data['filename'] = $("#suggestion-image-preview")[0].dataset.filename;
+          }
+
+          $.post('/suggestion-submit-new', data, function(error, response){
+            window.location = "/view-all-jam-suggestions/dsw";
+          });
+        }
       } else {
         alert('Tactic and Target Required!!!!!!!!!!!!!');
       }

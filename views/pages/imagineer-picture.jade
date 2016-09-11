@@ -19,7 +19,6 @@ html
           input#headshotButton(type="file", name="picture")
           input(type="hidden", name="_csrf", value="#{csrfToken}")
           br
-      a.home-logout.btn.btn-go( href="/imagineer/" + user.nickname) View Profile
 
     .col-md-7
       div#begin-info-right
@@ -45,11 +44,11 @@ html
           if locationNetwork
             .profileHeader Location : #[a(class="network-link") #{locationNetwork}]
             if Object.keys(user).length != 0
-              a(class="btn btn-go secondary-btn" href="#" id="locationModalButton")
+              a(class="btn btn-go secondary-btn" id="locationModalButton" data-toggle="modal" data-target="#locationModal")
                 span.glyphicon.glyphicon-pencil
           else
             if Object.keys(user).length != 0
-              button(type="button" id="locationModalButton" class="btn btn-go" ) Add your Location
+              button(type="button" id="locationModalButton" class="btn btn-go" data-toggle="modal" data-target="#locationModal") Add your Location
       div#begin-info-aptitudes.aptitudeList
         .profileAptitudes
           if aptitudes
@@ -65,8 +64,9 @@ html
                 input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='What are you good at?', autocomplete="on")
                 input(type="hidden", name="_csrf", value="#{csrfToken}")
               .aptitude-footer
-                button.btn.btn-success.secondary-btn#aptitudeSubmit(type='submit')
-                  span.glyphicon.glyphicon-plus
+                button.btn.btn-go#aptitudeSubmit(type='submit') Save
+      .view-profile-btn
+        a.home-logout.btn.btn-go.btn-lg.btn-block( href="/imagineer/" + user.nickname) View Profile
           
   #schoolModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -112,8 +112,6 @@ html
             .form-group
               |  
               h4 Select Location
-              select.form-control#locationState(style="display: none;")
-                option(value="CO") Colorado
               select.form-control.locationCity
                 option(value="Denver") Denver
                 option(value="Boulder") Boulder
@@ -133,7 +131,6 @@ html
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#locationSubmit(type='submit') Save
 
-  button(type="button" id="secretLocationButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#locationModal") Go Win Fight
 
   include ../partials/js-includes.jade
   script(src='/exif.js')
@@ -182,48 +179,6 @@ html
       });
     });
 
-    $("#locationModalButton").click(function(){
-      $.getJSON("/us-cities-and-states.json", function(data){
-        var stateArray = _.map(data, function(object){
-          return object['FIELD2'];
-        });
-
-        stateArray.shift();
-        stateArray = _.uniq(stateArray);
-        stateArray = _.sortBy(stateArray);
-
-        $("#secretLocationButton").click();
-        _.each(stateArray, function(state, index){
-          $('#locationState').append($('<option>', {
-            value: state,
-            text: state
-          }));
-        });
-
-        $("#locationState").change(function(event){
-          $('select.locationCity option').remove();
-
-          var cityArray = _.filter(data, function(object){
-            return object['FIELD2'] == $('#locationState').find(":selected").text();
-          });
-
-          cityArray = _.map(cityArray, function(object){
-            return object['FIELD1'];
-          });
-
-          cityArray = _.uniq(cityArray);
-          cityArray = _.sortBy(cityArray);
-
-          $(".locationCity").show();
-          _.each(cityArray, function(city, index){
-            $('select.locationCity').append($('<option>', {
-              value: city,
-              text: city
-            }));
-          });
-        });
-      });
-    });
 
     $("a.network-link").click(function(event){
       var urlPath = $(this).text();
@@ -235,7 +190,6 @@ html
       $.post('/save-location-network', 
         {
           locationCity : $("select.locationCity option:selected").text(),
-          locationState : $("#locationState option:selected").text(),
           "_csrf" : $('[name="_csrf"]').val()
         },
         function(resp) {
@@ -246,9 +200,10 @@ html
     $("#aptitudeSubmit").click(function(event){
       event.preventDefault();
       if($("#aptitudeTitle").val() != ""){
+        var newAptitude = $("#aptitudeTitle").val().trim();
         $.post('/save-aptitude', 
           {
-            aptitudeTitle : $("#aptitudeTitle").val(),
+            aptitudeTitle : newAptitude,
             "_csrf" : $('[name="_csrf"]').val()
           },
           function(resp) {

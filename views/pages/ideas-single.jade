@@ -56,9 +56,6 @@ html
                   if component['text']
                     li 
                       p #{component['number']} : #{component['text']}
-                  else if component['descriptions'].length > 0
-                    li
-                      p #{component['descriptions'][0]}
             else
               <i>No components yet</i>
             if inventorName == user.username
@@ -163,20 +160,16 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 All Components
+            h2 All Suggestions
         .modal-body
           .row 
             .col-xs-9
               if components
                 ul
                   each component,index in components
-                    if component['descriptions'].length > 0
-                      if component['identifier']
-                        li
-                          h4 #{component['descriptions'][0]}
-                      else
-                        li
-                          h4 #{component['descriptions'][0]}
+                    if component['descriptions'].length > 0 && component['descriptions'][0].length > 0 && !component['text']
+                      li
+                        h4 #{component['descriptions'][0]}
         .modal-footer
           button.btn.btn-info(data-dismiss="modal") Ok
 
@@ -1010,15 +1003,22 @@ html
 
     $("#problemSubmit").click(function(event){
       event.preventDefault();
-      $.post('/add-idea-problem', 
-        {
-          _csrf : $('[name="_csrf"]').val(),
-          problemStatement : $("#problemStatement").val().slice(15),
-          problemArea : $("#problemArea option:selected").text(),
-        },
-        function(resp) {
-          window.location.reload(true);
-        });      
+      if($("#problemStatement").val() == "The problem is "){
+        $("#addProblemModal").modal('hide');
+      } else if ($("#problemStatement").val().length > 15){
+        var newProblemStatement = $("#problemStatement").val().trim();
+        $.post('/add-idea-problem', 
+          {
+            _csrf : $('[name="_csrf"]').val(),
+            problemStatement : newProblemStatement.slice(15),
+            problemArea : $("#problemArea option:selected").text(),
+          },
+          function(resp) {
+            window.location.reload(true);
+          });
+      } else {
+        $("#addProblemModal").modal('hide');
+      }
     });
 
     $("#titleSubmit").click(function(event){
@@ -1045,20 +1045,31 @@ html
     $("#componentSubmit").click(function(event){
       event.preventDefault();
 
-      $.post('/add-idea-component', 
-        {
-          _csrf : $('[name="_csrf"]').val(),
-          componentName : $("#componentName").val().slice(24),
-          componentDescription : $("#componentDescription").val().slice(20)
-        },
-        function(data, response) {
-          $("#idea-summary-components ul")
-            .append("<li><a href='/component-profile/"+ data['identifier'] +"'><h4>"+ data['number'] + " : " + data['text'] + "</h4></a></li>");
-          $("#componentName").val('');
-          $("#componentDescription").val('');
-          $("#addComponentModal").modal('hide');
-          window.location.reload(true);
-        });      
+      if($("#componentName").val() == "The component is called "){
+        $("#addComponentModal").modal('hide');
+      } else if ($("#componentName").val().length > 24){
+        var newComponentName = $("#componentName").val().trim();
+        var newComponentDescr = "";
+        if($("#componentDescription").val().length > 20){
+          newComponentDescr = $("#componentDescription").val().trim();
+        }
+
+        $.post('/add-idea-component', 
+          {
+            _csrf : $('[name="_csrf"]').val(),
+            componentName : newComponentName.slice(24),
+            componentDescription : newComponentDescr.slice(20)
+          },
+          function(data, response) {
+            $("#idea-summary-components ul")
+              .append("<li><a href='/component-profile/"+ data['identifier'] +"'><h4>"+ data['number'] + " : " + data['text'] + "</h4></a></li>");
+            $("#componentName").val('');
+            $("#componentDescription").val('');
+            $("#addComponentModal").modal('hide');
+            window.location.reload(true);
+          });      
+      }
+
     });
 
     // This is for the idea name
@@ -1164,11 +1175,12 @@ html
     $("#aptitudeSubmit").click(function(event){
       event.preventDefault();
       if($("#aptitudeTitle").val() != ""){
+        var newAptitude = $("#aptitudeTitle").val().trim();
         $.post('/save-aptitude', 
           {
             _csrf : $('[name="_csrf"]').val(),
             ideaName : "!{idea.name}",
-            aptitudeTitle : $("#aptitudeTitle").val()
+            aptitudeTitle : newAptitude
           },
           function(resp) {
             window.location.reload(true);

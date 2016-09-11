@@ -262,6 +262,9 @@ router.get('/about', csrfProtection, function(req, res) {
 ******************************************************************
 *****************************************************************/
 router.post('/register-dsw', csrfProtection, function(req, res) {
+  req.body.nickname = req.body.nickname.trim();
+  req.body.username = req.body.username.trim();
+  
   Account.findOne({ 'username' : req.body.username  }, function(err, user) {
     if(user){
       res.render('pages/login', {
@@ -967,6 +970,8 @@ router.post('/introduce-idea', csrfProtection, function(req, res) {
     res.redirect('/');
     return;
   }
+
+  req.body.purposeFor = req.body.purposeFor.trim();
   IdeaSeed.update({_id : req.session.idea}, {
     problem : req.body.purposeFor.slice(15)},
     { multi: false }, function (err, raw) {
@@ -1023,6 +1028,8 @@ router.post('/accomplish', csrfProtection, function(req, res) {
   if(!req.session.idea){
     res.redirect('/');
   }
+
+  req.body.purposeHow = req.body.purposeHow.trim();
   IdeaSeed.findByIdAndUpdate(req.session.idea, {
     description : req.body.purposeHow.slice(16)},
     { multi: false }, function (err, document) {
