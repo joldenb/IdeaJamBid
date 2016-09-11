@@ -56,14 +56,14 @@ html
       step: 1,
       slide: function( event, ui ) {
           valueEntered = true;
-          $(".save-buttons .btn-success").text("#{nextButtonText}");
+          $(".save-buttons .btn-go").text("#{nextButtonText}");
           $(".sliderLabel").text(labelArr[ui.value]);
           $(".sliderLabel").css("margin-left", (ui.value+2-min)/(max-min)*100+"%");
           $(".sliderLabel").css("left", "-50px");
       }
     });
     if('#{currentReview.affordOne}' != ""){
-      $(".save-buttons .btn-success").text("#{nextButtonText}");
+      $(".save-buttons .btn-go").text("#{nextButtonText}");
       $(".sliderLabel").text(labelArr[initialValue]);
       $(".sliderLabel" ).css("margin-left", (initialValue -1 + 2)/(max-min)*100+"%");
       $(".sliderLabel").css("left", "-50px");
@@ -71,7 +71,7 @@ html
 
     $('#sliderOne').draggable();
 
-    $("button.btn-success").click(function(event){
+    $("button.btn-go").click(function(event){
       if(valueEntered){
         var sliderOneValue = $("#sliderOne").slider("value");
         var inputOne = $("<input>")

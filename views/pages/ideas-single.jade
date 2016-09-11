@@ -268,10 +268,10 @@ html
               select.form-control#problemArea(required)
                 each value in problemAreas
                   option(value=value) #{value}
-
             .modal-footer
-              button.btn.btn-info(data-dismiss="modal") Cancel
-              button.btn.btn-success#problemSubmit(type='submit') Save
+              button.btn.btn-go.btn-block.btn-lg#problemSubmit(type='submit') Save
+              button.btn.btn-info.btn-block.btn-lg(data-dismiss="modal") Cancel
+
   #addComponentModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
       .modal-content

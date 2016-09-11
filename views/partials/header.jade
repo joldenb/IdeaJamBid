@@ -29,8 +29,9 @@
           a.home-logout.btn.btn-electric( href="/jam/dsw" ) DSW Jam
         li
           a.home-logout.btn.btn-vision( href="/ideas" ) View All Ideas
-        li
-          a.home-logout.btn.btn-vision( href="/imagineer-picture/") Edit Profile
+        if user.nickname
+          li
+            a.home-logout.btn.btn-vision( href="/imagineer/" + user.nickname) My Profile
         li
           a.home-logout.btn.btn-vision( href="/about" ) About IdeaJam
         li
@@ -63,8 +64,9 @@
           a.home-logout.btn.btn-vision( href="/jam/dsw" ) DSW Jam
         li
           a.home-logout.btn.btn-vision( href="/ideas" ) View All Ideas
-        li
-          a.home-logout.btn.btn-vision( href="/imagineer-picture/") Edit Profile
+        if user.nickname
+          li
+            a.home-logout.btn.btn-vision( href="/imagineer/" + user.nickname) My Profile
         li
           a.home-logout.btn.btn-vision( href="/about" ) About IdeaJam
         li

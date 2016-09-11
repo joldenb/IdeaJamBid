@@ -2099,7 +2099,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
                     return true;
                   }
                 });
-                var problemAreas = componentsList.concat([
+                var problemAreas = [
                   "Area : Performability",
                   "Area : Affordability",
                   "Area : Featurability",
@@ -2115,7 +2115,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
                   "Area : Immaturity",
                   "Area : Danger",
                   "Area : Skills"
-                ]);
+                ];
 
                 var listOfProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
                 var typeOfProblem, rankingOfProblem;

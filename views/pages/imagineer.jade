@@ -34,6 +34,8 @@ html
               each aptitude in aptitudes
                 li(data-apt-id="#{aptitude.identifier}")
                   p #{aptitude.title}
+    if Object.keys(user).length != 0 && user.id == profileAccount.id
+      a.home-login.btn.btn-success.btn-lg( href="/imagineer-picture/") Edit My Profile
 
     .row.original-ideas-row
       .col-xs-12
