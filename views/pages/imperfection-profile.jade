@@ -56,6 +56,7 @@ html
                 | Add Picture
           .row.suggestion-form-buttons
             .col-xs-12
+              img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
               button.btn.btn-go.btn-lg.btn-block#submit(type='submit') Save
       .col-sm-6
         #existing-suggestion-list.edit-column
@@ -78,6 +79,8 @@ script(type="text/javascript").
       var tacticVal = $(".suggestion-tactics.selected input").val();
       var targetVal = $(".suggestion-targets.selected input").val();
       if(tacticVal && targetVal){
+        $(".ideajam-spinner").show();
+        $("#submit").hide();
         if( $("input[name='suggestionText']").val().split(" ").length < 4 && 
           $("input[name='suggestionText']").val().split(" ")[$("input[name='suggestionText']").val().split(" ").length -1] == ""){
           window.location.reload();
@@ -204,7 +207,7 @@ script(type="text/javascript").
 
     if($("#add-picture-button input").length > 0){
       $("#add-picture-button input").change(function(event) {
-        $("<img id='spinner' src='/spinner.gif'>").insertAfter("#formSuggestion");
+        $("<img id='spinner' src='/IdeaJam-logo.gif'>").insertAfter("#formSuggestion");
         const files = $("#add-picture-button input")[0].files;
         const file = files[0];
         const csrf = $("input[name='_csrf']").val();

@@ -1,10 +1,12 @@
 div.row.problem-row.suggestion-element.variant-suggestion-block(id="#{problem.identifier}")
   .col-sm-6.problem-row-padding.click-row
     if problem['text']
-      div.suggestionStyle #{problem.text}
-      <br>
 
-      div For: My Idea Name
+      if problem.ideaName
+        div.suggestionStyle The #[a(href='/ideas/'+problem.ideaName) #{problem.ideaName}] has an imperfection of #{problem.text}
+      else
+        div.suggestionStyle The imperfection of #{problem.text}
+      <br>
       span By: 
         if(problem.headshot && problem.headshot.url)
           a(href='/imagineer/' + problem.wholeCreator.nickname)
@@ -12,8 +14,8 @@ div.row.problem-row.suggestion-element.variant-suggestion-block(id="#{problem.id
             div(style="display: inline-block; border-radius: 15px; height: 15px; width: 15px; background-image : url('" + problem.headshot.url + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + problem.headshot.style)
         else
           a(href='/imagineer/' + problem.wholeCreator.nickname)
-            span.suggestionStyle #{problem.wholeCreator.nickname}           
-            img(src="/avatar.png" height="15" width="15")  
+            span.suggestionStyle #{problem.wholeCreator.nickname}
+            img(src="/avatar.png" height="15" width="15")
 
   .col-sm-3
     a.btn.btn-vision.btn-block.full-width-mobile.btn-lg(class="upvote-imperfection" id="upvote-#{problem.identifier}" data-problem-id="#{problem.id}") Upvote #{problem.upvotes.length || 0}
@@ -22,7 +24,6 @@ div.row.problem-row.suggestion-element.variant-suggestion-block(id="#{problem.id
     a.btn.btn-electric.btn-block.full-width-mobile.btn-lg(href='/imperfection-profile/' + "#{problem.identifier}") Solve This!
 
 script(type="text/javascript").
-
   $(".click-row").click(function(event){
     if ($.contains($("#!{problem.identifier}")[0], event.target)) {
       window.document.location = "/imperfection-profile/" + "!{problem.identifier}";    

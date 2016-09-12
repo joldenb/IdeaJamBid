@@ -49,7 +49,7 @@ html
               h4 You can only score someone else's ideas (right now)
         .row
           .col-xs-12
-            h4#componentsHeader Components 
+            h3#componentsHeader Components 
             if components.length > 0
               ul
                 each component,index in components
@@ -162,16 +162,16 @@ html
           .modal-title 
             h2 All Suggestions
         .modal-body
-          .row 
-            .col-xs-9
-              if components
-                ul
-                  each component,index in components
-                    if component['descriptions'].length > 0 && component['descriptions'][0].length > 0 && !component['text']
-                      li
-                        h4 #{component['descriptions'][0]}
+          if components
+            each component,index in components
+              if component['descriptions'].length > 0 && component['descriptions'][0].length > 0 && !component['text']
+                .row.view-all-suggestion-row
+                  .col-xs-7
+                    h4 #{component['descriptions'][0]}
+                  .col-xs-5
+                    a.btn.btn-vision.btn-block.idea-seed-suggestion-upvote.btn-lg(class="upvote-suggestion" id="upvote-#{component.identifier}" data-suggestion-id="#{component.id}") Upvote #{component.upvotes.length || 0}                         
         .modal-footer
-          button.btn.btn-info(data-dismiss="modal") Ok
+          button.btn.btn-industry.btn-lg.btn-block(data-dismiss="modal") Ok
 
   #whatsLeftModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -970,7 +970,23 @@ html
           
 
           return false;
-        });        
+        });
+
+        $(".upvote-suggestion").click(function(event){
+          event.preventDefault();
+
+          $.post('/upvote-suggestion', 
+          {
+            _csrf : $('[name="_csrf"]').val(),
+            suggestion : $(this)[0].dataset['suggestionId']
+          },
+          function(data, response) {
+            window.location.reload(true);
+          });
+
+          return false;
+        });   
+
 
     });
 

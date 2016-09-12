@@ -352,7 +352,9 @@ table.suggestion-table .col-md-4 {
 
 .footer.view-all-ideas .btn, .footer.inventor-block .btn {
   position: absolute;
-  top: 25%;
+  top: 16%;
+  width: 60%;
+  left:14%;
   transform: translate(10%,0%);
 }
 
@@ -947,7 +949,7 @@ button.suggestion-tactics, button.suggestion-targets {
   height: auto;
 }
 
-#spinner {
+#spinner, .ideajam-spinner {
   display: block;
   margin: 1em auto;
   height: 5em;
@@ -1391,6 +1393,15 @@ button.suggestion-tactics, button.suggestion-targets {
   padding-left: 0;
 }
 
+
+.idea-seed-suggestion-upvote {
+  margin-top:.5em;
+}
+
+.view-all-suggestion-row {
+  border-bottom: 1px solid lightgray;
+  padding :.5em 0;
+}
 
 @media screen and (min-width: 800px) {
   .container.image-upload .close-viability img {

@@ -2,16 +2,18 @@ div.row.suggestion-row.suggestion-element.variant-suggestion-block(id="#{suggest
 
   .col-sm-6.problem-row-padding
     if suggestion.document.descriptions[0]
-      div.suggestionStyle The solution of #{suggestion.document.descriptions[0]} 
+      if suggestion.ideaName
+        div.suggestionStyle The #[a(href='/ideas/'+suggestion.ideaName) #{suggestion.ideaName}] has been offered the solution of #{suggestion.document.descriptions[0]}
+      else
+        div.suggestionStyle The solution of #{suggestion.document.descriptions[0]}
       <br>
       if suggestion.document.ideaSeed && suggestion.document.identifier
         a(href='/component-profile/'+ suggestion.document.identifier)
 
-      div For: My Idea Name
       span By: 
         a(href='/imagineer/' + suggestion.creatorNickname)
-          span.suggestionStyle #{suggestion.creatorNickname} 
-          img(src="/avatar.png" height="15" width="15")        
+          span.suggestionStyle #{suggestion.creatorNickname}
+          img(src="/avatar.png" height="15" width="15")
 
   .col-sm-6.upvote
     a.btn.btn-vision.btn-block.full-width-mobile.btn-lg(class="upvote-suggestion" id="upvote-#{suggestion.document.identifier}" data-suggestion-id="#{suggestion.document.id}") Upvote #{suggestion.document.upvotes.length || 0} 

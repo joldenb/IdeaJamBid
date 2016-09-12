@@ -409,6 +409,7 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
               // into the 'ideas' variable in order for the rest of the code to
               // build the blocks to display on the page
               var topIdeas = Array(6);
+              var allIdeaObjects = ideas; //used a little later to figure out which suggestions and imperfections go together
               _.each(topIdeas, function(element, index, list){
                 var existingIdeaIds = _.map(topIdeas, function(idea){
                   if (idea && idea['id']){
@@ -591,6 +592,13 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                               
                               wholeSuggestionBlockInfo[suggestion.identifier] = {'document' : suggestion};
                               
+                              //find which idea name goes to which suggestion
+                              _.each(allIdeaObjects, function(ideaObject, ideaIndex){
+                                if ( ideaObject.id.toString() == suggestion.ideaSeed.toString() ){
+                                  wholeSuggestionBlockInfo[suggestion.identifier]['ideaName'] = ideaObject.name;
+                                }
+                              });
+
                               _.each(suggestors, function(suggestor, suggIndex){
                                 if(suggestor.username == suggestion.creator){
                                   //now we've found the right suggestor to go with the suggestion, so we put the 
@@ -646,6 +654,13 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                                     
                                     wholeImperfectionBlockInfo[imperfection.identifier] = imperfection;
                                     
+                                    //find which idea name goes to which suggestion
+                                    _.each(allIdeaObjects, function(ideaObject, ideaIndex){
+                                      if ( ideaObject.id.toString() == imperfection.ideaSeed.toString() ){
+                                        wholeImperfectionBlockInfo[imperfection.identifier]['ideaName'] = ideaObject.name;
+                                      }
+                                    });
+                                                                        
                                     _.each(imperfectors, function(imperfector, impIndex){
                                       if(imperfector.username == imperfection.creator){
                                         //now we've found the right suggestor to go with the suggestion, so we put the 
