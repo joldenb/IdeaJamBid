@@ -1210,6 +1210,10 @@ button.suggestion-tactics, button.suggestion-targets {
   color: white;
 }
 
+.btn-go:active {
+  background-color: #007338; 
+}
+
 .btn-vision {
   background-color: #AFDDD1; 
   color: #414142;
