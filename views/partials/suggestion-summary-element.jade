@@ -16,4 +16,5 @@ div.row.suggestion-row.suggestion-element.variant-suggestion-block(id="#{suggest
           img(src="/avatar.png" height="15" width="15")
 
   .col-sm-6.upvote
+    img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
     a.btn.btn-vision.btn-block.full-width-mobile.btn-lg(class="upvote-suggestion" id="upvote-#{suggestion.document.identifier}" data-suggestion-id="#{suggestion.document.id}") Upvote #{suggestion.document.upvotes.length || 0} 

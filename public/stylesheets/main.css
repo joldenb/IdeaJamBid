@@ -132,7 +132,6 @@ div#begin-info-right button {
 
 .idea-summary ul {
   list-style-type: none;
-  padding: 0;
 }
 
 .app-strength-bar {
@@ -953,14 +952,27 @@ button.suggestion-tactics, button.suggestion-targets {
   height: auto;
 }
 
-#spinner, .ideajam-spinner {
+.ideajam-spinner {
+  display: block;
+  margin:0 auto;
+  height:3em;
+}
+
+.suggestion-row .ideajam-spinner, .problem-row .ideajam-spinner {
+  display: block;
+  margin: 2em auto;
+  height: 3em;
+}
+
+#spinner, .view-all-ideas-block .ideajam-spinner {
   display: block;
   margin: 1em auto;
-  height: 5em;
+  height: 3em;
 }
 
 #existing-suggestion-list ul {
   list-style-type: none;
+  list-style-image: none;
   padding-left: 0;
 }
 

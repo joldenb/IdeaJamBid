@@ -79,7 +79,7 @@ script(type="text/javascript").
       var tacticVal = $(".suggestion-tactics.selected input").val();
       var targetVal = $(".suggestion-targets.selected input").val();
       if(tacticVal && targetVal){
-        $(".ideajam-spinner").show();
+        $("form .ideajam-spinner").show();
         $("#submit").hide();
         if( $("input[name='suggestionText']").val().split(" ").length < 4 && 
           $("input[name='suggestionText']").val().split(" ")[$("input[name='suggestionText']").val().split(" ").length -1] == ""){
@@ -282,6 +282,8 @@ script(type="text/javascript").
 
 
     $(".upvote-suggestion").click(function(event){
+      $(this).hide();
+      $(this).prev().show();
       event.preventDefault();
 
       $.post('/upvote-suggestion', 

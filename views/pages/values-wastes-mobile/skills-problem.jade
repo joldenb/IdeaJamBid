@@ -35,6 +35,7 @@ html
                     a.btn.btn-electric.problem-solve-button(href="/imperfection-profile/" + problem.identifier) Solve this!
           else
             p <i>None yet, enter the first one!</i>
+          img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
           .save-buttons
             button.btn.btn-go.btn-lg Save
 
@@ -64,3 +65,8 @@ html
       }
     }, false);
 
+
+    $(".save-buttons").click(function(event){
+      $(this).hide();
+      $(this).prev().show();
+    })

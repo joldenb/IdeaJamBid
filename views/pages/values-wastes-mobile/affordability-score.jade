@@ -28,6 +28,7 @@ html
               span.yes-way Economical
             #affordLabelOne.sliderLabel
             #sliderOne.value-score
+          img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
           .save-buttons
             .row
               a.btn.btn-industry.btn-lg Describe an Imperfection
@@ -131,3 +132,7 @@ html
       window.location = '/view-all-viabilities';
     })
 
+    $(".save-buttons").click(function(event){
+      $(this).hide();
+      $(this).prev().show();
+    })

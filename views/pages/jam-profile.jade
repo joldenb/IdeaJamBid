@@ -214,7 +214,7 @@ html
   include ../partials/js-includes.jade
   script(src='/exif.js')
   script(type="text/javascript").
-    $(window).load(function(){
+    $(document).ready(function(){
       if("!{dsw}" == "true"){
         $('#loginModal').modal('show');
       }
@@ -312,6 +312,8 @@ html
     $(document).ready(function(){
 
       $(".upvote-imperfection").click(function(event){  
+        $(this).hide();
+        $(this).prev().show();
         console.log("imperfection");    
         event.preventDefault();
 
@@ -328,6 +330,8 @@ html
       });
         
       $(".upvote-suggestion").click(function(event){
+        $(this).hide();
+        $(this).prev().show();
         event.preventDefault();
 
         $.post('/upvote-suggestion', 
@@ -342,4 +346,13 @@ html
         return false;
       });   
 
+      $(".right-jam-col a").click(function(event){
+        $(this).hide();
+        $(this).prev().show();
+      });
+
+      $(".footer.view-all-ideas a").click(function(event){
+        $(this).hide();
+        $(this).prev().show();
+      })
     });

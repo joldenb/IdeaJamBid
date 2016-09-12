@@ -29,9 +29,11 @@
       p.view-all-idea-description #{problemCategory}
   .footer.view-all-ideas
     if ideaLink
+      img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
       a(href=ideaLink)
         .btn.btn-go
           h4 Score This Idea
     else
+      img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
       .btn.btn-go 
         h4 Score This Idea

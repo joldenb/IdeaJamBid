@@ -18,9 +18,11 @@ div.row.problem-row.suggestion-element.variant-suggestion-block(id="#{problem.id
             img(src="/avatar.png" height="15" width="15")
 
   .col-sm-3
+    img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
     a.btn.btn-vision.btn-block.full-width-mobile.btn-lg(class="upvote-imperfection" id="upvote-#{problem.identifier}" data-problem-id="#{problem.id}") Upvote #{problem.upvotes.length || 0}
 
   .col-sm-3.right-jam-col
+    img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
     a.btn.btn-electric.btn-block.full-width-mobile.btn-lg(href='/imperfection-profile/' + "#{problem.identifier}") Solve This!
 
 script(type="text/javascript").

@@ -43,6 +43,7 @@ html
             .row.viability-scores-and-problems
               .row.viability-scores-and-problems
                 .col-xs-12.viability-score
+                  img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
                   a.btn.btn-go.btn-lg(href="/" + viability.name + "-score")
                     p Score
 
@@ -104,4 +105,10 @@ html
         $(".already-scored").show(400);
         $(".scored-viabilities").show(400);
       })
+
+      $(".viability-score a").click(function(event){
+        $(this).hide();
+        $(this).prev().show();      
+      })
+
     });

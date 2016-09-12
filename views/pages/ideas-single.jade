@@ -40,8 +40,10 @@ html
                     h4 Your current score for #{idea.name}: 
                   .col-xs-3
                     h3.average-score-number #{averageScore}
+                img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")                
                 a.btn(type="button"  class="btn btn-go" href="/view-all-viabilities") Keep Scoring
               else
+                img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")                
                 a.btn(type="button"  class="btn btn-go" href="/view-all-viabilities") Score Now
               br
           else
@@ -55,7 +57,7 @@ html
                 each component,index in components
                   if component['text']
                     li 
-                      p #{component['number']} : #{component['text']}
+                      h4 #{component['text']}
             else
               <i>No components yet</i>
             if inventorName == user.username
@@ -168,6 +170,7 @@ html
                 .row.view-all-suggestion-row
                   .col-xs-12
                     h4 #{component['descriptions'][0]}
+                    img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
                     a.btn.btn-vision.btn-block.idea-seed-suggestion-upvote.btn-lg(class="upvote-suggestion" id="upvote-#{component.identifier}" data-suggestion-id="#{component.id}") Upvote #{component.upvotes.length || 0}                         
         .modal-footer.view-all-component-footer
           button.btn.btn-industry.btn-lg.btn-block(data-dismiss="modal") Done
@@ -954,8 +957,19 @@ html
           });
         });
 
+        $(".right-jam-col a").click(function(event){
+          $(this).hide();
+          $(this).prev().show();
+        });
+
+        $("#idea-summary-waste-values a").click(function(event){
+          $(this).hide();
+          $(this).prev().show();
+        })
 
         $(".upvote-imperfection").click(function(event){
+          $(this).hide();
+          $(this).prev().show();
           event.preventDefault();
 
             $.post('/upvote-imperfection', 
@@ -972,6 +986,8 @@ html
         });
 
         $(".upvote-suggestion").click(function(event){
+          $(this).hide();
+          $(this).prev().show();
           event.preventDefault();
 
           $.post('/upvote-suggestion', 

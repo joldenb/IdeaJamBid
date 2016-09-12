@@ -130,3 +130,9 @@ html
       event.preventDefault();
       window.location = '/view-all-viabilities';
     })
+
+    $(".save-buttons").click(function(event){
+      $(this).hide();
+      $(this).prev().show();
+    })
+    
