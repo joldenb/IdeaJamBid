@@ -6,7 +6,7 @@ html
   .header.navbar.navbar-default
     include ../partials/header.jade
 
-  .container
+  .container.imperfection-summary-container
     .row.imperfection-summary
       h1 Improve
         a( href="/ideas/#{idea.name}")  #{idea.name}
@@ -48,16 +48,17 @@ html
             input.form-control.suggestion-input(type="text", name="suggestionText", value='By ' disabled)
             p.charactersRemaining
           .row.suggestion-form-buttons
-            .col-xs-6
-              button#reset-suggestion-form.btn.btn-industry.btn-lg.btn-block(type="button") Start Over
-            .col-xs-6.add-picture-btn
-              label#add-picture-button.btn.btn-vision.btn-lg.btn-block
-                input(type="file" name="picture" style="display: none;")
-                | Add Picture
-          .row.suggestion-form-buttons
             .col-xs-12
               img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
               button.btn.btn-go.btn-lg.btn-block#submit(type='submit') Save
+          //- .row.suggestion-form-buttons
+          //-   .col-xs-12.add-picture-btn
+          //-     label#add-picture-button.btn.btn-vision.btn-lg.btn-block
+          //-       input(type="file" name="picture" style="display: none;")
+          //-       | Add Picture
+          .row.suggestion-form-buttons
+            .col-xs-12
+              button#reset-suggestion-form.btn.btn-industry.btn-lg.btn-block(type="button") Start Over
       .col-sm-6
         #existing-suggestion-list.edit-column
           h3 Other Suggestions
