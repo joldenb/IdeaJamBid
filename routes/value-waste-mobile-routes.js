@@ -282,11 +282,6 @@ var postViabilityFormInfo = function postViabilityFormInfo(req,res, sliderValue,
 
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
     
-    // if the persons done entering scores, route them to the idea page and get out of the viability score pages
-    if(req.body.nextLink == "/ideas/"){
-      res.redirect("/ideas/"+ thisIdea.name);
-      return;
-    }
 
     // this is if the inventor is the same as the session user
     // enters info into the ideaSeed model vs the ideaReview model
@@ -343,7 +338,13 @@ var postViabilityFormInfo = function postViabilityFormInfo(req,res, sliderValue,
         IdeaReview.findOne({_id : req.session.ideaReview._id}, function(err, review){
           review[reviewScore] = req.body[sliderValue];
           review.save(function(err, raw){
-            res.redirect(req.body.nextLink);
+            // if the persons done entering scores, route them to the idea page and get out of the viability score pages
+            if(req.body.nextLink == "/ideas/"){
+              res.redirect("/ideas/"+ thisIdea.name);
+              return;
+            } else {
+              res.redirect(req.body.nextLink);
+            }
           });
         });
       }
@@ -361,7 +362,13 @@ var postViabilityFormInfo = function postViabilityFormInfo(req,res, sliderValue,
           if(problems.length > 0){
             problems[0].text = req.body[reviewProblem];
             problems[0].save(function (err, raw) {
-              res.redirect(req.body.nextLink);
+              // if the persons done entering scores, route them to the idea page and get out of the viability score pages
+              if(req.body.nextLink == "/ideas/"){
+                res.redirect("/ideas/"+ thisIdea.name);
+                return;
+              } else {
+                res.redirect(req.body.nextLink);
+              }
             });
           } else {
             var newProblem = {
@@ -375,7 +382,13 @@ var postViabilityFormInfo = function postViabilityFormInfo(req,res, sliderValue,
               function (err, problem) {
                 if (err) return handleError(err);
                 thisIdea.save(function (err, raw) {
+                  // if the persons done entering scores, route them to the idea page and get out of the viability score pages
+                  if(req.body.nextLink == "/ideas/"){
+                    res.redirect("/ideas/"+ thisIdea.name);
+                    return;
+                  } else {
                     res.redirect(req.body.nextLink);
+                  }
                 });
               
             }); //end of problem create

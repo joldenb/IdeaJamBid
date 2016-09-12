@@ -3,7 +3,7 @@ div.row.problem-row.suggestion-element.variant-suggestion-block(id="#{problem.id
     if problem['text']
 
       if problem.ideaName
-        div.suggestionStyle The #[a(href='/ideas/'+problem.ideaName) #{problem.ideaName}] has an imperfection of #{problem.text}
+        div.suggestionStyle The #[a(href='/ideas/'+problem.ideaName) #{problem.ideaName}] imperfection of #{problem.text}
       else
         div.suggestionStyle The imperfection of #{problem.text}
       <br>

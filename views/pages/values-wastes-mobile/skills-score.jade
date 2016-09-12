@@ -18,7 +18,7 @@ html
       .row
         form.mobile-viability-form(role='form', id="formSkills" action="/skills-mobile", method="post",  data-idea-doc=idea)
           h4.viability-question.mobile-viability-help-text
-            | Will the #{idea.name} require many specific skills to solve the problem of #{idea.problem}?
+            | Will #{idea.name} require many specific skills to solve the problem of #{idea.problem}?
           br
           input(type="hidden", name="nextLink", value="#{nextLink}")
           input(type="hidden", name="_csrf", value="#{csrfToken}")
@@ -31,12 +31,17 @@ html
           .save-buttons
             .row
               a.btn.btn-industry.btn-lg Describe an Imperfection
-            .row
+            .row.done-button(style="display:none;")
+              .col-xs-12
+                button.btn.btn-go.btn-lg(type="button") Done!
+            .row.done-message(style="display:none;")
+              h4 Thanks for your feedback! You can continue to score more categories or go back to #{idea.name}'s page:
+            .row.scoring-buttons
               .col-xs-6
                 button.btn.btn-vision.btn-lg #{bailButtonText}
               .col-xs-6
                 button.btn.btn-go.btn-lg Skip
-
+.scoring-buttons 
   
   include ../../partials/js-includes.jade
   script(type="text/javascript").
@@ -56,22 +61,33 @@ html
       step: 1,
       slide: function( event, ui ) {
           valueEntered = true;
-          $(".save-buttons .btn-go").text("#{nextButtonText}");
+          $(".save-buttons .scoring-buttons .btn-go").text("#{nextButtonText}");
           $(".sliderLabel").text(labelArr[ui.value]);
           $(".sliderLabel").css("margin-left", (ui.value +2-min)/(max-min)*100+"%");
           $(".sliderLabel").css("left", "-50px");
       }
     });
+
+    if( "#{nextButtonText}" == "Done!" ){
+      $(".row.scoring-buttons").hide();
+      $(".row.done-button").show();
+
+      $(".row.done-button .btn-go").click(function(event){
+        $(".save-buttons .scoring-buttons .btn-go").text("Yes I'm done.");
+        $(".row.done-message").show(300);
+        $(".row.scoring-buttons").show(300);
+      });
+    }
     
     if('#{currentReview.skillsOne}' != ""){
-      $(".save-buttons .btn-go").text("#{nextButtonText}");
+      $(".save-buttons .scoring-buttons .btn-go").text("#{nextButtonText}");
       $(".sliderLabel").text(labelArr[initialValue]);
       $(".sliderLabel" ).css("margin-left", (initialValue  -1 + 2)/(max-min)*100+"%");
       $(".sliderLabel").css("left", "-50px");
     }
     $('#slider').draggable();
 
-    $("button.btn-go").click(function(event){
+    $(".scoring-buttons button.btn-go").click(function(event){
       if(valueEntered){
         var sliderOneValue = $("#slider").slider("value");
         var inputOne = $("<input>")
@@ -110,7 +126,7 @@ html
       }
     });
 
-    $(".btn.btn-vision").click(function(event){
+    $(".scoring-buttons .btn.btn-vision").click(function(event){
       event.preventDefault();
       window.location = '/view-all-viabilities';
     })
