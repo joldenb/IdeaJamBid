@@ -770,60 +770,67 @@ router.get('/view-all-jam-suggestions/:networkName', csrfProtection, function(re
         var suggestions = [];
 
         Component.find({"ideaSeed" : { $in : allIdeas}}).sort({_id:-1}).exec(function(err, components) {
+          IdeaSeed.find({"_id" : {$in : allIdeas}}, function(err, allIdeaObjects){
+            var suggestions = components;
+            var suggestionNameList = _.map(suggestions, function(eachOne) { return eachOne.creator;})
 
-          var suggestions = components;
-          var suggestionNameList = _.map(suggestions, function(eachOne) { return eachOne.creator;})
-
-          Account.find({"username" : {$in : suggestionNameList}}, function(err, suggestors){
-            var suggestorHeadshotIdList = _.map(suggestors, function(eachOne) { 
-              if(eachOne.headshots){
-                return eachOne.headshots[0];
-              } else {
-                return null;
-              }
-            });
-            suggestorHeadshotIdList = _.compact(suggestorHeadshotIdList);
-
-            IdeaImage.find({"_id" : {$in : suggestorHeadshotIdList}}, function(err, images){
-
-              // Figure out which account and headshot go with with suggestion
-              var wholeSuggestionBlockInfo = {};
-              _.each(suggestions, function(suggestion, index){
-                
-                wholeSuggestionBlockInfo[suggestion.identifier] = {'document' : suggestion};
-                
-                _.each(suggestors, function(suggestor, suggIndex){
-                  if(suggestor.username == suggestion.creator){
-                    //now we've found the right suggestor to go with the suggestion, so we put the 
-                    // nickname and suggestor profile picture into the whole block object;
-                    wholeSuggestionBlockInfo[suggestion.identifier]['creatorNickname'] = suggestor.nickname;
-                    _.each(images, function(image, imageIndex){
-                      if(suggestor.headshots && image.id == suggestor.headshots[0]){
-                        wholeSuggestionBlockInfo[suggestion.identifier]['creatorProfilePic'] = image.amazonURL;
-                        var imageStyle;
-                        imageStyle = ideaSeedHelpers.getImageOrientation(image["orientation"]);
-                        wholeSuggestionBlockInfo[suggestion.identifier]['profilePicOrientation'] = imageStyle;
-                      }
-                    })
-                  }
-                })
+            Account.find({"username" : {$in : suggestionNameList}}, function(err, suggestors){
+              var suggestorHeadshotIdList = _.map(suggestors, function(eachOne) { 
+                if(eachOne.headshots){
+                  return eachOne.headshots[0];
+                } else {
+                  return null;
+                }
               });
+              suggestorHeadshotIdList = _.compact(suggestorHeadshotIdList);
 
-              // Now, wholeSuggestionBlockInfo is an object with suggestion identifier keys and values
-              // that hold suggestion objects as well as the suggestor nicknames and profile pictures
+              IdeaImage.find({"_id" : {$in : suggestorHeadshotIdList}}, function(err, images){
 
-              return res.render('pages/view-all-jam-suggestions', {
-                csrfToken: req.csrfToken(),
-                user : req.user || {},
-                dsw : dsw,
-                wholeSuggestionBlockInfo : wholeSuggestionBlockInfo,
-                networkName : network.name,
-                networkImage : network.profilePic,
-                networkDescr : network.description,
-                suggestions: suggestions
+                // Figure out which account and headshot go with with suggestion
+                var wholeSuggestionBlockInfo = {};
+                _.each(suggestions, function(suggestion, index){
+                  
+                  wholeSuggestionBlockInfo[suggestion.identifier] = {'document' : suggestion};
+                  
+                  //find which idea name goes to which suggestion
+                  _.each(allIdeaObjects, function(ideaObject, ideaIndex){
+                    if ( ideaObject.id.toString() == suggestion.ideaSeed.toString() ){
+                      wholeSuggestionBlockInfo[suggestion.identifier]['ideaName'] = ideaObject.name;
+                    }
+                  });
+                  _.each(suggestors, function(suggestor, suggIndex){
+                    if(suggestor.username == suggestion.creator){
+                      //now we've found the right suggestor to go with the suggestion, so we put the 
+                      // nickname and suggestor profile picture into the whole block object;
+                      wholeSuggestionBlockInfo[suggestion.identifier]['creatorNickname'] = suggestor.nickname;
+                      _.each(images, function(image, imageIndex){
+                        if(suggestor.headshots && image.id == suggestor.headshots[0]){
+                          wholeSuggestionBlockInfo[suggestion.identifier]['creatorProfilePic'] = image.amazonURL;
+                          var imageStyle;
+                          imageStyle = ideaSeedHelpers.getImageOrientation(image["orientation"]);
+                          wholeSuggestionBlockInfo[suggestion.identifier]['profilePicOrientation'] = imageStyle;
+                        }
+                      })
+                    }
+                  })
+                });
+
+                // Now, wholeSuggestionBlockInfo is an object with suggestion identifier keys and values
+                // that hold suggestion objects as well as the suggestor nicknames and profile pictures
+
+                return res.render('pages/view-all-jam-suggestions', {
+                  csrfToken: req.csrfToken(),
+                  user : req.user || {},
+                  dsw : dsw,
+                  wholeSuggestionBlockInfo : wholeSuggestionBlockInfo,
+                  networkName : network.name,
+                  networkImage : network.profilePic,
+                  networkDescr : network.description,
+                  suggestions: suggestions
+                });
               });
             });
-          });
+          }); // end of idea seed query
         });
       });
     });
