@@ -27,9 +27,15 @@ Path C - "I have a suggestion for your imperfection and it may also help your di
 Path D - "The scoring path with a boring name"
 -----
 1.  Click on an idea
-2.  Click score viability categories button
-3.  Drill down and enter some text [***TEXT INPUT***]
-4.  To be continued
+2.  Click score viability categories / keep scoring button
+3.  Select a value on the slider and click continue
+4.  Select a value on the slider and click describe an imperfection
+5.  Drill down and enter some text [***TEXT INPUT***]
+6.  Click the skip button to move on to the next viability
+7.  Enter your third score
+8.  Click the i icon on the next viability for help
+9.  Score your fourth viability
+10. Click done
 
 Path E - "Do you even edit your brofile bro?"
 -----
