@@ -4,6 +4,10 @@
 		width: 90%;
 	}
 
+	.imperfection-summary .container {
+		width:100%;
+	}
+
 	.existingIdeas {
 	  border: none;
 	}

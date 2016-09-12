@@ -1021,6 +1021,10 @@ button.suggestion-tactics, button.suggestion-targets {
   list-style: none;
 }
 
+#viewAllImperfections .idea-summary-problem-list {
+  list-style-image: none;
+}
+
 .mobile-only {
   display:none;
 }
