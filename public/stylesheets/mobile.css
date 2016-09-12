@@ -255,12 +255,17 @@
 
   .idea-summary .problem-row {
     width: 100%;
-    margin: 0 auto;  	
+    margin: 1em auto;  	
   }
 
   #problemModalButton {
   	width: 100%;
   }
+
+	.view-all-component-footer {
+	  padding-bottom: 5em;
+	}
+
 
 }
 

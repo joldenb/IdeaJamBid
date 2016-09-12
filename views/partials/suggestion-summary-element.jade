@@ -3,7 +3,7 @@ div.row.suggestion-row.suggestion-element.variant-suggestion-block(id="#{suggest
   .col-sm-6.problem-row-padding
     if suggestion.document.descriptions[0]
       if suggestion.ideaName
-        div.suggestionStyle The #[a(href='/ideas/'+suggestion.ideaName) #{suggestion.ideaName}] has been offered the solution of #{suggestion.document.descriptions[0]}
+        div.suggestionStyle The #[a(href='/ideas/'+suggestion.ideaName) #{suggestion.ideaName}] solution of #{suggestion.document.descriptions[0]}
       else
         div.suggestionStyle The solution of #{suggestion.document.descriptions[0]}
       <br>
