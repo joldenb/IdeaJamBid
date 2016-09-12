@@ -28,7 +28,6 @@ html
               span.yes-way Economical
             #affordLabelOne.sliderLabel
             #sliderOne.value-score
-          img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
           .save-buttons
             .row
               a.btn.btn-industry.btn-lg Describe an Imperfection
@@ -39,8 +38,10 @@ html
               h4 Thanks for your feedback! You can continue to score more categories or go back to #{idea.name}'s page:
             .row.scoring-buttons
               .col-xs-6
+                img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
                 button.btn.btn-vision.btn-lg #{bailButtonText}
               .col-xs-6
+                img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
                 button.btn.btn-go.btn-lg Skip
 
   
@@ -132,7 +133,7 @@ html
       window.location = '/view-all-viabilities';
     })
 
-    $(".save-buttons").click(function(event){
+    $(".save-buttons .scoring-buttons button").click(function(event){
       $(this).hide();
       $(this).prev().show();
     })

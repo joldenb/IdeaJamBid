@@ -330,7 +330,15 @@ var postViabilityFormInfo = function postViabilityFormInfo(req,res, sliderValue,
       });
     } else {
       if(!req.body[sliderValue] && !req.body[reviewProblem]){
-        res.redirect(req.body.nextLink);
+
+        if(req.body.nextLink == '/ideas/'){
+          res.redirect("/ideas/"+ thisIdea.name);
+          return;
+        } else {
+          res.redirect(req.body.nextLink);
+          return;
+        }
+
       }
 
       // if there's a slider value
