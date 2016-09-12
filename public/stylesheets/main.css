@@ -119,7 +119,6 @@ h4.idea-text-name {
 .aptitudeList {
   text-align:left;
   vertical-align: top;
-  display:inline-block;
 }
 
 #contributor-idea-summary-aptitudes, #idea-summary-aptitudes {
@@ -879,6 +878,11 @@ button.btn.btn-info.modal-view-all {
   margin: 0;
 }
 
+.row.edit-profile-view-profile {
+  margin-top:2em;
+  padding-bottom : 5em;
+}
+
 #profile-edit-bottom-row.row {
   margin: 0;
 }
@@ -1364,6 +1368,7 @@ button.suggestion-tactics, button.suggestion-targets {
 .view-all-images-btn {
   margin-top:1em;
 }
+
 
 
 #suggestionSection .btn{

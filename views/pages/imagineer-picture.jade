@@ -13,10 +13,17 @@ html
           each imageURL, index in imageURLs
             if imageURL[0] == profilePictureFilename
               .image-summary-image.img-responsive
-                div(id='#{imageURL[0]}' style="height: 300px; max-width: 400px; background-image : url('" + '#{imageURL[1] || "/avatar.png"}' + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + "#{imageURL[2]}")
+                div(id='#{imageURL[0]}' style="height: 300px; background-image : url('" + '#{imageURL[1] || "/avatar.png"}' + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + "#{imageURL[2]}")
+        else
+          a(href="/image-upload")
+            .upload-image-div
+              span.glyphicon.glyphicon-cloud-upload
+
       form(role='form', id="headshotForm" action="/add-profile-headshot", method="post", data-idea-doc=idea, enctype="multipart/form-data")
         .form-group
-          input#headshotButton(type="file", name="picture")
+          label.btn.btn-block.btn-file.btn-go#headshotButton
+            h4 Upload Profile Image
+            input(type="file", name="picture" style="display:none;")
           input(type="hidden", name="_csrf", value="#{csrfToken}")
           br
 
@@ -26,29 +33,29 @@ html
           if schoolNetwork
             .profileHeader School :  #[a(class="network-link") #{schoolNetwork}]
             if Object.keys(user).length != 0
-              a(class="btn btn-go secondary-btn" href="#" id="schoolModalButton" data-toggle="modal" data-target="#schoolModal")
+              a(class="btn btn-industry secondary-btn" href="#" id="schoolModalButton" data-toggle="modal" data-target="#schoolModal")
                 span.glyphicon.glyphicon-pencil
           else
             if Object.keys(user).length != 0
-              button(type="button" id="schoolModalButton" class="btn btn-go" data-toggle="modal" data-target="#schoolModal") Add your School
+              button(type="button" id="schoolModalButton" class="btn btn-industry" data-toggle="modal" data-target="#schoolModal") Add your School
         .profileCompany
           if companyNetwork
             .profileHeader Company :  #[a(class="network-link") #{companyNetwork}]
             if Object.keys(user).length != 0
-              a(class="btn btn-go secondary-btn" href="#" id="companyModalButton" data-toggle="modal" data-target="#companyModal")
+              a(class="btn btn-industry secondary-btn" href="#" id="companyModalButton" data-toggle="modal" data-target="#companyModal")
                 span.glyphicon.glyphicon-pencil
           else
             if Object.keys(user).length != 0
-              button(type="button" id="companyModalButton" class="btn btn-go" data-toggle="modal" data-target="#companyModal") Add your Company
+              button(type="button" id="companyModalButton" class="btn btn-industry" data-toggle="modal" data-target="#companyModal") Add your Company
         .profileLocation
           if locationNetwork
             .profileHeader Location : #[a(class="network-link") #{locationNetwork}]
             if Object.keys(user).length != 0
-              a(class="btn btn-go secondary-btn" id="locationModalButton" data-toggle="modal" data-target="#locationModal")
+              a(class="btn btn-industry secondary-btn" id="locationModalButton" data-toggle="modal" data-target="#locationModal")
                 span.glyphicon.glyphicon-pencil
           else
             if Object.keys(user).length != 0
-              button(type="button" id="locationModalButton" class="btn btn-go" data-toggle="modal" data-target="#locationModal") Add your Location
+              button(type="button" id="locationModalButton" class="btn btn-industry" data-toggle="modal" data-target="#locationModal") Add your Location
       div#begin-info-aptitudes.aptitudeList
         .profileAptitudes
           if aptitudes
@@ -65,8 +72,12 @@ html
                 input(type="hidden", name="_csrf", value="#{csrfToken}")
               .aptitude-footer
                 button.btn.btn-go#aptitudeSubmit(type='submit') Save
+  .row.edit-profile-view-profile
+    .col-md-4.col-xs-1
+    .col-md-4.col-xs-10
       .view-profile-btn
         a.home-logout.btn.btn-go.btn-lg.btn-block( href="/imagineer/" + user.nickname) View Profile
+    .col-md-4.col-xs-1
           
   #schoolModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -214,10 +225,10 @@ html
       }
     });
 
-    if(document.getElementById("headshotButton")){
-      document.getElementById("headshotButton").onchange = function(event) {
+    if($("#headshotButton [type='file']").length > 0){
+      $("#headshotButton [type='file']")[0].onchange = function(event) {
         $("<img id='spinner' src='/spinner.gif'>").insertAfter("#headshotForm");
-        const files = document.getElementById('headshotButton').files;
+        const files = $("#headshotButton [type='file']")[0].files;
         const file = files[0];
         if(file == null){
           return alert('No file selected.');

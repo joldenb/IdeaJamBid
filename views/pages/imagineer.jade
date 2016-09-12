@@ -8,16 +8,14 @@ html
       include ../partials/header.jade
   div.container
     .row
-      .col-sm-3
+      .col-md-6
         if accountHeadshot
           div(class="imagineerProfilePic" style="height: 300px; max-width: 400px; background-image : url('" + accountHeadshot.amazonURL + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + accountHeadshot.style)
           
         else
           img(src="/avatar.png" height="100" width="100")
-      .col-sm-5
         h2 #{profileAccount.nickname}
         h4 Einstein Points #{profileAccount.einsteinPoints}
-      .col-sm-4
         .profileSchool
           if schoolNetwork
             h4 School  #[a(class="network-link") #{schoolNetwork}]
@@ -34,11 +32,11 @@ html
               each aptitude in aptitudes
                 li(data-apt-id="#{aptitude.identifier}")
                   p #{aptitude.title}
-    if Object.keys(user).length != 0 && user.id == profileAccount.id
-      a.home-login.btn.btn-success.btn-lg( href="/imagineer-picture/") Edit My Profile
+        if Object.keys(user).length != 0 && user.id == profileAccount.id
+          a.home-login.btn.btn-success.btn-lg.btn-block( href="/imagineer-picture/") Edit My Profile
 
-    .row.original-ideas-row
-      .col-xs-12
+    
+      .col-md-6
         h3 Original Ideas
         if accountIdeaSeeds.length > 0
           ul
@@ -54,8 +52,6 @@ html
         if Object.keys(user).length != 0 && user.id == profileAccount.id
           a.home-login.btn.btn-success.btn-lg( href="/introduce-idea" ) Begin a New Idea
 
-    .row.contributions-row
-      .col-xs-12
         h3 Contributions
         if reviewNames.length > 0
           ul
