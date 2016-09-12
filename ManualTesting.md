@@ -28,7 +28,8 @@ Path D - "The scoring path with a boring name"
 -----
 1.  Click on an idea
 2.  Click score viability categories button
-3.  More coming soon
+3.  Drill down and enter some text [***TEXT INPUT***]
+4.  To be continued
 
 Path E - "Do you even edit your brofile bro?"
 -----
@@ -37,3 +38,7 @@ Path E - "Do you even edit your brofile bro?"
 3.  Add your school, company, and location
 4.  Add an aptitude [***TEXT INPUT***]
 5.  View your completed profile
+
+Path F - "Begin a new idea from profile page"
+-----
+1.  Enter malicious [***TEXT INPUT***]
