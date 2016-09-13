@@ -64,7 +64,7 @@ html
             if inventorName == user.username
               button(type="button" id="componentModalButton"  class="btn btn-go btn-block btn-lg" data-toggle="modal" data-target="#addComponentModal") Add Component
 
-          .col-xs-12
+          .col-xs-12(style="display:none;")
             #idea-summary-aptitudes.aptitudeList
               .profileAptitudes
                 if aptitudes && aptitudes.length > 0 && idea.name
