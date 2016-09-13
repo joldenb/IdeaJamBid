@@ -275,5 +275,9 @@
 		padding-left: 15px;
 	}
 
+	.container.network-profile.jam-page {
+		padding-bottom: 8em;
+	}
+
 }
 
