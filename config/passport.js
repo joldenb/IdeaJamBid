@@ -37,8 +37,8 @@ function(token, refreshToken, profile, done) {
                 var lookupNickname = "";
                 if(profile.displayName){
                     lookupNickname = profile.displayName;
-                } else if (profile.name && profilen.name.givenName && profile.name.familyName){
-                    lookupNickname = profilen.name.givenName + " " + profile.name.familyName;
+                } else if (profile.name && profile.name.givenName && profile.name.familyName){
+                    lookupNickname = profile.name.givenName + " " + profile.name.familyName;
                 } else {
                     lookupNickname = "user-" + Date.now();
                 }
@@ -117,8 +117,8 @@ passport.use(new LinkedInStrategy({
                 var lookupNickname = "";
                 if(profile.displayName){
                     lookupNickname = profile.displayName;
-                } else if (profile.name && profilen.name.givenName && profile.name.familyName){
-                    lookupNickname = profilen.name.givenName + " " + profile.name.familyName;
+                } else if (profile.name && profile.name.givenName && profile.name.familyName){
+                    lookupNickname = profile.name.givenName + " " + profile.name.familyName;
                 } else {
                     lookupNickname = "user-" + Date.now();
                 }
@@ -177,22 +177,24 @@ passport.use(new FacebookStrategy({
     },
 
 function(token, refreshToken, profile, done) {
+    console.log("facebook strategy callback");
     // make the code asynchronous
     // User.findOne won't fire until we have all our data back from Google
     process.nextTick(function() {
 
         if(profile.emails.length == 0 || !profile.emails[0].value){
+            console.log("emails are not good")
             return done(err);
         }
 
         // try to find the user based on their google id
         Account.findOne({ 'username' : profile.emails[0].value  }, function(err, user) {
-            if (err)
+            if (err){
                 console.log("Facebook error is being executed");
                 return done(err);
-
+            }
             if (user) {
-
+                console.log("logging in as facebook user");
                 // if a user is found, log them in
                 return done(null, user);
             } else {
@@ -200,8 +202,8 @@ function(token, refreshToken, profile, done) {
                 var lookupNickname = "";
                 if(profile.displayName){
                     lookupNickname = profile.displayName;
-                } else if (profile.name && profilen.name.givenName && profile.name.familyName){
-                    lookupNickname = profilen.name.givenName + " " + profile.name.familyName;
+                } else if (profile.name && profile.name.givenName && profile.name.familyName){
+                    lookupNickname = profile.name.givenName + " " + profile.name.familyName;
                 } else {
                     lookupNickname = "user-" + Date.now();
                 }
