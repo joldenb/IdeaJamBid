@@ -1235,6 +1235,11 @@ button.suggestion-tactics, button.suggestion-targets {
   background-color: #007338; 
 }
 
+
+.go-btn-link:focus, .go-btn-link:active {
+  background-color: #007338; 
+}
+
 .btn-vision {
   background-color: #AFDDD1; 
   color: #414142;
