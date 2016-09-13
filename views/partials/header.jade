@@ -26,23 +26,23 @@
             div(class="placeholder" style="height: 40px; width: 40px; background-image : url('/avatar.png');  background-position: center center; background-repeat: no-repeat; background-size: cover;")
       if Object.keys(user).length != 0
         li
-          a.home-logout.btn.btn-electric( href="/jam/dsw" ) Startup Olympics
+          a.home-logout.btn.btn-electric( href="/jam/dsw"  ontouchstart="this.style.background = '#D6DE26';") Startup Olympics
         li
-          a.home-logout.btn.btn-vision( href="/ideas" ) View All Ideas
+          a.home-logout.btn.btn-vision( href="/ideas"  ontouchstart="this.style.background = '#D6DE26';") View All Ideas
         if user.nickname
           li
-            a.home-logout.btn.btn-vision( href="/imagineer/" + user.nickname) My Profile
+            a.home-logout.btn.btn-vision( href="/imagineer/" + user.nickname ontouchstart="this.style.background = '#D6DE26';") My Profile
         li
-          a.home-logout.btn.btn-vision( href="/about" ) About IdeaJam
+          a.home-logout.btn.btn-vision( href="/about"  ontouchstart="this.style.background = '#D6DE26';") About IdeaJam
         li
-          a.home-logout.btn.btn-vision( href="/logout" ) Log Out
+          a.home-logout.btn.btn-vision( href="/logout"  ontouchstart="this.style.background = '#D6DE26';") Log Out
       else 
         li
-          a.home-logout.btn.btn-success( href="/jam/dsw" ) Startup Olympics
+          a.home-logout.btn.btn-success( href="/jam/dsw"  ontouchstart="this.style.background = '#D6DE26';") Startup Olympics
         li
-          a.home-logout.btn.btn-vision( href="/about" ) About IdeaJam
+          a.home-logout.btn.btn-vision( href="/about"  ontouchstart="this.style.background = '#D6DE26';") About IdeaJam
         li
-          a.home-logout.btn.btn-vision( href="/" ) Log In
+          a.home-logout.btn.btn-vision( href="/"  ontouchstart="this.style.background = '#D6DE26';") Log In
 
   .dropdown.custom-nav
     a(class="navbar-brand" href="/")
@@ -61,23 +61,23 @@
      ul.dropdown-menu(id="test")
       if Object.keys(user).length != 0
         li
-          a.home-logout.btn.btn-vision( href="/jam/dsw" ) Startup Olympics
+          a.home-logout.btn.btn-vision( href="/jam/dsw"  ontouchstart="this.style.background = '#D6DE26';") Startup Olympics
         li
-          a.home-logout.btn.btn-vision( href="/ideas" ) View All Ideas
+          a.home-logout.btn.btn-vision( href="/ideas"  ontouchstart="this.style.background = '#D6DE26';") View All Ideas
         if user.nickname
           li
-            a.home-logout.btn.btn-vision( href="/imagineer/" + user.nickname) My Profile
+            a.home-logout.btn.btn-vision( href="/imagineer/" + user.nickname ontouchstart="this.style.background = '#D6DE26';") My Profile
         li
-          a.home-logout.btn.btn-vision( href="/about" ) About IdeaJam
+          a.home-logout.btn.btn-vision( href="/about"  ontouchstart="this.style.background = '#D6DE26';") About IdeaJam
         li
-          a.home-logout.btn.btn-vision( href="/logout" ) Log Out
+          a.home-logout.btn.btn-vision( href="/logout"  ontouchstart="this.style.background = '#D6DE26';") Log Out
       else 
         li
-          a.home-logout.btn.btn-vision( href="/jam/dsw" ) Startup Olympics
+          a.home-logout.btn.btn-vision( href="/jam/dsw"  ontouchstart="this.style.background = '#D6DE26';") Startup Olympics
         li
-          a.home-logout.btn.btn-vision( href="/about" ) About IdeaJam
+          a.home-logout.btn.btn-vision( href="/about"  ontouchstart="this.style.background = '#D6DE26';") About IdeaJam
         li
-          a.home-logout.btn.btn-vision( href="/" ) Log In
+          a.home-logout.btn.btn-vision( href="/"  ontouchstart="this.style.background = '#D6DE26';") Log In
 
 
     include 
