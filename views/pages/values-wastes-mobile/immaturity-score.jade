@@ -29,7 +29,7 @@ html
             .sliderLabel
             #slider.waste-score
           .save-buttons
-            .row
+            .row.imperfection-row(style="display:none;")
               a.btn.btn-industry.btn-lg Describe an Imperfection
             .row.done-button(style="display:none;")
               .col-xs-12
@@ -64,6 +64,7 @@ html
       step: 1,
       slide: function( event, ui ) {
           valueEntered = true;
+          $(".row.imperfection-row").show(300)
           $(".save-buttons .scoring-buttons .btn-go").text("#{nextButtonText}");
           $(".sliderLabel").text(labelArr[ui.value]);
           $(".sliderLabel").css("margin-left", (ui.value +2-min)/(max-min)*100+"%");
