@@ -637,7 +637,6 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                               imperfections = _.sortBy(imperfections, function(oneImperfection){
                                 return oneImperfection.upvotes.length;
                               }).reverse();
-                              imperfections = imperfections.slice(0,5);
 
                               var imperfectionNameList = _.map(imperfections, function(eachOne) { return eachOne.creator;})
 
