@@ -41,10 +41,10 @@ html
                   .col-xs-3
                     h3.average-score-number #{averageScore}
                 img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
-                a.btn(type="button"  class="btn btn-go" href="/view-all-viabilities") Keep Scoring
+                a.btn(type="button"  class="btn btn-go" href="/view-all-viabilities" ontouchstart="this.style.background = '#007338';") Keep Scoring
               else
                 img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")                
-                a.btn(type="button"  class="btn btn-go" href="/view-all-viabilities") Score Now
+                a.btn(type="button"  class="btn btn-go" href="/view-all-viabilities" ontouchstart="this.style.background = '#007338';") Score Now
               br
           else
             .idea-summary-data#idea-summary-waste-values
@@ -106,7 +106,7 @@ html
           .col-xs-4
             button(type="button"  class="btn btn-industry btn-lg" data-toggle="modal" data-target="#viewAllImperfections") View All
           .col-xs-8
-            button(type="button" id="problemModalButton"  class="btn btn-go btn-lg" data-toggle="modal" data-target="#addProblemModal") New Imperfection
+            button(type="button" id="problemModalButton"  class="btn btn-go btn-lg" data-toggle="modal" data-target="#addProblemModal" ontouchstart="this.style.background = '#007338';") New Imperfection
         each problem, index in problems
           if(index < 3 && problem.text && problem['identifier'])
             include ../partials/problem-summary-element.jade

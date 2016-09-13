@@ -33,7 +33,7 @@ html
               a.btn.btn-industry.btn-lg Describe an Imperfection
             .row.done-button(style="display:none;")
               .col-xs-12
-                button.btn.btn-go.btn-lg(type="button") Done!
+                button.btn.btn-go.btn-lg(type="button" ontouchstart="this.style.background = '#007338';") Done!
             .row.done-message(style="display:none;")
               h4 Thanks for your feedback! You can continue to score more categories or go back to #{idea.name}'s page:
             .row.scoring-buttons
@@ -42,7 +42,7 @@ html
                 button.btn.btn-vision.btn-lg #{bailButtonText}
               .col-xs-6
                 img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
-                button.btn.btn-go.btn-lg Skip
+                button.btn.btn-go.btn-lg(ontouchstart="this.style.background = '#007338';") Skip
 .scoring-buttons 
   
   include ../../partials/js-includes.jade
