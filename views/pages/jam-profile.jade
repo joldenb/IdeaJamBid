@@ -312,8 +312,6 @@ html
     $(document).ready(function(){
 
       $(".upvote-imperfection").click(function(event){  
-        $(this).hide();
-        $(this).prev().show();
         console.log("imperfection");    
         event.preventDefault();
 
@@ -330,8 +328,6 @@ html
       });
         
       $(".upvote-suggestion").click(function(event){
-        $(this).hide();
-        $(this).prev().show();
         event.preventDefault();
 
         $.post('/upvote-suggestion', 
@@ -346,13 +342,4 @@ html
         return false;
       });   
 
-      $(".right-jam-col a").click(function(event){
-        $(this).hide();
-        $(this).prev().show();
-      });
-
-      $(".footer.view-all-ideas a").click(function(event){
-        $(this).hide();
-        $(this).prev().show();
-      })
     });

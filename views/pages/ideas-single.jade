@@ -957,19 +957,8 @@ html
           });
         });
 
-        $(".right-jam-col a").click(function(event){
-          $(this).hide();
-          $(this).prev().show();
-        });
-
-        $("#idea-summary-waste-values a").click(function(event){
-          $(this).hide();
-          $(this).prev().show();
-        })
 
         $(".upvote-imperfection").click(function(event){
-          $(this).hide();
-          $(this).prev().show();
           event.preventDefault();
 
             $.post('/upvote-imperfection', 
@@ -986,8 +975,6 @@ html
         });
 
         $(".upvote-suggestion").click(function(event){
-          $(this).hide();
-          $(this).prev().show();
           event.preventDefault();
 
           $.post('/upvote-suggestion', 

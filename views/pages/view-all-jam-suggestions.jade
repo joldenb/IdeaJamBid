@@ -64,8 +64,6 @@ html
     $(document).ready(function(){
 
       $(".upvote-suggestion").click(function(event){
-        $(this).hide();
-        $(this).prev().show();
         event.preventDefault();
 
         $.post('/upvote-suggestion', 
