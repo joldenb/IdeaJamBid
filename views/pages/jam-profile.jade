@@ -133,18 +133,26 @@ html
       br
 
       h3#imperfectionSection Top #{networkName} Imperfections
+      - var numberOfImperfections = 0
       each problem, identifier in wholeImperfectionBlockInfo
+        - numberOfImperfections = numberOfImperfections + 1
         if(problem.text && problem['identifier'])
-          include ../partials/problem-summary-element.jade
+          if(numberOfImperfections < 6)
+            include ../partials/problem-summary-element.jade
+          else
+            .hiddenImperfections(style="display:none;")
+              include ../partials/problem-summary-element.jade
       br
 
+      button.view-all-imperfections(class="btn btn-industry btn-lg btn-block") View All Imperfections
+
       h3#suggestionSection Top #{networkName} Suggestions
-      a(href="/view-all-jam-suggestions/" + networkName)
-        div
-          button(class="btn btn-industry") View All
       each suggestion, identifier in wholeSuggestionBlockInfo             
         include ../partials/suggestion-summary-element.jade
       br
+      a(href="/view-all-jam-suggestions/" + networkName)
+        div
+          button(class="btn btn-industry btn-lg btn-block") View All Suggestions
 
   #loginModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -342,4 +350,8 @@ html
         return false;
       });   
 
+
+      $("button.view-all-imperfections").click(function(event){
+        $(".hiddenImperfections").show(300)
+      });
     });

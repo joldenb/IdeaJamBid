@@ -23,8 +23,9 @@ html
 
     .container.network-profile.jam-page
       h2#suggestionSection All Suggestions for #{networkName}
+      div  
         a(href="/jam/" + networkName)
-          button(class="btn btn-industry btn-lg") Jam Page
+          button(class="btn btn-vision btn-lg btn-block") Back to Pitch Battle
       each suggestion, identifier in wholeSuggestionBlockInfo             
         if suggestion.document.descriptions.length > 0 && suggestion.document.descriptions[0] != ""
           include ../partials/suggestion-summary-element.jade
