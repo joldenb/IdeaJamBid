@@ -565,6 +565,11 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                       var suggestions = [];
 
                       Component.find({"ideaSeed" : { $in : allIdeas}}, function(err, components) {
+                        
+                        components = _.filter(components, function(component, compIndex){
+                          return !component.text;
+                        })
+
                         //sort and limit components
                         components = _.sortBy(components, function(oneComponent){
                           return oneComponent.upvotes.length;
