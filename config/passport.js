@@ -171,7 +171,8 @@ passport.use(new FacebookStrategy({
         clientID        : configAuth.facebookAuth.clientID,
         clientSecret    : configAuth.facebookAuth.clientSecret,
         callbackURL     : configAuth.facebookAuth.callbackURL,
-        profileFields: ['id', 'photos', 'emails', 'name']
+        profileFields: ['id', 'photos', 'emails', 'name'],
+        enableProof : true
 
     },
 
@@ -187,6 +188,7 @@ function(token, refreshToken, profile, done) {
         // try to find the user based on their google id
         Account.findOne({ 'username' : profile.emails[0].value  }, function(err, user) {
             if (err)
+                console.log("Facebook error is being executed");
                 return done(err);
 
             if (user) {
