@@ -351,6 +351,10 @@ router.get('/reset-password/:resetToken', csrfProtection, function(req, res) {
     res.render('pages/reset-password', { user : req.user || {}, csrfToken: req.csrfToken(), resetToken: req.params.resetToken});
 });
 
+router.get('/feedback', csrfProtection, function(req, res) {
+    res.redirect('https://goo.gl/forms/XS5KfEcgD4DQR71C3');
+});
+
 /*****************************************************************
 ******************************************************************
 ******************************************************************
