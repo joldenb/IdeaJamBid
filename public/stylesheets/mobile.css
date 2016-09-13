@@ -279,5 +279,9 @@
 		padding-bottom: 8em;
 	}
 
+	.scoreIdea .waste-value-problem-list {
+		list-style-image: none;
+	}
+
 }
 
