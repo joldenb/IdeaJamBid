@@ -77,6 +77,7 @@ html
 
       $(".row.done-button .btn-go").click(function(event){
         $(".save-buttons .scoring-buttons .btn-go").text("Yes I'm done.");
+        $(".row.done-button .btn-go").hide();
         $(".row.done-message").show(300);
         $(".row.scoring-buttons").show(300);
       });
