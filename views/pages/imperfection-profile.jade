@@ -43,7 +43,7 @@ html
                   | #{value}
 
           h3#end-of-suggestion-query to help solve the imperfection of 
-            <span class="problemColor">#{problem.text}</span>
+            <span class="problemColor">#{problem.text}?</span>
             h4#suggestion-input-header.suggestion-number 3.
             input.form-control.suggestion-input(type="text", name="suggestionText", value='By ' disabled)
             p.charactersRemaining
@@ -196,7 +196,7 @@ script(type="text/javascript").
         $(this).addClass("selected");
 
         var verb = $(".suggestion-tactics.selected").text().toLowerCase();
-        $("#suggestion-question-header").text("How will you " + verb + " " + $(this).text().toLowerCase() + " " + $("#end-of-suggestion-query").text());
+        $("#suggestion-question-header").text("How will you " + verb + " " + $(this).text().toLowerCase() + " " + $("#end-of-suggestion-query").text() + "?");
         $("#end-of-suggestion-query").remove();
         $("#suggestion-targets").hide(400);
 

@@ -1180,8 +1180,9 @@ button.suggestion-tactics, button.suggestion-targets {
   text-align: right;
 }
 
-.imagineerProfilePic {
-
+.imagineerProfilePicWrapper {
+  max-height: 300px;
+  overflow: hidden;
 }
 
 .viabilityLink h3 {

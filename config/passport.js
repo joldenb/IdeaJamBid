@@ -34,13 +34,26 @@ function(token, refreshToken, profile, done) {
                 // if a user is found, log them in
                 return done(null, user);
             } else {
+                var lookupNickname = "";
+                if(profile.displayName){
+                    lookupNickname = profile.displayName;
+                } else if (profile.name && profilen.name.givenName && profile.name.familyName){
+                    lookupNickname = profilen.name.givenName + " " + profile.name.familyName;
+                } else {
+                    lookupNickname = "user-" + Date.now();
+                }
 
-                Account.find({"nickname" : {$regex : ".*"+profile.displayName+".*"} }, function(err, nicknames){
+
+                Account.find({"nickname" : {$regex : ".*"+lookupNickname+".*"} }, function(err, nicknames){
                     var newNickname;
                     if(nicknames.length == 0){
-                        newNickname = profile.displayName;
+                        newNickname = lookupNickname;
                     } else {
-                        newNickname = profile.displayName + "-" + (nicknames.length + 1).toString();
+                        newNickname = lookupNickname + "-" + (nicknames.length + 1).toString();
+                    }
+
+                    if(!newNickname){
+                        newNickname = "user-" + Date.now();
                     }
 
                     // if the user isnt in our database, create a new user
@@ -101,12 +114,26 @@ passport.use(new LinkedInStrategy({
                 // if a user is found, log them in
                 return done(null, user);
             } else {
-                Account.find({"nickname" : {$regex : ".*"+profile.displayName+".*"} }, function(err, nicknames){
+                var lookupNickname = "";
+                if(profile.displayName){
+                    lookupNickname = profile.displayName;
+                } else if (profile.name && profilen.name.givenName && profile.name.familyName){
+                    lookupNickname = profilen.name.givenName + " " + profile.name.familyName;
+                } else {
+                    lookupNickname = "user-" + Date.now();
+                }
+
+
+                Account.find({"nickname" : {$regex : ".*"+lookupNickname+".*"} }, function(err, nicknames){
                     var newNickname;
                     if(nicknames.length == 0){
-                        newNickname = profile.displayName;
+                        newNickname = lookupNickname;
                     } else {
-                        newNickname = profile.displayName + "-" + (nicknames.length + 1).toString();
+                        newNickname = lookupNickname + "-" + (nicknames.length + 1).toString();
+                    }
+
+                    if(!newNickname){
+                        newNickname = "user-" + Date.now();
                     }
 
                     var account = new Account({
@@ -153,6 +180,10 @@ function(token, refreshToken, profile, done) {
     // User.findOne won't fire until we have all our data back from Google
     process.nextTick(function() {
 
+        if(profile.emails.length == 0 || !profile.emails[0].value){
+            return done(err);
+        }
+
         // try to find the user based on their google id
         Account.findOne({ 'username' : profile.emails[0].value  }, function(err, user) {
             if (err)
@@ -163,13 +194,29 @@ function(token, refreshToken, profile, done) {
                 // if a user is found, log them in
                 return done(null, user);
             } else {
-                Account.find({"nickname" : {$regex : ".*"+profile.displayName+".*"} }, function(err, nicknames){
+
+                var lookupNickname = "";
+                if(profile.displayName){
+                    lookupNickname = profile.displayName;
+                } else if (profile.name && profilen.name.givenName && profile.name.familyName){
+                    lookupNickname = profilen.name.givenName + " " + profile.name.familyName;
+                } else {
+                    lookupNickname = "user-" + Date.now();
+                }
+
+
+                Account.find({"nickname" : {$regex : ".*"+lookupNickname+".*"} }, function(err, nicknames){
                     var newNickname;
                     if(nicknames.length == 0){
-                        newNickname = profile.displayName;
+                        newNickname = lookupNickname;
                     } else {
-                        newNickname = profile.displayName + "-" + (nicknames.length + 1).toString();
+                        newNickname = lookupNickname + "-" + (nicknames.length + 1).toString();
                     }
+
+                    if(!newNickname){
+                        newNickname = "user-" + Date.now();
+                    }
+
                     // if the user isnt in our database, create a new user
                     var account = new Account({
                         nickname : newNickname
