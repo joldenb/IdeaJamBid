@@ -26,7 +26,7 @@ html
         a(href="/jam/" + networkName)
           button(class="btn btn-industry btn-lg") Jam Page
       each suggestion, identifier in wholeSuggestionBlockInfo             
-        if suggestion.document.text
+        if suggestion.document.descriptions.length > 0 && suggestion.document.descriptions[0] != ""
           include ../partials/suggestion-summary-element.jade
 
     //- This is just for the CSRF token
