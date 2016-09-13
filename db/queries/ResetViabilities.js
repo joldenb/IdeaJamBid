@@ -1,0 +1,1 @@
+db.getCollection('ideareviews').updateMany({},{$set: {"performOne": 50, "affordOne": 50, "featureOne": 50, "deliverOne": 50, "useabilityOne": 50, "maintainOne": 50, "durabilityOne": 50, "imageOne": 50, "complexOne": 50, "precisionOne": 50, "variabilityOne": 50, "sensitivityOne": 50, "immatureOne": 50, "dangerOne": 50, "skillsOne": 50 }}, {multi: true })
