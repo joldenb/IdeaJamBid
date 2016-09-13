@@ -51,13 +51,14 @@ html
               h4 You can only score someone else's ideas (right now)
         .row
           .col-xs-12
-            h3#componentsHeader Components 
+            if idea.name
+            h4#componentsHeader #{idea.name}'s Components 
             if components.length > 0
               ul
                 each component,index in components
                   if component['text']
                     li 
-                      h4 #{component['text']}
+                      h5 #{component['text']}
             else
               <i>No components yet</i>
             if inventorName == user.username
@@ -66,8 +67,8 @@ html
           .col-xs-12
             #idea-summary-aptitudes.aptitudeList
               .profileAptitudes
-                if aptitudes && aptitudes.length > 0
-                  h4 Aptitudes
+                if aptitudes && aptitudes.length > 0 && idea.name
+                  h4 #{idea.name}'s Aptitudes
                   ul
                     each aptitude, aptIndex in aptitudes
                       li(data-apt-id="#{aptitude.identifier}") 
@@ -101,18 +102,21 @@ html
 
         .row
           .col-xs-12
-            h3#imperfections-header Imperfections
-        .row.idea-sumamart-buttons
-          .col-xs-4
-            button(type="button"  class="btn btn-industry btn-lg" data-toggle="modal" data-target="#viewAllImperfections") View All
-          .col-xs-8
-            button(type="button" id="problemModalButton"  class="btn btn-go btn-lg" data-toggle="modal" data-target="#addProblemModal" ontouchstart="this.style.background = '#007338';") New Imperfection
+            h3#imperfections-header Top Imperfections
         each problem, index in problems
           if(index < 3 && problem.text && problem['identifier'])
             include ../partials/problem-summary-element.jade
+        .row.idea-sumamart-buttons
+          .col-xs-12
+            button(type="button"  class="btn btn-industry btn-lg btn-block" data-toggle="modal" data-target="#viewAllImperfections") View All Imperfections
+        .row.idea-sumamart-buttons
+          .col-xs-12
+            button(type="button" id="problemModalButton"  class="btn btn-go btn-lg btn-block" data-toggle="modal" data-target="#addProblemModal" ontouchstart="this.style.background = '#007338';") Add New Imperfection
 
 
         .row.idea-sumamart-buttons
+          .col-xs-12
+            h3 Suggestions
           .col-xs-12
             .view-all-components-wrapper
               a.btn.btn-electric.btn-lg.btn-block#componentsViewAllLink(type="button") View All Suggestions
