@@ -60,10 +60,11 @@ var mongodbUri = process.env.MONGOATLAS_URI || process.env.MONGOLAB_URI || 'loca
 console.log("mongodbUri:" + mongodbUri);
 
 if(process.env.MONGOATLAS_URI){
+  console.log("connecting to mongoatlas")
   mongoose.connect(mongodbUri, {
       replset: {
-        ssl: true,
-        sslValidate: false
+        rs_name: 'Cluster0-shard-0'
+        
       }
     }, function(err) {
       if (err) {
@@ -75,6 +76,7 @@ if(process.env.MONGOATLAS_URI){
       }
     });
 } else {
+  console.log("connecting mlab or local")
   mongoose.connect(mongodbUri);
 }
 var db = mongoose.connection;
