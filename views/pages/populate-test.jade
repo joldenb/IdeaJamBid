@@ -1,0 +1,12 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body
+  .header.navbar.navbar-default
+    include ../partials/header.jade
+    .container
+      .row
+        .col-xs-12
+          each aptitude in aptitudes
+            p #{aptitude.title}

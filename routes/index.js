@@ -2989,6 +2989,29 @@ router.get('/imperfection-profile/:identifier', csrfProtection, function(req, re
   });
 });
 
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for populate test
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/populate-test/', csrfProtection, function(req, res){
+  if(!(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
+
+  Account.findOne({ 'username' : req.user.username  })
+    .populate('aptitudes')
+    .exec(function(err, doc){
+      res.render('pages/populate-test', {
+        user : req.user || {},
+        aptitudes: doc.aptitudes
+      });      
+    });
+});
+
 
 /*****************************************************************
 ******************************************************************
