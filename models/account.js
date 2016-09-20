@@ -14,7 +14,10 @@ var Account = new Schema({
     password		: String,
     einsteinPoints	: {type: Number, default:0},
     rupees			: {type: Number, default:0},
-    ideaSeeds		: [IdeaSeed],
+    ideaSeeds       : [{
+        type: Schema.Types.ObjectId,
+        ref: 'IdeaSeed' 
+    }],    
     headshots		: [ObjectId], //whatever's first on the list is the main picture
     aptitudes       : [{
         type: Schema.Types.ObjectId,
