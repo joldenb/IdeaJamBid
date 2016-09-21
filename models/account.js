@@ -4,6 +4,7 @@ var passportLocalMongoose = require('passport-local-mongoose');
 var IdeaSeed = mongoose.model('IdeaSeed').schema;
 var ObjectId = mongoose.Schema.Types.ObjectId;
 var validator = require('validator');
+var autopopulate = require('mongoose-autopopulate');
 
 var Account = new Schema({
     resetToken      : String,
@@ -16,12 +17,14 @@ var Account = new Schema({
     rupees			: {type: Number, default:0},
     ideaSeeds       : [{
         type: Schema.Types.ObjectId,
-        ref: 'IdeaSeed' 
+        ref: 'IdeaSeed',
+        autopopulate: true
     }],    
     headshots		: [ObjectId], //whatever's first on the list is the main picture
     aptitudes       : [{
         type: Schema.Types.ObjectId,
-        ref: 'Aptitude' 
+        ref: 'Aptitude',
+        autopopulate: true
     }],
     networks		: {
 			school : ObjectId,
@@ -48,5 +51,6 @@ var options = {
 }
 
 Account.plugin(passportLocalMongoose, options);
+Account.plugin(autopopulate);
 
 module.exports = mongoose.model('Account', Account);

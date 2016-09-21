@@ -3002,10 +3002,7 @@ router.get('/populate-test/', csrfProtection, function(req, res){
     return;
   }
 
-  Account.findOne({ 'username' : req.user.username  })
-    .populate('aptitudes ideaSeeds')
-    .exec(function(err, doc){
-      console.log(doc);
+  Account.findOne({ 'username' : req.user.username  }, function(err, doc){
       res.render('pages/populate-test', {
         user : req.user || {},
         aptitudes: doc.aptitudes,
