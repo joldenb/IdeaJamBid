@@ -5,7 +5,7 @@ var passportLocalMongoose = require('passport-local-mongoose');
 var officegen = require('officegen');
 var fs = require('fs');
 var ObjectId = mongoose.Schema.Types.ObjectId;
-
+var autopopulate = require('mongoose-autopopulate');
 
 var IdeaReview = new Schema({
 	ideaSeedId		: ObjectId,
@@ -184,5 +184,6 @@ IdeaReview.statics.averageViabilityScores = function(reviewObjects){
 };
 
 IdeaReview.plugin(passportLocalMongoose);
+IdeaReview.plugin(autopopulate);
 
 module.exports = mongoose.model('IdeaReview', IdeaReview);

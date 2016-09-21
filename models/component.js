@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
 var ObjectId = mongoose.Schema.Types.ObjectId;
+var autopopulate = require('mongoose-autopopulate');
 
 var Component = new Schema({
 	text				: String,	 // this is optional
@@ -18,7 +19,7 @@ var Component = new Schema({
 	category	: String,  // the column and row of the component - suggestion
 	
 	creator			: String, //should match the username field of an account
-	problemID		: ObjectId, 
+	problemID		: {type: Schema.Types.ObjectId, ref: 'IdeaProblem', autopopulate: true }, 
 
 	images			: [{
 		imageID		: ObjectId,
@@ -37,10 +38,12 @@ var Component = new Schema({
 		relationship	: String 
 	}],
 
-	ideaSeed		: ObjectId,
-  upvotes      : [ObjectId],
+	ideaSeed		: [{type: Schema.Types.ObjectId, ref: 'IdeaSeed', autopopulate: true }],
+  upvotes      : [[{type: Schema.Types.ObjectId, ref: 'Account', autopopulate: true }]],
 
 }, { autoIndex: false });
+
+Component.plugin(autopopulate);
 
 /*
 	This function is designed to take as an argument the output of the 

@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = mongoose.Schema.Types.ObjectId;
+var autopopulate = require('mongoose-autopopulate');
 
 var IdeaProblem = new Schema({
 	text				: String,
@@ -11,9 +12,11 @@ var IdeaProblem = new Schema({
 
   identifier  : String, //unique public facing identifier, of the form prob-(date.now)
 
-	ideaSeed		: ObjectId,
-  upvotes      : [ObjectId],
+	ideaSeed		: [{type: Schema.Types.ObjectId, ref: 'IdeaSeed', autopopulate: true }],
+  upvotes      : [[{type: Schema.Types.ObjectId, ref: 'Account', autopopulate: true }]],
 
 }, { autoIndex: false });
+
+IdeaProblem.plugin(autopopulate);
 
 module.exports = mongoose.model('IdeaProblem', IdeaProblem);

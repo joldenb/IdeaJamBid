@@ -15,17 +15,9 @@ var Account = new Schema({
     password		: String,
     einsteinPoints	: {type: Number, default:0},
     rupees			: {type: Number, default:0},
-    ideaSeeds       : [{
-        type: Schema.Types.ObjectId,
-        ref: 'IdeaSeed',
-        autopopulate: true
-    }],    
+    ideaSeeds       : [{type: Schema.Types.ObjectId, ref: 'IdeaSeed', autopopulate: true }],    
     headshots		: [ObjectId], //whatever's first on the list is the main picture
-    aptitudes       : [{
-        type: Schema.Types.ObjectId,
-        ref: 'Aptitude',
-        autopopulate: true
-    }],
+    aptitudes       : [{type: Schema.Types.ObjectId, ref: 'Aptitude', autopopulate: true }],
     networks		: {
 			school : ObjectId,
 			company : ObjectId,
