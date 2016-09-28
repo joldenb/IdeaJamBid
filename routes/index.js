@@ -2860,8 +2860,15 @@ router.get('/imperfection-profile/:identifier', csrfProtection, function(req, re
     IdeaProblem.findOne({
       "identifier" : req.params.identifier
       }, function(err, ideaProblem){
+
+        if(err || !ideaProblem){
+          res.redirect('/');
+          return;
+        }
         IdeaSeed.findById(ideaProblem.ideaSeed, function(err, idea){
-          req.session.idea = idea.id;
+          if(idea.id){
+            req.session.idea = idea.id;
+          }
           if(!req.session.idea || !(req.user && req.user.username)){
             res.redirect('/');
             return;
