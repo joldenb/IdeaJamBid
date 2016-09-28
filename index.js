@@ -18,6 +18,7 @@ var configAuth = require('./config/auth');
 var routes = require('./routes/index');
 var socialRoutes = require('./routes/social-routes');
 var emailRoutes = require('./routes/email-routes');
+var crowdfundingRoutes = require('./routes/crowdfunding-routes');
 var networkRoutes = require('./routes/network-routes');
 var valueWasteRoutes = require('./routes/value-waste-routes');
 var valueWasteMobileRoutes = require('./routes/value-waste-mobile-routes');
@@ -93,6 +94,7 @@ app.use('/', routes);
 app.use('/', networkRoutes);
 app.use('/', socialRoutes);
 app.use('/', emailRoutes);
+app.use('/', crowdfundingRoutes);
 app.use('/', valueWasteRoutes);
 app.use('/', valueWasteMobileRoutes);
 app.use('/', ideaDataRoutes);
@@ -150,5 +152,6 @@ app.use(limiter);
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
+
 
 module.exports = app;
