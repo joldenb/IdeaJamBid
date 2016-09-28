@@ -4,7 +4,15 @@ var csrf = require('csurf');
 var csrfProtection = csrf({ cookie: true });
 var paypal = require('paypal-rest-sdk');
 
-router.get('/crowdfunding', csrfProtection, function(req, res){
+router.get('/new-campaign', csrfProtection, function(req, res){
+  res.sendStatus(200);
+});
+
+router.get('/campaign', csrfProtection, function(req, res){
+  res.sendStatus(200);
+});
+
+router.post('/paypal-payment', csrfProtection, function(req, res){
 
   if (process.env.PAYPAL_CLIENT_ID) {
 
