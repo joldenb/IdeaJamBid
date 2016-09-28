@@ -21,12 +21,12 @@ router.get('/crowdfunding', csrfProtection, function(req, res){
             "funding_instruments": [{
                 "credit_card": {
                     "type": "visa",
-                    "number": "4417119669820331",
-                    "expire_month": "11",
-                    "expire_year": "2018",
-                    "cvv2": "874",
-                    "first_name": "Joe",
-                    "last_name": "Shopper",
+                    "number": "4032032072457549",
+                    "expire_month": "09",
+                    "expire_year": "2021",
+                    // "cvv2": "874",
+                    "first_name": "Sean",
+                    "last_name": "Buyer",
                     "billing_address": {
                         "line1": "52 N Main ST",
                         "city": "Johnstown",
@@ -39,15 +39,26 @@ router.get('/crowdfunding', csrfProtection, function(req, res){
         },
         "transactions": [{
             "amount": {
-                "total": "7",
+                "total": "8",
                 "currency": "USD",
                 "details": {
-                    "subtotal": "5",
+                    "subtotal": "6",
                     "tax": "1",
                     "shipping": "1"
                 }
             },
-            "description": "This is the payment transaction description."
+            "description": "This is the payment transaction description.",
+            "item_list": { 
+                "items":[
+                    {
+                        "quantity":"3", 
+                        "name":"Hat", 
+                        "price":"2.00",  
+                        "sku":"product12345", 
+                        "currency":"USD"
+                    }
+                ]
+            }            
         }]
     };
 
