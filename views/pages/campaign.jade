@@ -15,6 +15,7 @@ html
       p Target: $$$
     .row
       p Rewards: XXX
+        input(type="hidden", name="_csrf", value="#{csrfToken}")
         button.btn.btn-info.btn-lg(id="openPurchaseRewardsModal" data-dismiss="modal") Purchase
 
   #purchaseRewardModal.modal.fade.annotate-modal(role="dialog")
@@ -55,6 +56,12 @@ html
         $('#paypalModal').modal('show');
       })
       $("#confirmButton").click(function(event){
-        $('#paypalModal').modal('hide');
+        $.post('/paypal-payment', 
+          {
+            _csrf : $('[name="_csrf"]').val()
+          },
+          function(resp) {
+            $('#paypalModal').modal('hide');
+          });
       })      
     });
