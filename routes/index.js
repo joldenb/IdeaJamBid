@@ -657,7 +657,7 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
     return IdeaReview.find({"reviewer" : req.user.username}).exec();
   })
   .then(function(reviews){
-    if(reviews.length > 0){
+    if(reviews && reviews.length > 0){
       var ideaSeedIDs = _.map(reviews, function(item){return item["ideaSeedId"];});
       ideaSeedIDs = _.filter(ideaSeedIDs, Boolean);
       //if there are any reviews by this user, list them here
@@ -667,7 +667,7 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
     }
   })
   .then(function(reviewedIdeas){
-    if(reviewedIdeas.length > 0){
+    if(reviewedIdeas && reviewedIdeas.length > 0){
       var creationDate, formattedDate;
       reviewedIdeaNames = _.map(reviewedIdeas, function(item){
         creationDate = item._id.getTimestamp();
