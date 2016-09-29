@@ -5,11 +5,24 @@ var csrfProtection = csrf({ cookie: true });
 var paypal = require('paypal-rest-sdk');
 
 router.get('/new-campaign', csrfProtection, function(req, res){
-  res.sendStatus(200);
+  res.render('pages/new-campaign', {
+    csrfToken: req.csrfToken(),        
+    user : {}
+  });
+});
+
+router.post('/new-campaign', csrfProtection, function(req, res){
+  res.render('pages/campaign', {
+    user : {},
+    csrfToken: req.csrfToken(),    
+  });
 });
 
 router.get('/campaign', csrfProtection, function(req, res){
-  res.sendStatus(200);
+  res.render('pages/campaign', {
+    user : {},
+    csrfToken: req.csrfToken(),    
+  });
 });
 
 router.post('/paypal-payment', csrfProtection, function(req, res){
