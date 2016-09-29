@@ -182,7 +182,11 @@ var viabilities = [
 ******************************************************************
 *****************************************************************/
 router.get('/', csrfProtection, function (req, res) {
-  res.redirect('/jam/dsw');
+  if(req.user){
+    res.redirect('/imagineer/' + req.user.nickname);
+  } else {
+    res.render('index', { csrfToken: req.csrfToken() });
+  }
 });
 
 /*****************************************************************
