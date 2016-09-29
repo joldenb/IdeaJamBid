@@ -446,9 +446,9 @@ router.get('/view-all-viabilities', csrfProtection, function(req, res) {
 
   req.session.viabilities = viabilities;
 
-  ideaSeedHelpers.getUserHeadshot(req).then(function(headshotData){
-    var headshotURL = headshotData['headshotURL'];
-    var headshotStyle = headshotData['headshotStyle'];
+  var headshotData = ideaSeedHelpers.getUserHeadshot(req);
+  var headshotURL = headshotData['headshotURL'];
+  var headshotStyle = headshotData['headshotStyle'];
     IdeaSeed.findById(req.session.idea,function(err, idea){
       if(!idea){
         res.redirect("/view-all-ideas");
@@ -511,7 +511,6 @@ router.get('/view-all-viabilities', csrfProtection, function(req, res) {
         });//end of review query
       });  //end of the problem query
     });
-  });
 });
 
 ////////////////////////////////////////////////

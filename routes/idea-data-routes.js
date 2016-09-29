@@ -143,37 +143,28 @@ router.post('/add-profile-headshot', csrfProtection,  function(req, res) {
     res.redirect('/');
   } else {
     
-    IdeaImage.find({"filename" : {$regex : ".*"+req.body.filename+".*"}}, function(err, images){
-
-      var newFileName = req.body.filename + "-" + (images.length + 1).toString();
-
-      var image = new IdeaImage({ imageMimetype : req.body.type,
-        filename : newFileName, uploader : req.user.username, amazonURL : req.body.fileUrl });
-
-      if(req.body["exif[Orientation]"]){
-        image.orientation = parseInt(req.body["exif[Orientation]"]);
-      }
-      
-      image.save(function(err, newImage){
-        if (err) {
-          console.log(err);
-        } else {
-          Account.findById( req.user.id,
-            function (err, account) {
-              if(account.headshots){
-                account.headshots.unshift(newImage.id);
-              } else {
-                account.headshots = [newImage.id];
-              }
-              account.save(function (err) {
-                res.sendStatus(200);
-                return;
-              });
-          });
-        }
+    Account.findById( req.user.id,
+      function (err, account) {
+      if(err || !account){
+        res.redirect('/');
+        return;
+      }  
+      account.headshots.unshift({
+        filename : req.body.filename + Date.now(),
+        imageMimetype : req.body.type,
+        amazonURL : req.body.fileUrl,
+        uploader : req.user.username
       });
 
-    }); //end of idea image query
+      if(req.body["exif[Orientation]"]){
+        account.headshots[0].orientation = parseInt(req.body["exif[Orientation]"]);
+      }
+
+      account.save(function (err) {
+        res.sendStatus(200);
+        return;
+      });
+    });
   }
 });
 
