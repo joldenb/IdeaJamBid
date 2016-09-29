@@ -281,45 +281,40 @@ var getStrengthData = function getStrengthData(ideaSeedID){
 }
 
 var getUserHeadshot = function getUserHeadshot(req){
-	return new Promise(
-	function (resolve, reject) {
 		if(req.user){
-			IdeaImage.findById(req.user.headshots[0], function(err, headshot){
-				var headshotURL;
-				var headshotStyle = "";
-				if(headshot){
-					headshotURL = headshot["amazonURL"];
-					headshotStyle;
-					switch (headshot["orientation"]) {
-						case 1 :
-							headshotStyle = "";
-							break;
-						case 6 :
-							headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-							break;
-						case 3 :
-							headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-							break;
-						case 8 :
-							headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-							break;
-					}
-				} else {
-					headshotURL = "";
-					headshotStyle = "";
+			var headshot = req.user.headshots[0];
+			var headshotURL;
+			var headshotStyle = "";
+			if(headshot){
+				headshotURL = headshot["amazonURL"];
+				headshotStyle;
+				switch (headshot["orientation"]) {
+					case 1 :
+						headshotStyle = "";
+						break;
+					case 6 :
+						headshotStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+						break;
+					case 3 :
+						headshotStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+						break;
+					case 8 :
+						headshotStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+						break;
 				}
-				resolve({
-					"headshotURL" : headshotURL,
-					"headshotStyle" : headshotStyle
-				}); // success
-			});
+				return {"headshotURL" : headshotURL, "headshotStyle" : headshotStyle};
+			} else {
+				return {
+					headshotURL : "",
+					headshotStyle : ""
+				};
+			}
 		} else {
-			resolve({
+			return {
 				"headshotURL" : "",
 				"headshotStyle" : ""
-			}); // success
+			}; // success
 		}
-	}); //end of promise
 }
 
 var getImageOrientation = function getImageOrientation(string){

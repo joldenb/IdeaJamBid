@@ -298,10 +298,9 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
       dsw = true;
     }
   }
-
-  ideaSeedHelpers.getUserHeadshot(req).then(function(headshotData){
-    var headshotURL = headshotData['headshotURL'];
-    var headshotStyle = headshotData['headshotStyle'];
+  var headshotData = ideaSeedHelpers.getUserHeadshot(req);
+  var headshotURL = headshotData['headshotURL'];
+  var headshotStyle = headshotData['headshotStyle'];
 
     var networkName = req.params
       .networkName
@@ -328,21 +327,11 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
         var topAccountsToDisplay = accounts.slice(0, 3);
         accountHeadshotIDs = {};
         for(var i = 0; i < topAccountsToDisplay.length; i++){
-          accountHeadshotIDs[topAccountsToDisplay[i].username] = topAccountsToDisplay[i].headshots[0];
+          var accountHeadshotStyle = "";
+          var accountNameAndURLs = [];
+          accountHeadshotStyle = ideaSeedHelpers.getImageOrientation(topAccountsToDisplay[i].headshots[0].orientation);
+          accountNameAndURLs[topAccountsToDisplay[i].username] = [topAccountsToDisplay[i].headshots[0].amazonURL,accountHeadshotStyle];
         }
-        IdeaImage.find({"_id" : {$in : _.values(accountHeadshotIDs)} } , function(err, images){
-          /* basically doing a manual join of account headshot ids with the image model */
-          var accountNameAndURLs = {};
-          if(images.length > 0){
-            for(var j = 0; j < images.length; j++){
-              var accountName = _.invert(accountHeadshotIDs)[images[j]["id"]];
-              if(accountName){
-                var accountHeadshotStyle = "";
-                accountHeadshotStyle = ideaSeedHelpers.getImageOrientation(images[j]["orientation"]);
-                accountNameAndURLs[accountName] = [images[j]["amazonURL"], accountHeadshotStyle];
-              }
-            }
-          }
           /* First, make a list of all the aptitude IDs for everyone, then query the database for them,
           then figure out who has what aptitudes. */
           var listOfAllAptitudes = [];
@@ -511,50 +500,32 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                 Account.find({"username" : {$in : inventorList}},
                   function(err, accounts){
                     if(err){ console.log("error is " + err)}
-                    var accountPictures = _.map(accounts, function(account){
-                      if(account.headshots){
-                        return account.headshots[0];
-                      } else {
-                        return "";
-                      }
-                    });
-
-                    accountPictures = _.without(accountPictures, "");
-                    IdeaImage.find({"_id" : {$in : accountPictures}}, function(err, profilePictures){
-                      if(err){ console.log("error is " + err)}
-                      if(profilePictures){
-                        //find which ideaList item is connected to the right profile picture
-                        for(var j=0; j < ideaList.length; j++){
-                          //find the account with the right username
-                          for(var k = 0; k < accounts.length; k++){
-                            if(accounts[k].username == ideaList[j][3]){
-                              //find the profile picture with the id that matches the accounts
-                              // first profile picture ID and attach it to the ideaList
-                              if(accounts[k].headshots && accounts[k].headshots[0]){
-                                for(var n = 0; n < profilePictures.length; n++){
-                                  if(profilePictures[n]["id"].toString() == accounts[k].headshots[0].toString()
-                                    && profilePictures[n]["amazonURL"]){
-                                    ideaList[j].push(profilePictures[n]["amazonURL"]);
-                                    var creatorHeadshotStyle = "";
-                                    creatorHeadshotStyle = ideaSeedHelpers.getImageOrientation(profilePictures[n]["orientation"]);
-                                    ideaList[j].push(creatorHeadshotStyle);
-                                  }
-                                }
-                              } else {
-                                ideaList[j].push("") // no image url
-                                ideaList[j].push("") // no image style
-                              }
-                              //tack on the account nick name to display in the block
-                              if(accounts[k].nickname){
-                                ideaList[j].push(accounts[k].nickname);
-                              } else {
-                                ideaList[j].push("User");
-                              }
-                            }
-
+                    //find which ideaList item is connected to the right profile picture
+                    for(var j=0; j < ideaList.length; j++){
+                      //find the account with the right username
+                      for(var k = 0; k < accounts.length; k++){
+                        if(accounts[k].username == ideaList[j][3]){
+                          //find the profile picture with the id that matches the accounts
+                          // first profile picture ID and attach it to the ideaList
+                          if(accounts[k].headshots && accounts[k].headshots[0]){
+                            ideaList[j].push(accounts[k].headshots[0]["amazonURL"]);
+                            var creatorHeadshotStyle = "";
+                            creatorHeadshotStyle = ideaSeedHelpers.getImageOrientation(accounts[k].headshots[0]["orientation"]);
+                            ideaList[j].push(creatorHeadshotStyle);
+                          } else {
+                            ideaList[j].push("") // no image url
+                            ideaList[j].push("") // no image style
+                          }
+                          //tack on the account nick name to display in the block
+                          if(accounts[k].nickname){
+                            ideaList[j].push(accounts[k].nickname);
+                          } else {
+                            ideaList[j].push("User");
                           }
                         }
+
                       }
+                    }
 
                       //
                       //
@@ -587,9 +558,7 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                               return null;
                             }
                           });
-                          suggestorHeadshotIdList = _.compact(suggestorHeadshotIdList);
 
-                          IdeaImage.find({"_id" : {$in : suggestorHeadshotIdList}}, function(err, images){
 
                             // Figure out which account and headshot go with with suggestion
                             var wholeSuggestionBlockInfo = {};
@@ -609,14 +578,12 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                                   //now we've found the right suggestor to go with the suggestion, so we put the 
                                   // nickname and suggestor profile picture into the whole block object;
                                   wholeSuggestionBlockInfo[suggestion.identifier]['creatorNickname'] = suggestor.nickname;
-                                  _.each(images, function(image, imageIndex){
-                                    if(suggestor.headshots && image.id == suggestor.headshots[0]){
-                                      wholeSuggestionBlockInfo[suggestion.identifier]['creatorProfilePic'] = image.amazonURL;
-                                      var imageStyle;
-                                      imageStyle = ideaSeedHelpers.getImageOrientation(image["orientation"]);
-                                      wholeSuggestionBlockInfo[suggestion.identifier]['profilePicOrientation'] = imageStyle;
-                                    }
-                                  })
+                                  if(suggestor.headshots && suggestor.headshots[0]){
+                                    wholeSuggestionBlockInfo[suggestion.identifier]['creatorProfilePic'] = suggestor.headshots[0].amazonURL;
+                                    var imageStyle;
+                                    imageStyle = ideaSeedHelpers.getImageOrientation(suggestor.headshots[0]["orientation"]);
+                                    wholeSuggestionBlockInfo[suggestion.identifier]['profilePicOrientation'] = imageStyle;
+                                  }
                                 }
                               })
                             });
@@ -648,9 +615,6 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                                     return null;
                                   }
                                 });
-                                imperfectorHeadshotIdList = _.compact(imperfectorHeadshotIdList);
-
-                                IdeaImage.find({"_id" : {$in : imperfectorHeadshotIdList}}, function(err, images){
 
                                   // Figure out which account and headshot go with with suggestion
                                   var wholeImperfectionBlockInfo = {};
@@ -670,14 +634,14 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                                         //now we've found the right suggestor to go with the suggestion, so we put the 
                                         // nickname and suggestor profile picture into the whole block object;
                                         wholeImperfectionBlockInfo[imperfection.identifier]['wholeCreator'] ={ 'nickname' : imperfector.nickname};
-                                        _.each(images, function(image, imageIndex){
-                                          if(imperfector.headshots && image.id == imperfector.headshots[0]){
-                                            wholeImperfectionBlockInfo[imperfection.identifier]['headshot'] = {'url' : image.amazonURL};
-                                            var imageStyle;
-                                            imageStyle = ideaSeedHelpers.getImageOrientation(image["orientation"]);
-                                            wholeImperfectionBlockInfo[imperfection.identifier]['headshot']['style'] = imageStyle;
-                                          }
-                                        });
+
+                                        if(imperfector.headshots && imperfector.headshots[0]){
+                                          wholeImperfectionBlockInfo[imperfection.identifier]['headshot'] = {'url' : imperfector.headshots[0].amazonURL};
+                                          var imageStyle;
+                                          imageStyle = ideaSeedHelpers.getImageOrientation(imperfector.headshots[0]["orientation"]);
+                                          wholeImperfectionBlockInfo[imperfection.identifier]['headshot']['style'] = imageStyle;
+                                        }
+                                      
                                       }
                                     });
                                   });
@@ -699,23 +663,19 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                                     suggestions: suggestions,
                                     headshot: headshotURL
                                   });
-                                }); //end if idea image query
                               }); //end of account query
                             }).sort({date: -1}); //end of componet query for suggestions
-                          }); //end if idea image query
                         }); //end of account query
                       }).sort({date: -1}); //end of componet query for suggestions
 
-                    });
                   }); //end of account lookup
                 });
               });
             });
           });
-        });
+        
       });
     });
-  });
 });
 
 /*****************************************************************
@@ -735,10 +695,9 @@ router.get('/view-all-jam-suggestions/:networkName', csrfProtection, function(re
     }
   }
 
-  ideaSeedHelpers.getUserHeadshot(req).then(function(headshotData){
-    var headshotURL = headshotData['headshotURL'];
-    var headshotStyle = headshotData['headshotStyle'];
-
+  var headshotData = ideaSeedHelpers.getUserHeadshot(req);
+  var headshotURL = headshotData['headshotURL'];
+  var headshotStyle = headshotData['headshotStyle'];
     var networkName = req.params
       .networkName
       .split("-")
@@ -838,7 +797,6 @@ router.get('/view-all-jam-suggestions/:networkName', csrfProtection, function(re
         });
       });
     });
-  });
 });
 
 
@@ -850,9 +808,9 @@ router.get('/view-all-jam-suggestions/:networkName', csrfProtection, function(re
 ******************************************************************
 *****************************************************************/
 router.get('/aptitudes/:aptitudeName', csrfProtection, function(req, res){
-  ideaSeedHelpers.getUserHeadshot(req).then(function(headshotData){
-    var headshotURL = headshotData['headshotURL'];
-    var headshotStyle = headshotData['headshotStyle'];
+  var headshotData = ideaSeedHelpers.getUserHeadshot(req);
+  var headshotURL = headshotData['headshotURL'];
+  var headshotStyle = headshotData['headshotStyle'];
 
     var aptitudeName = req.params
       .aptitudeName
@@ -1104,7 +1062,6 @@ router.get('/aptitudes/:aptitudeName', csrfProtection, function(req, res){
         });
       });
     });
-  });
 });
 
 

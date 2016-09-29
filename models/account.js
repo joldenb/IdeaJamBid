@@ -15,7 +15,13 @@ var Account = new Schema({
     einsteinPoints	: {type: Number, default:0},
     rupees			: {type: Number, default:0},
     ideaSeeds		: [IdeaSeed],
-    headshots		: [ObjectId], //whatever's first on the list is the main picture
+    headshots		: [{
+        filename : String,
+        imageMimetype : String,
+        amazonURL : String,
+        uploader : String, //username
+        orientation : String
+    }], //whatever's first on the list is the main picture
     aptitudes       : [ObjectId],
     networks		: {
 			school : ObjectId,
