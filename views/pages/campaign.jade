@@ -14,4 +14,47 @@ html
     .row
       p Target: $$$
     .row
-      p Rewards: XXX      
+      p Rewards: XXX
+        button.btn.btn-info.btn-lg(id="openPurchaseRewardsModal" data-dismiss="modal") Purchase
+
+  #purchaseRewardModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Purchase Reward
+        .modal-body
+          .row 
+            p Hey! You want this reward?
+        .modal-footer
+          button.btn-lg.btn-block(type="button" id="purchaseRewardButton" class="btn btn-go") Continue
+
+  #paypalModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Paypal
+        .modal-body
+          .row 
+            p Enter stuff here
+        .modal-footer
+          button.btn-lg.btn-block(type="button" id="confirmButton" class="btn btn-go") Confirm
+
+  include ../partials/js-includes.jade
+  script(type="text/javascript").
+
+    $(document).ready(function(){
+      $("#openPurchaseRewardsModal").click(function(event){
+        $('#purchaseRewardModal').modal('show');
+      })
+      $("#purchaseRewardButton").click(function(event){
+        $('#purchaseRewardModal').modal('hide');
+        $('#paypalModal').modal('show');
+      })
+      $("#confirmButton").click(function(event){
+        $('#paypalModal').modal('hide');
+      })      
+    });
