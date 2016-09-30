@@ -59,26 +59,8 @@ var mongodbUri = process.env.MONGOATLASURI || process.env.MONGOLAB_URI || 'local
 
 console.log("mongodbUri:" + mongodbUri);
 
-if(process.env.MONGOATLASURI){
-  console.log("connecting to mongoatlas")
-  mongoose.connect(mongodbUri, {
-      replset: {
-        rs_name: 'Cluster0-shard-0'
-        
-      }
-    }, function(err) {
-      if (err) {
-        console.log(err);
-        process.exit();
-      }
-      else {
-        console.log("Everything is ok :D");
-      }
-    });
-} else {
-  console.log("connecting mlab or local")
-  mongoose.connect(mongodbUri);
-}
+console.log("connecting to mongo")
+mongoose.connect(mongodbUri);
 var db = mongoose.connection;
 app.use(session({
     secret: 'foo', store: new MongoStore({ mongooseConnection: mongoose.connection})
