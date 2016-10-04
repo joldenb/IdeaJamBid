@@ -52,6 +52,19 @@ html
           h4 None so far.
         if Object.keys(user).length != 0 && user.id == profileAccount.id
           a.home-login.btn.btn-success.btn-lg( href="/introduce-idea" ) Begin a New Idea
+        h3 Collaborating Ideas
+        if collaboratorIdeas.length > 0
+          ul
+            each val, index in collaboratorIdeas
+              li
+                a(href="/ideas/" + val.name)
+                  h4.contributed-idea-text-name= val.name 
+                span By : 
+                span #{val.inventorName}
+                span.idea-text-date= val['creationDate']
+        else
+          h4 None so far.
+
 
         h3 Contributions
         if reviewNames.length > 0
@@ -62,13 +75,11 @@ html
                   a(href="/ideas/" + val.name)
                     h4.contributed-idea-text-name= val.name 
                   span By : 
-                  a(href="/imagineer/" + val.inventorName)
-                    span #{val.inventorName}
+                  span #{val.inventorName}
                   span.idea-text-date= val['creationDate']
         else
           h4 None so far.
         a.home-login.btn.btn-industry.btn-lg( href="/ideas" ) View All Ideas
-
   #schoolModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
       .modal-content

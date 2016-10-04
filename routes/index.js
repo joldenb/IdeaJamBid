@@ -477,158 +477,163 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
       var account = accounts[0];
     }
 
-    /* oh, this is a find all. this should change at some point */
-    Network.find({}, function(err, networks){
-      var masterSchoolNetworkList = [],
-          schoolNetwork = "",
-          masterCompanyNetworkList = [],
-          companyNetwork = "",
-          masterLocationNetworkList = [],
-          locationNetwork = "";
+    IdeaSeed.find({"collaborators" : account.username}, function(err, collaboratorIdeas){
 
-      _.each(networks, function(element, index, list){
-        if(element['type'] == 'school'){
-          masterSchoolNetworkList.push(element);
-          //get school name if it exists
-          if(account.networks
-            && account.networks['school']
-            && account.networks['school'].toString() == element['id'].toString()){
-              schoolNetwork = element['name'];
+      /* oh, this is a find all. this should change at some point */
+      Network.find({}, function(err, networks){
+        var masterSchoolNetworkList = [],
+            schoolNetwork = "",
+            masterCompanyNetworkList = [],
+            companyNetwork = "",
+            masterLocationNetworkList = [],
+            locationNetwork = "";
+
+        _.each(networks, function(element, index, list){
+          if(element['type'] == 'school'){
+            masterSchoolNetworkList.push(element);
+            //get school name if it exists
+            if(account.networks
+              && account.networks['school']
+              && account.networks['school'].toString() == element['id'].toString()){
+                schoolNetwork = element['name'];
+            }
           }
-        }
 
-        if(element['type'] == 'company'){
-          masterCompanyNetworkList.push(element);
-          //get company name if it exists
-          if(account.networks
-            && account.networks['company']
-            && account.networks['company'].toString() == element['id'].toString()){
-              companyNetwork = element['name'];
+          if(element['type'] == 'company'){
+            masterCompanyNetworkList.push(element);
+            //get company name if it exists
+            if(account.networks
+              && account.networks['company']
+              && account.networks['company'].toString() == element['id'].toString()){
+                companyNetwork = element['name'];
+            }
           }
-        }
 
-        if(element['type'] == 'location'){
-          masterLocationNetworkList.push(element);
-          //get company name if it exists
-          if(account.networks
-            && account.networks['location']
-            && account.networks['location'].toString() == element['id'].toString()){
-              locationNetwork = element['name'];
+          if(element['type'] == 'location'){
+            masterLocationNetworkList.push(element);
+            //get company name if it exists
+            if(account.networks
+              && account.networks['location']
+              && account.networks['location'].toString() == element['id'].toString()){
+                locationNetwork = element['name'];
+            }
           }
-        }
-      });
-      Aptitude.find({"_id" : {$in : account.aptitudes}}, function(err, myAptitudes){
-        var headshotData = ideaSeedHelpers.getUserHeadshot(req);
-        var headshotURL = headshotData['headshotURL'];
-        var headshotStyle = headshotData['headshotStyle'];
+        });
+        Aptitude.find({"_id" : {$in : account.aptitudes}}, function(err, myAptitudes){
+          var headshotData = ideaSeedHelpers.getUserHeadshot(req);
+          var headshotURL = headshotData['headshotURL'];
+          var headshotStyle = headshotData['headshotStyle'];
 
-          var reviewNames, accountIdeaSeeds;
-          var ideaNames = [],
-              j = 0;
-          IdeaReview.find({"reviewer" : account.username}, function(err, reviews){
-            var reviewIDs = _.map(reviews, function(item){return item["ideaSeedId"];});
-            reviewIDs = _.filter(reviewIDs, Boolean);
-            IdeaSeed.find({_id : {$in : reviewIDs}}, function(err, reviewedIdeas){
-              var creationDate, formattedDate, reviewedIdeaCreators = [];
-              _.each(reviewedIdeas, function(item){
-                creationDate = item._id.getTimestamp();
-                formattedDate = creationDate.getMonth().toString() + "-" +
-                  creationDate.getDate().toString() + "-" +
-                  creationDate.getFullYear().toString();
-                item['creationDate'] = formattedDate;
-                reviewedIdeaCreators.push(item["inventorName"]);
-              });
-
-              Account.find({"username" : {$in : reviewedIdeaCreators}}, function(err, reviewedIdeaCreatorObjects){
-                // figure out which account goes with with reviewed Idea
-                _.each(reviewedIdeas, function(ideaObject, ideaIndex){
-                  _.each(reviewedIdeaCreatorObjects, function(account, accountIndex){
-                    if(account.username == ideaObject.inventorName){
-                      ideaObject['inventorName'] = account.nickname;
-                    }
-                  });
-                  if(!ideaObject['inventorName']){
-                    ideaObject['inventorName'] = "";
-                  }
+            var reviewNames, accountIdeaSeeds;
+            var ideaNames = [],
+                j = 0;
+            IdeaReview.find({"reviewer" : account.username}, function(err, reviews){
+              var reviewIDs = _.map(reviews, function(item){return item["ideaSeedId"];});
+              reviewIDs = _.filter(reviewIDs, Boolean);
+              IdeaSeed.find({_id : {$in : reviewIDs}}, function(err, reviewedIdeas){
+                var creationDate, formattedDate, reviewedIdeaCreators = [];
+                _.each(reviewedIdeas, function(item){
+                  creationDate = item._id.getTimestamp();
+                  formattedDate = creationDate.getMonth().toString() + "-" +
+                    creationDate.getDate().toString() + "-" +
+                    creationDate.getFullYear().toString();
+                  item['creationDate'] = formattedDate;
+                  reviewedIdeaCreators.push(item["inventorName"]);
                 });
 
+                Account.find({"username" : {$in : reviewedIdeaCreators}}, function(err, reviewedIdeaCreatorObjects){
+                  // figure out which account goes with with reviewed Idea
+                  _.each(reviewedIdeas, function(ideaObject, ideaIndex){
+                    _.each(reviewedIdeaCreatorObjects, function(account, accountIndex){
+                      if(account.username == ideaObject.inventorName){
+                        ideaObject['inventorName'] = account.nickname;
+                      }
+                    });
+                    if(!ideaObject['inventorName']){
+                      ideaObject['inventorName'] = "";
+                    }
+                  });
 
 
-                                  // find the idea seed documents that are created by the account showing in the profile
-                                  var originalIdeaIds = _.map(account.ideaSeeds, function(item){return item.id;})
-                                  IdeaSeed.find({_id : {$in : originalIdeaIds}}, function(err, originalIdeas){
-                                    var creationDate;
-                                    _.each(originalIdeas, function(item){
-                                      creationDate = item._id.getTimestamp();
-                                      formattedDate = creationDate.getMonth().toString() + "-" +
-                                        creationDate.getDate().toString() + "-" +
-                                        creationDate.getFullYear().toString();
-                                      item['creationDate'] = formattedDate;
-                                    });
-                                    if(account.headshots[0]){
-                                      var accountHeadshot = account.headshots[0];
-                                      accountHeadshot.style = ideaSeedHelpers.getImageOrientation(accountHeadshot['orientation']);
-                                      return res.render('pages/imagineer', {
-                                        csrfToken: req.csrfToken(),
-                                        reviewNames : reviewedIdeas,
-                                        reviewedIdeaCreatorObjects : reviewedIdeaCreatorObjects,
-                                        headshot : headshotURL,
-                                        headshotStyle : headshotStyle,
-                                        user : req.user || {},
-                                        profileAccount: account,
-                                        accountHeadshot : accountHeadshot,
-                                        aptitudes : myAptitudes,
-                                        schoolNetwork : schoolNetwork,
-                                        locationNetwork : locationNetwork,
-                                        companyNetwork : companyNetwork,
-                                        accountIdeaSeeds : originalIdeas || [],
-                                        masterSchoolNetworkList : masterSchoolNetworkList,
-                                        masterSchoolNetworkString : JSON.stringify(masterSchoolNetworkList)
-                                                                .replace(/\\n/g, "\\n")
-                                                                .replace(/'/g, "\\'")
-                                                                .replace(/"/g, '\\"')
-                                                                .replace(/\\&/g, "\\&")
-                                                                .replace(/\\r/g, "\\r")
-                                                                .replace(/\\t/g, "\\t")
-                                                                .replace(/\\b/g, "\\b")
-                                                                .replace(/\\f/g, "\\f")
 
+                                    // find the idea seed documents that are created by the account showing in the profile
+                                    var originalIdeaIds = _.map(account.ideaSeeds, function(item){return item.id;})
+                                    IdeaSeed.find({_id : {$in : originalIdeaIds}}, function(err, originalIdeas){
+                                      var creationDate;
+                                      _.each(originalIdeas, function(item){
+                                        creationDate = item._id.getTimestamp();
+                                        formattedDate = creationDate.getMonth().toString() + "-" +
+                                          creationDate.getDate().toString() + "-" +
+                                          creationDate.getFullYear().toString();
+                                        item['creationDate'] = formattedDate;
                                       });
-                                    } else {
-                                      var accountHeadshot;
-                                      return res.render('pages/imagineer', {
-                                        csrfToken: req.csrfToken(),
-                                        reviewNames : reviewedIdeas,
-                                        reviewedIdeaCreatorObjects : reviewedIdeaCreatorObjects,
-                                        headshot : headshotURL,
-                                        headshotStyle : headshotStyle,
-                                        user : req.user || {},
-                                        profileAccount: account,
-                                        accountHeadshot : accountHeadshot,
-                                        aptitudes : myAptitudes,
-                                        schoolNetwork : schoolNetwork,
-                                        locationNetwork : locationNetwork,
-                                        companyNetwork : companyNetwork,
-                                        accountIdeaSeeds : originalIdeas || [],
-                                        masterSchoolNetworkList : masterSchoolNetworkList,
-                                        masterSchoolNetworkString : JSON.stringify(masterSchoolNetworkList)
-                                                                .replace(/\\n/g, "\\n")
-                                                                .replace(/'/g, "\\'")
-                                                                .replace(/"/g, '\\"')
-                                                                .replace(/\\&/g, "\\&")
-                                                                .replace(/\\r/g, "\\r")
-                                                                .replace(/\\t/g, "\\t")
-                                                                .replace(/\\b/g, "\\b")
-                                                                .replace(/\\f/g, "\\f")
+                                      if(account.headshots[0]){
+                                        var accountHeadshot = account.headshots[0];
+                                        accountHeadshot.style = ideaSeedHelpers.getImageOrientation(accountHeadshot['orientation']);
+                                        return res.render('pages/imagineer', {
+                                          csrfToken: req.csrfToken(),
+                                          reviewNames : reviewedIdeas,
+                                          reviewedIdeaCreatorObjects : reviewedIdeaCreatorObjects,
+                                          headshot : headshotURL,
+                                          headshotStyle : headshotStyle,
+                                          user : req.user || {},
+                                          profileAccount: account,
+                                          collaboratorIdeas : collaboratorIdeas,
+                                          accountHeadshot : accountHeadshot,
+                                          aptitudes : myAptitudes,
+                                          schoolNetwork : schoolNetwork,
+                                          locationNetwork : locationNetwork,
+                                          companyNetwork : companyNetwork,
+                                          accountIdeaSeeds : originalIdeas || [],
+                                          masterSchoolNetworkList : masterSchoolNetworkList,
+                                          masterSchoolNetworkString : JSON.stringify(masterSchoolNetworkList)
+                                                                  .replace(/\\n/g, "\\n")
+                                                                  .replace(/'/g, "\\'")
+                                                                  .replace(/"/g, '\\"')
+                                                                  .replace(/\\&/g, "\\&")
+                                                                  .replace(/\\r/g, "\\r")
+                                                                  .replace(/\\t/g, "\\t")
+                                                                  .replace(/\\b/g, "\\b")
+                                                                  .replace(/\\f/g, "\\f")
 
-                                      });
-                                    }
-                                  });  
+                                        });
+                                      } else {
+                                        var accountHeadshot;
+                                        return res.render('pages/imagineer', {
+                                          csrfToken: req.csrfToken(),
+                                          reviewNames : reviewedIdeas,
+                                          reviewedIdeaCreatorObjects : reviewedIdeaCreatorObjects,
+                                          headshot : headshotURL,
+                                          headshotStyle : headshotStyle,
+                                          user : req.user || {},
+                                          profileAccount: account,
+                                          collaboratorIdeas : collaboratorIdeas,
+                                          accountHeadshot : accountHeadshot,
+                                          aptitudes : myAptitudes,
+                                          schoolNetwork : schoolNetwork,
+                                          locationNetwork : locationNetwork,
+                                          companyNetwork : companyNetwork,
+                                          accountIdeaSeeds : originalIdeas || [],
+                                          masterSchoolNetworkList : masterSchoolNetworkList,
+                                          masterSchoolNetworkString : JSON.stringify(masterSchoolNetworkList)
+                                                                  .replace(/\\n/g, "\\n")
+                                                                  .replace(/'/g, "\\'")
+                                                                  .replace(/"/g, '\\"')
+                                                                  .replace(/\\&/g, "\\&")
+                                                                  .replace(/\\r/g, "\\r")
+                                                                  .replace(/\\t/g, "\\t")
+                                                                  .replace(/\\b/g, "\\b")
+                                                                  .replace(/\\f/g, "\\f")
+
+                                        });
+                                      }
+                                    });  
+                });
               });
             });
-          });
-      }); //end of the aptitude query
-    }); // End of Network query
+        }); //end of the aptitude query
+      }); // End of Network query
+    }); //end of collaborator idea seed query
   }); // End of Account query
 
 

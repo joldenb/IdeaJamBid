@@ -1468,3 +1468,7 @@ button.suggestion-tactics, button.suggestion-targets {
 .collaboratorEmail {
   margin: 5px 0;
 }
+
+.navbar-brand img {
+  max-width: 200px;
+}
