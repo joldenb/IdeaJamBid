@@ -3063,7 +3063,7 @@ router.post('/sign-nda', csrfProtection, function(req, res){
     .then(function(ideaSeeds){
       if(ideaSeeds && ideaSeeds[0]){
         var thisIdea = ideaSeeds[0];
-        if(thisIdea.collaborators && thisIdea.collaborators.length){
+        if(thisIdea.collaborators && thisIdea.collaborators.length && thisIdea.collaborators.indexOf(collaboratorAccount.username) == -1 ){
           thisIdea.collaborators.push(collaboratorAccount.username);
         } else {
           thisIdea['collaborators'] = [collaboratorAccount.username];

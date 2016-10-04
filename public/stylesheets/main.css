@@ -1464,3 +1464,7 @@ button.suggestion-tactics, button.suggestion-targets {
   width: 10em;
   max-width: 25%;
 }
+
+.collaboratorEmail {
+  margin: 5px 0;
+}
