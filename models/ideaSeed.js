@@ -24,6 +24,8 @@ var IdeaSeed = new Schema({
 	thirdFeature	: String,
   aptitudes       : [ObjectId],
 
+  collaborators : [String], //this will be a username
+
 	variants			: [{
 		name				: String, /* should be a unique identifier */
 		components : [ String	], /* should match a suggestionID */

@@ -354,7 +354,7 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
               return idea.id.toString();
             });
 
-            IdeaSeed.find({$and: [{"_id" : { $in : allIdeas}}, {"name": {$ne: null}}]}, function(err, ideas){
+            IdeaSeed.find({$and: [{"_id" : { $in : allIdeas}}, {"name": {$ne: null}}, {"visibility" : "public"}]}, function(err, ideas){
 
             _.each(ideas, function(idea){
               totalReviewList = totalReviewList.concat(idea.ideaReviews);
@@ -860,7 +860,7 @@ router.get('/aptitudes/:aptitudeName', csrfProtection, function(req, res){
           listOfAllAptitudes = _.uniq(listOfAllAptitudes);
           Aptitude.find({"_id" : { $in : listOfAllAptitudes}}, function(err, aptitudes){
 
-            IdeaSeed.find({ "aptitudes" : aptitude.id}, function(err, ideas){
+            IdeaSeed.find({ "aptitudes" : aptitude.id, "visibility" : "public"}, function(err, ideas){
 
               var totalReviewList = [];
               _.each(ideas, function(ideaObj, index){

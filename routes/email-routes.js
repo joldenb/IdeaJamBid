@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var helper = require('sendgrid').mail
+var _ = require('underscore');
 var csrf = require('csurf');
 var csrfProtection = csrf({ cookie: true });
 var IdeaImage = require('../models/ideaImage');
@@ -77,6 +78,41 @@ router.post('/send-variant-contract', csrfProtection, function(req, res){
   });
 });
 
+
+router.post('/send-collaborators-nda-email', csrfProtection, function(req, res){
+  IdeaSeed.findById(req.session.idea)
+  .exec()
+  .then(function(idea){
+
+    //Send the email
+    var emailBody = "Greetings! " + req.user.nickname + " has sent you a request to collaborate"
+    +" on their IdeaJam invention.  To accept your invitation,  follow this link to sign an NDA and contribute. \n\n"
+    +"https://" + req.headers.host + "/ideas/"+encodeURI(idea.name) + "/nda";
+
+    var fromEmailAddress = req.user.username;
+    var emailSubject = "Collaborate on an Idea Jam Idea";
+    var sendgrid  = require('sendgrid')(process.env.SENDGRID_USERNAME, process.env.SENDGRID_PASSWORD);
+    _.each(req.body, function(value, key){
+      if(key.indexOf("collaborator-email") >= 0  && req.body[key] != ""){
+        var toEmailAddress = req.body[key];
+        sendgrid.send({
+          to:       toEmailAddress,
+          from:     fromEmailAddress,
+          subject:  emailSubject,
+          text:     emailBody
+        }, function(err, json) {
+          if (err) { return console.error(err); }
+          console.log(json);
+        });
+      }
+    })
+  })
+  .catch(function(err){
+    // just need one of these
+    console.log('error:', err);
+    res.redirect('/');
+  });
+});
 router.post('/request-reset-email', function(req, res){
     var toEmailAddress = req.body.toEmailAddress;
     var fromEmailAddress = "resetbot@ideajam.io";

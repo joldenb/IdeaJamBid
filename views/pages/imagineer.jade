@@ -42,7 +42,7 @@ html
         if accountIdeaSeeds.length > 0
           ul
             each val, index in accountIdeaSeeds
-              if val.name
+              if val.name && (val.visibility == "public" || val.inventorName == user.username)
                 li
                   a(href="/ideas/" + val.name)
                     h4.idea-text-name= val.name
@@ -57,7 +57,7 @@ html
         if reviewNames.length > 0
           ul
             each val, index in reviewNames
-              if val.name
+              if val.name && (val.visibility == "public" || val.inventorName == user.username)
                 li
                   a(href="/ideas/" + val.name)
                     h4.contributed-idea-text-name= val.name 

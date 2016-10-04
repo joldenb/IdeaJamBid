@@ -183,7 +183,11 @@ var viabilities = [
 *****************************************************************/
 router.get('/', csrfProtection, function (req, res) {
   if(req.user){
-    res.redirect('/imagineer/' + req.user.nickname);
+    if(req.session.loginPath){
+      res.redirect(req.session.loginPath);
+    } else {
+      res.redirect('/imagineer/' + req.user.nickname);
+    }
   } else {
     res.render('index', { csrfToken: req.csrfToken() });
   }
@@ -255,6 +259,55 @@ router.post('/register', csrfProtection, function(req, res) {
 router.get('/about', csrfProtection, function(req, res) {
   res.render('pages/about', {
     user : {}
+  });
+});
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for registering new user for DSW denver startup week
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.post('/register-nda', csrfProtection, function(req, res) {
+  req.body.nickname = req.body.nickname.trim();
+  req.body.username = req.body.username.trim();
+  
+  Account.findOne({ 'username' : req.body.username  }, function(err, user) {
+    if(user){
+      res.render('pages/login', {
+        csrfToken: req.csrfToken(),
+        showMessage : "You already have an account. Log in below"
+      });
+    }
+
+    Account.find({"nickname" : {$regex : ".*"+req.body.nickname+".*"}}, function(err, users){
+      if(users.length > 0){
+        var newNickname = req.body.nickname + "-" + (users.length + 1).toString();
+      } else {
+        var newNickname = req.body.nickname;
+      }
+
+
+      // gets a default password value from jam profile page "itcrashed"
+      Account.register(new Account({
+        firstname : req.body.firstname,
+        lastname : req.body.lastname,
+        nickname : newNickname,
+        username : req.body.username,
+        einsteinPoints: 0, rupees: 0,
+        ideaSeeds: []
+      }), req.body.password, function(err, account) {
+          if (err) {
+              console.log("err.message:" + err.message);
+              return res.render('pages/register', { account : account, message : err.message, csrfToken: req.csrfToken() });
+          }
+
+          passport.authenticate('local')(req, res, function () {
+              res.redirect('/ideas/'+idea.body["idea-seed"] + '/nda');
+          });
+      });
+    });
   });
 });
 
@@ -778,33 +831,37 @@ router.get('/ideas', csrfProtection, function(req, res){
             var currentImage;
             var currentImageStyle;
             var ideaList = _.map(ideas, function(idea){
-              reviewScores[idea.id.toString()] = Math.round(reviewScores[idea.id.toString()]);
+              if(idea.visibility == "public"){
+                reviewScores[idea.id.toString()] = Math.round(reviewScores[idea.id.toString()]);
 
-              //get the image document corresponding to the first image ID
-              // for each individual idea
-              for (var i = 0; i < images.length; i++){
-                if(idea.images.length > 0 &&
-                  idea.images[0].toString() == images[i].id.toString()){
-                  currentImage = images[i]._doc["amazonURL"] || "";
-                  currentImageStyle = "";
-                  currentImageStyle = ideaSeedHelpers.getImageOrientation(images[i]._doc["orientation"]);
-                  break;
-                } else if (idea.images.length == 0){
-                  currentImage = "";
-                  currentImageStyle = "";
-                  break;
+                //get the image document corresponding to the first image ID
+                // for each individual idea
+                for (var i = 0; i < images.length; i++){
+                  if(idea.images.length > 0 &&
+                    idea.images[0].toString() == images[i].id.toString()){
+                    currentImage = images[i]._doc["amazonURL"] || "";
+                    currentImageStyle = "";
+                    currentImageStyle = ideaSeedHelpers.getImageOrientation(images[i]._doc["orientation"]);
+                    break;
+                  } else if (idea.images.length == 0){
+                    currentImage = "";
+                    currentImageStyle = "";
+                    break;
+                  }
                 }
+                var blockDescription = idea.name.charAt(0).toUpperCase() + idea.name.slice(1) + " solves the problem of " + idea.problem + " by " + idea.description + ".";
+                return [
+                  idea['name'], //String
+                  blockDescription, //String
+                  reviewScores[idea.id.toString()], //array of two numbers
+                  idea['inventorName'],
+                  currentImage,
+                  currentImageStyle
+                ];
               }
-              var blockDescription = idea.name.charAt(0).toUpperCase() + idea.name.slice(1) + " solves the problem of " + idea.problem + " by " + idea.description + ".";
-              return [
-                idea['name'], //String
-                blockDescription, //String
-                reviewScores[idea.id.toString()], //array of two numbers
-                idea['inventorName'],
-                currentImage,
-                currentImageStyle
-              ];
             });
+
+            ideaList = _.filter(ideaList, Boolean)
 
             var inventorList = _.map(ideaList, function(idea){
               return idea[3];
@@ -1514,7 +1571,10 @@ router.post('/receipt-upload', csrfProtection, function(req, res) {
         } else {
           IdeaSeed.update(
               { _id : req.session.idea },
-              { $set : { applicationReceipt : newReceipt.id }},
+              { $set : {
+                applicationReceipt : newReceipt.id,
+                visibility : "public"
+              }},
               function(err, raw){
                 console.log('The raw response from Mongo was ', raw);
                 res.sendStatus(200);
@@ -1941,6 +2001,19 @@ router.post('/login-dsw', csrfProtection, function(req,res, next){
 
 });
 
+router.post('/login-nda', csrfProtection, function(req,res, next){
+    passport.authenticate('local', function(err, user, info) {
+      if (err) { return next(err); }
+      if (!user) {
+        return res.redirect('/login/failed-login');
+      }
+      req.logIn(user, function(err) {
+        if (err) { return next(err); }
+        return res.redirect('/ideas/' + req.params["idea-seed"] + "/nda");
+      });
+    })(req, res, next);
+
+});
 
 /*****************************************************************
 ******************************************************************
@@ -1995,174 +2068,167 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
   } else {
     var query = IdeaSeed.findById(req.session.idea);
   }
+  var headshotData, headshotURL, headshotStyle, currentIdea;
+  var variantDates = [],
+      sortedProblems = [];
+  var imageURLs = [];
+  var problems, components;
+  var componentsList = [];
+  var listOfProblems = [];
+  var typeOfProblem, rankingOfProblem;
+  var averageScore = 0;
+  var filename;
+  var imageStyle;
+  var currentReceipt = "";
+  var currentAppStrength;
+  var problemAreas = [
+    "Area : Performability",
+    "Area : Affordability",
+    "Area : Featurability",
+    "Area : Deliverability",
+    "Area : Useability",
+    "Area : Maintainability",
+    "Area : Durability",
+    "Area : Imageability",
+    "Area : Complexity",
+    "Area : Precision",
+    "Area : Variability",
+    "Area : Sensitivity",
+    "Area : Immaturity",
+    "Area : Danger",
+    "Area : Skills"
+  ];
+  var ideaAptitudes;
 
-  query.exec(function(err, idea){
+  query.exec()
+  .then(function(idea){
+    req.session.idea = idea.id;
+    currentIdea = idea._doc;
 
-    if(err || !idea){
-      if(err){
-        console.log("error is " + err);
-      }
+    headshotData = ideaSeedHelpers.getUserHeadshot(req);
+    // headshotURL = headshotData['headshotURL'];
+    headshotStyle = headshotData['headshotStyle'];
 
-      else {
-        console.log("idea not created correctly");
-      }
-      res.redirect('/');
+    return IdeaSeed.findById(req.session.idea).exec()
+  })
+  .then(function(idea){
+    currentIdea = idea._doc;
+
+    //check permissions
+    if(!((currentIdea.visibility == "private" && currentIdea.inventorName == req.user.username) ||
+      currentIdea.visibility == "public" ||
+      (currentIdea.collaborators.indexOf(req.user.username) > -1))){
+      console.log("visibility mode does not permit this user to view this idea");
+      throw new Error('abort promise chain');
       return;
     }
 
-    req.session.idea = idea.id;
-
-    var headshotData = ideaSeedHelpers.getUserHeadshot(req);
-    var headshotURL = headshotData['headshotURL'];
-    var headshotStyle = headshotData['headshotStyle'];
-
-      IdeaSeed.findById(req.session.idea,function(err, idea){
-        currentIdea = idea._doc;
-
-        ideaSeedHelpers.getApplicationStrength(idea.id)
-          .then(function(strengthResponse){
-
-            IdeaProblem.find({"ideaSeed" : currentIdea._id, date : {$exists : true}}, null,
-              {sort: '-date'}, function(err, problems){
-                _.each(problems, function(value, key, list){
-                    Account.findOne({"username": value.creator}, function(err, user) {
-                      value.wholeCreator = user;
-                      if (user.headshots[0]) {
-                        value.headshot = {};
-                        value.headshot.url = user.headshots[0].amazonURL;
-                        var imageStyle;
-                        imageStyle = ideaSeedHelpers.getImageOrientation(user.headshots[0]["orientation"]);
-                        value.headshot.style = imageStyle;
-                      }
-                    });
-                });
-
-              Component.find({"ideaSeed" : idea.id}, function(err, components){
-                var variantDates = [],
-                    sortedProblems = [];
-                var imageURLs = [];
-                var componentsList = [];
-                componentsList = _.map(components, function(item){return "Component : "+item['text'];});
-                componentsList = componentsList.filter(function(item){
-                  if(item == "Component : undefined"){
-                    return false;
-                  } else {
-                    return true;
-                  }
-                });
-                var problemAreas = [
-                  "Area : Performability",
-                  "Area : Affordability",
-                  "Area : Featurability",
-                  "Area : Deliverability",
-                  "Area : Useability",
-                  "Area : Maintainability",
-                  "Area : Durability",
-                  "Area : Imageability",
-                  "Area : Complexity",
-                  "Area : Precision",
-                  "Area : Variability",
-                  "Area : Sensitivity",
-                  "Area : Immaturity",
-                  "Area : Danger",
-                  "Area : Skills"
-                ];
-
-                var listOfProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
-                var typeOfProblem, rankingOfProblem;
-                for(var i = 0; i < listOfProblems.length; i++){
-                  typeOfProblem = _.invert(currentIdea)[listOfProblems[i][1]];
-                  rankingOfProblem = idea[typeOfProblem.slice(0, -7) + "Priority"];
-                  listOfProblems[i].push(rankingOfProblem);
-                }
-                listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
-                if(currentIdea.variants.length > 0){
-                  for(var i = 0; i < currentIdea.variants.length; i++){
-                    variantDates.push([
-                      new Date(parseInt(currentIdea.variants[i].name.substr(-13))).toString(),
-                      currentIdea.variants[i].name
-                    ]);
-                  }
-                }
-                IdeaReview.find({"reviewer" : req.user.username, "ideaSeedId" : idea.id}, function(err, review){
-                  var averageScore = 0;
-                  if(review.length > 0){
-                    req.session.ideaReview = review[0];
-                    averageScore = Math.round(IdeaReview.averageViabilityScores(review));
-                  }
-                  Aptitude.find({"_id" : {$in : idea.aptitudes}}, function(err, myAptitudes){
-                    IdeaImage.findOne({"_id" : idea.applicationReceipt}, function(err, receipt){
-                      if (idea._doc.images.length !== 0){
-                        for (i =0; i < idea._doc.images.length; i++){
-                          var j = 0;
-                          IdeaImage.findOne({"_id" : idea._doc.images[i]}, function(err, image){
-                            j++;
-                            if(image && image._doc && image.amazonURL){
-                              var filename = image._doc["filename"];
-                              var imageStyle = "";
-                              imageStyle = ideaSeedHelpers.getImageOrientation(image["orientation"]);
-                              imageURLs.push([
-                                filename,
-                                image["amazonURL"],
-                                imageStyle
-                              ]);
-                            }
-                            if (j == idea._doc.images.length){
-                              res.render('pages/ideas-single', { user : req.user || {}, idea : currentIdea,
-                                review : review || {},
-                                averageScore : averageScore,
-                                csrfToken: req.csrfToken(),
-                                variantDates : variantDates,
-                                receipt : receipt,
-                                strengthResponse : strengthResponse,
-                                appStrengthText : strengthResponse['appStrengthText'] || "" ,
-                                appStrengthClass : strengthResponse['appStrengthClass'] || "" ,
-                                problemAreas  : problemAreas,
-                                aptitudes : myAptitudes,
-                                headshot : headshotURL,
-                                headshotStyle : headshotStyle,
-                                imageURLs : imageURLs,
-                                inventorName : idea.inventorName,
-                                problems : problems,
-                                components : components,
-                                viabilities : viabilities,
-                                listOfProblems : listOfProblems });
-                            }
-                          });
-                        }
-                      } else {
-                              res.render('pages/ideas-single', { user : req.user || {}, idea : currentIdea,
-                                review : review || {},
-                                csrfToken: req.csrfToken(),
-                                variantDates : variantDates,
-                                receipt : receipt,
-                                problemAreas  : problemAreas,
-                                aptitudes : myAptitudes,
-                                strengthResponse : strengthResponse,
-                                appStrengthText : strengthResponse['appStrengthText'],
-                                appStrengthClass : strengthResponse['appStrengthClass'],
-                                imageURLs : [],
-                                inventorName : idea.inventorName,
-                                headshot : headshotURL,
-                                headshotStyle : headshotStyle,
-                                problems : problems,
-                                averageScore : averageScore,
-                                components : components,
-                                viabilities : viabilities,                                          
-                                listOfProblems : listOfProblems });
-                      }
-                    });
-                  }); //end of aptitude query
-              }); // end of the review query
-
-
-
-              }); //end of components query
-            }); // end of idea problems query
-
+    return ideaSeedHelpers.getApplicationStrength(idea.id)
+  })
+  .then(function(strengthResponse){
+    currentAppStrength = strengthResponse;
+    return IdeaProblem.find({"ideaSeed" : currentIdea._id, date : {$exists : true}})
+      .sort('-date')
+      .exec()
+  })
+  .then(function(currentProblems){
+    problems = currentProblems;
+    _.each(problems, function(value, key, list){
+        Account.findOne({"username": value.creator}, function(err, user) {
+          value.wholeCreator = user;
+          if (user.headshots[0]) {
+            value.headshot = {};
+            value.headshot.url = user.headshots[0].amazonURL;
+            var imageStyle;
+            imageStyle = ideaSeedHelpers.getImageOrientation(user.headshots[0]["orientation"]);
+            value.headshot.style = imageStyle;
+          }
         });
-      });
+    });
 
+    return Component.find({"ideaSeed" : currentIdea._id});
+  })
+  .then(function(currentComponents){
+    components = currentComponents;
+    componentsList = _.map(components, function(item){return "Component : "+item['text'];});
+    componentsList = componentsList.filter(function(item){
+      if(item == "Component : undefined"){
+        return false;
+      } else {
+        return true;
+      }
+    });
+    listOfProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
+    for(var i = 0; i < listOfProblems.length; i++){
+      typeOfProblem = _.invert(currentIdea)[listOfProblems[i][1]];
+      rankingOfProblem = idea[typeOfProblem.slice(0, -7) + "Priority"];
+      listOfProblems[i].push(rankingOfProblem);
+    }
+    listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
+    if(currentIdea.variants.length > 0){
+      for(var i = 0; i < currentIdea.variants.length; i++){
+        variantDates.push([
+          new Date(parseInt(currentIdea.variants[i].name.substr(-13))).toString(),
+          currentIdea.variants[i].name
+        ]);
+      }
+    }
+    return IdeaReview.find({"reviewer" : req.user.username, "ideaSeedId" : currentIdea._id})
+  })
+  .then(function(review){
+    if(review.length > 0){
+      req.session.ideaReview = review[0];
+      averageScore = Math.round(IdeaReview.averageViabilityScores(review));
+    }
+    return Aptitude.find({"_id" : {$in : currentIdea.aptitudes}})
+  })
+  .then(function(myAptitudes){
+    ideaAptitudes = myAptitudes;
+    return IdeaImage.findOne({"_id" : currentIdea.applicationReceipt})
+  })
+  .then(function(receipt){
+    currentReceipt = receipt;
+    return IdeaImage.findOne({"_id" : {$in : currentIdea.images}}).exec()
+  })
+  .then(function(images){
+    _.each(images,function(thisImage, index){
+      if(thisImage && thisImage.amazonURL){
+        filename = thisImage["filename"];
+        imageStyle = "";
+        imageStyle = ideaSeedHelpers.getImageOrientation(thisImage["orientation"]);
+        imageURLs.push([
+          filename,
+          thisImage["amazonURL"],
+          imageStyle
+        ]);
+      }
+    });
+    res.render('pages/ideas-single', { user : req.user || {}, idea : currentIdea,
+      review : req.session.ideaReview || {},
+      averageScore : averageScore,
+      csrfToken: req.csrfToken(),
+      variantDates : variantDates,
+      receipt : currentReceipt,
+      strengthResponse : currentAppStrength,
+      appStrengthText : currentAppStrength['appStrengthText'] || "" ,
+      appStrengthClass : currentAppStrength['appStrengthClass'] || "" ,
+      problemAreas  : problemAreas,
+      aptitudes : ideaAptitudes,
+      headshot : headshotURL,
+      headshotStyle : headshotStyle,
+      imageURLs : imageURLs,
+      inventorName : currentIdea.inventorName,
+      problems : problems,
+      components : components,
+      viabilities : viabilities,
+      listOfProblems : listOfProblems
+    });
+  
+  })
+  .catch(function(err){
+    // just need one of these
+    console.log('error:', err);
+    res.redirect('/');
   });
 });
 
@@ -2927,6 +2993,103 @@ router.get('/populate-test/', csrfProtection, function(req, res){
       });      
     });
 });
+
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for getting an NDA between inventor and collaborator
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/ideas/:ideaName/nda', csrfProtection, function(req, res){
+  var userAccount;
+  if(req.user && req.user.username){
+    Account.findOne({ 'username' : req.user.username  }).exec()
+    .then(function(account){
+      userAccount = account;
+      return IdeaSeed.find({"name" : req.params.ideaName}).exec()
+    })
+    .then(function(ideas){
+      if(ideas && ideas.length){
+        res.render('pages/nda', {
+          user : userAccount,
+          csrfToken: req.csrfToken(),
+          idea : ideas[0] || {}
+        });
+      } else {
+        throw new Error('abort promise chain');
+      }
+    })
+    .catch(function(err){
+      console.log("error is " + err)
+      res.redirect('/')
+      return;
+    })
+  } else {
+    IdeaSeed.find({"name" : req.params.ideaName}).exec()
+    .then(function(ideas){
+      if(ideas && ideas.length){
+        req.session.loginPath = "/ideas/" + ideas[0].name + "/nda"
+        res.render('pages/nda', {
+          user : userAccount || {},
+          csrfToken: req.csrfToken(),
+          idea : ideas[0] || {}
+        });
+      } else {
+        throw new Error('abort promise chain');
+      }
+    })
+    .catch(function(err){
+      console.log("error is " + err)
+      res.redirect('/')
+      return;
+    });
+  }
+});
+
+router.post('/sign-nda', csrfProtection, function(req, res){
+  if(req.body.agree && req.user && req.user.id){
+    var collaboratorAccount;
+    Account.findById(req.user.id).exec()
+    .then(function(account){
+      if(account){
+        collaboratorAccount = account;
+        return IdeaSeed.find({"name" : req.body["idea-seed"]}).exec()
+      } else {
+        throw new Error('abort promise chain');
+      }
+    })
+    .then(function(ideaSeeds){
+      if(ideaSeeds && ideaSeeds[0]){
+        var thisIdea = ideaSeeds[0];
+        if(thisIdea.collaborators && thisIdea.collaborators.length){
+          thisIdea.collaborators.push(collaboratorAccount.username);
+        } else {
+          thisIdea['collaborators'] = [collaboratorAccount.username];
+        }
+
+        thisIdea.save(function (err, idea) {
+          if (err) return console.error(err);
+        });
+        req.session.loginPath = null;
+        res.redirect('/ideas/' + req.body["idea-seed"]);
+        return;
+      } else {
+        throw new Error('abort promise chain here');
+      }
+    })
+    .catch(function(err){
+      console.log("this error is " + err)
+      res.redirect('/')
+      return;
+    });    
+  } else {
+    console.log("that error is " + err)
+    res.redirect('/')
+    return;
+  }
+})
 
 
 /*****************************************************************

@@ -86,19 +86,22 @@ html
 
 
       .col-sm-8
-        //- .row
-        //-   button(type="button" id="emailShareButton" class="btn secondary-btn btn-go pull-right clearfix" data-toggle="modal" data-target="#shareModal")
-        //-     span.glyphicon.glyphicon-envelope   
+        if (inventorName == user.username) && idea.visibility == "private"
+          .row
+            a.btn.btn-electric.btn-lg.btn-block#inviteCollaboratorsButton(type="button" data-toggle="modal" data-target="#inviteCollaboratorsModal") Invite Collaborators
+        .row
+          button(type="button" id="emailShareButton" class="btn secondary-btn btn-go pull-right clearfix" data-toggle="modal" data-target="#shareModal")
+            span.glyphicon.glyphicon-envelope   
 
-        //- if inventorName == user.username
-        //-   .row.patent-strength-row
-        //-     h4 Is #{idea.name} ready to file?
-        //-       a#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal")  What's Left?
+        if inventorName == user.username
+          .row.patent-strength-row
+            h4 Is #{idea.name} ready to file?
+              a#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal")  What's Left?
 
-        //-     .app-strength-bar.col-md-8
-        //-       .app-strength(class="#{appStrengthClass}") #{appStrengthText}
-        //-     .col-md-4
-        //-       a.btn.btn-go#file-patent(data-toggle="modal" data-target="#filePatentModal") File My Patent
+            .app-strength-bar.col-md-8
+              .app-strength(class="#{appStrengthClass}") #{appStrengthText}
+            .col-md-4
+              a.btn.btn-go#file-patent(data-toggle="modal" data-target="#filePatentModal") File My Patent
 
         .row
           .col-xs-12
@@ -304,7 +307,7 @@ html
             a.btn.btn-go#create-application-button( href="/create-application" ) Download Application
             br
             if !receipt
-              form(role='form', id="prelimReceiptUpload" action="/reciept-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
+              form(role='form', id="prelimReceiptUpload" action="/receipt-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
                 .form-group
                   input(type="hidden", name="_csrf", value="#{csrfToken}")
                   input#receiptInput(type="file", name="receipt")
@@ -346,9 +349,32 @@ html
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#emailSend(type='submit') Send
 
+
+  #inviteCollaboratorsModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Invite up to 6 Collaborators
+        .modal-body
+          form(role='form', id="inviteForm" action="/invite-collaborators", method="post", style='max-width: 300px;')
+            .form-group
+              input.form-control.collaboratorEmail(type="text" name="one" placeholder="To:")
+              input.form-control.collaboratorEmail(type="text" name="two" placeholder="To:")
+              input.form-control.collaboratorEmail(type="text" name="three" placeholder="To:")
+              input.form-control.collaboratorEmail(type="text" name="four" placeholder="To:")
+              input.form-control.collaboratorEmail(type="text" name="five" placeholder="To:")
+              input.form-control.collaboratorEmail(type="text" name="six" placeholder="To:")
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+              button.btn.btn-info(data-dismiss="modal") Cancel
+              button.btn.btn-success#inviteCollaboratorSend(type='submit') Send
+
+
   button(type="button" id="titleModalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#titleModal") Go Win Fight
 
   include ../partials/js-includes.jade
+  script(src='/exif.js')
   script(type="text/javascript").
     
     function initializeAllSliders(idea){
@@ -1305,3 +1331,21 @@ html
             window.location.reload(true);
           });
     });
+
+    $("#inviteCollaboratorSend").click(function(event){
+      //if there are no collaborator emails entered, just close the modal or something
+
+      event.preventDefault();
+      var data = {
+          _csrf : $('[name="_csrf"]').val()
+      };
+
+      $(".collaboratorEmail").each(function(index){
+        data['collaborator-email-' + index] = $(this).val();
+      });
+
+      $.post('/send-collaborators-nda-email', data,
+        function(resp) {
+          window.location.reload(true);
+        });
+    })
