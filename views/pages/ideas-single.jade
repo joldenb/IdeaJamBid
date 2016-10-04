@@ -57,8 +57,9 @@ html
               ul
                 each component,index in components
                   if component['text']
-                    li 
-                      h5 #{component['text']}
+                    li
+                      a(href="/component-profile/" + component['identifier'])
+                        h5 #{component['text']}
             else
               <i>No components yet</i>
             if inventorName == user.username

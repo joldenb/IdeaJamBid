@@ -119,6 +119,26 @@ html
         //-           a(href="/ideas/#{idea.name}/variant/"+variantDate[1]) #{variantDate[0]}
         //-   else 
         //-     p <i>Not currently part of any variants</i>
+      .component-dimensions
+          h3 In the best case, this component is produced to the dimensions of:
+        if( component['dimensions'].length > 0)
+          ul
+            each dimension, index in component['dimensions']
+              if dimension
+                li #{dimension}
+        else
+          ul
+            li.no-descriptions No Dimensions Yet
+        if idea.name && idea.inventorName == user.username
+          form(role='form', id="addDimension" action="/add-dimension", method="post", data-idea-doc=idea)
+            .row
+              .col-sm-8
+                input.form-control(name="dimension", id="dimension",
+                placeholder='Add dimension')
+                p Example: '15 inches wide, 10 inches tall, and 5 inches deep' or 'a length of range 4-7 millimeters, a height of range 10-14 millimeters, and a depth of range 2-3 mm'
+                input(type="hidden", name="_csrf", value="#{csrfToken}")
+              .col-sm-4
+                button.btn.btn-success#dimensionSubmit(type='submit') Save
       .return-button
         a.home-logout.btn.btn-industry.btn-lg( href="/ideas/#{idea.name}") Back to Idea Summary
       br
@@ -347,6 +367,23 @@ html
         }
       });
     });
+
+    $("#dimensionSubmit").click(function(event){
+      event.preventDefault();
+      var data = {
+        "_csrf" : $('[name="_csrf"]').val(),
+        "dimension" : $("#dimension").val(),
+        "component-identifier" :  "!{component['identifier']}"
+      }
+      $.post("/add-dimension", data, function(response){
+        if(response=="OK"){
+          location.reload();
+        } else {
+          alert("Not submitted successfully");
+        }
+      });
+    });
+
 
     $(document).ready(function(){
       $(".upvote-imperfection").click(function(event){

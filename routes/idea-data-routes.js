@@ -221,5 +221,32 @@ router.post('/add-description', csrfProtection, function(req, res) {
     });
 });
 
+////////////////////////////////////////////////
+// Add a dimension to a component
+////////////////////////////////////////////////
+router.post('/add-dimension', csrfProtection, function(req, res) {
+
+  if( !(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
+
+    Component.findOne({"identifier" : req.body["component-identifier"]}, function(err, component){
+      if(err){
+        res.json({error: err});
+      }
+
+      if(component){
+        if( req.body.dimension!=="" ){
+          component.dimensions.push(req.body.dimension);
+        }
+        component.save(function(err){
+          res.sendStatus(200);
+        });
+      } else {
+        res.sendStatus(409);
+      }
+    });
+});
 
 module.exports = router;
