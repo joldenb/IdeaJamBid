@@ -9,6 +9,7 @@ var Component = new Schema({
 	text				: String,	 // this is optional
 	descriptions : [ String ], // must have at least one
 	dimensions : [String],
+	materials : [String],
 
 	hindsight	: String,
 	outsight	: String,

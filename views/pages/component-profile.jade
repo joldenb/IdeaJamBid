@@ -120,7 +120,7 @@ html
         //-   else 
         //-     p <i>Not currently part of any variants</i>
       .component-dimensions
-          h3 In the best case, this component is produced to the dimensions of:
+        h3 In the best case, this component is produced to the dimensions of:
         if( component['dimensions'].length > 0)
           ul
             each dimension, index in component['dimensions']
@@ -128,9 +128,10 @@ html
                 li #{dimension}
         else
           ul
-            li.no-descriptions No Dimensions Yet
+            li.no-dimensions No Dimensions Yet
+        a.btn.btn-industry.btn-lg#showDimensions Add Dimensions
         if idea.name && idea.inventorName == user.username
-          form(role='form', id="addDimension" action="/add-dimension", method="post", data-idea-doc=idea)
+          form(role='form', id="addDimension" action="/add-dimension", method="post", data-idea-doc=idea, style="display:none;")
             .row
               .col-sm-8
                 input.form-control(name="dimension", id="dimension",
@@ -139,6 +140,29 @@ html
                 input(type="hidden", name="_csrf", value="#{csrfToken}")
               .col-sm-4
                 button.btn.btn-success#dimensionSubmit(type='submit') Save
+
+
+      .component-materials
+        h3 In the best case, the component incorporates this material:
+        if( component['materials'].length > 0)
+          ul
+            each material, index in component['materials']
+              if material
+                li #{material}
+        else
+          ul
+            li.no-materials No Materials Yet
+        a.btn.btn-industry.btn-lg#showMaterials Add Materials
+        if idea.name && idea.inventorName == user.username
+          form(role='form', id="addMaterial" action="/add-material", method="post", data-idea-doc=idea, style="display:none;")
+            .row
+              .col-sm-8
+                input.form-control(name="material", id="material",
+                placeholder='Add material')
+                p Example: 'Inconel Alloy C-276' or 'an alloy comprising at least 15% Molybdenum, 15% Chromium, and 5% Iron
+                input(type="hidden", name="_csrf", value="#{csrfToken}")
+              .col-sm-4
+                button.btn.btn-success#materialSubmit(type='submit') Save
       .return-button
         a.home-logout.btn.btn-industry.btn-lg( href="/ideas/#{idea.name}") Back to Idea Summary
       br
@@ -385,6 +409,22 @@ html
     });
 
 
+    $("#materialSubmit").click(function(event){
+      event.preventDefault();
+      var data = {
+        "_csrf" : $('[name="_csrf"]').val(),
+        "material" : $("#material").val(),
+        "component-identifier" :  "!{component['identifier']}"
+      }
+      $.post("/add-material", data, function(response){
+        if(response=="OK"){
+          location.reload();
+        } else {
+          alert("Not submitted successfully");
+        }
+      });
+    });
+
     $(document).ready(function(){
       $(".upvote-imperfection").click(function(event){
         event.preventDefault();
@@ -400,3 +440,12 @@ html
         return false;
       });        
     });
+
+    $("#showDimensions").click(function(){
+      $("#addDimension").show(400)
+      $("#showDimensions").hide()
+    })
+    $("#showMaterials").click(function(){
+      $("#addMaterial").show(400)
+      $("#showMaterials").hide()
+    })    
