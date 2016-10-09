@@ -304,7 +304,7 @@ html
           .modal-title 
             h2 File a Patent Application
         .modal-body
-          if appStrengthClass == "yes col-md-12"
+            //- if appStrengthClass == "yes col-md-12"
             a.btn.btn-go#create-application-button( href="/create-application" ) Download Application
             br
             if !receipt
@@ -322,9 +322,9 @@ html
 
               a.btn.btn-go( href="/view-idea-suggestions" ) Create a New Variant
               br
-          else if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
-            h4 Enter more information before generating an application.
-          br
+            //- else if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
+            //-   h4 Enter more information before generating an application.
+            br
 
           .modal-footer
             button.btn.btn-info(data-dismiss="modal") Cancel

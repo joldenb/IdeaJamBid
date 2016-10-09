@@ -134,6 +134,7 @@ html
           form(role='form', id="addDimension" action="/add-dimension", method="post", data-idea-doc=idea, style="display:none;")
             .row
               .col-sm-8
+                p#no-dimension-value-entered(style="display:none;") Please enter a valid dimension
                 input.form-control(name="dimension", id="dimension",
                 placeholder='Add dimension')
                 p Example: '15 inches wide, 10 inches tall, and 5 inches deep' or 'a length of range 4-7 millimeters, a height of range 10-14 millimeters, and a depth of range 2-3 mm'
@@ -157,6 +158,7 @@ html
           form(role='form', id="addMaterial" action="/add-material", method="post", data-idea-doc=idea, style="display:none;")
             .row
               .col-sm-8
+                p#no-material-value-entered(style="display:none;") Please enter a valid material
                 input.form-control(name="material", id="material",
                 placeholder='Add material')
                 p Example: 'Inconel Alloy C-276' or 'an alloy comprising at least 15% Molybdenum, 15% Chromium, and 5% Iron
@@ -394,35 +396,43 @@ html
 
     $("#dimensionSubmit").click(function(event){
       event.preventDefault();
-      var data = {
-        "_csrf" : $('[name="_csrf"]').val(),
-        "dimension" : $("#dimension").val(),
-        "component-identifier" :  "!{component['identifier']}"
-      }
-      $.post("/add-dimension", data, function(response){
-        if(response=="OK"){
-          location.reload();
-        } else {
-          alert("Not submitted successfully");
+      if($("#dimension").val() == "") {
+        $("#no-dimension-value-entered").show(400);
+      } else {
+        var data = {
+          "_csrf" : $('[name="_csrf"]').val(),
+          "dimension" : $("#dimension").val(),
+          "component-identifier" :  "!{component['identifier']}"
         }
-      });
+        $.post("/add-dimension", data, function(response){
+          if(response=="OK"){
+            location.reload();
+          } else {
+            alert("Not submitted successfully");
+          }
+        });
+      }
     });
 
 
     $("#materialSubmit").click(function(event){
       event.preventDefault();
-      var data = {
+      if($("#material").val() == "") {
+        $("#no-material-value-entered").show(400);
+      } else {
+        var data = {
         "_csrf" : $('[name="_csrf"]').val(),
         "material" : $("#material").val(),
         "component-identifier" :  "!{component['identifier']}"
-      }
-      $.post("/add-material", data, function(response){
-        if(response=="OK"){
-          location.reload();
-        } else {
-          alert("Not submitted successfully");
         }
-      });
+        $.post("/add-material", data, function(response){
+          if(response=="OK"){
+            location.reload();
+          } else {
+            alert("Not submitted successfully");
+          }
+        });
+      }
     });
 
     $(document).ready(function(){

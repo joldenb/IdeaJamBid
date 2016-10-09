@@ -384,6 +384,9 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 						}
 					}
 
+					///////////////////////////////////////////////////////////////
+					// This is the component section
+					///////////////////////////////////////////////////////////////
 					pObj = docx.createP ();
 					pObj.addText( 'DESCRIPTION OF THE INVENTION', { font_size : 14 } );
 
@@ -402,19 +405,47 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 					}
 					pObj.addText('.', {font_size : 14});
 
+					//This section is for suggestions, which are also stored in the components collection
 					for(i=0; i < comps.length; i++){
-						if(comps[i].problemID && comps[i].descriptions.length > 0){
+						if(comps[i].problemID){
 							pObj = docx.createP ();
 							pObj.addText( 'An embodiment of the invention incorporates ' +
 								comps[i].descriptions[0].toLowerCase() + '. ', { font_size : 14 } );
-							pObj.addText( 'The present inventor has recognized that ' +
+							
+							// This section is for the dimensions
+							if(comps[i].dimensions.length > 0){
+								pObj.addText( 'In the best case, this component is produced to the following dimensions: ' + comps[i].dimensions[0] + ". ", { font_size : 14 } );
+								if(comps[i].dimensions.length > 1){
+									_.each(comps[i].dimensions.slice(1), function(eachDimension, index){
+										if(eachDimension){
+											pObj.addText( 'The invention can alternatively be produced to the following dimensions: ' + eachDimension + ". ", { font_size : 14 } );
+										}
+									})
+								}
+							}
+
+							// This section is for the materials
+							if(comps[i].dimensions.length > 0){
+								pObj.addText( 'In the best case, the component incorporates this material: ' + comps[i].materials[0] + ". ", { font_size : 14 } );
+								if(comps[i].materials.length > 1){
+									_.each(comps[i].materials.slice(1), function(eachMaterial, index){
+										if(eachMaterial){
+											pObj.addText( 'An alternative material this component incorporates is: ' + eachMaterial + ". ", { font_size : 14 } );
+										}
+									})
+								}
+							}
+
+							if(comps[i].descriptions.length > 0){
+								pObj.addText( 'The present inventor has recognized that ' +
 								comps[i].descriptions[0].toLowerCase() + ' addresses the problem of ', { font_size : 14 } );
-							for(j=0; j < problems.length; j++){
-								if(comps[i].problemID.toString() == problems[j]['id'].toString()){
-									pObj.addText( problems[j]['text'] + '.  ', { font_size : 14 } );
+								for(j=0; j < problems.length; j++){
+									if(comps[i].problemID.toString() == problems[j]['id'].toString()){
+										pObj.addText( problems[j]['text'] + '.  ', { font_size : 14 } );
+									}
 								}
 							}	
-							
+
 							if(comps[i].descriptions.length > 1){
 								for(j=1; j < comps[i].descriptions.length; j++){
 									pObj.addText( ''+comps[i].descriptions[0] + ' is described as ', { font_size : 14 } );
@@ -483,8 +514,6 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 								}
 							}
 						}
-
-
 					}
 
 					pObj = docx.createP ();
@@ -519,7 +548,6 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 						'the sequence of steps in a flow diagram or elements in the claims, even when preceded by a letter does not '+
 						'imply or require that sequence.', { font_size : 14 } );
 
-
 					docx.putPageBreak ();
 					pObj = docx.createP ();
 					pObj.addText( 'CLIAMS', { font_size : 14 } );
@@ -527,8 +555,6 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 					pObj.addText( 'I claim:', { font_size : 14 } );
 					pObj = docx.createP ();
 					pObj.addText( '1. The invention described herein.', { font_size : 14 } );
-
-
 
 					docx.putPageBreak ();
 					pObj = docx.createP ();
@@ -545,17 +571,31 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 						}
 					}
 
-					for(i=0;i<images.length; i++){
+					for(var i=0;i<images.length; i++){
+						console.log("this i is " + i)
 						docx.putPageBreak ();
 						pObj = docx.createP ();
-						pObj.addText( 'Figure ' + (i+1), { font_size : 14 } );
-						pObj.addImage(__dirname + '/figure-' + (i+1) +'.png', { cx: 600, cy: 400 } ) ;
+						if (fs.existsSync(__dirname + '/figure-' + (i+1) +'.png')) {
+							//fs.stat(__dirname + '/figure-' + (i+1) +'.png', function(err, stats) {
+								//if(stats['size'] > 0){
+									//console.log("size is " + stats['size'])
+									console.log("i is " + i)
+									console.log("images length is " + images.length)
+									pObj.addText( 'Figure ' + (i+1), { font_size : 14 } );
+									pObj.addImage(__dirname + '/figure-' + (i+1) +'.png', { cx: 600, cy: 400 } ) ;
+								//}
+							//});
+						} else {
+							console.log("figure " + i + " is not working")
+						}
 					}
 
 					docx.generate ( res, {
 				    'finalize': function ( written ) {
 								for(i=0;i<images.length; i++){
-									fs.unlink(__dirname + '/figure-' + (i+1) +'.png');
+									if (fs.existsSync(__dirname + '/figure-' + (i+1) +'.png')) {
+										fs.unlink(__dirname + '/figure-' + (i+1) +'.png');
+									}
 								}
 
 				        console.log ( 'Finish to create a preliminary application.\nTotal bytes created: ' + written + '\n' );
@@ -580,7 +620,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 			
 			var s3 = new aws.S3({
 				accessKeyId : process.env.accessKeyId,
-      	secretAccessKey : process.env.secretAccessKey
+				secretAccessKey : process.env.secretAccessKey
 			});
 			var params = {
 				Bucket: 'qonspire',
@@ -593,61 +633,83 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 					console.log('error is ' + error);
 				}).
 				on('complete', function(response) {
-					img.src = "data:" + images[number].imageMimetype + ";base64," + response.data.Body.toString('base64');
-					console.log(img.src)
-					ctx.drawImage(img, 200, 150, 600, 400);
+					console.log(images[number].amazonURL)
+					if(images[number].imageMimetype && response.data && response.data.Body){
+						var imageSrc = "data:" + images[number].imageMimetype + ";base64," + response.data.Body.toString('base64');
+						img['src'] = imageSrc || "hi";
+						if (img){
+							ctx.drawImage(img, 200, 150, 600, 400);
+							// This part takes the image from Amazon S3 and overlays all the annotated
+							// components over it to lay into the Word File
+							//
+							var componentImageIds = [], imageIndex;
+							for(var j=0; j < comps.length; j++){
+								componentImageIds = _.map(comps[j].images, function(image){
+									return image['imageID'].toString();
+								});
 
-					// This part takes the image from Amazon S3 and overlays all the annotated
-					// components over it to lay into the Word File
-					//
-					var componentImageIds = [], imageIndex;
-					for(var j=0; j < comps.length; j++){
-						componentImageIds = _.map(comps[j].images, function(image){
-							return image['imageID'].toString();
-						});
+								if(componentImageIds.indexOf(images[number].id) > -1  && 
+										comps[j]['number'] ){
+									
+									imageIndex = componentImageIds.indexOf(images[number].id);
 
-						if(componentImageIds.indexOf(images[number].id) > -1  && 
-								comps[j]['number'] ){
-							
-							imageIndex = componentImageIds.indexOf(images[number].id);
+									var firstX = parseInt(comps[j].images[imageIndex].firstX);
+									var firstY = parseInt(comps[j].images[imageIndex].firstY);
+									var secondX = parseInt(comps[j].images[imageIndex].secondX);
+									var secondY = parseInt(comps[j].images[imageIndex].secondY);
+									ctx.beginPath();
+				          ctx.moveTo(firstX, firstY);
+				          ctx.lineTo(secondX, secondY);
+				          ctx.stroke();
 
-							var firstX = parseInt(comps[j].images[imageIndex].firstX);
-							var firstY = parseInt(comps[j].images[imageIndex].firstY);
-							var secondX = parseInt(comps[j].images[imageIndex].secondX);
-							var secondY = parseInt(comps[j].images[imageIndex].secondY);
-							ctx.beginPath();
-		          ctx.moveTo(firstX, firstY);
-		          ctx.lineTo(secondX, secondY);
-		          ctx.stroke();
+				          var textCoordX, textCoordY;
+				          ctx.fillStyle = "black";
+				          ctx.font="20px Helvetica";
+				          if(secondX > 800){
+				            textCoordX = (secondX*1 + 20);
+				            textCoordY = secondY;
+				          } else if(secondX < 200){
+				            textCoordX = secondX - 20;
+				            textCoordY = secondY;
+				          } else if(secondY > 550){
+				            textCoordX = secondX;
+				            textCoordY = (secondY*1 + 20);
+				          } else if(secondY < 150){
+				            textCoordX = secondX;
+				            textCoordY = secondY - 20;
+				          }
+				          ctx.fillText(comps[j]['number']+".",textCoordX,textCoordY);
+								}
+							}
 
-		          var textCoordX, textCoordY;
-		          ctx.fillStyle = "black";
-		          ctx.font="20px Helvetica";
-		          if(secondX > 800){
-		            textCoordX = (secondX*1 + 20);
-		            textCoordY = secondY;
-		          } else if(secondX < 200){
-		            textCoordX = secondX - 20;
-		            textCoordY = secondY;
-		          } else if(secondY > 550){
-		            textCoordX = secondX;
-		            textCoordY = (secondY*1 + 20);
-		          } else if(secondY < 150){
-		            textCoordX = secondX;
-		            textCoordY = secondY - 20;
-		          }
-		          ctx.fillText(comps[j]['number']+".",textCoordX,textCoordY);
+							var data = canvas.toDataURL().replace(/^data:image\/\w+;base64,/, "");
+							var buf = new Buffer(data, 'base64');
+							fs.writeFile(__dirname + '/figure-' + (number+1) +'.png', buf, 'base64', function(err) {
+  							if(err) console.log(err);
+								if(number < images.length - 1){
+									number++;
+									renderImage(number);
+									// once all the images are created, create the rest of the word document
+								} else if (number == images.length - 1 ){
+									console.log("now were going in here")
+									createWordDoc();
+
+								}
+							});
+						} else {
+							console.log('img has no src');
+							if(number < images.length - 1){
+								number++;
+								renderImage(number);
+							// once all the images are created, create the rest of the word document
+							} else if (number == images.length - 1 ){
+								createWordDoc();
+
+							}
+
 						}
-					}
-					out = fs.createWriteStream(__dirname + '/figure-' + (number+1) +'.png');
-					canvasStream = canvas.pngStream();
-
-					canvasStream.on('data', function(chunk){
-						out.write(chunk);
-					});
-
-					canvasStream.on('end', function(){
-						console.log('saved png');
+					} else {
+						console.log('s3 image not returned correctly');
 						if(number < images.length - 1){
 							number++;
 							renderImage(number);
@@ -656,7 +718,8 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 							createWordDoc();
 
 						}
-					});
+
+					}
 				}).
 				send();
 		}
