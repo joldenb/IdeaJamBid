@@ -3483,4 +3483,21 @@ router.get('/sign-s3', csrfProtection, function(req, res) {
     res.end();
   });
 });
+
+router.get("/expose-idea-seed",csrfProtection, function(req, res){
+  if( !(req.user && req.user.username && req.session.idea)){
+      res.redirect('/');
+      return;
+  }
+  IdeaSeed.findById(req.session.idea,function(err, idea){
+    if(!idea){
+      res.redirect('/');
+      return;
+    }
+    idea.visibility = "public";
+    idea.save(function(err, updatedDocument){
+      res.sendStatus(200);
+    })
+  });
+})
 module.exports = router;

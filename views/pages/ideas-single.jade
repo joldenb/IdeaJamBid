@@ -311,30 +311,45 @@ html
           .modal-title 
             h2 File a Patent Application
         .modal-body
-            //- if appStrengthClass == "yes col-md-12"
-            a.btn.btn-go#create-application-button( href="/create-application" ) Download Application
-            br
-            if !receipt
-              form(role='form', id="prelimReceiptUpload" action="/receipt-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
-                .form-group
-                  input(type="hidden", name="_csrf", value="#{csrfToken}")
-                  input#receiptInput(type="file", name="receipt")
-            else
-              a(href=receipt.amazonURL download)
-                p Receipt uploaded.
-              h4 Variants
-              each variantDate in variantDates
-                .row
-                  a(href="/ideas/#{idea.name}/variant/"+variantDate[1]) #{variantDate[0]}
-
-              a.btn.btn-go( href="/view-idea-suggestions" ) Create a New Variant
+            if appStrengthClass == "yes col-md-12" || idea.visibility == "public"
+              a.btn.btn-go#create-application-button( href="/create-application" ) Download Application
               br
-            //- else if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
-            //-   h4 Enter more information before generating an application.
+              if !receipt
+                form(role='form', id="prelimReceiptUpload" action="/receipt-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
+                  .form-group
+                    input(type="hidden", name="_csrf", value="#{csrfToken}")
+                    input#receiptInput(type="file", name="receipt")
+              else
+                a(href=receipt.amazonURL download)
+                  p Receipt uploaded.
+                h4 Variants
+                each variantDate in variantDates
+                  .row
+                    a(href="/ideas/#{idea.name}/variant/"+variantDate[1]) #{variantDate[0]}
+
+                a.btn.btn-go( href="/view-idea-suggestions" ) Create a New Variant
+                br
+            else if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
+              h4 Enter more information before generating an application.
+              a.btn.btn-go#bypass-application-button(data-toggle="modal" data-target="#confirmExposeIdeaModal") Expose Idea Now
             br
 
           .modal-footer
             button.btn.btn-info(data-dismiss="modal") Cancel
+
+
+  #confirmExposeIdeaModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Are you sure?
+        .modal-body
+          h5 If you expose this idea publicly prior to filing a patent application, you may lose your right to patent the idea. We recommend that you file a patent application before disclosing. Are you sure you want to make this idea public before obtaining patent pending status?
+          .modal-footer
+            button.btn.btn-industry(data-dismiss="modal") Cancel
+            button#exposeIdeaNow.btn.btn-go Yes, Expose Now!
 
 
   button(type="button" id="titleModalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#titleModal") Go Win Fight
@@ -1374,4 +1389,10 @@ html
         function(resp) {
           window.location.reload(true);
         });
+    })
+
+    $("#exposeIdeaNow").click(function(event){
+      $.get("/expose-idea-seed", function(err, response){
+        window.location.reload(true);
+      });
     })
