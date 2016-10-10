@@ -1,4 +1,3 @@
-
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
@@ -37,7 +36,8 @@ var Component = new Schema({
 	// with each other's object ID's
 	relatedComps : [{
 		compID				: ObjectId,
-		relationship	: String 
+		relationship	: String,
+		subComponent : String
 	}],
 
 	ideaSeed		: [{type: Schema.Types.ObjectId, ref: 'IdeaSeed', autopopulate: true }],

@@ -286,6 +286,13 @@ html
           form(role='form', id="addIdeaComponent" action="/add-idea-component", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
               input#componentName.form-control(type="text", name="componentName", value='The component is called ')
+              input#subComponentCheckbox(type="checkbox", name="subComponent")
+              span This is a sub-component of another component.
+              #parentComponentDropdown(style="display:none;")
+                select.parentComponents
+                  each component,index in components
+                    if component.identifier
+                      option(value=component.identifier) #{component.text || component.descriptions[0] || "No Component Title"}
               input(type="hidden", name="_csrf", value="#{csrfToken}")
               p (ex. "The Start Button")
               p.compNameCharRemaining
@@ -1107,12 +1114,19 @@ html
           newComponentDescr = $("#componentDescription").val().trim();
         }
 
-        $.post('/add-idea-component', 
-          {
+        var data = {
             _csrf : $('[name="_csrf"]').val(),
             componentName : newComponentName.slice(24),
             componentDescription : newComponentDescr.slice(20)
-          },
+        };
+
+        if($("#subComponentCheckbox").val()){
+          data['subComponent'] = "on";
+          data['componentParent'] = $("#parentComponentDropdown option:selected").val()
+        }
+
+        $.post('/add-idea-component', 
+          data,
           function(data, response) {
             $("#idea-summary-components ul")
               .append("<li><a href='/component-profile/"+ data['identifier'] +"'><h4>"+ data['number'] + " : " + data['text'] + "</h4></a></li>");
@@ -1123,6 +1137,10 @@ html
           });      
       }
 
+    });
+
+    $("#subComponentCheckbox").click(function(event){
+      $("#parentComponentDropdown").show(400);
     });
 
     // This is for the idea name

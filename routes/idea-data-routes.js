@@ -112,6 +112,8 @@ router.post('/add-idea-component', csrfProtection, function(req, res) {
     res.redirect('/');
     return;
   }
+  var parentCompTitle;
+
   Component.count({"ideaSeed" : req.session.idea}, function(err, count){
 
     var newCompNumber = count + 1;
@@ -123,13 +125,55 @@ router.post('/add-idea-component', csrfProtection, function(req, res) {
       number        : newCompNumber,
       identifier    : "comp-"+Date.now()
     };
+
+    //assumes the req.body.componentParent is the identifier of the selected Parent component
+    if(req.body.subComponent && req.body.componentParent){
+      Component.findOne({"identifier" : req.body.componentParent}, function(err, parentComponent){
+        if(parentComponent){
+          //add related component to this component
+          parentCompTitle = parentComponent.text || parentComponent.descriptions[0] || "No parent component title"
+          newComponent.relatedComps = [{
+            compID : parentComponent.id,
+            relationship: req.body.componentName + " is a sub-component of " + parentCompTitle + ".",
+            subComponent : "sub-component"
+          }];
+
+          Component.create( newComponent ,
+            function (err, newCompDocument) {
+              if (err) return handleError(err);
+
+              // add new component document to parent Component's related comps list
+              if(parentComponent.relatedComps){
+                parentComponent.relatedComps.push({
+                  compID : newCompDocument._doc._id,
+                  relationship: req.body.componentName + " is a sub-component of " + parentCompTitle + ".",
+                  subComponent : "parent"
+                });
+              } else {
+                parentComponent.relatedComps = [{
+                  compID : newCompDocument._doc._id,
+                  relationship: req.body.componentName + " is a sub-component of " + parentCompTitle + ".",
+                  subComponent : "parent"
+                }];
+              }
+              parentComponent.save(function(err){
+                if (err) return handleError(err);
+                res.json(newComponent);
+              })
+            }
+          );
+        }
+      });
+    } else {
+      Component.create( newComponent ,
+        function (err) {
+          if (err) return handleError(err);
+          res.json(newComponent);
+        }
+      );
+
+    }
       
-    Component.create( newComponent ,
-      function (err) {
-        if (err) return handleError(err);
-      }
-    );
-    res.json(newComponent);
   });
 
 });

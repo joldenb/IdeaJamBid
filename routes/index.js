@@ -3109,6 +3109,8 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
     res.redirect('/');
     return;
   }
+  var parentComponents = [];
+  var relatedCompArray;
 
   var headshotData = ideaSeedHelpers.getUserHeadshot(req);
   var headshotURL = headshotData['headshotURL'];
@@ -3138,7 +3140,24 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
               for(var i = 0; i < relatedCompIdStrings.length; i++){
                 if(relatedCompIdStrings[i] == components[j]['id']){
                   compDescription = component.relatedComps[i]['relationship'];
-                  relatedComponents.push([components[j], compDescription]);
+                  relatedCompArray = [components[j], compDescription];
+                  if(component.relatedComps[i]['subComponent'] && component.relatedComps[i]['subComponent'] == "parent"){
+                    var mainCompTitle = component.text ||component.descriptions[0] || "No component title";
+                    var otherCompTitle = components[j].text ||components[j].descriptions[0] || "No component title";
+                    relatedCompArray.push(otherCompTitle + " is a sub-component of " + mainCompTitle + ".");
+                  } else if (component.relatedComps[i]['subComponent'] && component.relatedComps[i]['subComponent'] == "sub-component"){
+                    var mainCompTitle = component.text ||component.descriptions[0] || "No component title";
+                    var otherCompTitle = components[j].text ||components[j].descriptions[0] || "No component title";
+                    relatedCompArray.push(mainCompTitle + " is a sub-component of " + otherCompTitle + ".");
+                  }
+                  relatedComponents.push(relatedCompArray);
+
+                  //check if this component is a sub-component of another, and list other
+                  //components that it's a sub-component of by the title
+                  var thisComponentTitle = component.text || component.descriptions[0] || "No title";
+                  if(component.relatedComps[i]['subComponent'] && component.relatedComps[i]['subComponent'] == "sub-component"){
+                    parentComponents.push(components[j])
+                  }
                 }
               }
             }
@@ -3233,6 +3252,7 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
                           problemHeadshotURL : problemHeadshotURL,
                           component : component,
                           problem : problem,
+                          parentComponents : parentComponents,
                           variantDates : variantDates,
                           imageURLs : imageURLs,
                           components : components,
@@ -3252,6 +3272,7 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
                             ideaInventor : ideaInventor,
                             componentContributor : componentContributor,
                             components : components,
+                            parentComponents : parentComponents,
                             component : component,
                             problem : problem,
                             variantDates : variantDates,
@@ -3305,6 +3326,7 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
                         headshotStyle : headshotStyle,
                         idea : idea._doc,
                         ideaInventor : ideaInventor,
+                        parentComponents : parentComponents,
                         componentContributor : componentContributor,
                         components : components,
                         component : component,
@@ -3329,6 +3351,7 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
                           ideaInventor : ideaInventor,
                           components : components,
                           componentContributor : componentContributor,
+                          parentComponents : parentComponents,
                           component : component,
                           variantDates : variantDates,
                           problem : "none",
@@ -3364,30 +3387,35 @@ router.post('/add-related-component', csrfProtection, function(req, res) {
     Component.findOne({"identifier" : compIdentifier}, function(err, thisComponent){
       Component.findOne({"identifier" : relatedCompIdentifier}, function(err, otherComponent){
 
+        var thisComponentName = thisComponent.text || thisComponent.descriptions[0] || "this component";
+        var otherComponentName = otherComponent.text || otherComponent.descriptions[0] || "The other component";
+
         // add other component to this component
+        var thisComponentRelatedComp = {
+            "compID" : otherComponent['id'],
+            "relationship"  : relatedCompDescription
+        };
+        if(req.body.subComponent){
+          thisComponentRelatedComp['subComponent'] = "parent";
+        }
         if(thisComponent.relatedComps.length > 0){
-          thisComponent.relatedComps.push({
-            "compID" : otherComponent['id'],
-            "relationship"  : relatedCompDescription
-          });
+          thisComponent.relatedComps.push(thisComponentRelatedComp);
         } else {
-          thisComponent.relatedComps = {
-            "compID" : otherComponent['id'],
-            "relationship"  : relatedCompDescription
-          };
+          thisComponent.relatedComps = [thisComponentRelatedComp];
         }
 
         // add other component to this component
+        var otherComponentRelatedComp = {
+            "compID" : thisComponent['id'],
+            "relationship"  : relatedCompDescription
+        };
+        if(req.body.subComponent){
+          otherComponentRelatedComp['subComponent'] = "sub-component";
+        }
         if(otherComponent.relatedComps.length > 0){
-          otherComponent.relatedComps.push({
-            "compID" : thisComponent['id'],
-            "relationship"  : relatedCompDescription
-          });
+          otherComponent.relatedComps.push(otherComponentRelatedComp);
         } else {
-          otherComponent.relatedComps = {
-            "compID" : thisComponent['id'],
-            "relationship"  : relatedCompDescription
-          };
+          otherComponent.relatedComps = [otherComponentRelatedComp];
         }
 
         thisComponent.save(function(err){

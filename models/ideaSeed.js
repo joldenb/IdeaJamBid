@@ -405,52 +405,75 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 					}
 					pObj.addText('.', {font_size : 14});
 
-					//This section is for suggestions, which are also stored in the components collection
 					for(i=0; i < comps.length; i++){
-						if(comps[i].problemID){
-							pObj = docx.createP ();
+						pObj = docx.createP ();
+						
+						// Here's the first sentence of the component paragraph. Since the title ("text") is optional,
+						// it just puts the first description instead.  It also tacks on whether it's a subcomponent
+						if(comps[i].text){
 							pObj.addText( 'An embodiment of the invention incorporates ' +
-								comps[i].descriptions[0].toLowerCase() + '. ', { font_size : 14 } );
-							
-							// This section is for the dimensions
-							if(comps[i].dimensions.length > 0){
-								pObj.addText( 'In the best case, this component is produced to the following dimensions: ' + comps[i].dimensions[0] + ". ", { font_size : 14 } );
-								if(comps[i].dimensions.length > 1){
-									_.each(comps[i].dimensions.slice(1), function(eachDimension, index){
-										if(eachDimension){
-											pObj.addText( 'The invention can alternatively be produced to the following dimensions: ' + eachDimension + ". ", { font_size : 14 } );
+								comps[i].text.toLowerCase(), { font_size : 14 } );
+						} else if (comps[i].descriptions[0]) {
+							pObj.addText( 'An embodiment of the invention incorporates ' +
+								comps[i].descriptions[0].toLowerCase(), { font_size : 14 } );
+						}
+						if(comps[i].relatedComps && comps[i].relatedComps.length > 0){
+							_.each(comps[i].relatedComps, function(eachOne, index){
+								if(eachOne['subComponent'] && eachOne['subComponent'] == "sub-component") {
+									// If this component is a sub-component of another component, find title or first description
+									// of the parent component
+
+									//currently assuming there's only one.
+									_.each(comps, function(singleComp, compIndex){
+										if(eachOne['compID'].toString() == singleComp.id.toString()){
+											var parentCompTitle = singleComp.text || singleComp.descriptions[0] || "no component name"
+											pObj.addText( ', a sub-component of ' + parentCompTitle.toLowerCase(), { font_size : 14 } );
 										}
 									})
 								}
-							}
+							})
+						}
+						pObj.addText( '. ', { font_size : 14 } );
 
-							// This section is for the materials
-							if(comps[i].dimensions.length > 0){
-								pObj.addText( 'In the best case, the component incorporates this material: ' + comps[i].materials[0] + ". ", { font_size : 14 } );
-								if(comps[i].materials.length > 1){
-									_.each(comps[i].materials.slice(1), function(eachMaterial, index){
-										if(eachMaterial){
-											pObj.addText( 'An alternative material this component incorporates is: ' + eachMaterial + ". ", { font_size : 14 } );
-										}
-									})
-								}
-							}
-
-							if(comps[i].descriptions.length > 0){
-								pObj.addText( 'The present inventor has recognized that ' +
-								comps[i].descriptions[0].toLowerCase() + ' addresses the problem of ', { font_size : 14 } );
-								for(j=0; j < problems.length; j++){
-									if(comps[i].problemID.toString() == problems[j]['id'].toString()){
-										pObj.addText( problems[j]['text'] + '.  ', { font_size : 14 } );
+						
+						// This section is for the dimensions
+						if(comps[i].dimensions.length > 0){
+							pObj.addText( 'In the best case, this component is produced to the following dimensions: ' + comps[i].dimensions[0] + ". ", { font_size : 14 } );
+							if(comps[i].dimensions.length > 1){
+								_.each(comps[i].dimensions.slice(1), function(eachDimension, index){
+									if(eachDimension){
+										pObj.addText( 'The invention can alternatively be produced to the following dimensions: ' + eachDimension + ". ", { font_size : 14 } );
 									}
-								}
-							}	
+								})
+							}
+						}
 
-							if(comps[i].descriptions.length > 1){
-								for(j=1; j < comps[i].descriptions.length; j++){
-									pObj.addText( ''+comps[i].descriptions[0] + ' is described as ', { font_size : 14 } );
-									pObj.addText( comps[i].descriptions[j] + '. ', { font_size : 14 } );
+						// This section is for the materials
+						if(comps[i].dimensions.length > 0){
+							pObj.addText( 'In the best case, the component incorporates this material: ' + comps[i].materials[0] + ". ", { font_size : 14 } );
+							if(comps[i].materials.length > 1){
+								_.each(comps[i].materials.slice(1), function(eachMaterial, index){
+									if(eachMaterial){
+										pObj.addText( 'An alternative material this component incorporates is: ' + eachMaterial + ". ", { font_size : 14 } );
+									}
+								})
+							}
+						}
+
+						if(comps[i].descriptions.length > 0 && comps[i].problemID){
+							pObj.addText( 'The present inventor has recognized that ' +
+							comps[i].descriptions[0].toLowerCase() + ' addresses the problem of ', { font_size : 14 } );
+							for(j=0; j < problems.length; j++){
+								if(comps[i].problemID.toString() == problems[j]['id'].toString()){
+									pObj.addText( problems[j]['text'] + '.  ', { font_size : 14 } );
 								}
+							}
+						}	
+
+						if(comps[i].descriptions.length > 1){
+							for(j=1; j < comps[i].descriptions.length; j++){
+								pObj.addText( ''+comps[i].descriptions[0] + ' is described as ', { font_size : 14 } );
+								pObj.addText( comps[i].descriptions[j] + '. ', { font_size : 14 } );
 							}
 						}
 					}
