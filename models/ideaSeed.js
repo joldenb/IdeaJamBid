@@ -395,7 +395,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 						'.  ' + idea.name + ' is intended to ' + idea.description + '.  ' + 
 						'Embodiments of the invention comprise some or all of the following components: ', { font_size : 14 } );
 					for(i=0; i < comps.length; i++){
-						if(comps[i].problemID && (comps[i].text || comps[i].descriptions.length > 0)){
+						if(comps[i].text || comps[i].descriptions.length > 0){
 							pObj.addText( '(' + (i+1) +'.) ', { font_size : 14 } );
 							if(comps[i].text){
 								pObj.addText( comps[i].text.toLowerCase() , { font_size : 14 } );
