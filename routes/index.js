@@ -1478,7 +1478,7 @@ router.get('/image-upload', csrfProtection, function(req, res){
   var headshotData = ideaSeedHelpers.getUserHeadshot(req);
   var headshotURL = headshotData['headshotURL'];
   var headshotStyle = headshotData['headshotStyle'];
-
+  var canEdit;
 
     IdeaSeed.findById(req.session.idea,function(err, idea){
       var imageURLs = [];
@@ -1495,12 +1495,17 @@ router.get('/image-upload', csrfProtection, function(req, res){
           ]);
         });
 
+        if(req.user.username == idea.inventorName || idea.collaborators.indexOf(req.user.username) > -1 ){
+          canEdit = true;
+        }
+
         res.render('pages/image-upload', {
           csrfToken: req.csrfToken(),
           user : req.user || {},
           headshot: headshotURL,
           headshotStyle : headshotStyle,
           idea : idea,
+          canEdit : canEdit,
           imageURLs : imageURLs
         });
       });

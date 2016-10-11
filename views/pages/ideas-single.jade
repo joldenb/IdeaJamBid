@@ -7,6 +7,9 @@ html
     include ../partials/header.jade
 
   .container-fluid.idea-summary
+    .row(class="visibility-row-#{idea.visibility}")
+      .col-xs-12
+        h3 Visibility : #{idea.visibility.charAt(0).toUpperCase() + idea.visibility.slice(1)}
     .row
       .col-sm-4
         if(imageURLs.length > 0)
