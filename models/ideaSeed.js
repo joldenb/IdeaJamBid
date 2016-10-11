@@ -395,9 +395,13 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 						'.  ' + idea.name + ' is intended to ' + idea.description + '.  ' + 
 						'Embodiments of the invention comprise some or all of the following components: ', { font_size : 14 } );
 					for(i=0; i < comps.length; i++){
-						if(comps[i].problemID && comps[i].descriptions.length > 0){
+						if(comps[i].problemID && (comps[i].text || comps[i].descriptions.length > 0)){
 							pObj.addText( '(' + (i+1) +'.) ', { font_size : 14 } );
-							pObj.addText( comps[i].descriptions[0].toLowerCase() , { font_size : 14 } );
+							if(comps[i].text){
+								pObj.addText( comps[i].text.toLowerCase() , { font_size : 14 } );
+							} else {
+								pObj.addText( comps[i].descriptions[0].toLowerCase() , { font_size : 14 } );
+							}
 						}
 						if(i != (comps.length-1) ) {
 							pObj.addText(', ', { font_size : 14 } );
@@ -464,15 +468,23 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 							pObj.addText( 'The present inventor has recognized that ' +
 							comps[i].descriptions[0].toLowerCase() + ' addresses the problem of ', { font_size : 14 } );
 							for(j=0; j < problems.length; j++){
+								console.log("prolems index j is " + j);
+								console.log("problem id is " + problems[j]['id'].toString())
+								console.log("this component problem id is " + comps[i].problemID.toString())
 								if(comps[i].problemID.toString() == problems[j]['id'].toString()){
 									pObj.addText( problems[j]['text'] + '.  ', { font_size : 14 } );
 								}
 							}
 						}	
 
-						if(comps[i].descriptions.length > 1){
+						if(comps[i].descriptions.length > 1 && !comps[i].text){
 							for(j=1; j < comps[i].descriptions.length; j++){
 								pObj.addText( ''+comps[i].descriptions[0] + ' is described as ', { font_size : 14 } );
+								pObj.addText( comps[i].descriptions[j] + '. ', { font_size : 14 } );
+							}
+						} else {
+							for(j=1; j < comps[i].descriptions.length; j++){
+								pObj.addText( ''+comps[i].text + ' is described as ', { font_size : 14 } );
 								pObj.addText( comps[i].descriptions[j] + '. ', { font_size : 14 } );
 							}
 						}
