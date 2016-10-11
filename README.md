@@ -1,41 +1,34 @@
-# node-js-getting-started
+# IdeaJam
 
 A barebones Node.js app using [Express 4](http://expressjs.com/).
 
-This application supports the [Getting Started with Node on Heroku](https://devcenter.heroku.com/articles/getting-started-with-nodejs) article - check it out.
-
 ## Running Locally
 
-Make sure you have [Node.js](http://nodejs.org/) and the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed.
+Make sure you have [Node.js](http://nodejs.org/), [Heroku Toolbelt](https://toolbelt.heroku.com/), and MongoDB installed. Also, in order to build images in the patent application, you'll need to follow the instructions for [Canvas](https://github.com/Automattic/node-canvas).  You'll also need to set local variables in a file name ".env" in the project root.  This is what Heroku loads when you call "heroku local web".  The equivalent development and production variables are accessible in the Heroku Dashboard Settings section.  
+
+You'll need to download and start MongoDB locally before launching the app.  In the project root level file "index.js", it shows the local MongoDB URI that your app should connect to.  It should just be using the default port.  
 
 ```sh
-$ git clone git@github.com:heroku/node-js-getting-started.git # or clone your own fork
-$ cd node-js-getting-started
+$ git clone https://github.com/IdeaJam/blooming-mountain-87473.git IdeaJam # or clone your own fork
+$ cd IdeaJam
 $ npm install
-$ npm start
+$ heroku local web
 ```
 
 Your app should now be running on [localhost:5000](http://localhost:5000/).
 
-## Deploying to Heroku
+## Deploying to GitHub
 
-```
-$ heroku create
-$ git push heroku master
-$ heroku open
-```
-or
+You just deploy to GitHub in the normal way (e.g. "git push origin develop").  Currently, there are two branches, develop and master, that Heroku listens to and automatically deploys to:
 
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
-## Documentation
+[The Development/Staging Site](https://staging-blooming-mountain.herokuapp.com/)
 
-For more information about using Node.js on Heroku, see these Dev Center articles:
 
-- [Getting Started with Node.js on Heroku](https://devcenter.heroku.com/articles/getting-started-with-nodejs)
-- [Heroku Node.js Support](https://devcenter.heroku.com/articles/nodejs-support)
-- [Node.js on Heroku](https://devcenter.heroku.com/categories/nodejs)
-- [Best Practices for Node.js Development](https://devcenter.heroku.com/articles/node-best-practices)
-- [Using WebSockets on Heroku with Node.js](https://devcenter.heroku.com/articles/node-websockets)
+[The Production Site](https://ideajam.io/)
 
-TEST
+## Other notes
+
+Despite the code being in one repo on GitHub, there are two Heroku projects corresponding to the environments.  Each environment has their own plugins, etc.  One big difference is that the MongoDB host for the development/staging project is mLab, and the production site uses Mongo Atlas.  mLab is an official partner of Heroku and Mongo Atlas is not, so you can access the mLab dashboard through Heroku, whereas Mongo Atlas must be accessed indpendently.  
+
+The domain and SSL cert were acquired through name.com, images are stored in Amazon's S3, email is done through SendGrid, and everything else is done through Heroku partners that you can access through the dashboard.  
