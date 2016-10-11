@@ -470,7 +470,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 							for(j=0; j < problems.length; j++){
 								console.log("prolems index j is " + j);
 								console.log("problem id is " + problems[j]['id'].toString())
-								console.log("this component problem id is " + comps[i].problemID.toString())
+								console.log("this component problem id is " + comps[i].problemID.id.toString())
 								if(comps[i].problemID.toString() == problems[j]['id'].toString()){
 									pObj.addText( problems[j]['text'] + '.  ', { font_size : 14 } );
 								}
