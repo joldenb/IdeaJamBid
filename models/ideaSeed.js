@@ -369,8 +369,11 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 
 					for(i=0; i < images.length; i++){
 						pObj = docx.createP ();
-						pObj.addText( 'Figure 1 depicts an embodiment of the invention comprising ', { font_size: 14, font_face: 'Times New Roman' } );
-						pObj.addText( images[i].filename + '.', { font_size: 14, font_face: 'Times New Roman' } );
+						if(images[i].title){
+							pObj.addText( images[i].title + " depicts an embodiment of the invention.", { font_size: 14, font_face: 'Times New Roman' } );
+						} else {
+							pObj.addText( 'Figure ' + [i + 1] + ' depicts an embodiment of the invention.', { font_size: 14, font_face: 'Times New Roman' } );
+						}
 					}
 
 					pObj = docx.createP ();
