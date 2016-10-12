@@ -25,27 +25,40 @@ html
             // button.btn.btn-info(data-dismiss="modal") Cancel
             button.btn.btn-success#submit(type='submit') Submit
 
-  button(type="button" id="modalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Go Win Fight
+    button(type="button" id="modalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Go Win Fight
 
   .container-fluid.annotate-image-container
+    .row#image-title
+      if imageTitle != ""
+        a#edit-image-title
+          h2 #{imageTitle}
+            span
+              img(src="/pencil.png" style="height:1em; vertical-align:baseline; padding-left:.3em;")
+      else
+        a#edit-image-title
+          h2.enter-title-text <i>Enter Image Title</i>
+            span
+              img(src="/pencil.png" style="height:1em; vertical-align:baseline; padding-left:.3em;")
     .row
-      if (imgURL)
-        canvas(id="myCanvas", width="1000", height="700", style="border:1px solid #d3d3d3;")
-        img.summary-image(id="scream", src=imgURL, data-original="http://www.example.com/my-dummy-image-path", style="display:none;" + imageStyle)
-      each value in comps
-        canvas.component(id="component-#{value['number']}", width="1000", height="700", style="border:1px solid #d3d3d3;")
-    #componentList
-      #listOfComponents
+      .col-md-2
+        #componentList
+          #listOfComponents
+            each value in comps
+              .individual-component
+                img.delete-component(data-component="#{value.text}" src="/delete.png" height="25" width="25")
+                img(class='edit-annotation' data-component="#{value.text}" data-toggle='modal' data-target='#myModal' src="/pencil.png" height="25" width="25")
+                h4 #{value.number}. #{value.text}
+          br
+          br
+          a#save-annotations.btn.btn-success( href="/image-upload" ) Save Annotations >
+          h4 Click on your image to describe the components of your invention:
+          .checkbox
+      .col-md-10
+        if (imgURL)
+          canvas(id="myCanvas", width="1000", height="700", style="border:1px solid #d3d3d3;")
+          img.summary-image(id="scream", src=imgURL, data-original="http://www.example.com/my-dummy-image-path", style="display:none;" + imageStyle)
         each value in comps
-          .individual-component
-            img.delete-component(data-component="#{value.text}" src="/delete.png" height="25" width="25")
-            img(class='edit-annotation' data-component="#{value.text}" data-toggle='modal' data-target='#myModal' src="/pencil.png" height="25" width="25")
-            h4 #{value.number}. #{value.text}
-      br
-      br
-      a#save-annotations.btn.btn-success( href="/image-upload" ) Save Annotations >
-      h4 Click on your image to describe the components of your invention:
-      .checkbox
+          canvas.component(id="component-#{value['number']}", width="1000", height="700", style="border:1px solid #d3d3d3;")
 
 
       
@@ -344,3 +357,23 @@ html
         this.selectionStart = 16;
       }
     }, false);
+
+    $("#edit-image-title").click(function(event){
+      $("#edit-image-title").hide();
+      $("#image-title").append("<input type='text' id='new-title-input' placeholder='Enter new name'><input type='hidden', name='_csrf', value='!{csrfToken}'><button id='edit-image-title-save' class='btn btn-go btn-lg'>Save</button>");
+      $("#edit-image-title-save").click(function(event){
+        if($("#new-title-input").val() != ""){
+          var data = {
+            newTitle : $("#new-title-input").val(),
+            _csrf : $('[name="_csrf"]').val(),
+            imageFilename : "!{imageName}"
+          }
+          $.post("/add-image-title", data, function(response){
+            window.location.reload();
+          })
+        } else {
+          window.location.reload();
+        }
+      })
+    });
+

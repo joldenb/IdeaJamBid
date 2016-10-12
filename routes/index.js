@@ -2504,6 +2504,7 @@ router.get('/annotate-image/:image', csrfProtection, function(req, res){
     IdeaImage.findOne({"filename": req.params.image} ,function(err, image){
       currentImage = image._doc;
       var annotations = [];
+      var imageTitle = image.title || "";
       if(currentImage.amazonURL){
         imageURL = currentImage.amazonURL;
         var imageStyle = "";
@@ -2542,6 +2543,7 @@ router.get('/annotate-image/:image', csrfProtection, function(req, res){
                 user : req.user || {},
                 imgURL : imageURL,
                 imageStyle : imageStyle,
+                imageTitle : imageTitle,
                 headshot : headshotURL,
                 headshotStyle : headshotStyle,
                 imageName : currentImage.filename,
@@ -3505,4 +3507,30 @@ router.get("/expose-idea-seed",csrfProtection, function(req, res){
     })
   });
 })
+
+router.post("/add-image-title", csrfProtection, function(req, res){
+  if( !(req.user && req.user.username && req.session.idea)){
+      res.redirect('/');
+      return;
+  }
+
+  IdeaImage.findOne({"filename" : req.body.imageFilename}, function(err, image){
+    if(!image){
+      res.redirect('/');
+      return;
+    } else{
+      image.title = req.body.newTitle;
+      image.save(function(err){
+        if(err){
+          res.redirect('/');
+          return;
+        }
+        res.sendStatus(200);
+      })
+    }
+  });
+});
+
+
+
 module.exports = router;

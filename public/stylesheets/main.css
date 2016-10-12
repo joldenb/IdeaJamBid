@@ -572,7 +572,6 @@ table#suggestionPointTable {
 
 canvas {
   vertical-align: top;
-  top: 0;
   left: 10%;
   position: absolute;
   margin-bottom: 5em;
@@ -595,12 +594,6 @@ canvas {
   color: black;
 }
 
-#componentList {
-  position:absolute;
-  padding-left: 1em;
-  text-align: left;
-  width:17%;
-}
 
 .individual-component {
     margin: .5em;
