@@ -384,6 +384,23 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 						}
 					}
 
+
+					docx.putPageBreak ();
+					pObj = docx.createP ();
+					pObj.addText( 'LEGEND OF COMPONENTS', { font_size: 14, font_face: 'Times New Roman' } );
+					for(i=0; i < comps.length; i++){
+						if(comps[i].number && comps[i].text){
+							pObj = docx.createP ();
+							pObj.addText( comps[i].number +'. ', { font_size: 14, font_face: 'Times New Roman' } );
+							pObj.addText( comps[i].text, { font_size: 14, font_face: 'Times New Roman' } );
+						} else if(comps[i].number && comps[i].text){
+							pObj = docx.createP ();
+							pObj.addText( comps[i].number +'. ', { font_size: 14, font_face: 'Times New Roman' } );
+							pObj.addText( comps[i].descriptions[0], { font_size: 14, font_face: 'Times New Roman' } );
+						}
+					}
+
+
 					///////////////////////////////////////////////////////////////
 					// This is the component section
 					///////////////////////////////////////////////////////////////
@@ -590,21 +607,6 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 					pObj.addText( 'I claim:', { font_size: 14, font_face: 'Times New Roman' } );
 					pObj = docx.createP ();
 					pObj.addText( '1. The invention described herein.', { font_size: 14, font_face: 'Times New Roman' } );
-
-					docx.putPageBreak ();
-					pObj = docx.createP ();
-					pObj.addText( 'Legend of Components', { font_size: 14, font_face: 'Times New Roman' } );
-					for(i=0; i < comps.length; i++){
-						if(comps[i].number && comps[i].text){
-							pObj = docx.createP ();
-							pObj.addText( comps[i].number +'. ', { font_size: 14, font_face: 'Times New Roman' } );
-							pObj.addText( comps[i].text, { font_size: 14, font_face: 'Times New Roman' } );
-						} else if(comps[i].number && comps[i].text){
-							pObj = docx.createP ();
-							pObj.addText( comps[i].number +'. ', { font_size: 14, font_face: 'Times New Roman' } );
-							pObj.addText( comps[i].descriptions[0], { font_size: 14, font_face: 'Times New Roman' } );
-						}
-					}
 
 					for(var i=0;i<images.length; i++){
 						console.log("this i is " + i)

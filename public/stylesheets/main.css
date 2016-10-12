@@ -1479,3 +1479,7 @@ button.suggestion-tactics, button.suggestion-targets {
 .navbar-brand img {
   max-width: 200px;
 }
+
+#edit-image-title-save {
+  margin-left:1em;
+}
