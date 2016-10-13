@@ -51,72 +51,40 @@ html
 
     .edit-column.col-md-8
       .component-descriptions
-        if component.text
-          h3 The #{component.text.toLowerCase()} of <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b> is described as:
-        else
-          h3 This component of <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b> is described as:
-        if( component['descriptions'].length > 0)
-          ul
-            each description, index in component['descriptions']
-              li #{index+1}. #{description}
-        else
-          ul
-            li.no-descriptions No Descriptions Yet
-        if idea.name && idea.inventorName == user.username
-          form(role='form', id="addDescription" action="/add-description", method="post", data-idea-doc=idea)
-            .row
-              .col-sm-8
-                input.form-control(name="description", id="description",
-                placeholder='Add description')
-                input(type="hidden", name="_csrf", value="#{csrfToken}")
-              .col-sm-4
-                button.btn.btn-success#submit(type='submit') Save
-
-      if idea.name && idea.inventorName == user.username
-        .related-components
-          h4 Related Components
-          if relatedComponents.length > 0
-            each thisComponent in relatedComponents
-              if thisComponent[0]['text']            
-                if thisComponent[0]['identifier']
-                  li 
-                    a(href="/component-profile/"+thisComponent[0]['identifier'])
-                      h4.compName #{thisComponent[0]['number']} : #{thisComponent[0]['text']}
-                    p <b>Relationship</b> 
-                    p #{thisComponent[1]}
-                    if thisComponent[2]
-                      h5 Sub-Component
-                      p #{thisComponent[2]}
-                else
-                  li 
-                    h4.compName #{thisComponent[0]['number']} : #{thisComponent[0]['text']}
-                    p <b>Relationship</b> 
-                    p #{thisComponent[1]}
-                    if thisComponent[2]
-                      h5 Sub-Component
-                      p #{thisComponent[2]}
-              else if thisComponent[0]['descriptions'].length > 0
-                if thisComponent[0]['identifier']
-                  li
-                    a(href="/component-profile/"+thisComponent[0]['identifier'])
-                      h4.compName #{thisComponent[0]['descriptions'][0]}
-                    p <b>Relationship</b> 
-                    p #{thisComponent[1]}
-                    if thisComponent[2]
-                      h5 Sub-Component
-                      p #{thisComponent[2]}
-              else
-                  li
-                    h4.compName #{thisComponent[0]['descriptions'][0]}
-                    p <b>Relationship</b> 
-                    p #{thisComponent[1]}
-                    if thisComponent[2]
-                      h5 Sub-Component
-                      p #{thisComponent[2]}
+        if component.text && component.descriptions && component.descriptions[0]
+          h3 The #{component.text.toLowerCase()} of <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b> is #{component.descriptions[0]}.
+          if ( component['descriptions'].length > 1)
+            h4 In addition, the #{component.text} can be described as : 
+            ul
+              each description, index in component['descriptions']
+                if index > 0
+                  li #{description}
           else
-            div <i>No related components yet</i>
-          button(type="button" id="modalButton" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Add New Related Component
+            ul
+              li.no-descriptions No More Descriptions Yet
+          a.btn.btn-industry.btn-lg#addAnotherDescription Add Another Description
+          if idea.name && idea.inventorName == user.username
+            form.add-another-description-form(role='form', id="addDescription" action="/add-description", method="post", data-idea-doc=idea, style="display:none;")
+              .row
+                .col-sm-8
+                  input.form-control(name="description", id="description")
+                  input(type="hidden", name="_csrf", value="#{csrfToken}")
+                .col-sm-4
+                  button.btn.btn-success#submit(type='submit') Save
+            p.add-another-description-form(style="display:none;") (Example: 'a mechanism to create a nuclear reaction to generate 1.21 gigawatts of power')
+        else if component.text
+          h3 Describe the #{component.text.toLowerCase()} of <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b>:
+          if idea.name && idea.inventorName == user.username
+            form(role='form', id="addDescription" action="/add-description", method="post", data-idea-doc=idea)
+              .row
+                .col-sm-8
+                  input.form-control(name="description", id="description")
+                  input(type="hidden", name="_csrf", value="#{csrfToken}")
+                .col-sm-4
+                  button.btn.btn-success#submit(type='submit') Save
+            p (Example: 'a mechanism to create a nuclear reaction to generate 1.21 gigawatts of power')
 
+  
       .idea-function-column
         if(problem != "none")
           br
@@ -183,6 +151,52 @@ html
       .return-button
         a.home-logout.btn.btn-industry.btn-lg( href="/ideas/#{idea.name}") Back to Idea Summary
       br
+
+      if idea.name && idea.inventorName == user.username
+        .related-components
+          h4 Related Components
+          if relatedComponents.length > 0
+            each thisComponent in relatedComponents
+              if thisComponent[0]['text']            
+                if thisComponent[0]['identifier']
+                  li 
+                    a(href="/component-profile/"+thisComponent[0]['identifier'])
+                      h4.compName #{thisComponent[0]['number']} : #{thisComponent[0]['text']}
+                    p <b>Relationship</b> 
+                    p #{thisComponent[1]}
+                    if thisComponent[2]
+                      h5 Sub-Component
+                      p #{thisComponent[2]}
+                else
+                  li 
+                    h4.compName #{thisComponent[0]['number']} : #{thisComponent[0]['text']}
+                    p <b>Relationship</b> 
+                    p #{thisComponent[1]}
+                    if thisComponent[2]
+                      h5 Sub-Component
+                      p #{thisComponent[2]}
+              else if thisComponent[0]['descriptions'].length > 0
+                if thisComponent[0]['identifier']
+                  li
+                    a(href="/component-profile/"+thisComponent[0]['identifier'])
+                      h4.compName #{thisComponent[0]['descriptions'][0]}
+                    p <b>Relationship</b> 
+                    p #{thisComponent[1]}
+                    if thisComponent[2]
+                      h5 Sub-Component
+                      p #{thisComponent[2]}
+              else
+                  li
+                    h4.compName #{thisComponent[0]['descriptions'][0]}
+                    p <b>Relationship</b> 
+                    p #{thisComponent[1]}
+                    if thisComponent[2]
+                      h5 Sub-Component
+                      p #{thisComponent[2]}
+          else
+            div <i>No related components yet</i>
+          button(type="button" id="modalButton" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Add New Related Component
+
 
     #myModal.modal.fade.annotate-modal(role="dialog")
       .modal-dialog
@@ -398,12 +412,33 @@ html
       }
     }
 
-    
+    $("#description").val("The !{component.text || 'untitled'} is ");
+    // This is for the main solution text input
+    var requiredText = $("#description").val();
+    $("#description")[0].addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredText) == -1) {
+            $(this).val(requiredText);
+      }
+      if (this.selectionStart < 16) {
+        this.selectionStart = 16;
+      }
+    }, false);
+
+    $("#description")[0].addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredText) == -1) {
+            $(this).val(requiredText);
+      }
+      if (this.selectionStart < 16) {
+        this.selectionStart = 16;
+      }
+    }, false);
+
+
     $("#addDescription #submit").click(function(event){
       event.preventDefault();
       var data = {
         "_csrf" : $('[name="_csrf"]').val(),
-        "description" : $("#description").val(),
+        "description" : $("#description").val().slice(requiredText.length),
         "component-identifier" :  "!{component['identifier']}"
       }
       $.post("/add-description", data, function(response){
@@ -480,3 +515,13 @@ html
       $("#addMaterial").show(400)
       $("#showMaterials").hide()
     })    
+
+    $("#addAnotherDescription").click(function(event){
+      $("#addAnotherDescription").hide();
+      $(".add-another-description-form").show(400);
+    })
+
+
+
+
+
