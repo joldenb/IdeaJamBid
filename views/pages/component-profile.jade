@@ -48,6 +48,10 @@ html
   
       if ideaInventor
         h4 Part of <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b> by #[a(href='/imagineer/'+ ideaInventor.nickname) #{ideaInventor.nickname}]
+      .return-button
+        a.home-logout.btn.btn-industry.btn-lg( href="/ideas/#{idea.name}") Back to Idea Summary
+      br
+        
 
     .edit-column.col-md-8
       .component-descriptions
@@ -62,7 +66,7 @@ html
           else
             ul
               li.no-descriptions No More Descriptions Yet
-          a.btn.btn-industry.btn-lg#addAnotherDescription Add Additional Description
+          a.btn.btn-industry#addAnotherDescription Add Additional Description
           if idea.name && idea.inventorName == user.username
             form.add-another-description-form(role='form', id="addDescription" action="/add-description", method="post", data-idea-doc=idea, style="display:none;")
               .row
@@ -111,7 +115,7 @@ html
               each dimension, index in component['dimensions']
                 if dimension && index > 0
                   li #{dimension}
-          a.btn.btn-industry.btn-lg#showDimensions Add Additional Dimensions
+          a.btn.btn-industry#showDimensions Add Additional Dimensions
           if idea.name && idea.inventorName == user.username
             form(role='form', id="addDimension" action="/add-dimension", method="post", data-idea-doc=idea, style="display:none;")
               .row
@@ -145,7 +149,7 @@ html
               each material, index in component['materials']
                 if material && index > 0
                   li #{material}
-          a.btn.btn-industry.btn-lg#showMaterials Add Additional Materials
+          a.btn.btn-industry#showMaterials Add Additional Materials
           if idea.name && idea.inventorName == user.username
             form(role='form', id="addMaterial" action="/add-material", method="post", data-idea-doc=idea, style="display:none;")
               .row
@@ -168,9 +172,6 @@ html
                   input(type="hidden", name="_csrf", value="#{csrfToken}")
                 .col-sm-4
                   button.btn.btn-success#materialSubmit(type='submit') Save
-      .return-button
-        a.home-logout.btn.btn-industry.btn-lg( href="/ideas/#{idea.name}") Back to Idea Summary
-      br
 
       if idea.name && idea.inventorName == user.username
         .related-components
