@@ -54,7 +54,7 @@ html
         if component.text && component.descriptions && component.descriptions[0]
           h3 The #{component.text.toLowerCase()} of <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b> is #{component.descriptions[0]}.
           if ( component['descriptions'].length > 1)
-            h4 In addition, the #{component.text} can be described as : 
+            h4 Additionally, the #{component.text} can be described as : 
             ul
               each description, index in component['descriptions']
                 if index > 0
@@ -62,7 +62,7 @@ html
           else
             ul
               li.no-descriptions No More Descriptions Yet
-          a.btn.btn-industry.btn-lg#addAnotherDescription Add Another Description
+          a.btn.btn-industry.btn-lg#addAnotherDescription Add Additional Description
           if idea.name && idea.inventorName == user.username
             form.add-another-description-form(role='form', id="addDescription" action="/add-description", method="post", data-idea-doc=idea, style="display:none;")
               .row
@@ -103,51 +103,71 @@ html
         //-   else 
         //-     p <i>Not currently part of any variants</i>
       .component-dimensions
-        h3 In the best case, this component is produced to the dimensions of:
         if( component['dimensions'].length > 0)
-          ul
-            each dimension, index in component['dimensions']
-              if dimension
-                li #{dimension}
+          h3 The dimensions of #{component.text} are #{component['dimensions'][0]}.
+          if( component['dimensions'].length  > 1)
+            h4 Additionally, #{component.text} can be made to these dimensions:
+            ul
+              each dimension, index in component['dimensions']
+                if dimension && index > 0
+                  li #{dimension}
+          a.btn.btn-industry.btn-lg#showDimensions Add Additional Dimensions
+          if idea.name && idea.inventorName == user.username
+            form(role='form', id="addDimension" action="/add-dimension", method="post", data-idea-doc=idea, style="display:none;")
+              .row
+                .col-sm-8
+                  p#no-dimension-value-entered(style="display:none;") Please enter a valid dimension
+                  input.form-control(name="dimension", id="dimension")
+                  p Example: '15 inches wide, 10 inches tall, and 5 inches deep' or 'a length of range 4-7 millimeters, a height of range 10-14 millimeters, and a depth of range 2-3 mm'
+                  input(type="hidden", name="_csrf", value="#{csrfToken}")
+                .col-sm-4
+                  button.btn.btn-success#dimensionSubmit(type='submit') Save
         else
-          ul
-            li.no-dimensions No Dimensions Yet
-        a.btn.btn-industry.btn-lg#showDimensions Add Dimensions
-        if idea.name && idea.inventorName == user.username
-          form(role='form', id="addDimension" action="/add-dimension", method="post", data-idea-doc=idea, style="display:none;")
-            .row
-              .col-sm-8
-                p#no-dimension-value-entered(style="display:none;") Please enter a valid dimension
-                input.form-control(name="dimension", id="dimension",
-                placeholder='Add dimension')
-                p Example: '15 inches wide, 10 inches tall, and 5 inches deep' or 'a length of range 4-7 millimeters, a height of range 10-14 millimeters, and a depth of range 2-3 mm'
-                input(type="hidden", name="_csrf", value="#{csrfToken}")
-              .col-sm-4
-                button.btn.btn-success#dimensionSubmit(type='submit') Save
+          h3 Dimensions of #{component.text}:
+          if idea.name && idea.inventorName == user.username
+            form(role='form', id="addDimension" action="/add-dimension", method="post", data-idea-doc=idea)
+              .row
+                .col-sm-8
+                  p#no-dimension-value-entered(style="display:none;") Please enter a valid dimension
+                  input.form-control(name="dimension", id="dimension")
+                  p Example: '15 inches wide, 10 inches tall, and 5 inches deep' or 'a length of range 4-7 millimeters, a height of range 10-14 millimeters, and a depth of range 2-3 mm'
+                  input(type="hidden", name="_csrf", value="#{csrfToken}")
+                .col-sm-4
+                  button.btn.btn-success#dimensionSubmit(type='submit') Save
 
 
       .component-materials
-        h3 In the best case, the component incorporates this material:
         if( component['materials'].length > 0)
-          ul
-            each material, index in component['materials']
-              if material
-                li #{material}
+          h3 The #{component.text} is ideally made of #{component['materials'][0]}.
+          if( component['materials'].length > 1)
+            h4 Additionally, #{component.text} can be made of:
+            ul
+              each material, index in component['materials']
+                if material && index > 0
+                  li #{material}
+          a.btn.btn-industry.btn-lg#showMaterials Add Additional Materials
+          if idea.name && idea.inventorName == user.username
+            form(role='form', id="addMaterial" action="/add-material", method="post", data-idea-doc=idea, style="display:none;")
+              .row
+                .col-sm-8
+                  p#no-material-value-entered(style="display:none;") Please enter a valid material
+                  input.form-control(name="material", id="material")
+                  p Example: 'Inconel Alloy C-276' or 'an alloy comprising at least 15% Molybdenum, 15% Chromium, and 5% Iron
+                  input(type="hidden", name="_csrf", value="#{csrfToken}")
+                .col-sm-4
+                  button.btn.btn-success#materialSubmit(type='submit') Save
         else
-          ul
-            li.no-materials No Materials Yet
-        a.btn.btn-industry.btn-lg#showMaterials Add Materials
-        if idea.name && idea.inventorName == user.username
-          form(role='form', id="addMaterial" action="/add-material", method="post", data-idea-doc=idea, style="display:none;")
-            .row
-              .col-sm-8
-                p#no-material-value-entered(style="display:none;") Please enter a valid material
-                input.form-control(name="material", id="material",
-                placeholder='Add material')
-                p Example: 'Inconel Alloy C-276' or 'an alloy comprising at least 15% Molybdenum, 15% Chromium, and 5% Iron
-                input(type="hidden", name="_csrf", value="#{csrfToken}")
-              .col-sm-4
-                button.btn.btn-success#materialSubmit(type='submit') Save
+          h3 Materials of #{component.text}:
+          if idea.name && idea.inventorName == user.username
+            form(role='form', id="addMaterial" action="/add-material", method="post", data-idea-doc=idea)
+              .row
+                .col-sm-8
+                  p#no-material-value-entered(style="display:none;") Please enter a valid material
+                  input.form-control(name="material", id="material")
+                  p Example: 'Inconel Alloy C-276' or 'an alloy comprising at least 15% Molybdenum, 15% Chromium, and 5% Iron
+                  input(type="hidden", name="_csrf", value="#{csrfToken}")
+                .col-sm-4
+                  button.btn.btn-success#materialSubmit(type='submit') Save
       .return-button
         a.home-logout.btn.btn-industry.btn-lg( href="/ideas/#{idea.name}") Back to Idea Summary
       br
@@ -450,46 +470,6 @@ html
       });
     });
 
-    $("#dimensionSubmit").click(function(event){
-      event.preventDefault();
-      if($("#dimension").val() == "") {
-        $("#no-dimension-value-entered").show(400);
-      } else {
-        var data = {
-          "_csrf" : $('[name="_csrf"]').val(),
-          "dimension" : $("#dimension").val(),
-          "component-identifier" :  "!{component['identifier']}"
-        }
-        $.post("/add-dimension", data, function(response){
-          if(response=="OK"){
-            location.reload();
-          } else {
-            alert("Not submitted successfully");
-          }
-        });
-      }
-    });
-
-
-    $("#materialSubmit").click(function(event){
-      event.preventDefault();
-      if($("#material").val() == "") {
-        $("#no-material-value-entered").show(400);
-      } else {
-        var data = {
-        "_csrf" : $('[name="_csrf"]').val(),
-        "material" : $("#material").val(),
-        "component-identifier" :  "!{component['identifier']}"
-        }
-        $.post("/add-material", data, function(response){
-          if(response=="OK"){
-            location.reload();
-          } else {
-            alert("Not submitted successfully");
-          }
-        });
-      }
-    });
 
     $(document).ready(function(){
       $(".upvote-imperfection").click(function(event){
@@ -521,7 +501,97 @@ html
       $(".add-another-description-form").show(400);
     })
 
+    if("!{component.materials.length > 0}" == "false"){
+      $("#material").val("The !{component.text || 'untitled'} ideally comprises the materials of ");
+    } else {
+      $("#material").val("The !{component.text || 'untitled'} also comprises the materials of ");
+    }
+    
+    // This is for the main solution text input
+    var requiredMaterialText = $("#material").val();
+    $("#material")[0].addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredMaterialText) == -1) {
+            $(this).val(requiredMaterialText);
+      }
+      if (this.selectionStart < requiredMaterialText.length) {
+        this.selectionStart = requiredMaterialText.length;
+      }
+    }, false);
+
+    $("#material")[0].addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredMaterialText) == -1) {
+            $(this).val(requiredMaterialText);
+      }
+      if (this.selectionStart < requiredMaterialText.length) {
+        this.selectionStart = requiredMaterialText.length;
+      }
+    }, false);
+
+    if("!{component.dimensions.length > 0}" == "true"){
+      $("#dimension").val("Additional dimensions of the !{component.text || 'untitled'} are ");
+    } else {
+      $("#dimension").val("The ideal dimensions of the !{component.text || 'untitled'} are ");
+    }
+    // This is for the main solution text input
+    var requiredDimensionText = $("#dimension").val();
+    $("#dimension")[0].addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredDimensionText) == -1) {
+            $(this).val(requiredDimensionText);
+      }
+      if (this.selectionStart < requiredDimensionText.length) {
+        this.selectionStart = requiredDimensionText.length;
+      }
+    }, false);
+
+    $("#dimension")[0].addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredDimensionText) == -1) {
+            $(this).val(requiredDimensionText);
+      } 
+      if (this.selectionStart < requiredDimensionText.length) {
+        this.selectionStart = requiredDimensionText.length;
+      }
+    }, false);
 
 
 
 
+    $("#dimensionSubmit").click(function(event){
+      event.preventDefault();
+      if($("#dimension").val() == "") {
+        $("#no-dimension-value-entered").show(400);
+      } else {
+        var data = {
+          "_csrf" : $('[name="_csrf"]').val(),
+          "dimension" : $("#dimension").val().slice(requiredDimensionText.length),
+          "component-identifier" :  "!{component['identifier']}"
+        }
+        $.post("/add-dimension", data, function(response){
+          if(response=="OK"){
+            location.reload();
+          } else {
+            alert("Not submitted successfully");
+          }
+        });
+      }
+    });
+
+
+    $("#materialSubmit").click(function(event){
+      event.preventDefault();
+      if($("#material").val() == "") {
+        $("#no-material-value-entered").show(400);
+      } else {
+        var data = {
+        "_csrf" : $('[name="_csrf"]').val(),
+        "material" : $("#material").val().slice(requiredMaterialText.length),
+        "component-identifier" :  "!{component['identifier']}"
+        }
+        $.post("/add-material", data, function(response){
+          if(response=="OK"){
+            location.reload();
+          } else {
+            alert("Not submitted successfully");
+          }
+        });
+      }
+    });
