@@ -2256,7 +2256,7 @@ router.get('/create-application', csrfProtection, function(req, res){
     res.redirect('/');
     return;
   }
-
+  var allImageIds = [];
   var currentAccount;
   Account.findById( req.user.id,
     function (err, account) {
@@ -2264,11 +2264,24 @@ router.get('/create-application', csrfProtection, function(req, res){
       IdeaSeed.findById(req.session.idea,function(err, idea){
         currentIdea = idea._doc;
         IdeaProblem.find({"_id" : { $in : idea.problemPriorities}}, function(err, problems){
-          IdeaImage.find({"_id" : { $in : idea.images}}, function(err, images){
-            images = _.filter(images, function(item){return item.amazonURL});
+          Component.find({"ideaSeed" : idea.id}, function(err, comps){
+            _.each(comps, function(eachComponent, index){
+              _.each(eachComponent.images, function(compImage){
+                allImageIds.push(compImage.imageID);
+              });
+              if(eachComponent.mainImage){
+                allImageIds.push(eachComponent.mainImage)
+              }
+            });
 
-            Component.find({"ideaSeed" : idea.id}, function(err, comps){
+            //put all the component image ids together with the idea seed image id's and seach for
+            // all of them.
 
+            allImageIds = allImageIds.concat(idea.images);
+
+            IdeaImage.find({"_id" : { $in : allImageIds}}, function(err, images){
+              images = _.filter(images, function(item){return item.amazonURL});
+  
               IdeaSeed.createApplication(currentIdea, currentAccount, problems, images, comps, res);
 
             });

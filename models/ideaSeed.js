@@ -457,6 +457,15 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 								}
 							})
 						}
+						if(comps[i]['mainImage']){
+							//if there's a main image for the component, mention which figure its depicted in.
+							for(var j=0;j<images.length; j++){
+								if(comps[i]['mainImage'].toString() == images[j].id.toString()){
+									pObj.addText( ', as depicted by Figure ' + (j+1), { font_size: 14, font_face: 'Times New Roman' } );
+								}
+							}
+						}
+
 						pObj.addText( '. ', { font_size: 14, font_face: 'Times New Roman' } );
 
 						
