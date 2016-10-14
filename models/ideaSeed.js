@@ -325,7 +325,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 
 					//what its called and who its by
 					pObj = docx.createP ({ align: 'center' });
-					pObj.addText ( idea.name, { font_size: 14, font_face: 'Times New Roman' } );
+					pObj.addText ( idea.name.charAt(0).toUpperCase() + idea.name.slice(1), { font_size: 14, font_face: 'Times New Roman' } );
 					pObj = docx.createP ({ align: 'center' });
 					pObj.addText( account.nickname, { font_size: 14, font_face: 'Times New Roman', font_face: 'Times New Roman' } );
 					pObj = docx.createP ({ align: 'center' });
@@ -412,7 +412,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 
 					pObj = docx.createP ();
 					pObj.addText( 'The preferred embodiment of the present invention is a ' + idea.name + 
-						'.  ' + idea.name + ' is intended to ' + idea.description + '.  ' + 
+						'.  The ' + idea.name + ' is intended to function by ' + idea.description + '.  ' + 
 						'Embodiments of the invention comprise some or all of the following components: ', { font_size: 14, font_face: 'Times New Roman' } );
 					for(i=0; i < comps.length; i++){
 						if(comps[i].text || comps[i].descriptions.length > 0){
@@ -430,91 +430,86 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 					pObj.addText('.', {font_size: 14, font_face: 'Times New Roman'});
 
 					for(i=0; i < comps.length; i++){
-						pObj = docx.createP ();
-						
-						// Here's the first sentence of the component paragraph. Since the title ("text") is optional,
-						// it just puts the first description instead.  It also tacks on whether it's a subcomponent
 						if(comps[i].text){
+							pObj = docx.createP ();
+							
+							// Here's the first sentence of the component paragraph. Since the title ("text") is optional,
+							// it just puts the first description instead.  It also tacks on whether it's a subcomponent
 							pObj.addText( 'An embodiment of the invention incorporates ' +
 								comps[i].text.toLowerCase(), { font_size: 14, font_face: 'Times New Roman' } );
-						} else if (comps[i].descriptions[0]) {
-							pObj.addText( 'An embodiment of the invention incorporates ' +
-								comps[i].descriptions[0].toLowerCase(), { font_size: 14, font_face: 'Times New Roman' } );
-						}
-						if(comps[i].relatedComps && comps[i].relatedComps.length > 0){
-							_.each(comps[i].relatedComps, function(eachOne, index){
-								if(eachOne['subComponent'] && eachOne['subComponent'] == "sub-component") {
-									// If this component is a sub-component of another component, find title or first description
-									// of the parent component
 
-									//currently assuming there's only one.
-									_.each(comps, function(singleComp, compIndex){
-										if(eachOne['compID'].toString() == singleComp.id.toString()){
-											var parentCompTitle = singleComp.text || singleComp.descriptions[0] || "no component name"
-											pObj.addText( ', a sub-component of ' + parentCompTitle.toLowerCase(), { font_size: 14, font_face: 'Times New Roman' } );
+							if(comps[i].relatedComps && comps[i].relatedComps.length > 0){
+								_.each(comps[i].relatedComps, function(eachOne, index){
+									if(eachOne['subComponent'] && eachOne['subComponent'] == "sub-component") {
+										// If this component is a sub-component of another component, find title or first description
+										// of the parent component
+
+										//currently assuming there's only one.
+										_.each(comps, function(singleComp, compIndex){
+											if(eachOne['compID'].toString() == singleComp.id.toString()){
+												var parentCompTitle = singleComp.text || singleComp.descriptions[0] || "no component name"
+												pObj.addText( ', a sub-component of ' + parentCompTitle.toLowerCase(), { font_size: 14, font_face: 'Times New Roman' } );
+											}
+										})
+									}
+								})
+							}
+							if(comps[i]['mainImage']){
+								//if there's a main image for the component, mention which figure its depicted in.
+								for(var j=0;j<images.length; j++){
+									if(comps[i]['mainImage'].toString() == images[j].id.toString()){
+										pObj.addText( ', as depicted by Figure ' + (j+1), { font_size: 14, font_face: 'Times New Roman' } );
+									}
+								}
+							}
+
+							pObj.addText( '. ', { font_size: 14, font_face: 'Times New Roman' } );
+
+							
+							// This section is for the dimensions
+							if(comps[i].dimensions.length > 0){
+								pObj.addText( 'In the preferred embodiment of the ' + comps[i].text + ', this component is produced to the following dimensions: ' + comps[i].dimensions[0] + ". ", { font_size: 14, font_face: 'Times New Roman' } );
+								if(comps[i].dimensions.length > 1){
+									_.each(comps[i].dimensions.slice(1), function(eachDimension, index){
+										if(eachDimension){
+											pObj.addText( 'The invention can alternatively be produced to the following dimensions: ' + eachDimension + ". ", { font_size: 14, font_face: 'Times New Roman' } );
 										}
 									})
 								}
-							})
-						}
-						if(comps[i]['mainImage']){
-							//if there's a main image for the component, mention which figure its depicted in.
-							for(var j=0;j<images.length; j++){
-								if(comps[i]['mainImage'].toString() == images[j].id.toString()){
-									pObj.addText( ', as depicted by Figure ' + (j+1), { font_size: 14, font_face: 'Times New Roman' } );
+							}
+
+							// This section is for the materials
+							if(comps[i].dimensions.length > 0){
+								pObj.addText( 'In the preferred embodiment of the ' + comps[i].text + ', the component incorporates this material: ' + comps[i].materials[0] + ". ", { font_size: 14, font_face: 'Times New Roman' } );
+								if(comps[i].materials.length > 1){
+									_.each(comps[i].materials.slice(1), function(eachMaterial, index){
+										if(eachMaterial){
+											pObj.addText( 'An alternative material this component incorporates is: ' + eachMaterial + ". ", { font_size: 14, font_face: 'Times New Roman' } );
+										}
+									})
 								}
 							}
-						}
 
-						pObj.addText( '. ', { font_size: 14, font_face: 'Times New Roman' } );
-
-						
-						// This section is for the dimensions
-						if(comps[i].dimensions.length > 0){
-							pObj.addText( 'In the best case, this component is produced to the following dimensions: ' + comps[i].dimensions[0] + ". ", { font_size: 14, font_face: 'Times New Roman' } );
-							if(comps[i].dimensions.length > 1){
-								_.each(comps[i].dimensions.slice(1), function(eachDimension, index){
-									if(eachDimension){
-										pObj.addText( 'The invention can alternatively be produced to the following dimensions: ' + eachDimension + ". ", { font_size: 14, font_face: 'Times New Roman' } );
+							if(comps[i].descriptions.length > 0 && comps[i].problemID){
+								pObj.addText( 'The present inventor has recognized that ' +
+								comps[i].descriptions[0].toLowerCase() + ' addresses the problem of ', { font_size: 14, font_face: 'Times New Roman' } );
+								for(j=0; j < problems.length; j++){
+									if(comps[i].problemID.id.toString() == problems[j]['_id'].toString()){
+										pObj.addText( problems[j]['text'] + '.  ', { font_size: 14, font_face: 'Times New Roman' } );
 									}
-								})
-							}
-						}
-
-						// This section is for the materials
-						if(comps[i].dimensions.length > 0){
-							pObj.addText( 'In the best case, the component incorporates this material: ' + comps[i].materials[0] + ". ", { font_size: 14, font_face: 'Times New Roman' } );
-							if(comps[i].materials.length > 1){
-								_.each(comps[i].materials.slice(1), function(eachMaterial, index){
-									if(eachMaterial){
-										pObj.addText( 'An alternative material this component incorporates is: ' + eachMaterial + ". ", { font_size: 14, font_face: 'Times New Roman' } );
-									}
-								})
-							}
-						}
-
-						if(comps[i].descriptions.length > 0 && comps[i].problemID){
-							pObj.addText( 'The present inventor has recognized that ' +
-							comps[i].descriptions[0].toLowerCase() + ' addresses the problem of ', { font_size: 14, font_face: 'Times New Roman' } );
-							for(j=0; j < problems.length; j++){
-								console.log("prolems index j is " + j);
-								console.log("problem id is " + problems[j]['id'].toString())
-								console.log("this component problem id is " + comps[i].problemID.id.toString())
-								if(comps[i].problemID.toString() == problems[j]['id'].toString()){
-									pObj.addText( problems[j]['text'] + '.  ', { font_size: 14, font_face: 'Times New Roman' } );
 								}
-							}
-						}	
+							}	
 
-						if(comps[i].descriptions.length > 1 && !comps[i].text){
-							for(j=1; j < comps[i].descriptions.length; j++){
-								pObj.addText( ''+comps[i].descriptions[0] + ' is described as ', { font_size: 14, font_face: 'Times New Roman' } );
-								pObj.addText( comps[i].descriptions[j] + '. ', { font_size: 14, font_face: 'Times New Roman' } );
-							}
-						} else {
-							for(j=1; j < comps[i].descriptions.length; j++){
-								pObj.addText( ''+comps[i].text + ' is described as ', { font_size: 14, font_face: 'Times New Roman' } );
-								pObj.addText( comps[i].descriptions[j] + '. ', { font_size: 14, font_face: 'Times New Roman' } );
+							if(comps[i].descriptions.length > 1 && !comps[i].text){
+								for(j=1; j < comps[i].descriptions.length; j++){
+									pObj.addText( ''+comps[i].descriptions[0] + ' is described as ', { font_size: 14, font_face: 'Times New Roman' } );
+									pObj.addText( comps[i].descriptions[j] + '. ', { font_size: 14, font_face: 'Times New Roman' } );
+								}
+							} else {
+								for(j=1; j < comps[i].descriptions.length; j++){
+									pObj.addText( ''+comps[i].text + ' is described as ', { font_size: 14, font_face: 'Times New Roman' } );
+									pObj.addText( comps[i].descriptions[j] + '. ', { font_size: 14, font_face: 'Times New Roman' } );
+								}
 							}
 						}
 					}

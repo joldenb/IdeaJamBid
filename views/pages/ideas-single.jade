@@ -105,7 +105,7 @@ html
             .app-strength-bar.col-md-8
               .app-strength(class="#{appStrengthClass}") #{appStrengthText}
             .col-md-4
-              a.btn.btn-go#file-patent(data-toggle="modal" data-target="#filePatentModal") Generate Patent
+              a.btn.btn-go#file-patent(data-toggle="modal" data-target="#filePatentModal") Generate Patent Application
 
         .row
           .col-xs-12
@@ -317,12 +317,11 @@ html
                 br
             else if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
               h4 Enter more information before generating an application.
-              a.btn.btn-go#bypass-application-button(data-toggle="modal" data-target="#confirmExposeIdeaModal") Expose Idea Now
             br
 
           .modal-footer
-            button.btn.btn-info(data-dismiss="modal") Cancel
-
+            button#enterMoreInformation.btn.btn-info(data-dismiss="modal") Enter More Information
+            a.btn.btn-go#bypass-application-button(data-toggle="modal" data-target="#confirmExposeIdeaModal") Expose Idea Now
 
   #confirmExposeIdeaModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -969,6 +968,10 @@ html
           $("#idea-summary-challenge a")
             .before("<h4><i>No data entered</i></h4>");
         }
+
+        $("#enterMoreInformation").click(function(event){
+          $("#whatsLeftModal").modal('show');
+        })
 
         $("#openTitleModal").click(function(event){
           $("#whatsLeftModal").modal('hide');
