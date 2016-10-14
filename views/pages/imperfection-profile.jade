@@ -95,6 +95,7 @@ script(type="text/javascript").
             "problemText" : "!{problem.text}",
             "tactic"  : tacticVal,
             "target"  : targetVal,
+            "ideaName" : "!{idea.name}",
             "_csrf"   : $("input[name=_csrf]").val()
           }
 
@@ -105,7 +106,7 @@ script(type="text/javascript").
           }
 
           $.post('/suggestion-submit-new', data, function(error, response){
-            window.location = "/view-all-jam-suggestions/dsw";
+            window.location = "/ideas/!{idea.name}/view-all-suggestions";
           });
         }
       } else {
