@@ -1320,7 +1320,7 @@ router.post('/save-idea-name', csrfProtection, function(req, res) {
     return;
   }
   IdeaSeed.findOneAndUpdate({_id : req.session.idea}, {
-    name : req.body.inventionName.slice(17)},
+    name : req.body.inventionName.slice(4)},
     // options, this gets the new updated record
     { multi: false, new : true },
     function (err, idea) {
@@ -2666,6 +2666,10 @@ router.post('/save-component', csrfProtection, function(req, res) {
     }
 
     req.body.component = req.body.component.slice(16); //get rid of "the solution of "
+
+    if(req.body.component.indexOf("the") == 0 || req.body.component.indexOf("The") == 0){
+      req.body.component = req.body.component.slice(4);      
+    }
 
     if(req.body.component.charAt(req.body.component.length-1) == "."){
       req.body.component = req.body.component.slice(-1);

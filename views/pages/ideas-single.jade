@@ -10,7 +10,7 @@ html
     .row(class="visibility-row-#{idea.visibility}")
       .col-xs-12
         h3 Visibility : #{idea.visibility.charAt(0).toUpperCase() + idea.visibility.slice(1)}
-    .row
+    .row.idea-seed-profile
       .col-sm-4
         if(imageURLs.length > 0)
           .imagesList
@@ -141,7 +141,7 @@ html
           form(role='form', id="saveIdeaName" action="/save-idea-name", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
               input(type="hidden", name="_csrf", value="#{csrfToken}")
-              input.form-control(type="text", name="inventionName", value='My idea is named ')
+              input.form-control(type="text", name="inventionName", value='The ...')
               p (ex. "Flux Capacitor")
               p.charactersRemaining
             .modal-footer
@@ -1101,7 +1101,7 @@ html
 
     $("#titleSubmit").click(function(event){
       event.preventDefault();
-      if($("#saveIdeaName input[name='inventionName']").val() == "My idea is named " &&
+      if($("#saveIdeaName input[name='inventionName']").val() == "The ..." &&
         $("#titleRequiredMessage").length == 0){
           $("<p id='titleRequiredMessage'>A title is required</p>").insertBefore("#saveIdeaName input[name='inventionName']");
       } else {
@@ -1163,14 +1163,14 @@ html
 
     // This is for the idea name
     var inputName = $("#saveIdeaName input")[1];
-    var requiredNameText = "My idea is named "
+    var requiredNameText = "The "
     $("#saveIdeaName .charactersRemaining").text((30) + " characters remaining");
     inputName.addEventListener ("mousedown", function () {
-      if (String($(this).val()).indexOf(requiredNameText) == -1) {
+      if (String($(this).val()).indexOf(requiredNameText) == -1 || String($(this).val()) == "The ...") {
             $(this).val(requiredNameText);
       }
-      if (this.selectionStart < 17) {
-        this.selectionStart = 17;
+      if (this.selectionStart < requiredNameText.length) {
+        this.selectionStart = requiredNameText.length;
       }
     }, false);
 
@@ -1178,8 +1178,8 @@ html
       if (String($(this).val()).indexOf(requiredNameText) == -1) {
             $(this).val(requiredNameText);
       }
-      if (this.selectionStart < 17) {
-        this.selectionStart = 17;
+      if (this.selectionStart < requiredNameText.length) {
+        this.selectionStart = requiredNameText.length;
       }
       $("#saveIdeaName input").keyup(function(){
         $("#saveIdeaName .charactersRemaining").text((30 + requiredNameText.length - $(this).val().length) + " characters remaining");

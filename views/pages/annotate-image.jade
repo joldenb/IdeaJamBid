@@ -31,7 +31,7 @@ html
     .row#image-title
       if imageTitle != ""
         a#edit-image-title
-          h2 #{imageTitle}
+          h2 #{imageTitle.charAt(0).toUpperCase() + imageTitle.slice(1)}
             span
               img(src="/pencil.png" style="height:1em; vertical-align:baseline; padding-left:.3em;")
       else
@@ -336,8 +336,7 @@ html
       });
     });
 
-    var input = document.getElementsByTagName ("input");
-
+    var input = $("#componentName");
     // This is for the main solution text input
     var requiredText = "The solution of "
     input[0].addEventListener ("mousedown", function () {
@@ -360,11 +359,33 @@ html
 
     $("#edit-image-title").click(function(event){
       $("#edit-image-title").hide();
-      $("#image-title").append("<input type='text' id='new-title-input' placeholder='Enter new name'><input type='hidden', name='_csrf', value='!{csrfToken}'><button id='edit-image-title-save' class='btn btn-go btn-lg'>Save</button>");
+      $("#image-title").append("<input type='text' id='new-title-input' value='The ...'><input type='hidden', name='_csrf', value='!{csrfToken}'><button id='edit-image-title-save' class='btn btn-go btn-lg'>Save</button>");
+
+      var titleInput = $("#new-title-input");
+      // This is for the main solution text input
+      var requiredTitleText = "The "
+      titleInput[0].addEventListener ("mousedown", function () {
+        if (String($(this).val()).indexOf(requiredTitleText) == -1 || String($(this).val()) == "The ...") {
+              $(this).val(requiredTitleText);
+        }
+        if (this.selectionStart < requiredTitleText.length) {
+          this.selectionStart = requiredTitleText.length;
+        }
+      }, false);
+
+      titleInput[0].addEventListener ("keydown", function () {
+        if (String($(this).val()).indexOf(requiredTitleText) == -1 || String($(this).val()) == "The ...") {
+              $(this).val(requiredTitleText);
+        }
+        if (this.selectionStart < requiredTitleText.length) {
+          this.selectionStart = requiredTitleText.length;
+        }
+      }, false);
+
       $("#edit-image-title-save").click(function(event){
-        if($("#new-title-input").val() != ""){
+        if($("#new-title-input").val() != "The ..."){
           var data = {
-            newTitle : $("#new-title-input").val(),
+            newTitle : $("#new-title-input").val().slice(4),
             _csrf : $('[name="_csrf"]').val(),
             imageFilename : "!{imageName}"
           }

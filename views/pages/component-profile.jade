@@ -250,7 +250,7 @@ html
                   h4 Sub-Component
                   input(type="checkbox", name="subComponent")
                   span#sub-component-checkbox
-                input(type="hidden" id="component-identifier" name="component-identifier")
+                input(type="hidden" id="component-identifier" name="component-identifier" value="#{component['identifier']}")
 
               .modal-footer
                 button.btn.btn-info(data-dismiss="modal") Cancel
@@ -267,14 +267,13 @@ html
             form(role='form', id="addComponentTitle" action="/add-component-title", method="post", data-idea-doc=idea)
               .form-group
                 input(type="hidden", name="_csrf", value="#{csrfToken}")
-                input.form-control(name="compTitle", id="compTitle",
-                  placeholder='Enter title here')
-                input(type="hidden" id="component-identifier" name="component-identifier" value="#{component['identifier']}")
+                input.form-control(name="compTitle", id="compTitle" value="The ...")
+                input(type="hidden" id="title-component-identifier" name="component-identifier" value="#{component['identifier']}")
                 p Ex. "Pizza hydrator"
 
               .modal-footer
                 button.btn.btn-info(data-dismiss="modal") Cancel
-                button.btn.btn-success(type='submit') Save
+                button.btn.btn-success#componentTitleSubmit(type='submit') Save
 
   script(src='/exif.js')
   include ../partials/js-includes.jade
@@ -436,23 +435,25 @@ html
     $("#description").val("The !{component.text || 'untitled'} is ");
     // This is for the main solution text input
     var requiredText = $("#description").val();
-    $("#description")[0].addEventListener ("mousedown", function () {
-      if (String($(this).val()).indexOf(requiredText) == -1) {
-            $(this).val(requiredText);
-      }
-      if (this.selectionStart < 16) {
-        this.selectionStart = 16;
-      }
-    }, false);
+    if($("#description").length > 0){
+      $("#description")[0].addEventListener ("mousedown", function () {
+        if (String($(this).val()).indexOf(requiredText) == -1) {
+              $(this).val(requiredText);
+        }
+        if (this.selectionStart < 16) {
+          this.selectionStart = 16;
+        }
+      }, false);
 
-    $("#description")[0].addEventListener ("keydown", function () {
-      if (String($(this).val()).indexOf(requiredText) == -1) {
-            $(this).val(requiredText);
-      }
-      if (this.selectionStart < 16) {
-        this.selectionStart = 16;
-      }
-    }, false);
+      $("#description")[0].addEventListener ("keydown", function () {
+        if (String($(this).val()).indexOf(requiredText) == -1) {
+              $(this).val(requiredText);
+        }
+        if (this.selectionStart < 16) {
+          this.selectionStart = 16;
+        }
+      }, false);
+    }
 
 
     $("#addDescription #submit").click(function(event){
@@ -596,3 +597,47 @@ html
         });
       }
     });
+
+    // This is for the idea name
+    var inputName = $("#addComponentTitle input#compTitle")[0];
+    var requiredNameText = "The "
+    inputName.addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredNameText) == -1 || String($(this).val()) == "The ...") {
+            $(this).val(requiredNameText);
+      }
+      if (this.selectionStart < requiredNameText.length) {
+        this.selectionStart = requiredNameText.length;
+      }
+    }, false);
+
+    inputName.addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredNameText) == -1) {
+            $(this).val(requiredNameText);
+      }
+      if (this.selectionStart < requiredNameText.length) {
+        this.selectionStart = requiredNameText.length;
+      }
+    }, false);
+
+
+    $("#componentTitleSubmit").click(function(event){
+      event.preventDefault();
+      if($("#addComponentTitle input[name='inventionName']").val() == "The ..." &&
+        $("#titleRequiredMessage").length == 0){
+          $("<p id='titleRequiredMessage'>A title is required</p>").insertBefore("#addComponentTitle input#compTitle");
+      } else {
+        $.post('/add-component-title', 
+          {
+            _csrf : $('[name="_csrf"]').val(),
+            compTitle : $("#addComponentTitle input#compTitle").val().slice(4).trim(),
+            "component-identifier" : $("#title-component-identifier").val()
+          });
+      }
+    })
+
+
+
+
+
+
+
