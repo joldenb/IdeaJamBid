@@ -1487,3 +1487,7 @@ button.suggestion-tactics, button.suggestion-targets {
 .row.idea-seed-profile {
   margin-top:2em;
 }
+
+#componentModalButton {
+  margin-left: 1em;
+}
