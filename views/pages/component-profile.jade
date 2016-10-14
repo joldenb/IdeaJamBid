@@ -184,7 +184,7 @@ html
                     a(href="/component-profile/"+thisComponent[0]['identifier'])
                       h4.compName #{thisComponent[0]['number']} : #{thisComponent[0]['text']}
                     p <b>Relationship</b> 
-                    p #{thisComponent[1]}
+                    p #{thisComponent[1].charAt(0).toUpperCase() + thisComponent[1].slice(1)}
                     if thisComponent[2]
                       h5 Sub-Component
                       p #{thisComponent[2]}
@@ -192,7 +192,7 @@ html
                   li 
                     h4.compName #{thisComponent[0]['number']} : #{thisComponent[0]['text']}
                     p <b>Relationship</b> 
-                    p #{thisComponent[1]}
+                    p #{thisComponent[1].charAt(0).toUpperCase() + thisComponent[1].slice(1)}
                     if thisComponent[2]
                       h5 Sub-Component
                       p #{thisComponent[2]}
@@ -202,7 +202,7 @@ html
                     a(href="/component-profile/"+thisComponent[0]['identifier'])
                       h4.compName #{thisComponent[0]['descriptions'][0]}
                     p <b>Relationship</b> 
-                    p #{thisComponent[1]}
+                    p #{thisComponent[1].charAt(0).toUpperCase() + thisComponent[1].slice(1)}
                     if thisComponent[2]
                       h5 Sub-Component
                       p #{thisComponent[2]}
@@ -210,7 +210,7 @@ html
                   li
                     h4.compName #{thisComponent[0]['descriptions'][0]}
                     p <b>Relationship</b> 
-                    p #{thisComponent[1]}
+                    p #{thisComponent[1].charAt(0).toUpperCase() + thisComponent[1].slice(1)}
                     if thisComponent[2]
                       h5 Sub-Component
                       p #{thisComponent[2]}
@@ -331,7 +331,7 @@ html
         if(thisCompName.indexOf("solution of") > -1){
           thisCompName = thisCompName.substring(16);
         }
-        $("#addRelatedComponent textarea").val("The " + thisCompName + also + " relates to "+ otherCompName + " by ");
+        $("#addRelatedComponent textarea").val("The " + thisCompName + also + " relates to the "+ otherCompName + " by ");
       } else {
         var thisCompName = "!{component['descriptions'][0]}";
         if(thisCompName.indexOf("component is") > -1){
@@ -340,7 +340,7 @@ html
         if(thisCompName.indexOf("solution of") > -1){
           thisCompName = thisCompName.substring(16);
         }
-        $("#addRelatedComponent textarea").val("The " + thisCompName + also + " relates to "+ otherCompName+ " by ");
+        $("#addRelatedComponent textarea").val("The " + thisCompName + also + " relates to the "+ otherCompName+ " by ");
       }
 
       // updated text for the sub-component checkbox

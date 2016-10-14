@@ -115,7 +115,8 @@ html
             include ../partials/problem-summary-element.jade
         .row.idea-sumamart-buttons
           .col-xs-12
-            button(type="button"  class="btn btn-industry btn-lg btn-block" data-toggle="modal" data-target="#viewAllImperfections") View All Imperfections
+            a(href='/ideas/' + idea.name + '/view-all-imperfections')
+              button(type="button"  class="btn btn-industry btn-lg btn-block") View All Imperfections
         .row.idea-sumamart-buttons
           .col-xs-12
             button(type="button" id="problemModalButton"  class="btn btn-go btn-lg btn-block" data-toggle="modal" data-target="#addProblemModal" ontouchstart="this.style.background = '#007338';") Add New Imperfection

@@ -1,0 +1,43 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body
+  .header.navbar.navbar-default
+    include ../partials/header.jade
+
+  .container-fluid.view-all-imperfections
+    .row
+      .col-md-4
+        h2 All Imperfections
+      .col-md-4
+      .col-md-4
+        .return-button
+          a.home-logout.btn.btn-industry.btn-lg( href="/ideas/#{idea.name}") Back to Idea Summary
+        br
+
+    .row 
+      .idea-summary-data#idea-summary-problems
+        each problem, index in problems
+          if(problem.text && problem['identifier'])
+            include ../partials/problem-summary-element.jade
+    input(type="hidden", name="_csrf", value="#{csrfToken}")
+
+  include ../partials/js-includes.jade
+  script(src='/exif.js')
+  script(type="text/javascript").
+    $(".upvote-imperfection").click(function(event){
+      event.preventDefault();
+
+        $.post('/upvote-imperfection', 
+        {
+          _csrf : $('[name="_csrf"]').val(),
+          problem : $(this)[0].dataset['problemId']
+        },
+        function(data, response) {
+          window.location.reload(true);          
+        });
+      
+
+      return false;
+    });
