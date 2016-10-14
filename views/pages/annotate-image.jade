@@ -245,6 +245,10 @@ html
           }
           ctx.fillText(data['number']+".",textCoordX,textCoordY);
 
+          if(data['component'].slice(16).indexOf("the ") == 0 || data['component'].slice(16).indexOf("The ") == 0){
+            data['component'] = data['component'].slice(4)
+          }
+
           if($("#listOfComponents .individual-component").length == 0){
             $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component'].slice(16)+"' src='/delete.png' height='25' width='25'><img class='edit-annotation' data-component='"+ data['component'].slice(16)+"' data-toggle='modal' data-target='#myModal' src='/pencil.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component'].slice(16)+"</h4></div>").
               appendTo("#listOfComponents");

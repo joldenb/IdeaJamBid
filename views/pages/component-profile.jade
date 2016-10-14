@@ -28,7 +28,7 @@ html
 
       if component['text'] && component['number']
         .component-name
-          h1 Component # #{component['number']} : #{component['text']}
+          h1 Component # #{component['number']} : #{component['text'].charAt(0).toUpperCase() + component['text'].slice(1)}
       else if component['text']
         .component-name
           h1 #{component['text']}

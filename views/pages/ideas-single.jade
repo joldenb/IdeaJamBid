@@ -284,11 +284,12 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 Record a New Component
+            h2 New Component
         .modal-body
           form(role='form', id="addIdeaComponent" action="/add-idea-component", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
-              input#componentName.form-control(type="text", name="componentName", value='The component is called ')
+              h4 What is your new component called?
+              input#componentName.form-control(type="text", name="componentName", value='The ...')
               input#subComponentCheckbox(type="checkbox", name="subComponent")
               span This is a sub-component of another component.
               #parentComponentDropdown(style="display:none;")
@@ -1123,9 +1124,9 @@ html
     $("#componentSubmit").click(function(event){
       event.preventDefault();
 
-      if($("#componentName").val() == "The component is called "){
+      if($("#componentName").val() == "The ..." || $("#componentName").val() == "The "){
         $("#addComponentModal").modal('hide');
-      } else if ($("#componentName").val().length > 24){
+      } else {
         var newComponentName = $("#componentName").val().trim();
         var newComponentDescr = "";
         if($("#componentDescription").val().length > 20){
@@ -1134,7 +1135,7 @@ html
 
         var data = {
             _csrf : $('[name="_csrf"]').val(),
-            componentName : newComponentName.slice(24),
+            componentName : newComponentName.slice(4),
             componentDescription : newComponentDescr.slice(20)
         };
 
@@ -1213,23 +1214,23 @@ html
 
     // This is for the first text input field in the add component modal
     var inputOne = $("#addIdeaComponent input#componentName")[0];
-    var requiredCompTextOne = "The component is called "
+    var requiredCompTextOne = "The "
     $("#addIdeaComponent .compNameCharRemaining").text((200) + " characters remaining");
     inputOne.addEventListener ("mousedown", function () {
-      if (String($(this).val()).indexOf(requiredCompTextOne) == -1) {
+      if (String($(this).val()).indexOf(requiredCompTextOne) == -1 || String($(this).val()) == "The ...") {
             $(this).val(requiredCompTextOne);
       }
-      if (this.selectionStart < 24) {
-        this.selectionStart = 24;
+      if (this.selectionStart < requiredCompTextOne.length) {
+        this.selectionStart = requiredCompTextOne.length;
       }
     }, false);
 
     inputOne.addEventListener ("keydown", function () {
-      if (String($(this).val()).indexOf(requiredCompTextOne) == -1) {
+      if (String($(this).val()).indexOf(requiredCompTextOne) == -1 || String($(this).val()) == "The ...") {
             $(this).val(requiredCompTextOne);
       }
-      if (this.selectionStart < 24) {
-        this.selectionStart = 24;
+      if (this.selectionStart < requiredCompTextOne.length) {
+        this.selectionStart = requiredCompTextOne.length;
       }
       $("#addIdeaComponent input#componentName").keyup(function(){
         $("#addIdeaComponent .compNameCharRemaining").text((200 + requiredCompTextOne.length - $(this).val().length) + " characters remaining");

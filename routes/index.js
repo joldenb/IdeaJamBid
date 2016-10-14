@@ -2543,7 +2543,7 @@ router.get('/annotate-image/:image', csrfProtection, function(req, res){
           var nextNumber = 1;
             Component.find({ }, function(err, comps){
               for(var j = 0; j < comps.length; j++){
-                if ( comps[j]['ideaSeed'] && comps[j]['ideaSeed'].toString() ==  req.session.idea ) {
+                if ( comps[j]['ideaSeed'] && comps[j]['ideaSeed'][0].id.toString() ==  req.session.idea ) {
                   masterComponentList.push(comps[j]);
                   nextNumber++;
                 }
@@ -2739,6 +2739,10 @@ router.post('/edit-component', csrfProtection, function(req, res) {
 
       if(component){
         component.text = req.body.newTitle.slice(16);
+
+        if(req.body.component.indexOf("the") == 0 || req.body.component.indexOf("The") == 0){
+          req.body.component = req.body.component.slice(4);      
+        }
 
         if(component.text.charAt(component.text.length-1) == "."){
           component.text = component.text.slice(-1);
