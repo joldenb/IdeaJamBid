@@ -687,7 +687,22 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 						var imageSrc = "data:" + images[number].imageMimetype + ";base64," + response.data.Body.toString('base64');
 						img['src'] = imageSrc || "hi";
 						if (img){
-							ctx.drawImage(img, 200, 150, 600, 400);
+			        ctx.translate(500, 350);
+			        if(images[number].orientation == 6 ){
+			          ctx.rotate(90*Math.PI/180);
+			        }
+			        if(images[number].orientation == 3){
+			          ctx.rotate(180*Math.PI/180);
+			        }
+			        if(images[number].orientation == 8){
+			          ctx.rotate(270*Math.PI/180);
+			        }
+			        
+			        ctx.drawImage(img, -300, -200, 600, 400);
+
+			        //not sure why this is needed, but not on the annotate-image page
+			        ctx.translate(-500, -350);
+						
 							// This part takes the image from Amazon S3 and overlays all the annotated
 							// components over it to lay into the Word File
 							//
