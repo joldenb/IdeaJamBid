@@ -551,7 +551,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 
 							if(comps[i].descriptions.length > 0 && comps[i].problemID){
 								pObj.addText( 'The present inventor has recognized that ' +
-								comps[i].descriptions[0].toLowerCase() + ' addresses the problem of ', { font_size: 14, font_face: 'Times New Roman' } );
+								comps[i].text.toLowerCase() + ' addresses the problem of ', { font_size: 14, font_face: 'Times New Roman' } );
 								for(j=0; j < problems.length; j++){
 									if(comps[i].problemID.id.toString() == problems[j]['_id'].toString()){
 										pObj.addText( problems[j]['text'] + '.  ', { font_size: 14, font_face: 'Times New Roman' } );
@@ -559,17 +559,12 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 								}
 							}	
 
-							if(comps[i].descriptions.length > 1 && !comps[i].text){
-								for(j=1; j < comps[i].descriptions.length; j++){
-									pObj.addText( ''+comps[i].descriptions[0] + ' is described as ', { font_size: 14, font_face: 'Times New Roman' } );
+							if(comps[i].descriptions.length > 0 ){
+								for(j=0; j < comps[i].descriptions.length; j++){
+									pObj.addText( ''+comps[i].text.charAt(0) + comps[i].text.slice(1) + ' is described as ', { font_size: 14, font_face: 'Times New Roman' } );
 									pObj.addText( comps[i].descriptions[j] + '. ', { font_size: 14, font_face: 'Times New Roman' } );
 								}
-							} else {
-								for(j=1; j < comps[i].descriptions.length; j++){
-									pObj.addText( ''+comps[i].text + ' is described as ', { font_size: 14, font_face: 'Times New Roman' } );
-									pObj.addText( comps[i].descriptions[j] + '. ', { font_size: 14, font_face: 'Times New Roman' } );
-								}
-							}
+							} 
 						}
 					}
 
@@ -579,7 +574,6 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 					for(i=0; i < comps.length; i++){
 						if(comps[i].relatedComps.length > 0){
 							for(j=0; j < comps[i].relatedComps.length; j++){
-								
 								//since the component relationship is listed in both components, we only list the relationship if
 								// it hasn't been listed yet.
 								if((alreadyListed.indexOf(comps[i].id.toString()+"-"+ comps[i].relatedComps[j].compID.toString()) == -1  &&
