@@ -85,13 +85,14 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 School Jam
+            h2 Join Your School on IdeaJam:
         .modal-body
           form(role='form', id="saveSchool" action="/save-school-network", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
               |  
-              input.form-control.ui-front(type='text', id="schoolNetwork", name="schoolNetwork", placeholder='My school is called... ', autocomplete="on")
+              input.form-control.ui-front(type='text', id="schoolNetwork", name="schoolNetwork", placeholder='What school did you attend?', autocomplete="on")
               input(type="hidden", name="_csrf", value="#{csrfToken}")
+              p Example: ("Northwestern University")
             .modal-footer
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#submit(type='submit') Save

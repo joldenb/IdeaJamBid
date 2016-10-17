@@ -254,6 +254,10 @@ router.post('/add-description', csrfProtection, function(req, res) {
 
       if(component){
         if( req.body.description!=="" ){
+          //check if there's a period at the end
+          if(req.body.description.slice(req.body.description.length - 1) == "."){
+            req.body.description = req.body.description.slice(0, -1);
+          }
           component.descriptions.push(req.body.description);
         }
         component.save(function(err){
@@ -320,4 +324,6 @@ router.post('/add-material', csrfProtection, function(req, res) {
       }
     });
 });
+
+
 module.exports = router;

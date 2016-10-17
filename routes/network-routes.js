@@ -329,7 +329,9 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
         for(var i = 0; i < topAccountsToDisplay.length; i++){
           var accountHeadshotStyle = "";
           var accountNameAndURLs = [];
-          accountHeadshotStyle = ideaSeedHelpers.getImageOrientation(topAccountsToDisplay[i].headshots[0].orientation);
+          if(topAccountsToDisplay[i].headshots && topAccountsToDisplay[i].headshots[0] && topAccountsToDisplay[i].headshots[0].orientation){
+            accountHeadshotStyle = ideaSeedHelpers.getImageOrientation(topAccountsToDisplay[i].headshots[0].orientation);
+          }
           accountNameAndURLs[topAccountsToDisplay[i].username] = [topAccountsToDisplay[i].headshots[0].amazonURL,accountHeadshotStyle];
         }
           /* First, make a list of all the aptitude IDs for everyone, then query the database for them,

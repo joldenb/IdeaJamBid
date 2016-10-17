@@ -6,36 +6,35 @@ html
   if user  
     .header.navbar.navbar-default
       include ../partials/header.jade
-  div.container
-    .row
-      .col-md-6
-        if accountHeadshot
-          .imagineerProfilePicWrapper
-            div(class="imagineerProfilePic" style="height: 300px; max-width: 400px; background-image : url('" + accountHeadshot.amazonURL + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + accountHeadshot.style)
-          
-        else
-          img(src="/avatar.png" height="100" width="100")
-        h2 #{profileAccount.nickname}
-        h4 Einstein Points #{profileAccount.einsteinPoints}
-        .profileSchool
-          if schoolNetwork
-            h4 School  #[a(class="network-link") #{schoolNetwork}]
-        .profileCompany
-          if companyNetwork
-            h4 Company  #[a(class="network-link") #{companyNetwork}]
-        .profileLocation
-          if locationNetwork
-            h4 Location #[a(class="network-link") #{locationNetwork}]
-        .profileAptitudes
-          if aptitudes && aptitudes.length > 0
-            h3 Aptitudes 
-            ul
-              each aptitude in aptitudes
-                li(data-apt-id="#{aptitude.identifier}")
-                  p #{aptitude.title}
-        if Object.keys(user).length != 0 && user.id == profileAccount.id
-          a.home-login.btn.btn-success.btn-lg.btn-block( href="/imagineer-picture/") Edit My Profile
-
+    div.container
+      .row
+        .col-md-6
+          if accountHeadshot
+            .imagineerProfilePicWrapper
+              div(class="imagineerProfilePic" style="height: 300px; max-width: 400px; background-image : url('" + accountHeadshot.amazonURL + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + accountHeadshot.style)
+            
+          else
+            img(src="/avatar.png" height="100" width="100")
+          h2 #{profileAccount.nickname}
+          h4 Einstein Points #{profileAccount.einsteinPoints}
+          .profileSchool
+            if schoolNetwork
+              h4 My School  #[a(class="network-link") #{schoolNetwork}]
+          .profileCompany
+            if companyNetwork
+              h4 My Company  #[a(class="network-link") #{companyNetwork}]
+          .profileLocation
+            if locationNetwork
+              h4 My Location #[a(class="network-link") #{locationNetwork}]
+          .profileAptitudes
+            if aptitudes && aptitudes.length > 0
+              h3 My Aptitudes 
+              ul
+                each aptitude in aptitudes
+                  li(data-apt-id="#{aptitude.identifier}")
+                    p #{aptitude.title}
+          if Object.keys(user).length != 0 && user.id == profileAccount.id
+            a.home-login.btn.btn-success.btn-lg.btn-block( href="/imagineer-picture/") Edit My Profile
     
       .col-md-6
         h3 Original Ideas
@@ -86,13 +85,14 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 School Jam
+            h2 My School Jam
         .modal-body
           form(role='form', id="saveSchool" action="/save-school-network", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
               |  
               input.form-control.ui-front(type='text', id="schoolNetwork", name="schoolNetwork", placeholder='My school is called... ', autocomplete="on")
               input(type="hidden", name="_csrf", value="#{csrfToken}")
+              p Example: ("Northwestern University")
             .modal-footer
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#submit(type='submit') Save
