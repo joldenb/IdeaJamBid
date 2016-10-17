@@ -1121,7 +1121,7 @@ html
             componentDescription : newComponentDescr.slice(20)
         };
 
-        if($("#subComponentCheckbox").val()){
+        if($("#subComponentCheckbox").is(":checked")){
           data['subComponent'] = "on";
           data['componentParent'] = $("#parentComponentDropdown option:selected").val()
         }

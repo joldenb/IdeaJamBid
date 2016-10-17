@@ -429,6 +429,63 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 					}
 					pObj.addText('.', {font_size: 14, font_face: 'Times New Roman'});
 
+
+
+					//Build the order of paragraphs correctly.  A component should be followed by all it's sub-components.
+					var correctCompOrder = [];
+					var isComponentAParent;
+					var listOfSubComponents = [];
+					var relatedCompIDs = [];
+					//First we'll add all the parents and their sub components, then we'll add anything that we didn't include yet.	
+					_.each(comps, function(oneComponent, compIndex){
+						//if this component is a sub component of another, we dont need to add it, because it
+						//will be included under another 
+						listOfSubComponents = [];
+						relatedCompIDs = [];
+						isComponentAParent = false;
+						if(oneComponent.relatedComps && oneComponent.relatedComps.length > 0){
+							_.each(oneComponent.relatedComps, function(eachRelationship, relationIndex){
+								if(eachRelationship['subComponent'] && eachRelationship['subComponent'] == "parent"){
+									isComponentAParent = true;
+									listOfSubComponents.push(eachRelationship);
+								}
+							})
+						}
+						if( isComponentAParent ){
+							
+							//put the parent in the correct component order array
+							correctCompOrder.push(oneComponent);
+
+							//put the sub components of the component right after the parent
+							relatedCompIDs = _.map(listOfSubComponents, function(item, theIndex){
+								if(item['compID']){
+									return item['compID'].toString();	
+								} else {
+									return null;
+								}
+							})
+							relatedCompIDs = _.filter(relatedCompIDs, Boolean);
+							_.each(comps, function(relatedComp, relatedCompIndex){
+								if(relatedCompIDs.indexOf(relatedComp.id) > -1){
+									//push the sub component onto the array after the parent
+									correctCompOrder.push(relatedComp);
+								}
+							})
+						}
+					});
+
+					//Now go through and add all the components that aren't parents or already included as sub-components
+					var alreadyListedCompIDs = _.map(correctCompOrder, function(item){ return item.id; });
+					_.each(comps, function(oneComponent, compIndex){
+						if( alreadyListedCompIDs.indexOf(oneComponent.id) == -1 ){
+							correctCompOrder.push(oneComponent);
+						}
+					})
+
+					//Copy the correct order into the normal comps array;
+					comps = correctCompOrder;
+
+					// Now build the actual paragraphs using the correct order.
 					for(i=0; i < comps.length; i++){
 						if(comps[i].text){
 							pObj = docx.createP ();
@@ -439,16 +496,18 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 								comps[i].text.toLowerCase(), { font_size: 14, font_face: 'Times New Roman' } );
 
 							if(comps[i].relatedComps && comps[i].relatedComps.length > 0){
+								var foundParentComp = false;
 								_.each(comps[i].relatedComps, function(eachOne, index){
-									if(eachOne['subComponent'] && eachOne['subComponent'] == "sub-component") {
+									if(eachOne['subComponent'] && eachOne['subComponent'] == "sub-component" && !foundParentComp) {
 										// If this component is a sub-component of another component, find title or first description
 										// of the parent component
 
-										//currently assuming there's only one.
+										//we can't assume there's only one
 										_.each(comps, function(singleComp, compIndex){
-											if(eachOne['compID'].toString() == singleComp.id.toString()){
+											if(eachOne['compID'].toString() == singleComp.id.toString() && !foundParentComp){
 												var parentCompTitle = singleComp.text || singleComp.descriptions[0] || "no component name"
 												pObj.addText( ', a sub-component of ' + parentCompTitle.toLowerCase(), { font_size: 14, font_face: 'Times New Roman' } );
+												foundParentComp = true;
 											}
 										})
 									}
@@ -537,7 +596,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 												pObj.addText( otherCompName.toLowerCase() + ' are related. ', { font_size: 14, font_face: 'Times New Roman' } );
 												pObj.addText( comps[i].text.toLowerCase() + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
 												pObj.addText( otherCompName + ' related to one another in such embodiment by ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase() + '. ', { font_size: 14, font_face: 'Times New Roman' } );
+												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase(), { font_size: 14, font_face: 'Times New Roman' } );
 											} else if(!comps[k].text && comps[i].text) {
 												otherCompName = comps[k].descriptions[0];
 												pObj = docx.createP ();
@@ -545,7 +604,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 												pObj.addText( otherCompName.toLowerCase() + ' are related. ', { font_size: 14, font_face: 'Times New Roman' } );
 												pObj.addText( comps[i].text.toLowerCase() + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
 												pObj.addText( otherCompName + ' related to one another in such embodiment by ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase() + '. ', { font_size: 14, font_face: 'Times New Roman' } );
+												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase(), { font_size: 14, font_face: 'Times New Roman' } );
 											} else if(comps[k].text && !comps[i].text) {
 												otherCompName = comps[k].text;
 												pObj = docx.createP ();
@@ -553,7 +612,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 												pObj.addText( otherCompName.toLowerCase() + ' are related. ', { font_size: 14, font_face: 'Times New Roman' } );
 												pObj.addText( comps[i].descriptions[0].toLowerCase() + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
 												pObj.addText( otherCompName + ' related to one another in such embodiment by ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase() + '. ', { font_size: 14, font_face: 'Times New Roman' } );
+												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase(), { font_size: 14, font_face: 'Times New Roman' } );
 											} else if(!comps[k].text && !comps[i].text) {
 												otherCompName = comps[k].descriptions[0];
 												pObj = docx.createP ();
@@ -561,7 +620,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 												pObj.addText( otherCompName.toLowerCase() + ' are related. ', { font_size: 14, font_face: 'Times New Roman' } );
 												pObj.addText( comps[i].descriptions[0].toLowerCase() + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
 												pObj.addText( otherCompName + ' related to one another in such embodiment by ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase() + '. ', { font_size: 14, font_face: 'Times New Roman' } );
+												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase(), { font_size: 14, font_face: 'Times New Roman' } );
 											}
 										}
 									}
