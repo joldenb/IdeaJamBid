@@ -112,6 +112,8 @@ router.post('/add-idea-component', csrfProtection, function(req, res) {
     res.redirect('/');
     return;
   }
+  var parentCompTitle;
+
   Component.count({"ideaSeed" : req.session.idea}, function(err, count){
 
     var newCompNumber = count + 1;
@@ -123,13 +125,55 @@ router.post('/add-idea-component', csrfProtection, function(req, res) {
       number        : newCompNumber,
       identifier    : "comp-"+Date.now()
     };
+
+    //assumes the req.body.componentParent is the identifier of the selected Parent component
+    if(req.body.subComponent && req.body.componentParent){
+      Component.findOne({"identifier" : req.body.componentParent}, function(err, parentComponent){
+        if(parentComponent){
+          //add related component to this component
+          parentCompTitle = parentComponent.text || parentComponent.descriptions[0] || "No parent component title"
+          newComponent.relatedComps = [{
+            compID : parentComponent.id,
+            relationship: req.body.componentName + " is a sub-component of " + parentCompTitle + ".",
+            subComponent : "sub-component"
+          }];
+
+          Component.create( newComponent ,
+            function (err, newCompDocument) {
+              if (err) return handleError(err);
+
+              // add new component document to parent Component's related comps list
+              if(parentComponent.relatedComps){
+                parentComponent.relatedComps.push({
+                  compID : newCompDocument._doc._id,
+                  relationship: req.body.componentName + " is a sub-component of " + parentCompTitle + ".",
+                  subComponent : "parent"
+                });
+              } else {
+                parentComponent.relatedComps = [{
+                  compID : newCompDocument._doc._id,
+                  relationship: req.body.componentName + " is a sub-component of " + parentCompTitle + ".",
+                  subComponent : "parent"
+                }];
+              }
+              parentComponent.save(function(err){
+                if (err) return handleError(err);
+                res.json(newComponent);
+              });
+            }
+          );
+        }
+      });
+    } else {
+      Component.create( newComponent ,
+        function (err) {
+          if (err) return handleError(err);
+          res.json(newComponent);
+        }
+      );
+
+    }
       
-    Component.create( newComponent ,
-      function (err) {
-        if (err) return handleError(err);
-      }
-    );
-    res.json(newComponent);
   });
 
 });
@@ -143,37 +187,28 @@ router.post('/add-profile-headshot', csrfProtection,  function(req, res) {
     res.redirect('/');
   } else {
     
-    IdeaImage.find({"filename" : {$regex : ".*"+req.body.filename+".*"}}, function(err, images){
-
-      var newFileName = req.body.filename + "-" + (images.length + 1).toString();
-
-      var image = new IdeaImage({ imageMimetype : req.body.type,
-        filename : newFileName, uploader : req.user.username, amazonURL : req.body.fileUrl });
-
-      if(req.body["exif[Orientation]"]){
-        image.orientation = parseInt(req.body["exif[Orientation]"]);
-      }
-      
-      image.save(function(err, newImage){
-        if (err) {
-          console.log(err);
-        } else {
-          Account.findById( req.user.id,
-            function (err, account) {
-              if(account.headshots){
-                account.headshots.unshift(newImage.id);
-              } else {
-                account.headshots = [newImage.id];
-              }
-              account.save(function (err) {
-                res.sendStatus(200);
-                return;
-              });
-          });
-        }
+    Account.findById( req.user.id,
+      function (err, account) {
+      if(err || !account){
+        res.redirect('/');
+        return;
+      }  
+      account.headshots.unshift({
+        filename : req.body.filename + Date.now(),
+        imageMimetype : req.body.type,
+        amazonURL : req.body.fileUrl,
+        uploader : req.user.username
       });
 
-    }); //end of idea image query
+      if(req.body["exif[Orientation]"]){
+        account.headshots[0].orientation = parseInt(req.body["exif[Orientation]"]);
+      }
+
+      account.save(function (err) {
+        res.sendStatus(200);
+        return;
+      });
+    });
   }
 });
 
@@ -230,5 +265,59 @@ router.post('/add-description', csrfProtection, function(req, res) {
     });
 });
 
+////////////////////////////////////////////////
+// Add a dimension to a component
+////////////////////////////////////////////////
+router.post('/add-dimension', csrfProtection, function(req, res) {
 
+  if( !(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
+
+    Component.findOne({"identifier" : req.body["component-identifier"]}, function(err, component){
+      if(err){
+        res.json({error: err});
+      }
+
+      if(component){
+        if( req.body.dimension!=="" ){
+          component.dimensions.push(req.body.dimension);
+        }
+        component.save(function(err){
+          res.sendStatus(200);
+        });
+      } else {
+        res.sendStatus(409);
+      }
+    });
+});
+
+////////////////////////////////////////////////
+// Add a material to a component
+////////////////////////////////////////////////
+router.post('/add-material', csrfProtection, function(req, res) {
+
+  if( !(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
+
+    Component.findOne({"identifier" : req.body["component-identifier"]}, function(err, component){
+      if(err){
+        res.json({error: err});
+      }
+
+      if(component){
+        if( req.body.material!=="" ){
+          component.materials.push(req.body.material);
+        }
+        component.save(function(err){
+          res.sendStatus(200);
+        });
+      } else {
+        res.sendStatus(409);
+      }
+    });
+});
 module.exports = router;

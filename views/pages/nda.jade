@@ -1,0 +1,84 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body#topSection
+    .header.navbar.navbar-default.jamTopNav
+      include ../partials/header.jade
+    .container
+      h1 Non-disclosure Agreement
+      form.confirm(role="form", action="/sign-nda", method="post")
+        label
+          input(type="checkbox", name="agree")
+          | I agree to the Terms & Conditions of this document
+        input(type="hidden", name="_csrf", value="#{csrfToken}")
+        input(type="hidden", name="idea-seed", value="#{idea.name}")
+        input(type="hidden", name="collaborator", value="#{user.username}")
+        button.btn.btn-lg.btn-block.btn-go#sign-nda-submit(type='submit' ontouchstart="this.style.background = '#D6DE26';") I really love this NDA
+
+  #loginModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          .modal-title 
+            h2 Login
+        .modal-body
+          form#dsw-signup-form(role='form', action="/register-nda",method="post")
+            a(href="/auth/google",class="btn btn-danger btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';")
+              span.fa.fa-google-plus Google
+            |  
+            a(href="/auth/facebook",class="btn btn-primary btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';")
+              span.fa.fa-facebook Facebook
+            |  
+            a(href="/auth/linkedin",class="btn btn-info btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';")
+              span.fa.fa-linkedin LinkedIn
+            |  
+            a#ideajam-login(class="btn btn-go btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';")
+              span.fa IdeaJam
+            .form-group
+              input.form-control(type="hidden", name="idea-seed", value=idea.name required)
+            h4 New Account:
+            .form-group
+              input.form-control(type='text', name="nickname", placeholder='Name' required)
+            .form-group
+              input.form-control(type='email', name="username", placeholder='Email Address' required)
+            .form-group
+              input.form-control(type="hidden", name="password", value='itcrashed' required)
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+            button.btn.btn-lg.btn-block.btn-go#register-submit(type='submit' ontouchstart="this.style.background = '#D6DE26';") Submit
+            |  
+            a(href='/' ontouchstart="this.style.background = '#D6DE26';")
+              button.btn.btn-primary.btn-lg.btn-block(type="button" style="margin-top: 5px;") Cancel
+          form#dsw-login-form(role='form', action="/login-nda",method="post", style='max-width: 300px; display: none;')
+            .form-group
+              input.form-control(type='email', name="username", placeholder='Email Address' required)
+            .form-group
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+              input.form-control(type='password', name="password", placeholder='Password' required)
+            .form-group
+              input.form-control(type="hidden", name="idea-seed", value=idea.name required)
+            button.btn.btn-go(type='submit') Submit
+            |  
+            a(href='/')
+              button.btn.btn-primary(type="button") Cancel
+            |  
+            a(href="/forgot-password/")
+              h4 Forget your password?
+  include ../partials/js-includes.jade
+  script(src='/exif.js')
+  script(type="text/javascript").
+    $(document).ready(function(){
+      if("!{user.nickname}" == ""){
+        $('#loginModal').modal('show');
+      }
+    });
+    $("#register-submit").click(function(event){
+      if($("input[name='nickname']").val() == ""){
+        event.preventDefault();
+        $("input[name='nickname']").after("<p> Please enter a name value.</p>");
+      }
+      if($("input[name='username']").val() == ""){
+        event.preventDefault();
+        $("input[name='username']").after("<p> Please enter an email.</p>");
+      }
+    })

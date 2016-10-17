@@ -18,7 +18,7 @@ router.get('/auth/google', csrfProtection, passport.authenticate('google', { sco
 
 router.get('/auth/google/callback', csrfProtection,
   passport.authenticate('google',{
-    successRedirect: '/jam/dsw',
+    successRedirect: '/',
     failureRedirect: '/'
 }));
 
@@ -32,7 +32,7 @@ router.get('/auth/facebook', csrfProtection, passport.authenticate('facebook', {
 
 router.get('/auth/facebook/callback', csrfProtection,
   passport.authenticate('facebook',{
-    successRedirect: '/jam/dsw',
+    successRedirect: '/',
     failureRedirect: '/'
 }));
 
@@ -46,7 +46,7 @@ router.get('/auth/linkedin', csrfProtection, passport.authenticate('linkedin'));
 
 router.get('/auth/linkedin/callback', csrfProtection,
   passport.authenticate('linkedin',{
-    successRedirect: '/jam/dsw',
+    successRedirect: '/',
     failureRedirect: '/'
 }));
 

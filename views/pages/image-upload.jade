@@ -22,29 +22,55 @@ html
               label.btn.btn-block.btn-file.btn-go#fileInput
                 h4 Upload Image
                 input(type="file", name="picture" style="display:none;")
-  
-    .imagesList
-      if(imageURLs.length > 0)
-        .row
-          .col-xs-12
-            h4 All Idea Images
-        each imageURL, index in imageURLs
-          if( index % 3 == 0)
-            .row
-              if ( imageURL )
-                .col-md-4
-                  .image-container
-                    img.imageListItems(src=imageURL[1] style=imageURL[3])
-              if ( imageURLs[index+1] )
-                .col-md-4
-                  .image-container
-                    img.imageListItems(src=imageURLs[index+1][1] style=imageURLs[index+1][3])
-              if ( imageURLs[index+2] )
-                .col-md-4
-                  .image-container
-                    img.imageListItems(src=imageURLs[index+2][1] style=imageURLs[index+2][3])
-      else
-        h5 <i>No images uploaded yet</i>
+    if(canEdit)
+      .imagesList
+        if(imageURLs.length > 0)
+          .row
+            .col-xs-12
+              h4 All Idea Images
+          each imageURL, index in imageURLs
+            if( index % 3 == 0)
+              .row
+                if ( imageURL )
+                  .col-md-4
+                    .image-container
+                      a(href="/annotate-image/" + imageURL[0])
+                        img.imageListItems(src=imageURL[1] style=imageURL[3])
+                if ( imageURLs[index+1] )
+                  .col-md-4
+                    .image-container
+                      a(href="/annotate-image/" + imageURLs[index+1][0])
+                        img.imageListItems(src=imageURLs[index+1][1] style=imageURLs[index+1][3])
+                if ( imageURLs[index+2] )
+                  .col-md-4
+                    .image-container
+                      a(href="/annotate-image/" + imageURLs[index+2][0])
+                        img.imageListItems(src=imageURLs[index+2][1] style=imageURLs[index+2][3])
+        else
+          h5 <i>No images uploaded yet</i>
+    else
+      .imagesList
+        if(imageURLs.length > 0)
+          .row
+            .col-xs-12
+              h4 All Idea Images
+          each imageURL, index in imageURLs
+            if( index % 3 == 0)
+              .row
+                if ( imageURL )
+                  .col-md-4
+                    .image-container
+                      img.imageListItems(src=imageURL[1] style=imageURL[3])
+                if ( imageURLs[index+1] )
+                  .col-md-4
+                    .image-container
+                      img.imageListItems(src=imageURLs[index+1][1] style=imageURLs[index+1][3])
+                if ( imageURLs[index+2] )
+                  .col-md-4
+                    .image-container
+                      img.imageListItems(src=imageURLs[index+2][1] style=imageURLs[index+2][3])
+        else
+          h5 <i>No images uploaded yet</i>
 
   include ../partials/js-includes.jade
   script(src='/exif.js')

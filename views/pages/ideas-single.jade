@@ -7,7 +7,10 @@ html
     include ../partials/header.jade
 
   .container-fluid.idea-summary
-    .row
+    .row(class="visibility-row-#{idea.visibility}")
+      .col-xs-12
+        h3 Visibility : #{idea.visibility.charAt(0).toUpperCase() + idea.visibility.slice(1)}
+    .row.idea-seed-profile
       .col-sm-4
         if(imageURLs.length > 0)
           .imagesList
@@ -62,14 +65,15 @@ html
               ul
                 each component,index in components
                   if component['text']
-                    li 
-                      h5 #{component['text']}
+                    li
+                      a(href="/component-profile/" + component['identifier'])
+                        h5 #{component['text']}
             else
               <i>No components yet</i>
             if inventorName == user.username
               button(type="button" id="componentModalButton"  class="btn btn-go btn-block btn-lg" data-toggle="modal" data-target="#addComponentModal") Add Component
 
-          .col-xs-12
+          .col-xs-12(style="display:none;")
             #idea-summary-aptitudes.aptitudeList
               .profileAptitudes
                 if aptitudes && aptitudes.length > 0 && idea.name
@@ -91,19 +95,22 @@ html
 
 
       .col-sm-8
-        //- .row
-        //-   button(type="button" id="emailShareButton" class="btn secondary-btn btn-go pull-right clearfix" data-toggle="modal" data-target="#shareModal")
-        //-     span.glyphicon.glyphicon-envelope   
+        if (inventorName == user.username) && idea.visibility == "private" && idea.collaborators.length < 6
+          .row
+            a.btn.btn-electric.btn-lg.btn-block#inviteCollaboratorsButton(type="button" data-toggle="modal" data-target="#inviteCollaboratorsModal") Invite Collaborators
+        .row
+          button(type="button" id="emailShareButton" class="btn secondary-btn btn-go pull-right clearfix" data-toggle="modal" data-target="#shareModal")
+            span.glyphicon.glyphicon-envelope   
 
-        //- if inventorName == user.username
-        //-   .row.patent-strength-row
-        //-     h4 Is #{idea.name} ready to file?
-        //-       a#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal")  What's Left?
+        if inventorName == user.username
+          .row.patent-strength-row
+            h4 Is #{idea.name} ready to file?
+              a#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal")  What's Left?
 
-        //-     .app-strength-bar.col-md-8
-        //-       .app-strength(class="#{appStrengthClass}") #{appStrengthText}
-        //-     .col-md-4
-        //-       a.btn.btn-go#file-patent(data-toggle="modal" data-target="#filePatentModal") File My Patent
+            .app-strength-bar.col-md-8
+              .app-strength(class="#{appStrengthClass}") #{appStrengthText}
+            .col-md-4
+              a.btn.btn-go#file-patent(data-toggle="modal" data-target="#filePatentModal") Generate Patent
 
         .row
           .col-xs-12
@@ -139,7 +146,7 @@ html
           form(role='form', id="saveIdeaName" action="/save-idea-name", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
               input(type="hidden", name="_csrf", value="#{csrfToken}")
-              input.form-control(type="text", name="inventionName", value='My idea is named ')
+              input.form-control(type="text", name="inventionName", value='The ...')
               p (ex. "Flux Capacitor")
               p.charactersRemaining
             .modal-footer
@@ -282,11 +289,19 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 Record a New Component
+            h2 New Component
         .modal-body
           form(role='form', id="addIdeaComponent" action="/add-idea-component", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
-              input#componentName.form-control(type="text", name="componentName", value='The component is called ')
+              h4 What is your new component called?
+              input#componentName.form-control(type="text", name="componentName", value='The ...')
+              input#subComponentCheckbox(type="checkbox", name="subComponent")
+              span This is a sub-component of another component.
+              #parentComponentDropdown(style="display:none;")
+                select.parentComponents
+                  each component,index in components
+                    if component.identifier
+                      option(value=component.identifier) #{component.text || component.descriptions[0] || "No Component Title"}
               input(type="hidden", name="_csrf", value="#{csrfToken}")
               p (ex. "The Start Button")
               p.compNameCharRemaining
@@ -305,30 +320,45 @@ html
           .modal-title 
             h2 File a Patent Application
         .modal-body
-          if appStrengthClass == "yes col-md-12"
-            a.btn.btn-go#create-application-button( href="/create-application" ) Download Application
-            br
-            if !receipt
-              form(role='form', id="prelimReceiptUpload" action="/reciept-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
-                .form-group
-                  input(type="hidden", name="_csrf", value="#{csrfToken}")
-                  input#receiptInput(type="file", name="receipt")
-            else
-              a(href=receipt.amazonURL download)
-                p Receipt uploaded.
-              h4 Variants
-              each variantDate in variantDates
-                .row
-                  a(href="/ideas/#{idea.name}/variant/"+variantDate[1]) #{variantDate[0]}
-
-              a.btn.btn-go( href="/view-idea-suggestions" ) Create a New Variant
+            if appStrengthClass == "yes col-md-12" || idea.visibility == "public"
+              a.btn.btn-go#create-application-button( href="/create-application" ) Download Application
               br
-          else if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
-            h4 Enter more information before generating an application.
-          br
+              if !receipt
+                form(role='form', id="prelimReceiptUpload" action="/receipt-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
+                  .form-group
+                    input(type="hidden", name="_csrf", value="#{csrfToken}")
+                    input#receiptInput(type="file", name="receipt")
+              else
+                a(href=receipt.amazonURL download)
+                  p Receipt uploaded.
+                h4 Variants
+                each variantDate in variantDates
+                  .row
+                    a(href="/ideas/#{idea.name}/variant/"+variantDate[1]) #{variantDate[0]}
+
+                a.btn.btn-go( href="/view-idea-suggestions" ) Create a New Variant
+                br
+            else if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
+              h4 Enter more information before generating an application.
+              a.btn.btn-go#bypass-application-button(data-toggle="modal" data-target="#confirmExposeIdeaModal") Expose Idea Now
+            br
 
           .modal-footer
             button.btn.btn-info(data-dismiss="modal") Cancel
+
+
+  #confirmExposeIdeaModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Are you sure?
+        .modal-body
+          h5 If you expose this idea publicly prior to filing a patent application, you may lose your right to patent the idea. We recommend that you file a patent application before disclosing. Are you sure you want to make this idea public before obtaining patent pending status?
+          .modal-footer
+            button.btn.btn-industry(data-dismiss="modal") Cancel
+            button#exposeIdeaNow.btn.btn-go Yes, Expose Now!
 
 
   button(type="button" id="titleModalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#titleModal") Go Win Fight
@@ -351,9 +381,36 @@ html
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#emailSend(type='submit') Send
 
+
+  #inviteCollaboratorsModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Invite up to 6 Collaborators
+        .modal-body
+          form(role='form', id="inviteForm" action="/invite-collaborators", method="post")
+            .form-group
+              h3 Accepted Non-disclosure Agreement
+              each collaborator, index in idea.collaborators
+                .row
+                  .col-xs-12 
+                    h4 #{index + 1} : #{collaborator}
+              - for (var i = 0; i < 6 - idea.collaborators.length; ++i) {
+                .row
+                  .col-xs-12 
+                    input.form-control.collaboratorEmail(type="text" name="#{i}" placeholder="To:")
+              - }
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+              button.btn.btn-success.btn-lg.btn-block#inviteCollaboratorSend(type='submit') Send
+              button.btn.btn-info.btn-lg.btn-block(data-dismiss="modal") Cancel
+
+
   button(type="button" id="titleModalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#titleModal") Go Win Fight
 
   include ../partials/js-includes.jade
+  script(src='/exif.js')
   script(type="text/javascript").
     
     function initializeAllSliders(idea){
@@ -1050,7 +1107,7 @@ html
 
     $("#titleSubmit").click(function(event){
       event.preventDefault();
-      if($("#saveIdeaName input[name='inventionName']").val() == "My idea is named " &&
+      if($("#saveIdeaName input[name='inventionName']").val() == "The ..." &&
         $("#titleRequiredMessage").length == 0){
           $("<p id='titleRequiredMessage'>A title is required</p>").insertBefore("#saveIdeaName input[name='inventionName']");
       } else {
@@ -1072,21 +1129,28 @@ html
     $("#componentSubmit").click(function(event){
       event.preventDefault();
 
-      if($("#componentName").val() == "The component is called "){
+      if($("#componentName").val() == "The ..." || $("#componentName").val() == "The "){
         $("#addComponentModal").modal('hide');
-      } else if ($("#componentName").val().length > 24){
+      } else {
         var newComponentName = $("#componentName").val().trim();
         var newComponentDescr = "";
         if($("#componentDescription").val().length > 20){
           newComponentDescr = $("#componentDescription").val().trim();
         }
 
-        $.post('/add-idea-component', 
-          {
+        var data = {
             _csrf : $('[name="_csrf"]').val(),
-            componentName : newComponentName.slice(24),
+            componentName : newComponentName.slice(4),
             componentDescription : newComponentDescr.slice(20)
-          },
+        };
+
+        if($("#subComponentCheckbox").val()){
+          data['subComponent'] = "on";
+          data['componentParent'] = $("#parentComponentDropdown option:selected").val()
+        }
+
+        $.post('/add-idea-component', 
+          data,
           function(data, response) {
             $("#idea-summary-components ul")
               .append("<li><a href='/component-profile/"+ data['identifier'] +"'><h4>"+ data['number'] + " : " + data['text'] + "</h4></a></li>");
@@ -1099,16 +1163,20 @@ html
 
     });
 
+    $("#subComponentCheckbox").click(function(event){
+      $("#parentComponentDropdown").show(400);
+    });
+
     // This is for the idea name
     var inputName = $("#saveIdeaName input")[1];
-    var requiredNameText = "My idea is named "
+    var requiredNameText = "The "
     $("#saveIdeaName .charactersRemaining").text((30) + " characters remaining");
     inputName.addEventListener ("mousedown", function () {
-      if (String($(this).val()).indexOf(requiredNameText) == -1) {
+      if (String($(this).val()).indexOf(requiredNameText) == -1 || String($(this).val()) == "The ...") {
             $(this).val(requiredNameText);
       }
-      if (this.selectionStart < 17) {
-        this.selectionStart = 17;
+      if (this.selectionStart < requiredNameText.length) {
+        this.selectionStart = requiredNameText.length;
       }
     }, false);
 
@@ -1116,8 +1184,8 @@ html
       if (String($(this).val()).indexOf(requiredNameText) == -1) {
             $(this).val(requiredNameText);
       }
-      if (this.selectionStart < 17) {
-        this.selectionStart = 17;
+      if (this.selectionStart < requiredNameText.length) {
+        this.selectionStart = requiredNameText.length;
       }
       $("#saveIdeaName input").keyup(function(){
         $("#saveIdeaName .charactersRemaining").text((30 + requiredNameText.length - $(this).val().length) + " characters remaining");
@@ -1151,23 +1219,23 @@ html
 
     // This is for the first text input field in the add component modal
     var inputOne = $("#addIdeaComponent input#componentName")[0];
-    var requiredCompTextOne = "The component is called "
+    var requiredCompTextOne = "The "
     $("#addIdeaComponent .compNameCharRemaining").text((200) + " characters remaining");
     inputOne.addEventListener ("mousedown", function () {
-      if (String($(this).val()).indexOf(requiredCompTextOne) == -1) {
+      if (String($(this).val()).indexOf(requiredCompTextOne) == -1 || String($(this).val()) == "The ...") {
             $(this).val(requiredCompTextOne);
       }
-      if (this.selectionStart < 24) {
-        this.selectionStart = 24;
+      if (this.selectionStart < requiredCompTextOne.length) {
+        this.selectionStart = requiredCompTextOne.length;
       }
     }, false);
 
     inputOne.addEventListener ("keydown", function () {
-      if (String($(this).val()).indexOf(requiredCompTextOne) == -1) {
+      if (String($(this).val()).indexOf(requiredCompTextOne) == -1 || String($(this).val()) == "The ...") {
             $(this).val(requiredCompTextOne);
       }
-      if (this.selectionStart < 24) {
-        this.selectionStart = 24;
+      if (this.selectionStart < requiredCompTextOne.length) {
+        this.selectionStart = requiredCompTextOne.length;
       }
       $("#addIdeaComponent input#componentName").keyup(function(){
         $("#addIdeaComponent .compNameCharRemaining").text((200 + requiredCompTextOne.length - $(this).val().length) + " characters remaining");
@@ -1310,3 +1378,30 @@ html
             window.location.reload(true);
           });
     });
+
+    $("#inviteCollaboratorSend").click(function(event){
+      //if there are no collaborator emails entered, just close the modal or something
+
+      event.preventDefault();
+
+      $("#inviteCollaboratorsModal").modal('hide')
+
+      var data = {
+          _csrf : $('[name="_csrf"]').val()
+      };
+
+      $(".collaboratorEmail").each(function(index){
+        data['collaborator-email-' + index] = $(this).val();
+      });
+
+      $.post('/send-collaborators-nda-email', data,
+        function(resp) {
+          window.location.reload(true);
+        });
+    })
+
+    $("#exposeIdeaNow").click(function(event){
+      $.get("/expose-idea-seed", function(err, response){
+        window.location.reload(true);
+      });
+    })

@@ -7,6 +7,7 @@ var IdeaImage = new Schema({
 	orientation : { type: Number, default: 1 },
 	imageMimetype	: String,
 	amazonURL : String,
+	title : String,
 	uploader		: String //should match the username field of an account
 }, { autoIndex: false });
 

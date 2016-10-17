@@ -1,4 +1,3 @@
-
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
@@ -8,6 +7,8 @@ var autopopulate = require('mongoose-autopopulate');
 var Component = new Schema({
 	text				: String,	 // this is optional
 	descriptions : [ String ], // must have at least one
+	dimensions : [String],
+	materials : [String],
 
 	hindsight	: String,
 	outsight	: String,
@@ -35,7 +36,8 @@ var Component = new Schema({
 	// with each other's object ID's
 	relatedComps : [{
 		compID				: ObjectId,
-		relationship	: String 
+		relationship	: String,
+		subComponent : String
 	}],
 
 	ideaSeed		: [{type: Schema.Types.ObjectId, ref: 'IdeaSeed', autopopulate: true }],

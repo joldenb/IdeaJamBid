@@ -9,9 +9,9 @@ html
   .container.row#profile-edit-top-row
     .col-md-5
       .imagesList
-        if(imageURLs)
-          each imageURL, index in imageURLs
-            if imageURL[0] == profilePictureFilename
+        if(headshotIDs.length > 0)
+          each imageURL, index in headshotIDs
+            if index == 0
               .image-summary-image.img-responsive
                 div(id='#{imageURL[0]}' style="height: 300px; background-image : url('" + '#{imageURL[1] || "/avatar.png"}' + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + "#{imageURL[2]}")
         else
