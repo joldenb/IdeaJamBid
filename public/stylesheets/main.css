@@ -111,6 +111,16 @@ ul {
   list-style-image: url('/green-square.png');
 }
 
+
+.view-all-imperfections ul {
+  list-style-type: none; 
+  list-style-image: none;
+}
+
+.view-all-imperfections .problem-row {
+  margin-top: 0;
+}
+
 h4.idea-text-name {
   display: inline;
   line-height: 1.5em;
@@ -1486,4 +1496,8 @@ button.suggestion-tactics, button.suggestion-targets {
 
 .row.idea-seed-profile {
   margin-top:2em;
+}
+
+#componentModalButton {
+  margin-left: 1em;
 }

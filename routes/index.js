@@ -664,7 +664,6 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
   var headshotData = ideaSeedHelpers.getUserHeadshot(req);
   var headshotURL = headshotData['headshotURL'];
   var headshotStyle = headshotData['headshotStyle'];
-
   var imageURLs = _.map(req.user.headshots, function(image){
     return ["id-"+image.filename, image.amazonURL];
   });
@@ -745,6 +744,7 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
     if(originalIdeas.length > 0){
       var creationDate, formattedDate;
       ideaNames = _.map(originalIdeas, function(item){
+
         creationDate = item._id.getTimestamp();
         formattedDate = creationDate.getMonth().toString() + "-" +
           creationDate.getDate().toString() + "-" +
@@ -1159,7 +1159,7 @@ router.post('/suggestion-submit-new', csrfProtection, function(req, res) {
             Component.create(newSuggestion,
               function(err, raw){
                 console.log('The raw response from Mongo was ', raw);
-                res.redirect("/view-all-jam-suggestions/dsw");
+                res.sendStatus(200);
               }
             );
           }
@@ -1175,7 +1175,7 @@ router.post('/suggestion-submit-new', csrfProtection, function(req, res) {
       Component.create(newSuggestion,
         function(err, raw){
           console.log('No photo uploaded, raw response: ', raw);
-          res.redirect("/view-all-jam-suggestions/dsw");
+          res.sendStatus(200);
         }
       );
     }
@@ -2242,6 +2242,274 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
   });
 });
 
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for viewing list of all imperfections for a particular
+* idea seed
+******************************************************************
+******************************************************************
+*****************************************************************/
+
+router.get('/ideas/:ideaName/view-all-imperfections', csrfProtection, function(req, res){
+  if(!(req.user && req.user.username)) {
+    console.log("not logged in")
+    res.redirect('/');
+    return;
+  }
+
+  
+  if(req.params && req.params.ideaName){
+    var query = IdeaSeed.findOne({"name" : req.params.ideaName});
+  } 
+
+  var headshotData, headshotURL, headshotStyle, currentIdea;
+  var variantDates = [],
+      sortedProblems = [];
+  var imageURLs = [];
+  var problems, components;
+  var componentsList = [];
+  var listOfProblems = [];
+  var typeOfProblem, rankingOfProblem;
+  var averageScore = 0;
+  var filename;
+  var imageStyle;
+  var currentReceipt = "";
+  var currentAppStrength;
+  var problemAreas = [
+    "Area : Performability",
+    "Area : Affordability",
+    "Area : Featurability",
+    "Area : Deliverability",
+    "Area : Useability",
+    "Area : Maintainability",
+    "Area : Durability",
+    "Area : Imageability",
+    "Area : Complexity",
+    "Area : Precision",
+    "Area : Variability",
+    "Area : Sensitivity",
+    "Area : Immaturity",
+    "Area : Danger",
+    "Area : Skills"
+  ];
+  var ideaAptitudes;
+
+  query.exec()
+  .then(function(idea){
+    req.session.idea = idea.id;
+    currentIdea = idea._doc;
+
+    headshotData = ideaSeedHelpers.getUserHeadshot(req);
+    // headshotURL = headshotData['headshotURL'];
+    headshotStyle = headshotData['headshotStyle'];
+
+    return IdeaSeed.findById(req.session.idea).exec()
+  })
+  .then(function(idea){
+    currentIdea = idea._doc;
+
+    //check permissions
+    if(!((currentIdea.visibility == "private" && currentIdea.inventorName == req.user.username) ||
+      currentIdea.visibility == "public" ||
+      (currentIdea.collaborators.indexOf(req.user.username) > -1))){
+      console.log("visibility mode does not permit this user to view this idea");
+      throw new Error('abort promise chain');
+      return;
+    }
+
+    return IdeaProblem.find({"ideaSeed" : currentIdea._id, date : {$exists : true}})
+      .sort('-date')
+      .exec()
+  })
+  .then(function(currentProblems){
+    problems = currentProblems;
+    var listOfProblemCreators = [];
+    _.each(problems, function(value, key, list){
+      listOfProblemCreators.push(value.creator);
+    });
+
+    return Account.find({"username" : { $in : listOfProblemCreators}});
+  })
+  .then(function(problemCreators){
+    if(problemCreators && problemCreators.length){
+      //figure out which creator goes to which problem
+      _.each(problemCreators, function(creator, index){
+        _.each(problems, function(problem, probIndex){
+          if(creator.username == problem.creator){
+            problem.wholeCreator = creator;
+            if (creator.headshots[0]) {
+              problem.headshot = {};
+              problem.headshot.url = creator.headshots[0].amazonURL;
+              var imageStyle;
+              imageStyle = ideaSeedHelpers.getImageOrientation(creator.headshots[0]["orientation"]);
+              problem.headshot.style = imageStyle;
+            }
+          }  
+        })
+      })
+    }    
+    res.render('pages/idea-seed-all-imperfections', { user : req.user || {}, idea : currentIdea,
+      csrfToken: req.csrfToken(),
+      problemAreas  : problemAreas,
+      headshot : headshotURL,
+      headshotStyle : headshotStyle,
+      problems : problems
+    });
+  
+  })
+  .catch(function(err){
+    // just need one of these
+    console.log('error:', err);
+    res.redirect('/');
+  });
+
+});
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for viewing list of all suggestions for a particular
+* idea seed
+******************************************************************
+******************************************************************
+*****************************************************************/
+
+router.get('/ideas/:ideaName/view-all-suggestions', csrfProtection, function(req, res){
+  if(!(req.user && req.user.username)) {
+    console.log("not logged in")
+    res.redirect('/');
+    return;
+  }
+
+  
+  if(req.params && req.params.ideaName){
+    var query = IdeaSeed.findOne({"name" : req.params.ideaName});
+  } 
+
+  var headshotData, headshotURL, headshotStyle, currentIdea;
+  var variantDates = [],
+      sortedProblems = [];
+  var imageURLs = [];
+  var problems, components;
+  var componentsList = [];
+  var listOfProblems = [];
+  var typeOfProblem, rankingOfProblem;
+  var averageScore = 0;
+  var filename;
+  var imageStyle;
+  var currentReceipt = "";
+  var currentAppStrength;
+  var problemAreas = [
+    "Area : Performability",
+    "Area : Affordability",
+    "Area : Featurability",
+    "Area : Deliverability",
+    "Area : Useability",
+    "Area : Maintainability",
+    "Area : Durability",
+    "Area : Imageability",
+    "Area : Complexity",
+    "Area : Precision",
+    "Area : Variability",
+    "Area : Sensitivity",
+    "Area : Immaturity",
+    "Area : Danger",
+    "Area : Skills"
+  ];
+  var ideaAptitudes;
+
+  query.exec()
+  .then(function(idea){
+    req.session.idea = idea.id;
+    currentIdea = idea._doc;
+
+    headshotData = ideaSeedHelpers.getUserHeadshot(req);
+    // headshotURL = headshotData['headshotURL'];
+    headshotStyle = headshotData['headshotStyle'];
+
+    return IdeaSeed.findById(req.session.idea).exec()
+  })
+  .then(function(idea){
+    currentIdea = idea._doc;
+
+    //check permissions
+    if(!((currentIdea.visibility == "private" && currentIdea.inventorName == req.user.username) ||
+      currentIdea.visibility == "public" ||
+      (currentIdea.collaborators.indexOf(req.user.username) > -1))){
+      console.log("visibility mode does not permit this user to view this idea");
+      throw new Error('abort promise chain');
+      return;
+    }
+
+    var suggestions = [];
+
+    Component.find({"ideaSeed" : currentIdea['_id']}, function(err, components) {
+      
+      components = _.filter(components, function(component, compIndex){
+        return component.problemID && component.ideaSeed;
+      })
+
+      //sort and limit components
+      components = _.sortBy(components, function(oneComponent){
+        return oneComponent.upvotes.length;
+      }).reverse();
+      components = components.slice(0,5);
+
+      suggestions = components;
+      var suggestionNameList = _.map(suggestions, function(eachOne) { return eachOne.creator;})
+
+      Account.find({"username" : {$in : suggestionNameList}}, function(err, suggestors){
+        var suggestorHeadshotIdList = _.map(suggestors, function(eachOne) { 
+          if(eachOne.headshots){
+            return eachOne.headshots[0];
+          } else {
+            return null;
+          }
+        });
+
+
+        // Figure out which account and headshot go with with suggestion
+        var wholeSuggestionBlockInfo = {};
+        _.each(suggestions, function(suggestion, index){
+          
+          wholeSuggestionBlockInfo[suggestion.identifier] = {'document' : suggestion};
+          
+          wholeSuggestionBlockInfo[suggestion.identifier]['ideaName'] = currentIdea.name;
+
+          _.each(suggestors, function(suggestor, suggIndex){
+            if(suggestor.username == suggestion.creator){
+              //now we've found the right suggestor to go with the suggestion, so we put the 
+              // nickname and suggestor profile picture into the whole block object;
+              wholeSuggestionBlockInfo[suggestion.identifier]['creatorNickname'] = suggestor.nickname;
+              if(suggestor.headshots && suggestor.headshots[0]){
+                wholeSuggestionBlockInfo[suggestion.identifier]['creatorProfilePic'] = suggestor.headshots[0].amazonURL;
+                var imageStyle;
+                imageStyle = ideaSeedHelpers.getImageOrientation(suggestor.headshots[0]["orientation"]);
+                wholeSuggestionBlockInfo[suggestion.identifier]['profilePicOrientation'] = imageStyle;
+              }
+            }
+          })
+        });
+
+
+        res.render('pages/idea-seed-all-suggestions', { user : req.user || {}, idea : currentIdea,
+          csrfToken: req.csrfToken(),
+          headshot : headshotURL,
+          headshotStyle : headshotStyle,
+          wholeSuggestionBlockInfo : wholeSuggestionBlockInfo
+        });
+      });
+    });
+  
+  })
+  .catch(function(err){
+    // just need one of these
+    console.log('error:', err);
+    res.redirect('/');
+  });
+
+});
 
 /*****************************************************************
 ******************************************************************
@@ -2876,7 +3144,7 @@ router.get('/imperfection-profile/:identifier', csrfProtection, function(req, re
     IdeaProblem.findOne({
       "identifier" : req.params.identifier
       }, function(err, ideaProblem){
-        IdeaSeed.findById(ideaProblem.ideaSeed, function(err, idea){
+        IdeaSeed.findById(ideaProblem.ideaSeed[0].id, function(err, idea){
           req.session.idea = idea.id;
           if(!req.session.idea || !(req.user && req.user.username)){
             res.redirect('/');
@@ -3172,11 +3440,11 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
                   if(component.relatedComps[i]['subComponent'] && component.relatedComps[i]['subComponent'] == "parent"){
                     var mainCompTitle = component.text ||component.descriptions[0] || "No component title";
                     var otherCompTitle = components[j].text ||components[j].descriptions[0] || "No component title";
-                    relatedCompArray.push(otherCompTitle + " is a sub-component of " + mainCompTitle + ".");
+                    relatedCompArray.push("The " + otherCompTitle + " is a sub-component of the " + mainCompTitle + ".");
                   } else if (component.relatedComps[i]['subComponent'] && component.relatedComps[i]['subComponent'] == "sub-component"){
                     var mainCompTitle = component.text ||component.descriptions[0] || "No component title";
                     var otherCompTitle = components[j].text ||components[j].descriptions[0] || "No component title";
-                    relatedCompArray.push(mainCompTitle + " is a sub-component of " + otherCompTitle + ".");
+                    relatedCompArray.push("The " + mainCompTitle + " is a sub-component of the " + otherCompTitle + ".");
                   }
                   relatedComponents.push(relatedCompArray);
 

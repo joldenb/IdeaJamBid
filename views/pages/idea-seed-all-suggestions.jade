@@ -1,0 +1,40 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body
+  .header.navbar.navbar-default
+    include ../partials/header.jade
+
+  .container-fluid.view-all-imperfections
+    .row
+      .col-md-4
+        h2 All Suggestions
+      .col-md-4
+      .col-md-4
+        .return-button
+          a.home-logout.btn.btn-industry.btn-lg( href="/ideas/#{idea.name}") Back to Idea Summary
+        br
+    each suggestion, identifier in wholeSuggestionBlockInfo
+      include ../partials/suggestion-summary-element.jade
+
+    input(type="hidden", name="_csrf", value="#{csrfToken}")
+
+  include ../partials/js-includes.jade
+  script(src='/exif.js')
+  script(type="text/javascript").
+
+    $(".upvote-suggestion").click(function(event){
+      event.preventDefault();
+
+      $.post('/upvote-suggestion', 
+      {
+        _csrf : $('[name="_csrf"]').val(),
+        suggestion : $(this)[0].dataset['suggestionId']
+      },
+      function(data, response) {
+        window.location.reload(true);
+      });
+
+      return false;
+    });   

@@ -184,7 +184,7 @@ html
                     a(href="/component-profile/"+thisComponent[0]['identifier'])
                       h4.compName #{thisComponent[0]['number']} : #{thisComponent[0]['text']}
                     p <b>Relationship</b> 
-                    p #{thisComponent[1]}
+                    p #{thisComponent[1].charAt(0).toUpperCase() + thisComponent[1].slice(1)}
                     if thisComponent[2]
                       h5 Sub-Component
                       p #{thisComponent[2]}
@@ -192,7 +192,7 @@ html
                   li 
                     h4.compName #{thisComponent[0]['number']} : #{thisComponent[0]['text']}
                     p <b>Relationship</b> 
-                    p #{thisComponent[1]}
+                    p #{thisComponent[1].charAt(0).toUpperCase() + thisComponent[1].slice(1)}
                     if thisComponent[2]
                       h5 Sub-Component
                       p #{thisComponent[2]}
@@ -202,7 +202,7 @@ html
                     a(href="/component-profile/"+thisComponent[0]['identifier'])
                       h4.compName #{thisComponent[0]['descriptions'][0]}
                     p <b>Relationship</b> 
-                    p #{thisComponent[1]}
+                    p #{thisComponent[1].charAt(0).toUpperCase() + thisComponent[1].slice(1)}
                     if thisComponent[2]
                       h5 Sub-Component
                       p #{thisComponent[2]}
@@ -210,13 +210,35 @@ html
                   li
                     h4.compName #{thisComponent[0]['descriptions'][0]}
                     p <b>Relationship</b> 
-                    p #{thisComponent[1]}
+                    p #{thisComponent[1].charAt(0).toUpperCase() + thisComponent[1].slice(1)}
                     if thisComponent[2]
                       h5 Sub-Component
                       p #{thisComponent[2]}
           else
             div <i>No related components yet</i>
           button(type="button" id="modalButton" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Add New Related Component
+          button(type="button" id="componentModalButton" class="btn btn-primary" data-toggle="modal" data-target="#addComponentModal") Add New Sub Component
+
+    #addComponentModal.modal.fade.annotate-modal(role="dialog")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button(type="button", class="close" data-dismiss="modal") &times;
+            .modal-title 
+              h2 New Sub Component
+          .modal-body
+            form(role='form', id="addIdeaComponent" action="/add-idea-component", method="post", style='max-width: 300px;', data-idea-doc=idea)
+              .form-group
+                h4 What is your new component called?
+                input#componentName.form-control(type="text", name="componentName", value='The ...')
+                input(type="hidden", name="_csrf", value="#{csrfToken}")
+                p (ex. "The Start Button")
+                input#componentDescription.form-control(type="text", name="componentDescription", value='The way it works is ')
+                p (ex. "it initiates the sequence automatically")
+                p.compDescrCharRemaining
+              .modal-footer
+                button.btn.btn-go.btn-block.btn-lg#componentSubmit(type='submit') Save
+                button.btn.btn-info.btn-block.btn-lg(data-dismiss="modal") Cancel
 
 
     #myModal.modal.fade.annotate-modal(role="dialog")
@@ -309,7 +331,7 @@ html
         if(thisCompName.indexOf("solution of") > -1){
           thisCompName = thisCompName.substring(16);
         }
-        $("#addRelatedComponent textarea").val("The " + thisCompName + also + " relates to "+ otherCompName + " by ");
+        $("#addRelatedComponent textarea").val("The " + thisCompName + also + " relates to the "+ otherCompName + " by ");
       } else {
         var thisCompName = "!{component['descriptions'][0]}";
         if(thisCompName.indexOf("component is") > -1){
@@ -318,7 +340,7 @@ html
         if(thisCompName.indexOf("solution of") > -1){
           thisCompName = thisCompName.substring(16);
         }
-        $("#addRelatedComponent textarea").val("The " + thisCompName + also + " relates to "+ otherCompName+ " by ");
+        $("#addRelatedComponent textarea").val("The " + thisCompName + also + " relates to the "+ otherCompName+ " by ");
       }
 
       // updated text for the sub-component checkbox
@@ -635,7 +657,84 @@ html
       }
     })
 
+    $("#componentSubmit").click(function(event){
+      event.preventDefault();
 
+      if($("#componentName").val() == "The ..." || $("#componentName").val() == "The "){
+        $("#addComponentModal").modal('hide');
+      } else {
+        var newComponentName = $("#componentName").val().trim();
+        var newComponentDescr = "";
+        if($("#componentDescription").val().length > 20){
+          newComponentDescr = $("#componentDescription").val().trim();
+        }
+
+        var data = {
+            _csrf : $('[name="_csrf"]').val(),
+            componentName : newComponentName.slice(4),
+            componentDescription : newComponentDescr.slice(20)
+        };
+        data['subComponent'] = "on";
+        data['componentParent'] = "!{component.identifier}"
+
+        $.post('/add-idea-component', 
+          data,
+          function(data, response) {
+            window.location.reload(true);
+          });      
+      }
+
+    });
+
+    // This is for the first text input field in the add component modal
+    var inputOne = $("#addIdeaComponent input#componentName")[0];
+    var requiredCompTextOne = "The "
+    $("#addIdeaComponent .compNameCharRemaining").text((200) + " characters remaining");
+    inputOne.addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredCompTextOne) == -1 || String($(this).val()) == "The ...") {
+            $(this).val(requiredCompTextOne);
+      }
+      if (this.selectionStart < requiredCompTextOne.length) {
+        this.selectionStart = requiredCompTextOne.length;
+      }
+    }, false);
+
+    inputOne.addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredCompTextOne) == -1 || String($(this).val()) == "The ...") {
+            $(this).val(requiredCompTextOne);
+      }
+      if (this.selectionStart < requiredCompTextOne.length) {
+        this.selectionStart = requiredCompTextOne.length;
+      }
+      $("#addIdeaComponent input#componentName").keyup(function(){
+        $("#addIdeaComponent .compNameCharRemaining").text((200 + requiredCompTextOne.length - $(this).val().length) + " characters remaining");
+      });
+    }, false);
+
+    // This is for the second text input field in the add component modal
+    var inputTwo = $("#addIdeaComponent input#componentDescription")[0];
+    var requiredCompTextTwo = "The way it works is "
+    $("#addIdeaComponent .compDescrCharRemaining").text((200) + " characters remaining");
+    inputTwo.addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredCompTextTwo) == -1) {
+            $(this).val(requiredCompTextTwo);
+      }
+      if (this.selectionStart < 21) {
+        this.selectionStart = 21;
+      }
+    }, false);
+
+    inputTwo.addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredCompTextTwo) == -1) {
+            $(this).val(requiredCompTextTwo);
+      }
+      if (this.selectionStart < 21) {
+        this.selectionStart = 21;
+      }
+      $("#addIdeaComponent input#componentDescription").keyup(function(){
+        $("#addIdeaComponent .compDescrCharRemaining").text((200 + requiredCompTextTwo.length - $(this).val().length) + " characters remaining");
+      });
+    }, false);
 
 
 

@@ -147,7 +147,7 @@ html
       button.view-all-imperfections(class="btn btn-industry btn-lg btn-block") View All Imperfections
 
       h3#suggestionSection Top #{networkName} Suggestions
-      each suggestion, identifier in wholeSuggestionBlockInfo             
+      each suggestion, identifier in wholeSuggestionBlockInfo
         include ../partials/suggestion-summary-element.jade
       br
       a(href="/view-all-jam-suggestions/" + networkName)
