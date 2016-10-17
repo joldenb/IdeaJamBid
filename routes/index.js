@@ -664,7 +664,6 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
   var headshotData = ideaSeedHelpers.getUserHeadshot(req);
   var headshotURL = headshotData['headshotURL'];
   var headshotStyle = headshotData['headshotStyle'];
-
   var imageURLs = _.map(req.user.headshots, function(image){
     return ["id-"+image.filename, image.amazonURL];
   });
@@ -745,6 +744,7 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
     if(originalIdeas.length > 0){
       var creationDate, formattedDate;
       ideaNames = _.map(originalIdeas, function(item){
+
         creationDate = item._id.getTimestamp();
         formattedDate = creationDate.getMonth().toString() + "-" +
           creationDate.getDate().toString() + "-" +

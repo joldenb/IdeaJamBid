@@ -55,28 +55,12 @@ app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
 app.use(cookieParser());
 
 // Setting up the database connection and session storage
-var mongodbUri = process.env.MONGOATLAS_URI || process.env.MONGOLAB_URI || 'localhost:27017/nodetest1';
+var mongodbUri = process.env.MONGOATLASURI || process.env.MONGOLAB_URI || 'localhost:27017/nodetest1';
 
 console.log("mongodbUri:" + mongodbUri);
 
-if(process.env.MONGOATLAS_URI){
-  mongoose.connect(mongodbUri, {
-      replset: {
-        ssl: true,
-        sslValidate: false
-      }
-    }, function(err) {
-      if (err) {
-        console.log(err);
-        process.exit();
-      }
-      else {
-        console.log("Everything is ok :D");
-      }
-    });
-} else {
-  mongoose.connect(mongodbUri);
-}
+console.log("connecting to mongo")
+mongoose.connect(mongodbUri);
 var db = mongoose.connection;
 app.use(session({
     secret: 'foo', store: new MongoStore({ mongooseConnection: mongoose.connection})
