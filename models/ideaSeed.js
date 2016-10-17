@@ -331,17 +331,6 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 					pObj = docx.createP ({ align: 'center' });
 					pObj.addText( '', { font_size: 14, font_face: 'Times New Roman' } );
 
-					pObj = docx.createP ({ align: 'center' });
-					pObj.addText ( 'CROSS-REFERENCE TO RELATED APPLICATIONS: Not Applicable', { font_size: 14, font_face: 'Times New Roman' } );
-					pObj = docx.createP ({ align: 'center' });
-					pObj.addText( '', { font_size: 14, font_face: 'Times New Roman' } );
-					pObj = docx.createP ({ align: 'center' });
-					pObj.addText ( 'STATEMENT REGARDING FEDERALLY SPONSORED RESEARCH OR DEVELOPMENT: Not Applicable', { font_size: 14, font_face: 'Times New Roman' } );
-					pObj = docx.createP ({ align: 'center' });
-					pObj.addText( '', { font_size: 14, font_face: 'Times New Roman' } );
-					pObj = docx.createP ({ align: 'center' });
-					pObj.addText ( 'REFERENCE TO SEQUENCE LISTING, A TABLE, OR A COMPUTER PROGRAM LISTING COMPACT DISK APPENDIX: Not Applicable', { font_size: 14, font_face: 'Times New Roman' } );
-
 					docx.putPageBreak ();
 
 					pObj = docx.createP ();
@@ -349,10 +338,11 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 
 					// enter description which involves broad problem statement.
 					pObj = docx.createP ();
-					pObj.addText ( 'The present inventor has recognized ' + idea.problem.toLowerCase() +
-						'.  Currently there are a number of solutions for ' + idea.problem.toLowerCase() +
-						'. These solutions, however, fail to meet the needs of the'+
-						' industry because of the challenges associated with ', { font_size: 14, font_face: 'Times New Roman' });
+					pObj.addText ( 'The present inventor has recognized the problem of ' + idea.problem.toLowerCase() +
+						'.  Other solutions for the problem of ' + idea.problem.toLowerCase() + 
+						' may exist in the prior art.' +
+						'. These solutions, however, have failed to meet one or more unsolved needs recognized by the inventor'+
+						' because of still-remaining challenges, including ', { font_size: 14, font_face: 'Times New Roman' });
 					for(var i = 0;  i < problems.length; i++){
 						if(i < problems.length - 1){
 							pObj.addText ( problems[i].text.toLowerCase() + ', ', { font_size: 14, font_face: 'Times New Roman' } );
@@ -411,9 +401,9 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 					pObj.addText( 'DESCRIPTION OF THE INVENTION', { font_size: 14, font_face: 'Times New Roman' } );
 
 					pObj = docx.createP ();
-					pObj.addText( 'The preferred embodiment of the present invention is a ' + idea.name + 
-						'.  The ' + idea.name + ' is intended to function by ' + idea.description + '.  ' + 
-						'Embodiments of the invention comprise some or all of the following components: ', { font_size: 14, font_face: 'Times New Roman' } );
+					pObj.addText( 'The preferred embodiment of the present invention is described as a ' + idea.name + 
+						'.  Generally, the inventor intends for the ' + idea.name + ' to function by ' + idea.description + '.  ' + 
+						'In varying embodiments, the invention may incorporate any subset of, or all of, the following components: ', { font_size: 14, font_face: 'Times New Roman' } );
 					for(i=0; i < comps.length; i++){
 						if(comps[i].text || comps[i].descriptions.length > 0){
 							pObj.addText( '(' + (i+1) +'.) ', { font_size: 14, font_face: 'Times New Roman' } );
@@ -527,11 +517,11 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 							
 							// This section is for the dimensions
 							if(comps[i].dimensions.length > 0){
-								pObj.addText( 'In the preferred embodiment of the ' + comps[i].text + ', this component is produced to the following dimensions: ' + comps[i].dimensions[0] + ". ", { font_size: 14, font_face: 'Times New Roman' } );
+								pObj.addText( 'The preferred embodiment of the ' + comps[i].text + ' comprises the following dimensions: ' + comps[i].dimensions[0] + ". ", { font_size: 14, font_face: 'Times New Roman' } );
 								if(comps[i].dimensions.length > 1){
 									_.each(comps[i].dimensions.slice(1), function(eachDimension, index){
 										if(eachDimension){
-											pObj.addText( 'The invention can alternatively be produced to the following dimensions: ' + eachDimension + ". ", { font_size: 14, font_face: 'Times New Roman' } );
+											pObj.addText( 'Another embodiment of the ' + comps[i].text + ' comprises the dimensions of ' + eachDimension + ". ", { font_size: 14, font_face: 'Times New Roman' } );
 										}
 									})
 								}
@@ -539,11 +529,11 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 
 							// This section is for the materials
 							if(comps[i].dimensions.length > 0){
-								pObj.addText( 'In the preferred embodiment of the ' + comps[i].text + ', the component incorporates this material: ' + comps[i].materials[0] + ". ", { font_size: 14, font_face: 'Times New Roman' } );
+								pObj.addText( 'The preferred embodiment of the ' + comps[i].text + ', incorporates ' + comps[i].materials[0] + " in its composition. ", { font_size: 14, font_face: 'Times New Roman' } );
 								if(comps[i].materials.length > 1){
 									_.each(comps[i].materials.slice(1), function(eachMaterial, index){
 										if(eachMaterial){
-											pObj.addText( 'An alternative material this component incorporates is: ' + eachMaterial + ". ", { font_size: 14, font_face: 'Times New Roman' } );
+											pObj.addText( 'Alternatively ' + comps[i].text + ' incorporates ' + eachMaterial + "in its composition. ", { font_size: 14, font_face: 'Times New Roman' } );
 										}
 									})
 								}
@@ -551,7 +541,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 
 							if(comps[i].descriptions.length > 0 && comps[i].problemID){
 								pObj.addText( 'The present inventor has recognized that ' +
-								comps[i].descriptions[0].toLowerCase() + ' addresses the problem of ', { font_size: 14, font_face: 'Times New Roman' } );
+								comps[i].descriptions[0].toLowerCase() + ' addresses a variety of previously unsolved challenges, including ', { font_size: 14, font_face: 'Times New Roman' } );
 								for(j=0; j < problems.length; j++){
 									if(comps[i].problemID.id.toString() == problems[j]['_id'].toString()){
 										pObj.addText( problems[j]['text'] + '.  ', { font_size: 14, font_face: 'Times New Roman' } );
@@ -561,12 +551,12 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 
 							if(comps[i].descriptions.length > 1 && !comps[i].text){
 								for(j=1; j < comps[i].descriptions.length; j++){
-									pObj.addText( ''+comps[i].descriptions[0] + ' is described as ', { font_size: 14, font_face: 'Times New Roman' } );
+									pObj.addText( ''+comps[i].descriptions[0] + ' in an embodiment of the invention is described as ', { font_size: 14, font_face: 'Times New Roman' } );
 									pObj.addText( comps[i].descriptions[j] + '. ', { font_size: 14, font_face: 'Times New Roman' } );
 								}
 							} else {
 								for(j=1; j < comps[i].descriptions.length; j++){
-									pObj.addText( ''+comps[i].text + ' is described as ', { font_size: 14, font_face: 'Times New Roman' } );
+									pObj.addText( ''+comps[i].text + ' in an embodiment of the invention is described as ', { font_size: 14, font_face: 'Times New Roman' } );
 									pObj.addText( comps[i].descriptions[j] + '. ', { font_size: 14, font_face: 'Times New Roman' } );
 								}
 							}
@@ -595,7 +585,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 												pObj.addText( 'In an embodiment of the invention, ' + comps[i].text.toLowerCase() + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
 												pObj.addText( otherCompName.toLowerCase() + ' are related. ', { font_size: 14, font_face: 'Times New Roman' } );
 												pObj.addText( comps[i].text.toLowerCase() + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( otherCompName + ' related to one another in such embodiment by ', { font_size: 14, font_face: 'Times New Roman' } );
+												pObj.addText( otherCompName + ' are related to one another in such embodiment by ', { font_size: 14, font_face: 'Times New Roman' } );
 												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase(), { font_size: 14, font_face: 'Times New Roman' } );
 											} else if(!comps[k].text && comps[i].text) {
 												otherCompName = comps[k].descriptions[0];
@@ -603,7 +593,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 												pObj.addText( 'In an embodiment of the invention, ' + comps[i].text.toLowerCase() + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
 												pObj.addText( otherCompName.toLowerCase() + ' are related. ', { font_size: 14, font_face: 'Times New Roman' } );
 												pObj.addText( comps[i].text.toLowerCase() + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( otherCompName + ' related to one another in such embodiment by ', { font_size: 14, font_face: 'Times New Roman' } );
+												pObj.addText( otherCompName + ' are related to one another in such embodiment by ', { font_size: 14, font_face: 'Times New Roman' } );
 												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase(), { font_size: 14, font_face: 'Times New Roman' } );
 											} else if(comps[k].text && !comps[i].text) {
 												otherCompName = comps[k].text;
@@ -611,7 +601,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 												pObj.addText( 'In an embodiment of the invention, ' + comps[i].descriptions[0].toLowerCase() + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
 												pObj.addText( otherCompName.toLowerCase() + ' are related. ', { font_size: 14, font_face: 'Times New Roman' } );
 												pObj.addText( comps[i].descriptions[0].toLowerCase() + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( otherCompName + ' related to one another in such embodiment by ', { font_size: 14, font_face: 'Times New Roman' } );
+												pObj.addText( otherCompName + ' are related to one another in such embodiment by ', { font_size: 14, font_face: 'Times New Roman' } );
 												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase(), { font_size: 14, font_face: 'Times New Roman' } );
 											} else if(!comps[k].text && !comps[i].text) {
 												otherCompName = comps[k].descriptions[0];
@@ -619,7 +609,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 												pObj.addText( 'In an embodiment of the invention, ' + comps[i].descriptions[0].toLowerCase() + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
 												pObj.addText( otherCompName.toLowerCase() + ' are related. ', { font_size: 14, font_face: 'Times New Roman' } );
 												pObj.addText( comps[i].descriptions[0].toLowerCase() + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( otherCompName + ' related to one another in such embodiment by ', { font_size: 14, font_face: 'Times New Roman' } );
+												pObj.addText( otherCompName + ' are related to one another in such embodiment by ', { font_size: 14, font_face: 'Times New Roman' } );
 												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase(), { font_size: 14, font_face: 'Times New Roman' } );
 											}
 										}
@@ -668,7 +658,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 
 					docx.putPageBreak ();
 					pObj = docx.createP ();
-					pObj.addText( 'CLIAMS', { font_size: 14, font_face: 'Times New Roman' } );
+					pObj.addText( 'CLAIMS', { font_size: 14, font_face: 'Times New Roman' } );
 					pObj = docx.createP ();
 					pObj.addText( 'I claim:', { font_size: 14, font_face: 'Times New Roman' } );
 					pObj = docx.createP ();
