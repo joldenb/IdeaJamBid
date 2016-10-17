@@ -561,7 +561,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 
 							if(comps[i].descriptions.length > 0 ){
 								for(j=0; j < comps[i].descriptions.length; j++){
-									pObj.addText( ''+comps[i].text.charAt(0) + comps[i].text.slice(1) + ' is described as ', { font_size: 14, font_face: 'Times New Roman' } );
+									pObj.addText( ''+comps[i].text.charAt(0).toUpperCase() + comps[i].text.slice(1) + ' is described as ', { font_size: 14, font_face: 'Times New Roman' } );
 									pObj.addText( comps[i].descriptions[j] + '. ', { font_size: 14, font_face: 'Times New Roman' } );
 								}
 							} 
