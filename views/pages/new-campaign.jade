@@ -1,0 +1,25 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body
+  .container
+    h1 New Campaign
+    p.lead Please provide some info
+    br
+    form(role='form', action="/new-campaign",method="post", style='max-width: 300px;')
+      .form-group
+        input.form-control(type='text', name="a", placeholder='A' required)
+      .form-group
+        input.form-control(type='text', name="b", placeholder='B' required)
+      .form-group
+        input.form-control(type='text', name="c", placeholder='C' required)
+        input(type="hidden", name="_csrf", value="#{csrfToken}")          
+      button.btn.btn-go(type='submit') Submit
+      |  
+      a(href='/')
+        button.btn.btn-primary(type="button") Cancel
+      |  
+      h4 #{message}
+
+  include ../partials/js-includes.jade

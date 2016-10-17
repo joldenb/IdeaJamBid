@@ -1,0 +1,58 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body
+  .header.navbar.navbar-default
+    include ../partials/header.jade
+
+  .container-fluid
+    .row
+      h1 Fund This Idea!
+    .row
+      p Here is a video      
+    .row
+      p Target: $5000
+    .row
+      p Rewards: $250
+        input(type="hidden", name="_csrf", value="#{csrfToken}")
+        button.btn.btn-info.btn-lg(id="openPurchaseRewardsModal" data-dismiss="modal") Purchase
+
+  include ../partials/js-includes.jade
+  script(src='https://checkout.stripe.com/checkout.js')
+  script(type="text/javascript").
+
+    $(document).ready(function(){
+      var handler = StripeCheckout.configure({
+        key: 'pk_test_5T5pBn30fpwettn3jKAVBZ2q',
+        image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+        locale: 'auto',
+        token: function (token) {
+          $.post('/stripe-payment',
+                  {
+                    _csrf: $('[name="_csrf"]').val(),
+                    amount: 25000,
+                    tokenId: token.id
+                  },
+                  function (resp) {
+                    handler.close();
+                  },
+                  "application/json");
+        }
+      });
+
+      $("#openPurchaseRewardsModal").click(function(e){
+        handler.open({
+          name: 'ideaJam',
+          description: 'Fund this idea at $250',
+          amount: 25000,
+          zipCode: true
+        });
+        e.preventDefault();
+      });
+
+      // Close Checkout on page navigation:
+      window.addEventListener('popstate', function () {
+        handler.close();
+      });
+    });

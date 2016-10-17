@@ -54,8 +54,13 @@ html
               h4 You can only score someone else's ideas (right now)
         .row
           .col-xs-12
+            if inventorName != user.username
+              a.btn(type="button"  class="btn btn-go btn-lg btn-block" href="/campaign" ontouchstart="this.style.background = '#007338';") Fund This Idea  
+            else 
+              a.btn(type="button"  class="btn btn-go btn-lg btn-block" href="/new-campaign" ontouchstart="this.style.background = '#007338';") Crowdfund
+
             if idea.name
-            h4#componentsHeader #{idea.name}'s Components 
+            h4#componentsHeader #{idea.name}'s Components
             if components.length > 0
               ul
                 each component,index in components
