@@ -12,56 +12,47 @@ html
     .row
       p Here is a video      
     .row
-      p Target: $$$
+      p Target: $5000
     .row
-      p Rewards: XXX
+      p Rewards: $250
         input(type="hidden", name="_csrf", value="#{csrfToken}")
         button.btn.btn-info.btn-lg(id="openPurchaseRewardsModal" data-dismiss="modal") Purchase
 
-  #purchaseRewardModal.modal.fade.annotate-modal(role="dialog")
-    .modal-dialog
-      .modal-content
-        .modal-header
-          button(type="button", class="close" data-dismiss="modal") &times;
-          .modal-title 
-            h2 Purchase Reward
-        .modal-body
-          .row 
-            p Hey! You want this reward?
-        .modal-footer
-          button.btn-lg.btn-block(type="button" id="purchaseRewardButton" class="btn btn-go") Continue
-
-  #paypalModal.modal.fade.annotate-modal(role="dialog")
-    .modal-dialog
-      .modal-content
-        .modal-header
-          button(type="button", class="close" data-dismiss="modal") &times;
-          .modal-title 
-            h2 Paypal
-        .modal-body
-          .row 
-            p Enter stuff here
-        .modal-footer
-          button.btn-lg.btn-block(type="button" id="confirmButton" class="btn btn-go") Confirm
-
   include ../partials/js-includes.jade
+  script(src='https://checkout.stripe.com/checkout.js')
   script(type="text/javascript").
 
     $(document).ready(function(){
-      $("#openPurchaseRewardsModal").click(function(event){
-        $('#purchaseRewardModal').modal('show');
-      })
-      $("#purchaseRewardButton").click(function(event){
-        $('#purchaseRewardModal').modal('hide');
-        $('#paypalModal').modal('show');
-      })
-      $("#confirmButton").click(function(event){
-        $.post('/paypal-payment', 
-          {
-            _csrf : $('[name="_csrf"]').val()
-          },
-          function(resp) {
-            $('#paypalModal').modal('hide');
-          });
-      })      
+      var handler = StripeCheckout.configure({
+        key: 'pk_test_5T5pBn30fpwettn3jKAVBZ2q',
+        image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+        locale: 'auto',
+        token: function (token) {
+          $.post('/stripe-payment',
+                  {
+                    _csrf: $('[name="_csrf"]').val(),
+                    amount: 25000,
+                    tokenId: token.id
+                  },
+                  function (resp) {
+                    handler.close();
+                  },
+                  "application/json");
+        }
+      });
+
+      $("#openPurchaseRewardsModal").click(function(e){
+        handler.open({
+          name: 'ideaJam',
+          description: 'Fund this idea at $250',
+          amount: 25000,
+          zipCode: true
+        });
+        e.preventDefault();
+      });
+
+      // Close Checkout on page navigation:
+      window.addEventListener('popstate', function () {
+        handler.close();
+      });
     });
