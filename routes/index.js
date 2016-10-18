@@ -13,6 +13,7 @@ var Component = require('../models/component');
 var Network = require('../models/network');
 var IdeaProblem = require('../models/ideaProblem');
 var Account = require('../models/account');
+var StripeCredentials = require('../models/stripeCredentials');
 var router = express.Router();
 var multer = require('multer');
 var fs = require('fs');

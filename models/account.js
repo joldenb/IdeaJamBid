@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var StripeCredentials = require('../models/stripeCredentials');
 var passportLocalMongoose = require('passport-local-mongoose');
 var IdeaSeed = mongoose.model('IdeaSeed').schema;
 var StripeCredentials = mongoose.model('StripeCredentials');
