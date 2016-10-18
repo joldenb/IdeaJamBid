@@ -11,7 +11,8 @@ div.row.suggestion-row.suggestion-element.variant-suggestion-block(id="#{compone
     if component.document.descriptions && component.document.descriptions[0]
       p <b>Description:</b> #{component.document.descriptions[0]}
     else
-      button(type="button" class="btn btn-industry") Add Description
+      a(href="/component-profile/" + component.document.identifier)
+        button(type="button" class="btn btn-industry") Add Description
     div By: 
       a(href='/imagineer/' + component.creatorNickname)
         span #{component.creatorNickname}
