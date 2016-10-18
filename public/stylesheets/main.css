@@ -1302,9 +1302,19 @@ button.suggestion-tactics, button.suggestion-targets {
   border-radius : 5px;
 }
 
-.glyphicon.glyphicon-cloud-upload {
+.glyphicon.glyphicon-cloud-upload.big-upload-icon {
   font-size: 100px;
   margin-top:-10px;
+}
+
+.glyphicon.glyphicon-cloud-upload.edit-component-icon {
+  font-size: 4.5em;
+  width: 100%;
+  text-align: center;  
+}
+
+.edit-component-button {
+  margin-top:.5em;
 }
 
 .jamTopNav {
@@ -1499,5 +1509,9 @@ button.suggestion-tactics, button.suggestion-targets {
 }
 
 #componentModalButton {
-  margin-left: 1em;
+  
+}
+
+.component-header {
+  margin:.3em 0;
 }

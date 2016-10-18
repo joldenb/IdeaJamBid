@@ -1,0 +1,23 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body
+  .header.navbar.navbar-default
+    include ../partials/header.jade
+
+  .container-fluid.idea-summary
+    if idea.name
+      h2 Components of the #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
+      if Object.keys(wholeSuggestionBlockInfo).length != 0
+        .row
+          .col-xs-12
+            each component, identifier in wholeSuggestionBlockInfo
+              if component.document.text
+                include ../partials/component-summary-element.jade
+      else
+        h4 <i>No Components Yet</i>
+        .row
+          button(type="button" class="btn btn-industry" data-toggle="modal" data-target="#addComponentModal") Get Started
+    else
+      <i>No components yet</i>

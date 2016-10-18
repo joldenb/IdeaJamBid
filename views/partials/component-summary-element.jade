@@ -1,0 +1,22 @@
+div.row.suggestion-row.suggestion-element.variant-suggestion-block(id="#{component.document.identifier}")
+  .col-sm-2
+    a(href='/component-profile/'+ component.document.identifier)
+      div.glyphicon.glyphicon-cloud-upload.edit-component-icon
+    a(href="/component-profile/" + component.document.identifier)
+      button.edit-component-button(type="button" class="btn btn-industry") Edit Component
+
+
+  .col-sm-8.problem-row-padding
+    h3.component-header #{component.document.text.charAt(0).toUpperCase() + component.document.text.slice(1)}
+    if component.document.descriptions && component.document.descriptions[0]
+      p <b>Description:</b> #{component.document.descriptions[0]}
+    else
+      button(type="button" class="btn btn-industry") Add Description
+    div By: 
+      a(href='/imagineer/' + component.creatorNickname)
+        span #{component.creatorNickname}
+        img(src="/avatar.png" height="15" width="15")
+
+  .col-sm-2.upvote
+    img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
+    a.btn.btn-vision.btn-block.full-width-mobile.btn-lg(class="upvote-suggestion" id="upvote-#{component.document.identifier}" data-suggestion-id="#{component.document.id}" ontouchstart="this.style.background = '#69847d';") Upvote #{component.document.upvotes.length || 0} 

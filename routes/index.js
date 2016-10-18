@@ -2086,6 +2086,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
   var componentsList = [];
   var listOfProblems = [];
   var typeOfProblem, rankingOfProblem;
+  var wholeSuggestionBlockInfo = {};
   var averageScore = 0;
   var filename;
   var imageStyle;
@@ -2160,6 +2161,43 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
   })
   .then(function(currentComponents){
     components = currentComponents;
+    var componentsNameList = _.map(components, function(eachOne) { return eachOne.creator;})
+
+    return Account.find({"username" : {$in : componentsNameList}});
+  })
+  .then(function(componentCreators){
+    var suggestorHeadshotIdList = _.map(componentCreators, function(eachOne) { 
+      if(eachOne.headshots){
+        return eachOne.headshots[0];
+      } else {
+        return null;
+      }
+    });
+
+    components = _.filter(components, function(item){return item['text'];});
+    components = components.slice(0,3);
+
+    // Figure out which account and headshot go with with suggestion
+    _.each(components, function(component, index){
+      
+      wholeSuggestionBlockInfo[component.identifier] = {'document' : component};
+      
+      wholeSuggestionBlockInfo[component.identifier]['ideaName'] = currentIdea.name;
+
+      _.each(componentCreators, function(componentCreator, suggIndex){
+        if(componentCreator.username == component.creator){
+          //now we've found the right suggestor to go with the suggestion, so we put the 
+          // nickname and suggestor profile picture into the whole block object;
+          wholeSuggestionBlockInfo[component.identifier]['creatorNickname'] = componentCreator.nickname;
+          if(componentCreator.headshots && componentCreator.headshots[0]){
+            wholeSuggestionBlockInfo[component.identifier]['creatorProfilePic'] = componentCreator.headshots[0].amazonURL;
+            var imageStyle;
+            imageStyle = ideaSeedHelpers.getImageOrientation(componentCreator.headshots[0]["orientation"]);
+            wholeSuggestionBlockInfo[component.identifier]['profilePicOrientation'] = imageStyle;
+          }
+        }
+      })
+    });
     componentsList = _.map(components, function(item){return "Component : "+item['text'];});
     componentsList = componentsList.filter(function(item){
       if(item == "Component : undefined"){
@@ -2217,6 +2255,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
       review : req.session.ideaReview || {},
       averageScore : averageScore,
       csrfToken: req.csrfToken(),
+      wholeSuggestionBlockInfo : wholeSuggestionBlockInfo,
       variantDates : variantDates,
       receipt : currentReceipt,
       strengthResponse : currentAppStrength,
@@ -2454,7 +2493,6 @@ router.get('/ideas/:ideaName/view-all-suggestions', csrfProtection, function(req
       components = _.sortBy(components, function(oneComponent){
         return oneComponent.upvotes.length;
       }).reverse();
-      components = components.slice(0,5);
 
       suggestions = components;
       var suggestionNameList = _.map(suggestions, function(eachOne) { return eachOne.creator;})
@@ -2510,6 +2548,149 @@ router.get('/ideas/:ideaName/view-all-suggestions', csrfProtection, function(req
   });
 
 });
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for viewing list of all suggestions for a particular
+* idea seed
+******************************************************************
+******************************************************************
+*****************************************************************/
+
+router.get('/ideas/:ideaName/view-all-components', csrfProtection, function(req, res){
+  if(!(req.user && req.user.username)) {
+    console.log("not logged in")
+    res.redirect('/');
+    return;
+  }
+
+  
+  if(req.params && req.params.ideaName){
+    var query = IdeaSeed.findOne({"name" : req.params.ideaName});
+  } 
+
+  var headshotData, headshotURL, headshotStyle, currentIdea;
+  var variantDates = [],
+      sortedProblems = [];
+  var imageURLs = [];
+  var problems, components;
+  var componentsList = [];
+  var listOfProblems = [];
+  var typeOfProblem, rankingOfProblem;
+  var averageScore = 0;
+  var filename;
+  var wholeSuggestionBlockInfo = {};
+  var imageStyle;
+  var currentReceipt = "";
+  var currentAppStrength;
+  var problemAreas = [
+    "Area : Performability",
+    "Area : Affordability",
+    "Area : Featurability",
+    "Area : Deliverability",
+    "Area : Useability",
+    "Area : Maintainability",
+    "Area : Durability",
+    "Area : Imageability",
+    "Area : Complexity",
+    "Area : Precision",
+    "Area : Variability",
+    "Area : Sensitivity",
+    "Area : Immaturity",
+    "Area : Danger",
+    "Area : Skills"
+  ];
+  var ideaAptitudes;
+
+  query.exec()
+  .then(function(idea){
+    req.session.idea = idea.id;
+    currentIdea = idea._doc;
+
+    headshotData = ideaSeedHelpers.getUserHeadshot(req);
+    // headshotURL = headshotData['headshotURL'];
+    headshotStyle = headshotData['headshotStyle'];
+
+    return IdeaSeed.findById(req.session.idea).exec()
+  })
+  .then(function(idea){
+    currentIdea = idea._doc;
+
+    //check permissions
+    if(!((currentIdea.visibility == "private" && currentIdea.inventorName == req.user.username) ||
+      currentIdea.visibility == "public" ||
+      (currentIdea.collaborators.indexOf(req.user.username) > -1))){
+      console.log("visibility mode does not permit this user to view this idea");
+      throw new Error('abort promise chain');
+      return;
+    }
+
+    return Component.find({"ideaSeed" : currentIdea._id});
+  })
+  .then(function(currentComponents){
+    components = currentComponents;
+    var componentsNameList = _.map(components, function(eachOne) { return eachOne.creator;})
+
+    return Account.find({"username" : {$in : componentsNameList}});
+  })
+  .then(function(componentCreators){
+    var suggestorHeadshotIdList = _.map(componentCreators, function(eachOne) { 
+      if(eachOne.headshots){
+        return eachOne.headshots[0];
+      } else {
+        return null;
+      }
+    });
+
+    components = _.filter(components, function(item){return item['text'];});
+
+    // Figure out which account and headshot go with with suggestion
+    _.each(components, function(component, index){
+      
+      wholeSuggestionBlockInfo[component.identifier] = {'document' : component};
+      
+      wholeSuggestionBlockInfo[component.identifier]['ideaName'] = currentIdea.name;
+
+      _.each(componentCreators, function(componentCreator, suggIndex){
+        if(componentCreator.username == component.creator){
+          //now we've found the right suggestor to go with the suggestion, so we put the 
+          // nickname and suggestor profile picture into the whole block object;
+          wholeSuggestionBlockInfo[component.identifier]['creatorNickname'] = componentCreator.nickname;
+          if(componentCreator.headshots && componentCreator.headshots[0]){
+            wholeSuggestionBlockInfo[component.identifier]['creatorProfilePic'] = componentCreator.headshots[0].amazonURL;
+            var imageStyle;
+            imageStyle = ideaSeedHelpers.getImageOrientation(componentCreator.headshots[0]["orientation"]);
+            wholeSuggestionBlockInfo[component.identifier]['profilePicOrientation'] = imageStyle;
+          }
+        }
+      })
+    });
+    componentsList = _.map(components, function(item){return "Component : "+item['text'];});
+    componentsList = componentsList.filter(function(item){
+      if(item == "Component : undefined"){
+        return false;
+      } else {
+        return true;
+      }
+    });
+
+    res.render('pages/idea-seed-all-components', { user : req.user || {}, idea : currentIdea,
+      csrfToken: req.csrfToken(),
+      headshot : headshotURL,
+      headshotStyle : headshotStyle,
+      wholeSuggestionBlockInfo : wholeSuggestionBlockInfo
+    });
+  
+  })
+  .catch(function(err){
+    // just need one of these
+    console.log('error:', err);
+    res.redirect('/');
+  });
+
+});
+
 
 /*****************************************************************
 ******************************************************************

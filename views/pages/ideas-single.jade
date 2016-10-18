@@ -26,7 +26,7 @@ html
         else
           a(href="/image-upload")
             .upload-image-div
-              span.glyphicon.glyphicon-cloud-upload
+              span.glyphicon.glyphicon-cloud-upload.big-upload-icon
 
         if idea.name
           h1 #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
@@ -34,6 +34,9 @@ html
           h4 <b>#{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}</b> solves the <span class="problemColor">problem of #[a(href='/introduce-idea') #{idea.problem}]</span> by #[a(href='/accomplish') <span class="solutionColor">#{idea.description}]</span>.
         else if idea.name 
           h4 <b>#{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}</b> solves the <span class="problemColor">problem of #{idea.problem}</span> by <span class="solutionColor">#{idea.description}</span>.
+        if (inventorName == user.username) && idea.visibility == "private" && idea.collaborators.length < 6
+          .row
+            a.btn.btn-electric.btn-lg.btn-block#inviteCollaboratorsButton(type="button" data-toggle="modal" data-target="#inviteCollaboratorsModal") Invite Collaborators
         .row.mobile-only
           if inventorName != user.username
             .idea-summary-data#idea-summary-waste-values
@@ -59,20 +62,6 @@ html
             else 
               a.btn(type="button"  class="btn btn-go btn-lg btn-block" href="/new-campaign" ontouchstart="this.style.background = '#007338';") Crowdfund
 
-            if idea.name
-            h4#componentsHeader #{idea.name}'s Components
-            if components.length > 0
-              ul
-                each component,index in components
-                  if component['text']
-                    li
-                      a(href="/component-profile/" + component['identifier'])
-                        h5 #{component['text']}
-            else
-              <i>No components yet</i>
-            if inventorName == user.username
-              button(type="button" id="componentModalButton"  class="btn btn-go btn-block btn-lg" data-toggle="modal" data-target="#addComponentModal") Add Component
-
           .col-xs-12(style="display:none;")
             #idea-summary-aptitudes.aptitudeList
               .profileAptitudes
@@ -95,9 +84,27 @@ html
 
 
       .col-sm-8
-        if (inventorName == user.username) && idea.visibility == "private" && idea.collaborators.length < 6
-          .row
-            a.btn.btn-electric.btn-lg.btn-block#inviteCollaboratorsButton(type="button" data-toggle="modal" data-target="#inviteCollaboratorsModal") Invite Collaborators
+        if idea.name
+          h2 Components of the #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
+          if components.length > 0
+            each component, identifier in wholeSuggestionBlockInfo
+              if component.document.text
+                include ../partials/component-summary-element.jade
+          else
+            h4 <i>No Components Yet</i>
+            .row
+              button(type="button" class="btn btn-industry" data-toggle="modal" data-target="#addComponentModal") Get Started
+        else
+          <i>No components yet</i>
+        if inventorName == user.username
+        .row.idea-sumamart-buttons
+          .col-xs-12
+            a(href='/ideas/' + idea.name + '/view-all-components')
+              button(type="button"  class="btn btn-industry btn-lg btn-block") View All Components
+        .row.idea-sumamart-buttons
+          .col-xs-12
+              button(type="button" id="componentModalButton"  class="btn btn-go btn-block btn-lg" data-toggle="modal" data-target="#addComponentModal") Add Component
+        
         .row
           button(type="button" id="emailShareButton" class="btn secondary-btn btn-go pull-right clearfix" data-toggle="modal" data-target="#shareModal")
             span.glyphicon.glyphicon-envelope   
