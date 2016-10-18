@@ -480,18 +480,20 @@ html
 
     $("#addDescription #submit").click(function(event){
       event.preventDefault();
-      var data = {
-        "_csrf" : $('[name="_csrf"]').val(),
-        "description" : $("#description").val().slice(requiredText.length),
-        "component-identifier" :  "!{component['identifier']}"
-      }
-      $.post("/add-description", data, function(response){
-        if(response=="OK"){
-          location.reload();
-        } else {
-          alert("Not submitted successfully");
+      if($("#description").val().slice(requiredText.length) != ""){
+        var data = {
+          "_csrf" : $('[name="_csrf"]').val(),
+          "description" : $("#description").val().slice(requiredText.length),
+          "component-identifier" :  "!{component['identifier']}"
         }
-      });
+        $.post("/add-description", data, function(response){
+          if(response=="OK"){
+            location.reload();
+          } else {
+            alert("Not submitted successfully");
+          }
+        });
+      } 
     });
 
 
@@ -552,9 +554,9 @@ html
     }, false);
 
     if("!{component.dimensions.length > 0}" == "true"){
-      $("#dimension").val("Additional dimensions of the !{component.text || 'untitled'} are ");
+      $("#dimension").val("Additional dimensions are ");
     } else {
-      $("#dimension").val("The ideal dimensions of the !{component.text || 'untitled'} are ");
+      $("#dimension").val("The ideal dimensions are ");
     }
     // This is for the main solution text input
     var requiredDimensionText = $("#dimension").val();
