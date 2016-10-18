@@ -1,10 +1,10 @@
 doctype html
 html
   head
-    include ../partials/head.jade
+    include ../../partials/head.jade
   body
   .header.navbar.navbar-default
-    include ../partials/header.jade
+    include ../../partials/header.jade
 
   .container-fluid
     .row
@@ -18,7 +18,7 @@ html
         input(type="hidden", name="_csrf", value="#{csrfToken}")
         button.btn.btn-info.btn-lg(id="openPurchaseRewardsModal" data-dismiss="modal") Purchase
 
-  include ../partials/js-includes.jade
+  include ../../partials/js-includes.jade
   script(src='https://checkout.stripe.com/checkout.js')
   script(type="text/javascript").
 

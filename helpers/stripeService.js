@@ -1,4 +1,6 @@
 var exports = module.exports = {};
+var requestpromise = require('request-promise');
+const TOKEN_URI = 'https://connect.stripe.com/oauth/token';
 
 // Set your secret key: remember to change this to your live secret key in production
 // See your keys here: https://dashboard.stripe.com/account/apikeys
@@ -21,4 +23,21 @@ exports.charge = function(tokenId, amount) {
       return false;
     }
   });
+};
+
+exports.connect = function(stripeInfo) {
+  return requestpromise({
+    method: 'POST',
+    url: TOKEN_URI,
+    form: {
+      grant_type: "authorization_code",
+      client_id: process.env.STRIPE_CLIENT_ID,
+      code: stripeInfo.code,
+      client_secret: process.env.STRIPE_SECRET
+    }
+  }).then(function(r) {
+
+    var accessToken = JSON.parse(r).access_token;
+    console.log('accessToken: ', accessToken);
+  })
 };
