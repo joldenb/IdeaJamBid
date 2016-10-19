@@ -14,5 +14,5 @@ html
         input(type="hidden", name="_csrf", value="#{csrfToken}")
         a.btn.btn-go.btn-lg.btn-block(
           role="button",
-          href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_9OlT45SGxkgo9IZRVSPKQurtNPmSo3qH&scope=read_write&state=#{user.username},#{csrfToken}"
+          href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_9OlT45SGxkgo9IZRVSPKQurtNPmSo3qH&scope=read_write&state=#{idea.name},#{user.username},#{csrfToken}"
         ) Connect with Stripe

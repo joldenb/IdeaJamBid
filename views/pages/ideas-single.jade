@@ -68,9 +68,9 @@ html
         .row
           .col-xs-12
             if inventorName != user.username
-              a.btn(type="button"  class="btn btn-go btn-lg btn-block" href="/campaign" ontouchstart="this.style.background = '#007338';") Fund This Idea  
+              a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign' ontouchstart="this.style.background = '#007338';") Fund This Idea
             else 
-              a.btn(type="button"  class="btn btn-go btn-lg btn-block" href="/new-campaign" ontouchstart="this.style.background = '#007338';") Crowdfund
+              a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign/new' ontouchstart="this.style.background = '#007338';") Crowdfund
 
           .col-xs-12(style="display:none;")
             #idea-summary-aptitudes.aptitudeList

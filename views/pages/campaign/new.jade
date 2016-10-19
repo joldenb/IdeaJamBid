@@ -10,7 +10,10 @@ html
       h1 New Campaign
       p.lead Please provide some info
       br
-      form(role='form', action="/new-campaign",method="post", style='max-width: 300px;')
+      form(role='form',
+           action='/ideas/' + idea.name + '/campaign/new',
+           method="post",
+           style='max-width: 300px;')
         .form-group
           input.form-control(type='text', name="a", placeholder='A' required)
         .form-group
