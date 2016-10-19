@@ -9,10 +9,12 @@ html
   .container-fluid.idea-summary
     .row(class="visibility-row-#{idea.visibility}")
       .col-xs-4
-        a#visibilityLink
-          h3 Visibility : #{idea.visibility.charAt(0).toUpperCase() + idea.visibility.slice(1)}
-            if idea.visibility == "private"
+        if idea.visibility == "private"
+          a#visibilityLink
+            h3 Visibility : #{idea.visibility.charAt(0).toUpperCase() + idea.visibility.slice(1)}
               span.glyphicon.glyphicon-pencil
+        else
+          h3 Visibility : #{idea.visibility.charAt(0).toUpperCase() + idea.visibility.slice(1)}
       if inventorName == user.username
         .col-xs-8.patent-strength-row
           .app-strength-bar.col-md-8
