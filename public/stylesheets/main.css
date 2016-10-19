@@ -810,6 +810,10 @@ img {
   background-color: white;
 }
 
+.suggestion-element.variant-suggestion-block:hover {
+ background-color: #AFDDD1; 
+}
+
 .footer.variant-suggestion.image-block {
   height:4em;
 }
@@ -1065,6 +1069,22 @@ button.suggestion-tactics, button.suggestion-targets {
   margin-left:.5em;
 }
 
+#component-main-image {
+  width: 100%;
+}
+
+.component-block-image {
+  width: 100%;
+  padding: 1em;
+}
+
+.component-block-link {
+  display:block;
+}
+
+.component-block-link .problem-row-padding {
+  color: #414142;
+}
 @media (max-width: 768px) { 
   .navbar-toggle {
       display: block;

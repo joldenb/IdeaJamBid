@@ -3679,10 +3679,6 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
                     if(component.images.length > 0 || problemHeadshotID){
                       var imageIDs = _.map(component.images, function(item){ return item['imageID']});
 
-                      // add main component image to list of id's to be retrieved
-                      if(component.mainImage){
-                        imageIDs.unshift(component.mainImage);
-                      }
                       if(problemHeadshotID){
                         imageIDs.push(problemHeadshotID);
                       }
@@ -3768,10 +3764,6 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
                   if(component.images.length > 0 || component.mainImage){
                     var imageIDs = _.map(component.images || [], function(item){ return item['imageID']});
 
-                    // add main component image to list of id's to be retrieved
-                    if(component.mainImage){
-                      imageIDs.unshift(component.mainImage);
-                    }
 
                     IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
                       var imageURLs = [];

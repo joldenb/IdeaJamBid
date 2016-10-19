@@ -13,7 +13,7 @@ html
           img(src="/avatar.png" height="150" width="150")
       .imagesList
         if(imageURLs)
-          if !component['mainImage'] && idea.name && idea.inventorName == user.username
+          if !component['mainImage']['amazonURL'] && idea.name && idea.inventorName == user.username
             form(role='form', id="formImageUpload" action="/add-component-image", method="post", data-idea-doc=idea, enctype="multipart/form-data")
               .form-group
                 input#fileInput(type="file", name="picture")
@@ -26,6 +26,8 @@ html
               .image-summary-image
                 img(src=imageURL[1] height="300" width="400")
 
+      if component.mainImage && component.mainImage.amazonURL
+        img#component-main-image(src=component.mainImage.amazonURL)
       if component['text'] && component['number']
         .component-name
           h1 Component # #{component['number']} : #{component['text'].charAt(0).toUpperCase() + component['text'].slice(1)}

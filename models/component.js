@@ -30,7 +30,13 @@ var Component = new Schema({
 		secondY		: String
 	}],
 
-	mainImage		: ObjectId,
+	mainImage		: {
+    filename : String,
+    imageMimetype : String,
+    amazonURL : String,
+    uploader : String, //username
+    orientation : String
+	},
 
 	//should get saved in both components,
 	// with each other's object ID's
