@@ -1,5 +1,8 @@
 var exports = module.exports = {};
 var requestpromise = require('request-promise');
+var Account = require('../models/account');
+var StripeCredentials = require('../models/stripeCredentials');
+
 const TOKEN_URI = 'https://connect.stripe.com/oauth/token';
 
 // Set your secret key: remember to change this to your live secret key in production
@@ -25,7 +28,7 @@ exports.charge = function(tokenId, amount) {
   });
 };
 
-exports.connect = function(stripeInfo) {
+exports.connect = function(stripeInfo, user) {
   return requestpromise({
     method: 'POST',
     url: TOKEN_URI,
@@ -36,8 +39,22 @@ exports.connect = function(stripeInfo) {
       client_secret: process.env.STRIPE_SECRET
     }
   }).then(function(r) {
+    Account.findById( user.id, function (err, account) {
+      if(err) {
+        throw err;
+      }
+      if(!account){
+        throw new Error("Can't find user with username: " + account.username);
+      }
 
-    var accessToken = JSON.parse(r).access_token;
-    console.log('accessToken: ', accessToken);
+      var stripeParsed = JSON.parse(r);
+      account.stripeCredentials = new StripeCredentials(stripeParsed);
+      account.save(function (err) {
+        if(err) {
+          throw err;
+        }
+        return account;
+      });
+    });
   })
 };
