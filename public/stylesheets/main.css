@@ -146,14 +146,12 @@ div#begin-info-right button {
 .app-strength-bar {
   height: 3em;
   border: 1px solid gray;
-  margin-bottom: 1.5em;
   padding-left: 0;
   padding-right: 0;
 }
 
-.row.patent-strength-row {
-  margin-right: initial;
-  margin-left: initial;
+.patent-strength-row {
+  margin: 20px 0 20px;  
 }
 
 .row.patent-strength-row a.btn {
@@ -763,6 +761,8 @@ a.plus-overlay img{
   background-color: white;
 }
 
+.idea-seed-feedback {}
+
 #idea-summary-waste-values {
   background-color: #414142; /*industry*/
   color: white;
@@ -1052,9 +1052,17 @@ button.suggestion-tactics, button.suggestion-targets {
 }
 
 .view-all-components-wrapper {
-  margin-top: 1em;
   padding:1em;
   background-color: #414142;
+}
+
+#expandFeedbackSection {
+  height:1em;
+  width:1.5em;
+}
+
+#feedback-expand-icon {
+  margin-left:.5em;
 }
 
 @media (max-width: 768px) { 
@@ -1449,13 +1457,15 @@ button.suggestion-tactics, button.suggestion-targets {
 
 .visibility-row-public {
   background-color: #AFDDD1;
-  text-align: center;
 }
 
 .visibility-row-private {
   background-color: #414142;
   color: #EAE7DE;
-  text-align: center;
+}
+
+.component-title {
+  margin-top: 0;
 }
 
 @media screen and (min-width: 800px) {

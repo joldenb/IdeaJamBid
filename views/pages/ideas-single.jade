@@ -8,8 +8,17 @@ html
 
   .container-fluid.idea-summary
     .row(class="visibility-row-#{idea.visibility}")
-      .col-xs-12
+      .col-xs-4
         h3 Visibility : #{idea.visibility.charAt(0).toUpperCase() + idea.visibility.slice(1)}
+      if inventorName == user.username
+        .col-xs-8.patent-strength-row
+          .app-strength-bar.col-md-8
+            .app-strength(class="#{appStrengthClass}") #{appStrengthText}
+          .col-md-4
+            if appStrengthClass == "yes col-md-12" || idea.visibility == "public"
+              a.btn.btn-go.btn-lg.btn-block#file-patent(data-toggle="modal" data-target="#filePatentModal") Generate Patent Application
+            else
+              a.btn.btn-go.btn-lg.btn-block#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal") Next Steps
     .row.idea-seed-profile
       .col-sm-4
         if(imageURLs.length > 0)
@@ -36,7 +45,8 @@ html
           h4 <b>#{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}</b> solves the <span class="problemColor">problem of #{idea.problem}</span> by <span class="solutionColor">#{idea.description}</span>.
         if (inventorName == user.username) && idea.visibility == "private" && idea.collaborators.length < 6
           .row
-            a.btn.btn-electric.btn-lg.btn-block#inviteCollaboratorsButton(type="button" data-toggle="modal" data-target="#inviteCollaboratorsModal") Invite Collaborators
+            .col-xs-12
+              a.btn.btn-electric.btn-lg.btn-block#inviteCollaboratorsButton(type="button" data-toggle="modal" data-target="#inviteCollaboratorsModal") Invite Collaborators
         .row.mobile-only
           if inventorName != user.username
             .idea-summary-data#idea-summary-waste-values
@@ -82,46 +92,46 @@ html
                     .modal-footer
                       button.btn.btn-go.btn-lg#aptitudeSubmit(type='submit') Save
 
-
       .col-sm-8
         if idea.name
-          h2 Components of the #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
+          h2.component-title Components of the #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
           if components.length > 0
             each component, identifier in wholeSuggestionBlockInfo
               if component.document.text
                 include ../partials/component-summary-element.jade
           else
             h4 <i>No Components Yet</i>
-            .row
-              button(type="button" class="btn btn-industry" data-toggle="modal" data-target="#addComponentModal") Get Started
         else
           <i>No components yet</i>
         if inventorName == user.username
         .row.idea-sumamart-buttons
-          .col-xs-12
-            a(href='/ideas/' + idea.name + '/view-all-components')
-              button(type="button"  class="btn btn-industry btn-lg btn-block") View All Components
+          if components.length > 0
+            .col-xs-12
+              a(href='/ideas/' + idea.name + '/view-all-components')
+                button(type="button"  class="btn btn-industry btn-lg btn-block") View All Components
         .row.idea-sumamart-buttons
           .col-xs-12
               button(type="button" id="componentModalButton"  class="btn btn-go btn-block btn-lg" data-toggle="modal" data-target="#addComponentModal") Add Component
         
-        .row
-          button(type="button" id="emailShareButton" class="btn secondary-btn btn-go pull-right clearfix" data-toggle="modal" data-target="#shareModal")
-            span.glyphicon.glyphicon-envelope   
 
-        if inventorName == user.username
-          .row.patent-strength-row
-            h4 Is #{idea.name} ready to file?
-              a#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal")  What's Left?
+    .row.idea-seed-feedback
+      .col-xs-12
+        a#feedback-expand-link
+          h2 Feedback for #{idea.name}
+            span#feedback-expand-icon.glyphicon.glyphicon-collapse-down
 
-            .app-strength-bar.col-md-8
-              .app-strength(class="#{appStrengthClass}") #{appStrengthText}
-            .col-md-4
-              a.btn.btn-go#file-patent(data-toggle="modal" data-target="#filePatentModal") Generate Patent Application
-
+    .row.idea-seed-all-feedback-areas(style="display:none;")
+      .col-xs-4.score-idea-row
+        .row.idea-sumamart-buttons
+          .col-xs-12
+            h4#imperfections-header Viability Score
         .row
           .col-xs-12
-            h3#imperfections-header Top Imperfections
+            a.btn.btn-go.btn-lg.btn-block.viabilityModalButton( type="button"  class="btn btn-go" data-toggle="modal" data-target="#viabilityModal") Score Viability Categories
+      .col-xs-4.idea-seed-imperfections
+        .row.idea-sumamart-buttons
+          .col-xs-12
+            h4#imperfections-header Top Imperfections
         each problem, index in problems
           if(index < 3 && problem.text && problem['identifier'])
             include ../partials/problem-summary-element.jade
@@ -133,16 +143,15 @@ html
           .col-xs-12
             button(type="button" id="problemModalButton"  class="btn btn-go btn-lg btn-block" data-toggle="modal" data-target="#addProblemModal" ontouchstart="this.style.background = '#007338';") Add New Imperfection
 
-
+      .col-xs-4.idea-seed-suggestions
         .row.idea-sumamart-buttons
           .col-xs-12
-            h3 Suggestions
+            h4 Suggestions
           .col-xs-12
             .view-all-components-wrapper
               a.btn.btn-electric.btn-lg.btn-block#componentsViewAllLink(type="button" href='/ideas/' + idea.name + '/view-all-suggestions') View All Suggestions
 
-        .row.desktop-only
-          a.btn.btn-go.btn-lg.btn-block.viabilityModalButton( type="button"  class="btn btn-go" data-toggle="modal" data-target="#viabilityModal") Score Viability Categories
+
 
   #titleModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -1394,4 +1403,14 @@ html
       $.get("/expose-idea-seed", function(err, response){
         window.location.reload(true);
       });
+    })
+
+    $("#feedback-expand-link").click(function(event){
+      if($(".row.idea-seed-all-feedback-areas").is(":visible")){
+        $(".row.idea-seed-all-feedback-areas").hide(400)
+        $("#feedback-expand-icon").removeClass("glyphicon-collapse-up").addClass("glyphicon-collapse-down")
+      } else {
+        $(".row.idea-seed-all-feedback-areas").show(400)
+        $("#feedback-expand-icon").removeClass("glyphicon-collapse-down").addClass("glyphicon-collapse-up")
+      }
     })
