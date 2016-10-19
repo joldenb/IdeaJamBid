@@ -4,22 +4,30 @@ html
     include ./partials/head.jade
   body#login-page-body
     .container.homepage
-      h1 Welcome to IdeaJam
-      if (!user)
-        p.lead Login or Register to Continue
-        a.home-login.btn.btn-go(href="/login") Login
-        |  
-        a.home-login.btn.btn-primary(href="/register") Register
-        br
-        p Login with Social Media:
-        a(href="/auth/google",class="btn btn-danger") 
-          span.fa.fa-google-plus Google
-        |  
-        a(href="/auth/facebook",class="btn btn-primary") 
-          span.fa.fa-facebook Facebook
-        |  
-        a(href="/auth/linkedin",class="btn btn-info") 
-          span.fa.fa-linkedin LinkedIn
+      h1.text-center Patent. Refine. Fund.
+      h3.text-center Welcome to IdeaJam
+      .container.text-center
+        .row
+          if (!user)
+            p.lead Login or Register to Continue
+            a.home-login.btn.btn-go(href="/login") Login
+            |  
+            a.home-login.btn.btn-primary(href="/register") Register
+            br
+            p Login with Social Media:
+            a(href="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png", class="btn btn-danger") 
+              span.fa.fa-google-plus Google
+            |  
+            a(href="/auth/facebook",class="btn btn-primary") 
+              span.fa.fa-facebook Facebook
+            |  
+            a(href="/auth/linkedin",class="btn btn-info") 
+              span.fa.fa-linkedin LinkedIn
+            br
+            br
+            .container.text-center
+              .row
+              h2 IdeaJam links dreamers, believers and inventors to affordable patent applications and a mass of creative thought and capital to enable them to conspire to change the world.
 
       if (user)
         h2 You are currently logged in as #{user.nickname}
