@@ -1,0 +1,52 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+    include ../partials/js-includes.jade
+  body#topSection
+    .header.navbar.navbar-default.jamTopNav
+      include ../partials/header.jade
+
+    .container.text-center
+      .row
+            div.hero-unit  
+                h2 <span class="aboutBold">The IdeaJam Team
+      .row
+          .col-sm-6
+              .row
+                  img(src="http://www.quandarydev.com/wp-content/uploads/2014/12/Jeff2.png" class="img-responsive center-block about-pic")
+              .row.text-left.aboutPadding
+                  h2 Jeff Schell
+                  h4 CEO
+                  p Jeff’s experience as the founder of a number of successfully funded and sold startups and as a patent attorney adds an important dimension to Quandary Dev.  After building and selling a health informatics-related startup, Jeff moved on to establish Rocky Mountain Patent, which protects the ideas of startup founders from around the country.  He speaks at a variety of engagements on startup and IP related issues, including at Rockies Venture Club events.  For Quandary Dev, Jeff contributes his experience as a medical software expert. 
+                  p He has lived on every continent, working as a research and development engineering consultant in China, in association with the Interamerican Court of Human Rights in Latin America, following peacekeeping forces in Bosnia and Kosovo and even playing semi-professional football in Ireland.
+                  p Jeff earned undergraduate and graduate degrees from Northwestern University, including a masters degree in Medical Informatics.  He also studied economics at Harvard, where he further participated as a delegate at the China-India Development Symposium. 
+          .col-sm-6
+              .row
+                  img(src="/JoeCropped.jpg" class="img-responsive center-block about-pic")
+              .row.text-left.aboutPadding
+                  h2 Joe Oldenburg
+                  h4 CTO
+                  p
+                    | Joe started freelance software development in April 2014, and has been building new projects for clients ever since. Some projects have been collaborations with graphic designers, marketing teams, and other specialists.  Recent collaborators include 
+                    a(target='_blank', href='http://roothousestudio.com/') Root House
+                    |  and 
+                    a(target='_blank', href='http://www.amyhayes.co/') Amy Hayes
+                    | .
+                  p
+                    | Joe comes from a discrete math and computer science background, including full-stack web development at the 
+                    a(target='_blank', href='http://nsidc.org/') National Snow and Ice Data Center
+                    | , at the University of Colorado - Boulder from 2011 through 2014. Around the Boulder area, he frequently attends the Boulder JavaScript Meetup and other tech/startup events.
+      .row
+          .col-sm-6
+              .row
+                  img(src="http://www.rockymountainpatent.com/wp-content/uploads/2016/03/Majid.png" class="img-responsive center-block about-pic")
+              .row.text-left.aboutPadding
+                  h2 Majid Boroujerdi
+                  h4 COO
+                  p Majid Boroujerdi managed a $400M business at Procter and Gamble and co-founded a behavior change company focused on weight loss. In addition Majid has tremendous expertise in both product management and marketing. He started as a chemical engineer at Procter and Gamble and eventually gained experience in new business development, consumer research and product marketing. Some of these skills were honed in the process of developing a personal genetics service formerly known as Navigenics.
+                  p In 2016, Majid participated as a selected CEO for the 10.10.10 conference to solve one often wicked problems facing healthcare.
+                  p Majid holds a degree in chemical engineering from Northwestern University.
+
+    .pagefooter
+      include ../partials/footer.jade
