@@ -1122,16 +1122,17 @@ html
         $("#addComponentModal").modal('hide');
       } else {
         var newComponentName = $("#componentName").val().trim();
-        var newComponentDescr = "";
-        if($("#componentDescription").val().length > 20){
-          newComponentDescr = $("#componentDescription").val().trim();
-        }
+        var newComponentDescr;
 
         var data = {
             _csrf : $('[name="_csrf"]').val(),
-            componentName : newComponentName.slice(4),
-            componentDescription : newComponentDescr.slice(20)
+            componentName : newComponentName.slice(4)
         };
+
+        if($("#componentDescription").val().length > 20){
+          newComponentDescr = $("#componentDescription").val().trim();
+          data['componentDescription'] = newComponentDescr.slice(20)
+        }
 
         if($("#subComponentCheckbox").is(":checked")){
           data['subComponent'] = "on";

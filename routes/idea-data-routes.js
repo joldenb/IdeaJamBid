@@ -120,11 +120,14 @@ router.post('/add-idea-component', csrfProtection, function(req, res) {
     var newComponent = {
       text          : req.body.componentName,
       creator       : req.user.username,
-      descriptions   : [req.body.componentDescription],
       ideaSeed      : req.session.idea,
       number        : newCompNumber,
       identifier    : "comp-"+Date.now()
     };
+
+    if (req.body.componentDescription){
+      newComponent['descriptions'] = [req.body.componentDescription];
+    }
 
     //assumes the req.body.componentParent is the identifier of the selected Parent component
     if(req.body.subComponent && req.body.componentParent){
