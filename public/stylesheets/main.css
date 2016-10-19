@@ -1330,6 +1330,15 @@ button.suggestion-tactics, button.suggestion-targets {
   border-radius : 5px;
 }
 
+.glyphicon.glyphicon-pencil {
+  font-size:1em;
+  margin-left:.5em;
+}
+
+#visibilityLink {
+  color:#EAE7DE;
+}
+
 .glyphicon.glyphicon-cloud-upload.big-upload-icon {
   font-size: 100px;
   margin-top:-10px;
