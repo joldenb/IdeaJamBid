@@ -342,16 +342,21 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 						'.  Other solutions for the problem of ' + idea.problem.toLowerCase() + 
 						' may exist in the prior art.' +
 						'. These solutions, however, have failed to meet one or more unsolved needs recognized by the inventor'+
-						' because of still-remaining challenges, including ', { font_size: 14, font_face: 'Times New Roman' });
-					for(var i = 0;  i < problems.length; i++){
-						if(i < problems.length - 1){
-							pObj.addText ( problems[i].text.toLowerCase() + ', ', { font_size: 14, font_face: 'Times New Roman' } );
-						} else {
-							if(problems.length > 1){
-								pObj.addText ("and ", { font_size: 14, font_face: 'Times New Roman' });
+						' because of still-remaining challenges', { font_size: 14, font_face: 'Times New Roman' });
+					if(problems.length > 0){
+						pObj.addText ( ', including ', { font_size: 14, font_face: 'Times New Roman' });					
+						for(var i = 0;  i < problems.length; i++){
+							if(i < problems.length - 1){
+								pObj.addText ( problems[i].text.toLowerCase() + ', ', { font_size: 14, font_face: 'Times New Roman' } );
+							} else {
+								if(problems.length > 1){
+									pObj.addText ("and ", { font_size: 14, font_face: 'Times New Roman' });
+								}
+								pObj.addText (problems[i].text.toLowerCase() + '. ', { font_size: 14, font_face: 'Times New Roman' } );
 							}
-							pObj.addText (problems[i].text.toLowerCase() + '. ', { font_size: 14, font_face: 'Times New Roman' } );
 						}
+					} else {
+						pObj.addText ( '.  ', { font_size: 14, font_face: 'Times New Roman' });
 					}
 
 					pObj = docx.createP ();
@@ -360,7 +365,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 					for(i=0; i < images.length; i++){
 						pObj = docx.createP ();
 						if(images[i].title){
-							pObj.addText( images[i].title + " depicts an embodiment of the invention.", { font_size: 14, font_face: 'Times New Roman' } );
+							pObj.addText( 'Figure ' + [i + 1] + " depicts " + images[i].title + " in an embodiment of the invention.", { font_size: 14, font_face: 'Times New Roman' } );
 						} else {
 							pObj.addText( 'Figure ' + [i + 1] + ' depicts an embodiment of the invention.', { font_size: 14, font_face: 'Times New Roman' } );
 						}
@@ -492,7 +497,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 										// If this component is a sub-component of another component, find title or first description
 										// of the parent component
 
-										//we can't assume there's only one
+										//find the parent component
 										_.each(comps, function(singleComp, compIndex){
 											if(eachOne['compID'].toString() == singleComp.id.toString() && !foundParentComp){
 												var parentCompTitle = singleComp.text || singleComp.descriptions[0] || "no component name"
@@ -549,76 +554,45 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 								}
 							}	
 
-							if(comps[i].descriptions.length > 1 && !comps[i].text){
-								for(j=1; j < comps[i].descriptions.length; j++){
-									pObj.addText( ''+comps[i].descriptions[0] + ' in an embodiment of the invention is described as ', { font_size: 14, font_face: 'Times New Roman' } );
-									pObj.addText( comps[i].descriptions[j] + '. ', { font_size: 14, font_face: 'Times New Roman' } );
+							if(comps[i].descriptions.length > 0 ){
+								for(j=0; j < comps[i].descriptions.length; j++){
+									if(j == 0){
+										pObj.addText( ''+comps[i].text.charAt(0).toUpperCase() + comps[i].text.slice(1) + ' in an embodiment of the invention is described as ', { font_size: 14, font_face: 'Times New Roman' } );
+										pObj.addText( comps[i].descriptions[j] + '. ', { font_size: 14, font_face: 'Times New Roman' } );
+									} else {
+										pObj.addText( ''+comps[i].text.charAt(0).toUpperCase() + comps[i].text.slice(1) + ' in an embodiment of the invention is also described as ', { font_size: 14, font_face: 'Times New Roman' } );
+										pObj.addText( comps[i].descriptions[j] + '. ', { font_size: 14, font_face: 'Times New Roman' } );
+									}
 								}
-							} else {
-								for(j=1; j < comps[i].descriptions.length; j++){
-									pObj.addText( ''+comps[i].text + ' in an embodiment of the invention is described as ', { font_size: 14, font_face: 'Times New Roman' } );
-									pObj.addText( comps[i].descriptions[j] + '. ', { font_size: 14, font_face: 'Times New Roman' } );
-								}
-							}
+							} 
 						}
-					}
 
-					var alreadyListed = [];
-					var listedDescriptions = [];
-					var otherCompName = '';
-					for(i=0; i < comps.length; i++){
+						var otherCompName = '';
 						if(comps[i].relatedComps.length > 0){
 							for(j=0; j < comps[i].relatedComps.length; j++){
-								
-								//since the component relationship is listed in both components, we only list the relationship if
-								// it hasn't been listed yet.
-								if((alreadyListed.indexOf(comps[i].id.toString()+"-"+ comps[i].relatedComps[j].compID.toString()) == -1  &&
-									alreadyListed.indexOf(comps[i].relatedComps[j].compID.toString()+"-"+ comps[i].id.toString()) == -1 ) ||
-									listedDescriptions.indexOf(comps[i].relatedComps[j].relationship) == -1 ){
-									
-									//get the other component's name or first description
-									for(k=0; k < comps.length; k++){
-										if(comps[k].id.toString() == comps[i].relatedComps[j].compID.toString()){
-											if(comps[k].text && comps[i].text){
-												otherCompName = comps[k].text;
-												pObj = docx.createP ();
-												pObj.addText( 'In an embodiment of the invention, ' + comps[i].text.toLowerCase() + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( otherCompName.toLowerCase() + ' are related. ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( comps[i].text.toLowerCase() + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( otherCompName + ' are related to one another in such embodiment by ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase(), { font_size: 14, font_face: 'Times New Roman' } );
-											} else if(!comps[k].text && comps[i].text) {
-												otherCompName = comps[k].descriptions[0];
-												pObj = docx.createP ();
-												pObj.addText( 'In an embodiment of the invention, ' + comps[i].text.toLowerCase() + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( otherCompName.toLowerCase() + ' are related. ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( comps[i].text.toLowerCase() + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( otherCompName + ' are related to one another in such embodiment by ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase(), { font_size: 14, font_face: 'Times New Roman' } );
-											} else if(comps[k].text && !comps[i].text) {
-												otherCompName = comps[k].text;
-												pObj = docx.createP ();
-												pObj.addText( 'In an embodiment of the invention, ' + comps[i].descriptions[0].toLowerCase() + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( otherCompName.toLowerCase() + ' are related. ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( comps[i].descriptions[0].toLowerCase() + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( otherCompName + ' are related to one another in such embodiment by ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase(), { font_size: 14, font_face: 'Times New Roman' } );
-											} else if(!comps[k].text && !comps[i].text) {
-												otherCompName = comps[k].descriptions[0];
-												pObj = docx.createP ();
-												pObj.addText( 'In an embodiment of the invention, ' + comps[i].descriptions[0].toLowerCase() + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( otherCompName.toLowerCase() + ' are related. ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( comps[i].descriptions[0].toLowerCase() + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( otherCompName + ' are related to one another in such embodiment by ', { font_size: 14, font_face: 'Times New Roman' } );
-												pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase(), { font_size: 14, font_face: 'Times New Roman' } );
+								for(k=0; k < comps.length; k++){
+									// loop through the list of components and see if there are any components that have been described already,
+									// and if so
+									if(comps[k].id.toString() == comps[i].relatedComps[j].compID.toString() && k < i){
+										otherCompName = comps[k].text;
+										pObj = docx.createP ();
+										pObj.addText( 'In an embodiment of the invention, ' + comps[i].text.toLowerCase() + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
+										pObj.addText( otherCompName.toLowerCase() + ' are related. ', { font_size: 14, font_face: 'Times New Roman' } );
+										// the next sentence depends on whether it's a subcomponent or just a general relationship.
+										if( comps[i].relatedComps[j].subComponent ){
+											if(comps[i].relatedComps[j].subComponent == "sub-component"){
+												pObj.addText( 'Moreover, the ' + comps[i].text.toLowerCase() + ' is a sub-component of ', { font_size: 14, font_face: 'Times New Roman' } );
+												pObj.addText( otherCompName.toLowerCase() + '. ', { font_size: 14, font_face: 'Times New Roman' } );
+											} else if (comps[i].relatedComps[j].subComponent == "parent"){
+												pObj.addText( 'Moreover, the ' + otherCompName.toLowerCase() + ' is a sub-component of ', { font_size: 14, font_face: 'Times New Roman' } );
+												pObj.addText( comps[i].text.toLowerCase() + '. ', { font_size: 14, font_face: 'Times New Roman' } );
 											}
+										} else {
+											pObj.addText( comps[i].text.charAt(0).toUpperCase() + comps[i].text.slice(1) + ' and ', { font_size: 14, font_face: 'Times New Roman' } );
+											pObj.addText( otherCompName + ' are related to one another in such embodiment by ', { font_size: 14, font_face: 'Times New Roman' } );
+											pObj.addText( comps[i].relatedComps[j].relationship.toLowerCase(), { font_size: 14, font_face: 'Times New Roman' } );
 										}
 									}
-
-									alreadyListed.push(comps[i].id.toString()+"-"+ comps[i].relatedComps[j].compID.toString());
-									listedDescriptions.push(comps[i].relatedComps[j].relationship);
-									otherCompName = '';
-
 								}
 							}
 						}

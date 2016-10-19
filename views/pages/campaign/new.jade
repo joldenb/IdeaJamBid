@@ -1,0 +1,31 @@
+doctype html
+html
+  head
+    include ../../partials/head.jade
+  body
+    .header.navbar.navbar-default
+      include ../../partials/header.jade
+
+    .container-fluid
+      h1 New Campaign
+      p.lead Please provide some info
+      br
+      form(role='form',
+           action='/ideas/' + idea.name + '/campaign/new',
+           method="post",
+           style='max-width: 300px;')
+        .form-group
+          input.form-control(type='text', name="a", placeholder='A' required)
+        .form-group
+          input.form-control(type='text', name="b", placeholder='B' required)
+        .form-group
+          input.form-control(type='text', name="c", placeholder='C' required)
+          input(type="hidden", name="_csrf", value="#{csrfToken}")
+        .row
+          .col-xs-4
+            a.home-logout.btn.btn-industry.btn-lg( href="/imagineer/" + user.nickname ) Cancel
+          .col-xs-8
+            button#submitProlem.btn.btn-go.btn-lg.btn-continue(type='submit') Continue
+        h4 #{message}
+
+  include ../../partials/js-includes.jade

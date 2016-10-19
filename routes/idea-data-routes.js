@@ -64,42 +64,31 @@ router.post('/add-component-image', csrfProtection, function(req, res) {
     return;
   }
 
-  IdeaImage.find({"filename" : {$regex : ".*"+req.body.filename+".*"}}, function(err, images){
+  var newFileName = req.body.filename + Date.now();
 
-    var newFileName = req.body.filename + "-" + (images.length + 1).toString();
+  var image = { imageMimetype : req.body.type,
+    filename : newFileName, uploader : req.user.username, amazonURL : req.body.fileUrl };
 
-    var image = new IdeaImage({ imageMimetype : req.body.type,
-      filename : newFileName, uploader : req.user.username, amazonURL : req.body.fileUrl });
+  if(req.body["exif[Orientation]"]){
+    image.orientation = parseInt(req.body["exif[Orientation]"]);
+  }
 
-    if(req.body["exif[Orientation]"]){
-      image.orientation = parseInt(req.body["exif[Orientation]"]);
-    }
-    
-    image.save(function(err, newImage){
+  Component.update({"identifier" : req.body.imageComponent},
+    { "mainImage" : image }, function(err, component){
       if (err) {
         console.log(err);
       } else {
-        Component.update({"identifier" : req.body.imageComponent},
-          { "mainImage" : newImage.id }, function(err, component){
-            if (err) {
-              console.log(err);
-            } else {
-              if(req.body.componentProfilePage ){
-                res.json({"redirectURL" : '/component-profile/'+req.body.imageComponent});
-              } else if(req.body.suggestionPage ){
-                res.json({"imageURL" : req.body.fileUrl});
-              } else {
-                // I need to figure out how this should behave. The form is not being submitted
-                // correctly
-                res.json({"redirectURL" : '/inventor-idea-summary'});
-              }
-            }
-          });
-
+        if(req.body.componentProfilePage ){
+          res.json({"redirectURL" : '/component-profile/'+req.body.imageComponent});
+        } else if(req.body.suggestionPage ){
+          res.json({"imageURL" : req.body.fileUrl});
+        } else {
+          // I need to figure out how this should behave. The form is not being submitted
+          // correctly
+          res.json({"redirectURL" : '/inventor-idea-summary'});
+        }
       }
-    });
-
-  }); //end of idea image query
+  });
 });
 
 
@@ -120,11 +109,14 @@ router.post('/add-idea-component', csrfProtection, function(req, res) {
     var newComponent = {
       text          : req.body.componentName,
       creator       : req.user.username,
-      descriptions   : [req.body.componentDescription],
       ideaSeed      : req.session.idea,
       number        : newCompNumber,
       identifier    : "comp-"+Date.now()
     };
+
+    if (req.body.componentDescription){
+      newComponent['descriptions'] = [req.body.componentDescription];
+    }
 
     //assumes the req.body.componentParent is the identifier of the selected Parent component
     if(req.body.subComponent && req.body.componentParent){
@@ -254,6 +246,10 @@ router.post('/add-description', csrfProtection, function(req, res) {
 
       if(component){
         if( req.body.description!=="" ){
+          //check if there's a period at the end
+          if(req.body.description.slice(req.body.description.length - 1) == "."){
+            req.body.description = req.body.description.slice(0, -1);
+          }
           component.descriptions.push(req.body.description);
         }
         component.save(function(err){

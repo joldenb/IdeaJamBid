@@ -20,7 +20,7 @@ body {
   z-index: -1;
   height: 100%;
 }
-}
+
 .modal {
     overflow-y: scroll;
 }
@@ -146,14 +146,12 @@ div#begin-info-right button {
 .app-strength-bar {
   height: 3em;
   border: 1px solid gray;
-  margin-bottom: 1.5em;
   padding-left: 0;
   padding-right: 0;
 }
 
-.row.patent-strength-row {
-  margin-right: initial;
-  margin-left: initial;
+.patent-strength-row {
+  margin: 20px 0 20px;  
 }
 
 .row.patent-strength-row a.btn {
@@ -763,6 +761,8 @@ a.plus-overlay img{
   background-color: white;
 }
 
+.idea-seed-feedback {}
+
 #idea-summary-waste-values {
   background-color: #414142; /*industry*/
   color: white;
@@ -808,6 +808,10 @@ img {
 .suggestion-element.variant-suggestion-block {
   height:auto;
   background-color: white;
+}
+
+.suggestion-element.variant-suggestion-block:hover {
+ background-color: #AFDDD1; 
 }
 
 .footer.variant-suggestion.image-block {
@@ -1052,11 +1056,35 @@ button.suggestion-tactics, button.suggestion-targets {
 }
 
 .view-all-components-wrapper {
-  margin-top: 1em;
   padding:1em;
   background-color: #414142;
 }
 
+#expandFeedbackSection {
+  height:1em;
+  width:1.5em;
+}
+
+#feedback-expand-icon {
+  margin-left:.5em;
+}
+
+#component-main-image {
+  width: 100%;
+}
+
+.component-block-image {
+  width: 100%;
+  padding: 1em;
+}
+
+.component-block-link {
+  display:block;
+}
+
+.component-block-link .problem-row-padding {
+  color: #414142;
+}
 @media (max-width: 768px) { 
   .navbar-toggle {
       display: block;
@@ -1302,9 +1330,28 @@ button.suggestion-tactics, button.suggestion-targets {
   border-radius : 5px;
 }
 
-.glyphicon.glyphicon-cloud-upload {
+.glyphicon.glyphicon-pencil {
+  font-size:1em;
+  margin-left:.5em;
+}
+
+#visibilityLink {
+  color:#EAE7DE;
+}
+
+.glyphicon.glyphicon-cloud-upload.big-upload-icon {
   font-size: 100px;
   margin-top:-10px;
+}
+
+.glyphicon.glyphicon-cloud-upload.edit-component-icon {
+  font-size: 4.5em;
+  width: 100%;
+  text-align: center;  
+}
+
+.edit-component-button {
+  margin-top:.5em;
 }
 
 .jamTopNav {
@@ -1439,13 +1486,15 @@ button.suggestion-tactics, button.suggestion-targets {
 
 .visibility-row-public {
   background-color: #AFDDD1;
-  text-align: center;
 }
 
 .visibility-row-private {
   background-color: #414142;
   color: #EAE7DE;
-  text-align: center;
+}
+
+.component-title {
+  margin-top: 0;
 }
 
 @media screen and (min-width: 800px) {
@@ -1499,5 +1548,9 @@ button.suggestion-tactics, button.suggestion-targets {
 }
 
 #componentModalButton {
-  margin-left: 1em;
+  
+}
+
+.component-header {
+  margin:.3em 0;
 }

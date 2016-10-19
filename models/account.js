@@ -1,7 +1,9 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var StripeCredentials = require('../models/stripeCredentials');
 var passportLocalMongoose = require('passport-local-mongoose');
 var IdeaSeed = mongoose.model('IdeaSeed').schema;
+var StripeCredentials = mongoose.model('StripeCredentials');
 var ObjectId = mongoose.Schema.Types.ObjectId;
 var validator = require('validator');
 var autopopulate = require('mongoose-autopopulate');
@@ -17,6 +19,7 @@ var Account = new Schema({
     rupees			: {type: Number, default:0},
     ideaSeeds       : [{type: Schema.Types.ObjectId, ref: 'IdeaSeed', autopopulate: true }],    
     aptitudes       : [{type: Schema.Types.ObjectId, ref: 'Aptitude', autopopulate: true }],
+    stripeCredentials : {type: Schema.Types.ObjectId, ref: 'StripeCredentials', autopopulate: true },
     headshots		: [{
         filename : String,
         imageMimetype : String,
@@ -39,14 +42,14 @@ var validatePassword = function(password, cb) {
         return cb({code: 400, message: "Password should be between " + minLength + " and " + maxLength + " chars"});
     }
     return cb(null);
-}
+};
 
 var options = {
     interval: 1000, //specifies the interval in milliseconds between login attempts. Default: 100.
     limitAttempts: true, //specifies whether login attempts should be limited and login failures should be penalized. Default: false.
     maxAttempts: 10, //specifies the maximum number of failed attempts allowed before preventing login. Default: Infinity.
     passwordValidator: validatePassword, //specifies your custom validation function for the password in the form 'function(password,cb)'. Default: validates non-empty passwords.
-}
+};
 
 Account.plugin(passportLocalMongoose, options);
 Account.plugin(autopopulate);
