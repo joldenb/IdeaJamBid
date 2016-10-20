@@ -29,6 +29,9 @@ html
 
     .col-md-7
       div#begin-info-right
+        if !schoolNetwork && !companyNetwork && !locationNetwork
+          h3 Join Jams
+          p.text-left On IdeaJam, 'Jam' networks enable you to collaborate and compete on innovative projects within networks you identify with.  Add your school, work and local community networks below to fully participate in the IdeaJam community.
         .profileSchool
           if schoolNetwork
             .profileHeader School :  #[a(class="network-link") #{schoolNetwork}]
@@ -59,7 +62,7 @@ html
       div#begin-info-aptitudes.aptitudeList
         .profileAptitudes
           if aptitudes
-            h3 Your Aptitudes : 
+            h3 My Aptitudes : 
             ul
               each aptitude in aptitudes
                 li(data-apt-id="#{aptitude.identifier}")
@@ -68,7 +71,7 @@ html
             form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
               .form-group
                 |  
-                input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='What are you good at?', autocomplete="on")
+                input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='What skill set can you contribute?', autocomplete="on")
                 input(type="hidden", name="_csrf", value="#{csrfToken}")
               .aptitude-footer
                 button.btn.btn-go#aptitudeSubmit(type='submit') Save
@@ -102,13 +105,14 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 Company Jam
+            h2 Join Your Company on IdeaJam:
         .modal-body
           form(role='form', id="saveCompany" action="/save-company-network", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
               |  
-              input.form-control.ui-front(type='text', id="companyNetwork", name="companyNetwork", placeholder='My company is called... ', autocomplete="on")
+              input.form-control.ui-front(type='text', id="companyNetwork", name="companyNetwork", placeholder='What company do you work with? ', autocomplete="on")
               input(type="hidden", name="_csrf", value="#{csrfToken}")
+              p Example: ("Acme Corporation")
             .modal-footer
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#submit(type='submit') Save
@@ -118,12 +122,12 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 Location Jam
+            h2 Join Your Local Community on IdeaJam
         .modal-body
           form(role='form', id="saveLocation" action="/save-location-network", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
               |  
-              h4 Select Location
+              h4 What Community Do You Identify With?
               select.form-control.locationCity
                 option(value="Denver") Denver
                 option(value="Boulder") Boulder
@@ -138,7 +142,7 @@ html
                 option(value="Pitkin County") Pitkin County
                 option(value="San Luis Valley") San Luis Valley
               input(type="hidden", name="_csrf", value="#{csrfToken}")
-
+              p Note: We love Colorado!  Other locations will  follow in coming versions of IdeaJam.
             .modal-footer
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#locationSubmit(type='submit') Save
