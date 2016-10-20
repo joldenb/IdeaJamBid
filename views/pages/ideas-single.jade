@@ -117,7 +117,7 @@ html
         .row.idea-sumamart-buttons
           .col-xs-12
               button(type="button" id="componentModalButton"  class="btn btn-go btn-block btn-lg" data-toggle="modal" data-target="#addComponentModal") Add Component
-        
+
     .row.idea-seed-feedback
       .col-xs-12
         a#feedback-expand-link
@@ -174,6 +174,7 @@ html
               p.charactersRemaining
             .modal-footer
               button.btn.btn-success#titleSubmit(type='submit') Save
+                img.einstein-point-btn-icon(src="/single-einstein-point.png")
 
   #viewAllImperfections.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -285,6 +286,7 @@ html
                   option(value=value) #{value}
             .modal-footer
               button.btn.btn-go.btn-block.btn-lg#problemSubmit(type='submit') Save
+                img.einstein-point-btn-icon(src="/single-einstein-point.png")
               button.btn.btn-info.btn-block.btn-lg(data-dismiss="modal") Cancel
 
   #addComponentModal.modal.fade.annotate-modal(role="dialog")
@@ -314,6 +316,7 @@ html
               p.compDescrCharRemaining
             .modal-footer
               button.btn.btn-go.btn-block.btn-lg#componentSubmit(type='submit') Save
+                img.einstein-point-btn-icon(src="/single-einstein-point.png")
               button.btn.btn-info.btn-block.btn-lg(data-dismiss="modal") Cancel
 
   #filePatentModal.modal.fade.annotate-modal(role="dialog")
@@ -383,6 +386,7 @@ html
               input(type="hidden", name="_csrf", value="#{csrfToken}")
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#emailSend(type='submit') Send
+                img.einstein-point-btn-icon(src="/single-einstein-point.png")
 
 
   #inviteCollaboratorsModal.modal.fade.annotate-modal(role="dialog")

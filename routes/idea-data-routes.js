@@ -46,6 +46,12 @@ router.post('/add-idea-problem', csrfProtection, function(req, res) {
         { _id : req.session.idea },
         { $push : { problemPriorities : {$each : [problem.id], $position : 0} }},
         function(err, raw){
+          Account.findById( req.user.id,
+            function (err, account) {
+              account.einsteinPoints = account.einsteinPoints + 15;
+              account.save(function (err) {});
+          });
+
           console.log('The raw response from Mongo was ', raw);
         }
       );
@@ -150,6 +156,12 @@ router.post('/add-idea-component', csrfProtection, function(req, res) {
               }
               parentComponent.save(function(err){
                 if (err) return handleError(err);
+                Account.findById( req.user.id,
+                  function (err, account) {
+                    account.einsteinPoints = account.einsteinPoints + 10;
+                    account.save(function (err) {});
+                });
+
                 res.json(newComponent);
               });
             }
@@ -160,6 +172,11 @@ router.post('/add-idea-component', csrfProtection, function(req, res) {
       Component.create( newComponent ,
         function (err) {
           if (err) return handleError(err);
+          Account.findById( req.user.id,
+            function (err, account) {
+              account.einsteinPoints = account.einsteinPoints + 10;
+              account.save(function (err) {});
+          });
           res.json(newComponent);
         }
       );

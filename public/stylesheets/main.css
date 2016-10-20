@@ -709,6 +709,10 @@ a.plus-overlay img{
   display: inline;
 }
 
+.placeholder {
+  display: inline-block;
+}
+
 .profile-headshot:hover .placeholder {
   opacity : .2;
 }
@@ -776,8 +780,38 @@ a.plus-overlay img{
   padding-left:1em;
 }
 
-img {
-    image-orientation: from-image;
+.profile-einstein-points {
+  display: inline-block;
+  line-height: 45px;
+  height: 50px;
+  width: 50px;
+  vertical-align: bottom;
+  margin: 0 1em;
+  border: 3px solid #D6DE26;
+  color: #D6DE26;
+  text-align: center;
+}
+
+.imagineer-profile.profile-einstein-points {
+  line-height: 85px;
+  height: 90px;
+  width: 90px;
+  border-radius: 45px;
+  background-color: #414142;
+
+  text-align: center;
+}
+
+.profile-name {
+  line-height:90px;
+}
+
+.einstein-point-btn-icon {
+  height:1.5em;
+  width: 1.5em;
+  margin: 0 1em;
+  background-image: url("/single-einstein-point.png");
+  display:inline-block;
 }
 
 /* These are the styles for the suggestion blocks on the variant creation page */

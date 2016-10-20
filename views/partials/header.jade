@@ -20,10 +20,12 @@
         li.profile-headshot-list-item
           .profile-headshot
             div(class="placeholder" style="height: 40px; width: 40px; background-image : url('" + headshot + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + headshotStyle)
+            div(class="profile-einstein-points") #{user.einsteinPoints || "0"}
       else  
         li.profile-headshot-list-item
           .profile-headshot
             div(class="placeholder" style="height: 40px; width: 40px; background-image : url('/avatar.png');  background-position: center center; background-repeat: no-repeat; background-size: cover;")
+            div(class="profile-einstein-points") #{user.einsteinPoints || "0"}
       if Object.keys(user).length != 0
         li
           a.home-logout.btn.btn-electric( href="/jam/dsw"  ontouchstart="this.style.background = '#D6DE26';") Startup Olympics
@@ -54,10 +56,12 @@
 
     if headshot
       button.btn.dropdown-toggle(type='button')
-        div(class="placeholder" style="height: 40px; width: 40px; background-image : url('" + headshot + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;")      
+        div(class="placeholder" style="height: 40px; width: 40px; background-image : url('" + headshot + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;")
+        div(class="profile-einstein-points") #{user.einsteinPoints || "0"}     
     else
       button.btn.dropdown-toggle(type='button')
-        div(class="placeholder" style="height: 40px; width: 40px; background-image : url('/avatar.png');  background-position: center center; background-repeat: no-repeat; background-size: cover;")      
+        div(class="placeholder" style="height: 40px; width: 40px; background-image : url('/avatar.png');  background-position: center center; background-repeat: no-repeat; background-size: cover;")
+        div(class="profile-einstein-points") #{user.einsteinPoints || "0"}
      ul.dropdown-menu(id="test")
       if Object.keys(user).length != 0
         li

@@ -9,8 +9,8 @@ html
       .col-xs-10
         h3.top-row-header Idea Imagery
       .col-xs-2
-        a.close-viability(href="/ideas/#{idea.name}")
-          img(src="/close_button.png" height="30" width="30")
+        .return-button
+          a.home-logout.btn.btn-industry.btn-lg( href="/ideas/#{idea.name}") Back to Idea Summary
   
     if idea.name && idea.inventorName == user.username
       .row
@@ -21,6 +21,7 @@ html
               input(type="hidden", name="_csrf", value="#{csrfToken}")
               label.btn.btn-block.btn-file.btn-go#fileInput
                 h4 Upload Image
+                  img.einstein-point-btn-icon(src="/single-einstein-point.png")
                 input(type="file", name="picture" style="display:none;")
     if(canEdit)
       .imagesList

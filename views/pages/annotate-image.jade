@@ -24,6 +24,7 @@ html
           .modal-footer
             // button.btn.btn-info(data-dismiss="modal") Cancel
             button.btn.btn-success#submit(type='submit') Submit
+              img.einstein-point-btn-icon(src="/single-einstein-point.png")
 
     button(type="button" id="modalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Go Win Fight
 
@@ -50,7 +51,7 @@ html
                 h4 #{value.number}. #{value.text}
           br
           br
-          a#save-annotations.btn.btn-success( href="/image-upload" ) Save Annotations >
+          a#save-annotations.btn.btn-success( href="/image-upload" ) All Images
           h4 Click on your image to describe the components of your invention:
           .checkbox
       .col-md-10

@@ -15,8 +15,8 @@ html
             
           else
             img(src="/avatar.png" height="100" width="100")
-          h2 #{profileAccount.nickname}
-          h4 Einstein Points #{profileAccount.einsteinPoints}
+          h2.profile-name #{profileAccount.nickname}
+            div(class="imagineer-profile profile-einstein-points") #{user.einsteinPoints || "0"}            
           .profileSchool
             if schoolNetwork
               h4 My School  #[a(class="network-link") #{schoolNetwork}]

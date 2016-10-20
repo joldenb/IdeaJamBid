@@ -1025,6 +1025,12 @@ router.post('/introduce-idea', csrfProtection, function(req, res) {
   IdeaSeed.update({_id : req.session.idea}, {
     problem : req.body.purposeFor.slice(15)},
     { multi: false }, function (err, raw) {
+      if (err) return handleError(err);
+      Account.findById( req.user.id,
+        function (err, account) {
+          account.einsteinPoints = account.einsteinPoints + 5;
+          account.save(function (err) {});
+      });
       console.log('The raw response from Mongo was ', raw);
   });
   res.redirect('/accomplish');
@@ -1084,6 +1090,11 @@ router.post('/accomplish', csrfProtection, function(req, res) {
     description : req.body.purposeHow.slice(16)},
     { multi: false }, function (err, document) {
       console.log('The raw response from Mongo was ', document);
+      Account.findById( req.user.id,
+        function (err, account) {
+          account.einsteinPoints = account.einsteinPoints + 5;
+          account.save(function (err) {});
+      });
       res.redirect("/ideas/yet-to-be-named");
   });
 });
@@ -1364,6 +1375,12 @@ router.post('/save-idea-name', csrfProtection, function(req, res) {
     // options, this gets the new updated record
     { multi: false, new : true },
     function (err, idea) {
+      Account.findById( req.user.id,
+        function (err, account) {
+          account.einsteinPoints = account.einsteinPoints + 5;
+          account.save(function (err) {});
+      });
+
       console.log('The raw response from Mongo was ', idea);
       res.json({"newUrl" : '/ideas/' + idea.name});
   });
@@ -1586,6 +1603,12 @@ router.post('/image-upload', csrfProtection, function(req, res) {
             { _id : req.session.idea },
             { $push : { images : newImage.id }},
             function(err){
+              if (err) return handleError(err);
+              Account.findById( req.user.id,
+                function (err, account) {
+                  account.einsteinPoints = account.einsteinPoints + 25;
+                  account.save(function (err) {});
+              });
               res.json({"redirectURL" : '/image-upload'});
               return;
             }
@@ -3182,7 +3205,12 @@ router.post('/save-component', csrfProtection, function(req, res) {
           }
         );
         component.save(function(err){
-          var stop;
+          if (err) return handleError(err);
+          Account.findById( req.user.id,
+            function (err, account) {
+              account.einsteinPoints = account.einsteinPoints + 10;
+              account.save(function (err) {});
+          });
         });
         res.sendStatus(200);
       } else {
@@ -3201,7 +3229,12 @@ router.post('/save-component', csrfProtection, function(req, res) {
           identifier  : "comp-"+Date.now()
         });
         newComp.save(function(err){
-          var stop;
+          if (err) return handleError(err);
+          Account.findById( req.user.id,
+            function (err, account) {
+              account.einsteinPoints = account.einsteinPoints + 10;
+              account.save(function (err) {});
+          });
         });
         res.sendStatus(200);
       }
@@ -3930,6 +3963,12 @@ router.post('/add-related-component', csrfProtection, function(req, res) {
         thisComponent.save(function(err){
           otherComponent.save(function(err){
             console.log('new related component added');
+            if (err) return handleError(err);
+            Account.findById( req.user.id,
+              function (err, account) {
+                account.einsteinPoints = account.einsteinPoints + 20;
+                account.save(function (err) {});
+            });
             res.redirect('/component-profile/'+compIdentifier);
           });
         });
