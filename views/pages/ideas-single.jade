@@ -118,7 +118,6 @@ html
           .col-xs-12
               button(type="button" id="componentModalButton"  class="btn btn-go btn-block btn-lg" data-toggle="modal" data-target="#addComponentModal") Add Component
         
-
     .row.idea-seed-feedback
       .col-xs-12
         a#feedback-expand-link
@@ -157,6 +156,8 @@ html
               a.btn.btn-electric.btn-lg.btn-block#componentsViewAllLink(type="button" href='/ideas/' + idea.name + '/view-all-suggestions') View All Suggestions
 
 
+  footer
+    include ../partials/footer.jade
 
   #titleModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog

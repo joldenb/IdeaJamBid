@@ -4,7 +4,7 @@ body {
   right: 0;
   left: 0;
   bottom: 0;
-  background-color: #EAE7DE; /* linen */
+  background-color: #ededed; /* light gray */
 }
 
 
@@ -148,6 +148,7 @@ div#begin-info-right button {
   border: 1px solid gray;
   padding-left: 0;
   padding-right: 0;
+  background-color:white;
 }
 
 .patent-strength-row {
@@ -429,7 +430,7 @@ table.suggestion-table .col-md-4 {
 }
 
 .suggestion {
-  background-color: #AFDDD1; /*Vision*/
+  background-color: #337ab7; /*Vision*/
 }
 
 
@@ -476,7 +477,7 @@ img.summary-image {
 }
 
 .imagesList.other-images {
-  background-color: #AFDDD1; /*Vision*/
+  background-color: #337ab7; /*Vision*/
   padding : 2em;
 }
 
@@ -811,7 +812,7 @@ img {
 }
 
 .suggestion-element.variant-suggestion-block:hover {
- background-color: #AFDDD1; 
+ background-color: #337ab7; 
 }
 
 .footer.variant-suggestion.image-block {
@@ -1263,12 +1264,12 @@ button.suggestion-tactics, button.suggestion-targets {
 }
 
 .btn-vision {
-  background-color: #AFDDD1; 
+  background-color: #337ab7; 
   color: #414142;
 }
 
 .btn-vision:hover {
-  background-color: #9dc6bc;
+  background-color: #337ab7;
 }
 
 .btn-electric {
@@ -1485,7 +1486,8 @@ button.suggestion-tactics, button.suggestion-targets {
 }
 
 .visibility-row-public {
-  background-color: #AFDDD1;
+  background-color: #337ab7;
+  color: #EAE7DE;
 }
 
 .visibility-row-private {
@@ -1553,4 +1555,21 @@ button.suggestion-tactics, button.suggestion-targets {
 
 .component-header {
   margin:.3em 0;
+}
+
+#symantec-seal {
+  float: right;
+}
+
+#footer {
+  background-color: #337ab7;
+}
+
+#footer a {
+  color: white;
+}
+
+#footer-info {
+  margin-left: 1em;
+  margin-top:1em;
 }
