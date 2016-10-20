@@ -28,7 +28,7 @@ html
         image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
         locale: 'auto',
         token: function (token) {
-          $.post('/stripe-payment',
+          $.post('/ideas/#{idea.name}/campaign/stripe-payment',
                   {
                     _csrf: $('[name="_csrf"]').val(),
                     amount: 25000,

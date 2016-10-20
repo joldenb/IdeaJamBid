@@ -96,7 +96,7 @@ router.post('/ideas/:ideaName/campaign/stripe-payment', csrfProtection, function
   }
 
   stripeService
-    .charge(req.body.tokenId, req.body.amount, req.params.ideaName)
+    .campaignCharge(req.body.tokenId, req.body.amount, req.params.ideaName)
     .then(function (success){
     if(success) {
      res.send('success');

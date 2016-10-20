@@ -1,6 +1,7 @@
 var exports = module.exports = {};
 var requestpromise = require('request-promise');
 var Account = require('../models/account');
+var IdeaSeed = require('../models/ideaSeed');
 var StripeCredentials = require('../models/stripeCredentials');
 var Promise = require('bluebird');
 
@@ -11,8 +12,7 @@ const TOKEN_URI = 'https://connect.stripe.com/oauth/token';
 // TODO: Use a variable
 var stripe = require("stripe")("sk_test_dxHWhv5U1LCrruTtDLCGuap4");
 
-exports.charge = function(tokenId, amount) {
-  console.log('Creating charge for amount ' + amount + ' and source: ', tokenId);
+exports.basicCharge = function(tokenId, amount) {
   return stripe.charges.create({
     amount: amount, // Amount in cents
     currency: "usd",
@@ -27,6 +27,34 @@ exports.charge = function(tokenId, amount) {
       return false;
     }
   });
+};
+
+exports.campaignCharge = function(tokenId, amount, ideaName) {
+  var application_fee = Math.round(amount * 0.2);
+
+  var query = IdeaSeed.findOne({"name" : ideaName});
+  return query.exec().then(function(idea){
+    return Account.findOne({"username" : idea.inventorName}).exec().then(function(account) {
+      return stripe.charges.create({
+        amount: amount, // Amount in cents
+        currency: "usd",
+        source: tokenId,
+        destination: account.stripeCredentials.stripe_user_id,
+        application_fee: application_fee,
+        description: "Example charge"
+      }).then(function() {
+        console.log('Successfully charged the card!');
+        return true;
+      }, function(err) {
+        if (err && err.type === 'StripeCardError') {
+          console.error('Could not process the payment: ', err);
+          return false;
+        }
+      });
+    });
+  });
+
+
 };
 
 exports.connect = function(stripeInfo, user) {
