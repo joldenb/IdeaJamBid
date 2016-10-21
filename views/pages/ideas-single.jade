@@ -200,50 +200,50 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 Improve Your #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
-            h4 Before IdeaJam generates a provisional patent application template for your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}, you should complete the below steps:
+            h2 Improve your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
+            h4 Before IdeaJam generates a provisional patent application template for your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}, you should complete the following steps:
         .modal-body
           ul
             each object, key in strengthResponse
               case key
                 when "description"
                   if object == ""
-                    li Add a Brief Description For #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
+                    li Add a brief description of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
                       a.whats-left-button.btn.btn-go( href="/accomplish" ) Go 
                 when "problem"
                   if object == ""
-                    li Add the Problem that #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)} Solves
+                    li Add the problem that your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} Solves
                       a.whats-left-button.btn.btn-go( href="/introduce-idea" ) Go
                 when "name"
                   if object == ""
-                    li Give Your Idea a Name
+                    li Give your idea a name
                       a.whats-left-button.btn.btn-go#openTitleModal() Go
                 when "images"
                   if object.length < 2
-                    li Upload More #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)} Images
+                    li Add a few images for your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} 
                       a.whats-left-button.btn.btn-go( href="/image-upload" ) Go
                 when "issues"
                   if object.length < 4
-                    li Describe a Few Imperfections of #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
+                    li Add a few imperfections of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} to improve upon
                       a.whats-left-button.btn.btn-go#openAddProblemModal() Go
                 when "viabilityScores"
                   if appStrengthText == "NOT YET..." && object.length < 4
-                    li Evaluate and Score #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
+                    li Evaluate and score your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
                       a.whats-left-button.btn.btn-go#openViabilityModal() Go
                   else if appStrengthText == "ALMOST..." && object.length < 15
-                    li Finish Scoring #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
+                    li Finish scoring your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
                       a.whats-left-button.btn.btn-go#openViabilityModal() Go
                 when "imagesWithAnnotations"
                   if object.length < strengthResponse['images'].length 
-                    li Tag the Images of #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)} with Components
+                    li Tag the images of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} with components and subcomponents
                       a.whats-left-button.btn.btn-go( href="/image-upload" ) Go
                 when "problemsWithSuggestions"
                   if object.length < strengthResponse['issues'].length
-                    li Suggest a Solution for Each #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)} Imperfection
+                    li Suggest a solution for each #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} imperfection
                       a.whats-left-button.btn.btn-go( href="/suggestion-summary" ) Go
                 when "compsWithRelationships"
                   if object.length < strengthResponse['allComponents'].length
-                    li Describe How a #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)} Component Relates to Another Component
+                    li Describe how a #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} component relates to another component
                       a.whats-left-button.btn.btn-go#viewComponentsTab() Go
         .modal-footer
           button.btn.btn-success(data-dismiss="modal") Close
@@ -255,7 +255,7 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title
-            h2 Score Areas
+            h2 Score #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
         .modal-body
           .view-all-viabilities
               include ../partials/viability-overview-modal.jade
@@ -271,15 +271,16 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h4 Record a New Imperfection
+            h2 New Imperfection
+            h4 Add an imperfection of the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} so that you and the IdeaJam crowd can suggest more precise solutions to improve it.
         .modal-body
           form(role='form', id="addIdeaProblem" action="/add-idea-problem", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
               input(type="hidden", name="_csrf", value="#{csrfToken}")
-              input#problemStatement.form-control(type="text", name="problemStatement", value='The problem is ')
-              p (ex. "It draws too much power")
+              input#problemStatement.form-control(type="text", name="problemStatement", value='The imperfection of ')
+              p (ex. "The imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
               p.charactersRemaining
-              h4 Imperfection Area:
+              h4 Imperfection Category:
               select.form-control#problemArea(required)
                 each value in problemAreas
                   option(value=value) #{value}
@@ -1201,7 +1202,7 @@ html
 
     // This is for the problem input
     var inputProb = $("#addIdeaProblem input")[1];
-    var requiredProbText = "The problem is "
+    var requiredProbText = "The imperfection of "
     $("#addIdeaProblem .charactersRemaining").text((200) + " characters remaining");
     inputProb.addEventListener ("mousedown", function () {
       if (String($(this).val()).indexOf(requiredProbText) == -1) {
