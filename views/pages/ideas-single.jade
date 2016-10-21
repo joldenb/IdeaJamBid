@@ -272,7 +272,7 @@ html
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
             h2 New Imperfection
-            h4 Add an imperfection of the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} so that you and the IdeaJam crowd can suggest more precise solutions to improve it.
+            h4 Add an imperfection of the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} so that you and the IdeaJam crowd can suggest more refined solutions for improvement.
         .modal-body
           form(role='form', id="addIdeaProblem" action="/add-idea-problem", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
@@ -285,7 +285,7 @@ html
                 each value in problemAreas
                   option(value=value) #{value}
             .modal-footer
-              button.btn.btn-go.btn-block.btn-lg#problemSubmit(type='submit') Save
+              button.btn.btn-go.btn-block.btn-lg#problemSubmit(type='submit') Save Imperfection
               button.btn.btn-info.btn-block.btn-lg(data-dismiss="modal") Cancel
 
   #addComponentModal.modal.fade.annotate-modal(role="dialog")
