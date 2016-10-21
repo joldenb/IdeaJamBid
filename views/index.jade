@@ -14,15 +14,18 @@ html
         button(type="submit" class="btn btn-default") Sign in
        
     .container.homepage
-      h1.text-center Patent. Refine. Fund.
-      h3.text-center Welcome to IdeaJam
+      h1 Patent. Refine. Fund.
+      h3 Welcome to IdeaJam
       .container.text-center
         .row
           if (!user)
             .container.text-center
               .row
-                h3 IdeaJam links dreamers, believers and inventors to affordable patent applications and a mass of creative thought and capital to enable them to conspire to change the world. 
+                h1 What's your idea?
                 a.home-login.btn.btn-primary(href="/register") Register for Free
+              .row
+                h3 IdeaJam links dreamers, believers and inventors to affordable patent applications and a mass of creative thought and capital to enable them to conspire to change the world. 
+
               .row    
                 br
                 p Login with Social Media:
@@ -34,26 +37,6 @@ html
                 |  
                 a(href="/auth/linkedin",class="btn btn-info") 
                   span.fa.fa-linkedin LinkedIn
-               
-                a.btn-facebook(onclick="_gaq.push(['_trackEvent', 'btn-social', 'click', 'btn-facebook']);")
-                  span.fa.fa-facebook
-                  |  Sign in with Facebook
-                a.btn.btn-social-icon.btn-google(onclick="_gaq.push(['_trackEvent', 'btn-social-icon', 'click', 'btn-md']);")
-                  span.fa.fa-google
-
-                <i class="fa fa-globe" aria-hidden="true"></i>
-
-                br
-
-                <a class="btn btn-block btn-social btn-twitter"><span class="fa fa-twitter"></span> Sign in with Twitter</a>
-
-                br
-
-                <a class="btn btn-block btn-social btn-twitter"><span class="fa fa-twitter"></span>Sign in with Twitter</a>
-
-
-                br
-
 
       if (user)
         h2 You are currently logged in as #{user.nickname}

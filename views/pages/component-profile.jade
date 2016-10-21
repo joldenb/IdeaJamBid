@@ -532,7 +532,7 @@ html
     if("!{component.materials.length > 0}" == "false"){
       $("#material").val("The !{component.text || 'untitled'} ideally comprises the materials of ");
     } else {
-      $("#material").val("The !{component.text || 'untitled'} also comprises the materials of ");
+      $("#material").val("The !{component.text || 'untitled'} could also comprise the materials of ");
     }
     
     // This is for the main solution text input
@@ -556,9 +556,9 @@ html
     }, false);
 
     if("!{component.dimensions.length > 0}" == "true"){
-      $("#dimension").val("Additional dimensions are ");
+      $("#dimension").val("The dimensions of !{component.text || 'untitled'} could additionally be ");
     } else {
-      $("#dimension").val("The ideal dimensions are ");
+      $("#dimension").val("The ideal dimensions of !{component.text || 'untitled'} are ");
     }
     // This is for the main solution text input
     var requiredDimensionText = $("#dimension").val();

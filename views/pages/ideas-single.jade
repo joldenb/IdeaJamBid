@@ -325,7 +325,9 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 File a Patent Application
+            h3 Visibility status of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
+            h4 Protect yourself against others who might see and steal ideas from your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}.
+            h4 IdeaJam can create a provisional patent application template for your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}.  Filing a patent application before making your ideas visible will provide you with patent pending status over #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} earning you potential rights over anyone who later makes or sells the same idea.
         .modal-body
             if appStrengthClass == "yes col-md-12" || idea.visibility == "public"
               a.btn.btn-go#create-application-button( href="/create-application" ) Download Application
@@ -346,7 +348,7 @@ html
                 a.btn.btn-go( href="/view-idea-suggestions" ) Create a New Variant
                 br
             else if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
-              h4 Enter more information before generating an application.
+              h4 Strong patent applications generally have more descriptions of the invention and its components.   To strengthen the provisional patent application template for your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}, you should enter more information about the concept.
             br
 
           .modal-footer
