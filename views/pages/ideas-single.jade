@@ -293,25 +293,27 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 New Component
+            h2 Add a #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)} Component
         .modal-body
           form(role='form', id="addIdeaComponent" action="/add-idea-component", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
-              h4 What is your new component called?
-              input#componentName.form-control(type="text", name="componentName", value='The ...')
-              input#subComponentCheckbox(type="checkbox", name="subComponent")
-              span This is a sub-component of another component.
+              h4 What is this new component of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} called?
+              input#componentName.form-control(type="text", name="componentName", value='Enter Component Name')
+              p (ex. "The Flux Capacitor")
               #parentComponentDropdown(style="display:none;")
                 select.parentComponents
                   each component,index in components
                     if component.identifier
                       option(value=component.identifier) #{component.text || component.descriptions[0] || "No Component Title"}
               input(type="hidden", name="_csrf", value="#{csrfToken}")
-              p (ex. "The Start Button")
               p.compNameCharRemaining
-              input#componentDescription.form-control(type="text", name="componentDescription", value='The way it works is ')
-              p (ex. "it initiates the sequence automatically")
+              h4 How do you describe this component of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}?
+              input#componentDescription.form-control(type="text", name="componentDescription", value='This component is described as a ')
+              p (ex. "This component is described as a power channeling device that processes 1.21 gigawatts to make time travel possible.")
               p.compDescrCharRemaining
+              // Jeff changed the below code because he thinks this option should only appear in the component profile page
+               // input#subComponentCheckbox(type="checkbox", name="subComponent")
+               // span This is a sub-component of another component.
             .modal-footer
               button.btn.btn-go.btn-block.btn-lg#componentSubmit(type='submit') Save
               button.btn.btn-info.btn-block.btn-lg(data-dismiss="modal") Cancel
@@ -1249,7 +1251,7 @@ html
 
     // This is for the second text input field in the add component modal
     var inputTwo = $("#addIdeaComponent input#componentDescription")[0];
-    var requiredCompTextTwo = "The way it works is "
+    var requiredCompTextTwo = "This component is described as a "
     $("#addIdeaComponent .compDescrCharRemaining").text((200) + " characters remaining");
     inputTwo.addEventListener ("mousedown", function () {
       if (String($(this).val()).indexOf(requiredCompTextTwo) == -1) {
