@@ -200,8 +200,8 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 Broaden and Clarify Your #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
-            h4 Before IdeaJam generates a provisional patent application template for you, you should complete the below steps to strengthen your invention specification:
+            h2 Improve Your #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
+            h4 Before IdeaJam generates a provisional patent application template for your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}, you should complete the below steps:
         .modal-body
           ul
             each object, key in strengthResponse
