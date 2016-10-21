@@ -1203,7 +1203,7 @@ router.post('/suggestion-submit-new', csrfProtection, function(req, res) {
             newSuggestion["mainImage"] =  newImage.id;
             Account.findById( req.user.id,
               function (err, account) {
-                var points = 50;
+                var points = parseInt(req.body.points);
                 account.einsteinPoints = account.einsteinPoints + points;
                 account.save(function (err) {});
             });
@@ -1219,7 +1219,7 @@ router.post('/suggestion-submit-new', csrfProtection, function(req, res) {
     } else {
       Account.findById( req.user.id,
         function (err, account) {
-          var points = 50;
+          var points = parseInt(req.body.points);
           account.einsteinPoints = account.einsteinPoints + points;
           account.save(function (err) {});
       });
@@ -3462,6 +3462,107 @@ router.get('/imperfection-profile/:identifier', csrfProtection, function(req, re
           "problemID" : ideaProblem.id
           }, function(err, suggestions){
 
+            //get all the suggestions for the problem and get their points
+            components = suggestions;
+            var categorizedSuggestions = {};
+            for(var i = 0; i < components.length; i++){
+              if(components[i].category && categorizedSuggestions[components[i].category]){
+                categorizedSuggestions[components[i].category].push(components[i]);
+              } else if (components[i].category && !categorizedSuggestions[components[i].category]){
+                categorizedSuggestions[components[i].category] = [components[i]];
+              }
+            }
+            var categoryPointValues = Component.getCategoryPointValues(categorizedSuggestions);
+
+            var targetPoints = [
+              ["Functions", "Functions"],
+              ["Parts", "Parts"],
+              ["Life-Cycle Processes", "Life-Cycle-Processes"],
+              ["Materials", "Materials"],
+              ["People", "People"]
+            ];
+
+            var tacticPoints = _.map(tacticConstants, function(oneTactic, tacticIndex){
+              switch (oneTactic) {
+                case "Eliminate" : 
+                  return [oneTactic,
+                    Math.max(categoryPointValues["elim-func"],
+                      categoryPointValues["elim-parts"],
+                      categoryPointValues["elim-life"],
+                      categoryPointValues["elim-mat"],
+                      categoryPointValues["elim-people"]
+                    )];
+                  break;
+                case "Reduce" :
+                  return [oneTactic,
+                    Math.max(categoryPointValues["reduce-func"],
+                      categoryPointValues["reduce-parts"],
+                      categoryPointValues["reduce-life"],
+                      categoryPointValues["reduce-mat"],
+                      categoryPointValues["reduce-people"]
+                    )];
+                  break;
+                case "Substitute" :
+                  return [oneTactic,
+                    Math.max(categoryPointValues["sub-func"],
+                      categoryPointValues["sub-parts"],
+                      categoryPointValues["sub-life"],
+                      categoryPointValues["sub-mat"],
+                      categoryPointValues["sub-people"]
+                    )];
+                  break;
+                case "Separate" :
+                  return [oneTactic,
+                    Math.max(categoryPointValues["sep-func"],
+                      categoryPointValues["sep-parts"],
+                      categoryPointValues["sep-life"],
+                      categoryPointValues["sep-mat"],
+                      categoryPointValues["sep-people"]
+                    )];
+                  break;
+                case "Integrate" :
+                  return [oneTactic,
+                    Math.max(categoryPointValues["int-func"],
+                      categoryPointValues["int-parts"],
+                      categoryPointValues["int-life"],
+                      categoryPointValues["int-mat"],
+                      categoryPointValues["int-people"]
+                    )];
+                  break;
+                case "Re-Use" :
+                  return [oneTactic,
+                    Math.max(categoryPointValues["reuse-func"],
+                      categoryPointValues["reuse-parts"],
+                      categoryPointValues["reuse-life"],
+                      categoryPointValues["reuse-mat"],
+                      categoryPointValues["reuse-people"]
+                    )];
+                  break;
+                case "Standardize" :
+                  return [oneTactic,
+                    Math.max(categoryPointValues["stand-func"],
+                      categoryPointValues["stand-parts"],
+                      categoryPointValues["stand-life"],
+                      categoryPointValues["stand-mat"],
+                      categoryPointValues["stand-people"]
+                    )];
+                  break;
+                case "Add" :
+                  return [oneTactic,
+                    Math.max(categoryPointValues["add-func"],
+                      categoryPointValues["add-parts"],
+                      categoryPointValues["add-life"],
+                      categoryPointValues["add-mat"],
+                      categoryPointValues["add-people"]
+                    )];
+                  break;
+              }
+              
+            })
+
+            if(req.session.ideaReview){ var reviewing = true; }
+            else { var reviewing = false; }
+
             var suggestionNameList = _.map(suggestions, function(eachOne) { return eachOne.creator;})
 
             Account.find({"username" : {$in : suggestionNameList}}, function(err, suggestors){
@@ -3502,9 +3603,6 @@ router.get('/imperfection-profile/:identifier', csrfProtection, function(req, re
                 // Now, wholeSuggestionBlockInfo is an object with suggestion identifier keys and values
                 // that hold suggestion objects as well as the suggestor nicknames and profile pictures
 
-
-
-
                 res.render('pages/imperfection-profile', {
                   csrfToken: req.csrfToken(),
                   problem : ideaProblem,
@@ -3513,8 +3611,10 @@ router.get('/imperfection-profile/:identifier', csrfProtection, function(req, re
                   problemCreator : problemCreator,
                   user : req.user || {},
                   suggestions: suggestions,
+                  categoryPoints : categoryPointValues,
+                  targetPoints : targetPoints,
                   targets: targetConstants,
-                  tactics: tacticConstants,
+                  tactics: tacticPoints,
                   schoolNetwork : schoolNetwork,
                   locationNetwork : locationNetwork,
                   companyNetwork : companyNetwork                  

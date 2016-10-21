@@ -30,17 +30,16 @@ html
             div#suggestion-tactics(class="btn-group" role="group" aria-label="suggestionTactic" data-toggle="buttons")
               h4.suggestion-number 1.
               each value in tactics
-                label.btn.btn-go.suggestion-tactics
-                  input(type="checkbox" value=value)
-                  | #{value}
-
+                label.btn.btn-go.suggestion-tactics( title="Max points : #{value[1]}" data-toggle="tooltip" data-placement="right")
+                  input(type="checkbox" value=value[0])
+                  | #{value[0]}
 
             div#suggestion-targets(class="btn-group" role="group" aria-label="suggestionTarget" data-toggle="buttons")
               h4.suggestion-number 2.
-              each value in targets
-                label.btn.btn-go.suggestion-targets.disabled(style="background-color : #00A550 !important;")
-                  input.target-inputs(type="checkbox" value=value disabled )
-                  | #{value}
+              each value in targetPoints
+                label.btn.btn-go.suggestion-targets.disabled(style="background-color : #00A550 !important;" title="" data-toggle="tooltip" data-placement="right" id="#{value[1]}-target")
+                  input.target-inputs(type="checkbox" value=value[0] disabled)
+                  | #{value[0]}
 
           h3#end-of-suggestion-query to help solve the imperfection of 
             <span class="problemColor">#{problem.text}?</span>
@@ -58,7 +57,7 @@ html
           //-       | Add Picture
           .row.suggestion-form-buttons
             .col-xs-12
-              button#reset-suggestion-form.btn.btn-industry.btn-lg.btn-block(type="button") Start Over
+              button#reset-suggestion-form.btn.btn-industry.btn-lg.btn-block(type="button") Reset Form
       .col-sm-6
         #existing-suggestion-list.edit-column
           h3 Other Suggestions
@@ -95,6 +94,7 @@ script(type="text/javascript").
             "problemText" : "!{problem.text}",
             "tactic"  : tacticVal,
             "target"  : targetVal,
+            "points"  : $(".suggestion-targets.selected input").parent().attr("data-points"),
             "ideaName" : "!{idea.name}",
             "_csrf"   : $("input[name=_csrf]").val()
           }
@@ -110,7 +110,7 @@ script(type="text/javascript").
           });
         }
       } else {
-        alert('Tactic and Target Required!!!!!!!!!!!!!');
+        alert('Tactic and Target Required');
       }
     });
 
@@ -129,27 +129,67 @@ script(type="text/javascript").
       switch($(this).text()){
         case "Eliminate" :
           verb = "eliminating ";
+          $("#Functions-target").attr("title", "Earn !{categoryPoints['elim-func']} Points").attr("data-points", "!{categoryPoints['elim-func']}");
+          $("#Life-Cycle-Processes-target").attr("title", "Earn !{categoryPoints['elim-life']} Points").attr("data-points", "!{categoryPoints['elim-life']}");
+          $("#Parts-target").attr("title", "Earn !{categoryPoints['elim-parts']} Points").attr("data-points", "!{categoryPoints['elim-parts']}");
+          $("#Materials-target").attr("title", "Earn !{categoryPoints['elim-mat']} Points").attr("data-points", "!{categoryPoints['elim-mat']}");
+          $("#People-target").attr("title", "Earn !{categoryPoints['elim-people']} Points").attr("data-points", "!{categoryPoints['elim-people']}");
           break;
         case "Reduce" :
           verb = "reducing ";
+          $("#Functions-target").attr("title", "Earn !{categoryPoints['reduce-func']} Points").attr("data-points", "!{categoryPoints['elim-func']}");
+          $("#Life-Cycle-Processes-target").attr("title", "Earn !{categoryPoints['reduce-life']} Points").attr("data-points", "!{categoryPoints['elim-life']}");
+          $("#Parts-target").attr("title", "Earn !{categoryPoints['reduce-parts']} Points").attr("data-points", "!{categoryPoints['elim-parts']}");
+          $("#Materials-target").attr("title", "Earn !{categoryPoints['reduce-mat']} Points").attr("data-points", "!{categoryPoints['elim-mat']}");
+          $("#People-target").attr("title", "Earn !{categoryPoints['reduce-people']} Points").attr("data-points", "!{categoryPoints['elim-people']}");
           break;
         case "Substitute" :
           verb = "substituting ";
+          $("#Functions-target").attr("title", "Earn !{categoryPoints['sub-func']} Points").attr("data-points", "!{categoryPoints['elim-func']}");
+          $("#Life-Cycle-Processes-target").attr("title", "Earn !{categoryPoints['sub-life']} Points").attr("data-points", "!{categoryPoints['elim-life']}");
+          $("#Parts-target").attr("title", "Earn !{categoryPoints['sub-parts']} Points").attr("data-points", "!{categoryPoints['elim-parts']}");
+          $("#Materials-target").attr("title", "Earn !{categoryPoints['sub-mat']} Points").attr("data-points", "!{categoryPoints['elim-mat']}");
+          $("#People-target").attr("title", "Earn !{categoryPoints['sub-people']} Points").attr("data-points", "!{categoryPoints['elim-people']}");
           break;
         case "Separate" :
           verb = "separating ";
+          $("#Functions-target").attr("title", "Earn !{categoryPoints['sep-func']} Points").attr("data-points", "!{categoryPoints['elim-func']}");
+          $("#Life-Cycle-Processes-target").attr("title", "Earn !{categoryPoints['sep-life']} Points").attr("data-points", "!{categoryPoints['elim-life']}");
+          $("#Parts-target").attr("title", "Earn !{categoryPoints['sep-parts']} Points").attr("data-points", "!{categoryPoints['elim-parts']}");
+          $("#Materials-target").attr("title", "Earn !{categoryPoints['sep-mat']} Points").attr("data-points", "!{categoryPoints['elim-mat']}");
+          $("#People-target").attr("title", "Earn !{categoryPoints['sep-people']} Points").attr("data-points", "!{categoryPoints['elim-people']}");
           break;
         case "Integrate" :
           verb = "integrating ";
+          $("#Functions-target").attr("title", "Earn !{categoryPoints['int-func']} Points").attr("data-points", "!{categoryPoints['elim-func']}");
+          $("#Life-Cycle-Processes-target").attr("title", "Earn !{categoryPoints['int-life']} Points").attr("data-points", "!{categoryPoints['elim-life']}");
+          $("#Parts-target").attr("title", "Earn !{categoryPoints['int-parts']} Points").attr("data-points", "!{categoryPoints['elim-parts']}");
+          $("#Materials-target").attr("title", "Earn !{categoryPoints['int-mat']} Points").attr("data-points", "!{categoryPoints['elim-mat']}");
+          $("#People-target").attr("title", "Earn !{categoryPoints['int-people']} Points").attr("data-points", "!{categoryPoints['elim-people']}");
           break;
         case "Re-Use" :
           verb = "reusing ";
+          $("#Functions-target").attr("title", "Earn !{categoryPoints['reuse-func']} Points").attr("data-points", "!{categoryPoints['elim-func']}");
+          $("#Life-Cycle-Processes-target").attr("title", "Earn !{categoryPoints['reuse-life']} Points").attr("data-points", "!{categoryPoints['elim-life']}");
+          $("#Parts-target").attr("title", "Earn !{categoryPoints['reuse-parts']} Points").attr("data-points", "!{categoryPoints['elim-parts']}");
+          $("#Materials-target").attr("title", "Earn !{categoryPoints['reuse-mat']} Points").attr("data-points", "!{categoryPoints['elim-mat']}");
+          $("#People-target").attr("title", "Earn !{categoryPoints['reuse-people']} Points").attr("data-points", "!{categoryPoints['elim-people']}");
           break;
         case "Standardize" :
           verb = "standardizing ";
+          $("#Functions-target").attr("title", "Earn !{categoryPoints['stand-func']} Points").attr("data-points", "!{categoryPoints['elim-func']}");
+          $("#Life-Cycle-Processes-target").attr("title", "Earn !{categoryPoints['stand-life']} Points").attr("data-points", "!{categoryPoints['elim-life']}");
+          $("#Parts-target").attr("title", "Earn !{categoryPoints['stand-parts']} Points").attr("data-points", "!{categoryPoints['elim-parts']}");
+          $("#Materials-target").attr("title", "Earn !{categoryPoints['stand-mat']} Points").attr("data-points", "!{categoryPoints['elim-mat']}");
+          $("#People-target").attr("title", "Earn !{categoryPoints['stand-people']} Points").attr("data-points", "!{categoryPoints['elim-people']}");
           break;
         case "Add" :
           verb = "adding ";
+          $("#Functions-target").attr("title", "Earn !{categoryPoints['add-func']} Points").attr("data-points", "!{categoryPoints['elim-func']}");
+          $("#Life-Cycle-Processes-target").attr("title", "Earn !{categoryPoints['add-life']} Points").attr("data-points", "!{categoryPoints['elim-life']}");
+          $("#Parts-target").attr("title", "Earn !{categoryPoints['add-parts']} Points").attr("data-points", "!{categoryPoints['elim-parts']}");
+          $("#Materials-target").attr("title", "Earn !{categoryPoints['add-mat']} Points").attr("data-points", "!{categoryPoints['elim-mat']}");
+          $("#People-target").attr("title", "Earn !{categoryPoints['add-people']} Points").attr("data-points", "!{categoryPoints['elim-people']}");
           break;
       }
 
@@ -277,11 +317,10 @@ script(type="text/javascript").
         xhr.send();
       }
     }
-    
+
     $("#reset-suggestion-form").click(function(event){
       window.location.reload();
     });
-
 
     $(".upvote-suggestion").click(function(event){
       $(this).hide();
@@ -300,4 +339,7 @@ script(type="text/javascript").
       return false;
     });   
 
+    $('[data-toggle="tooltip"]').tooltip();
+
+    
   });

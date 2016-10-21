@@ -985,6 +985,10 @@ button.suggestion-tactics, button.suggestion-targets {
   margin: .2em;
 }
 
+.suggestion-tactics:hover .tooltip{
+  visibility: visible;
+}
+
 #suggestion-question-header {
   max-width:80%;
 }
@@ -1606,4 +1610,18 @@ button.suggestion-tactics, button.suggestion-targets {
 #footer-info {
   margin-left: 1em;
   margin-top:1em;
+}
+
+.tooltip {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;  
 }
