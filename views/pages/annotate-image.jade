@@ -28,15 +28,21 @@ html
     button(type="button" id="modalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Go Win Fight
 
   .container-fluid.annotate-image-container
+    .row
+      h2 Tag this image with components
+      h3 Your tags will appear as components in the idea.name profile/Your tags will appear as suggestions to the inventor of idea.name.
+
+      // For Joe to Fix - before the components the idea.name should appear, but it won't come through here.  Also the above language should come through differently to the inventor ("your tags will appear as components in the idea.name profile") and to third party viewers ("your tags will appear as suggestions to the inventor of idea.name")
+
     .row#image-title
       if imageTitle != ""
         a#edit-image-title
-          h2 #{imageTitle.charAt(0).toUpperCase() + imageTitle.slice(1)}
+          h3 #{imageTitle.charAt(0).toUpperCase() + imageTitle.slice(1)}
             span
               img(src="/pencil.png" style="height:1em; vertical-align:baseline; padding-left:.3em;")
       else
         a#edit-image-title
-          h2.enter-title-text <i>Enter Image Title</i>
+          h2.enter-title-text <i>Name this image</i>
             span
               img(src="/pencil.png" style="height:1em; vertical-align:baseline; padding-left:.3em;")
     .row
