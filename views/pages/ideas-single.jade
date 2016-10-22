@@ -163,12 +163,13 @@ html
         .modal-header
           .modal-title 
             h2 Name Your Idea
+            p Give your idea a short, descriptive, memorable name:
         .modal-body
           form(role='form', id="saveIdeaName" action="/save-idea-name", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
               input(type="hidden", name="_csrf", value="#{csrfToken}")
               input.form-control(type="text", name="inventionName", value='The ...')
-              p (ex. "Flux Capacitor")
+              p (Example: "The Flux Capacitor")
               p.charactersRemaining
             .modal-footer
               button.btn.btn-success#titleSubmit(type='submit') Save

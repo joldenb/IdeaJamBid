@@ -17,8 +17,8 @@ html
             form(role='form', id="saveComponent" action="/save-component", method="post", style='max-width: 400px;', data-idea-doc=idea)
               .form-group
                 |  
-                input.form-control.ui-front(type='text', name="component", id="componentName", value='The component of ', autocomplete="on")
-                p.example-text (Example: 'The component of a flux capacitor.')
+                input.form-control.ui-front(type='text', name="component", id="componentName", value='The component named the', autocomplete="on")
+                p.example-text (Example: 'The component named the flux capacitor.')
                 input(type="hidden", name="_csrf", value="#{csrfToken}")
                 input(type="hidden" id="previous-title" name="previousTitle")
           .modal-footer
@@ -134,8 +134,8 @@ html
     
     $('canvas').click(function(e){
 
-        if($("#componentName").val() != "The component of "){
-          $("#componentName").val("The component of ");
+        if($("#componentName").val() != "The component named the "){
+          $("#componentName").val("The component named the ");
         }
         firstClickX = e.offsetX;
         firstClickY = e.offsetY;
@@ -199,7 +199,7 @@ html
         
 
         $.post('/save-component', data, function(resp) {
-          $("#componentName").val('The component of ');
+          $("#componentName").val('The component named the ');
           $("#description").val('');
           $("#existingComponents option[value='None Selected']").prop({'selected': true});
           $("#myModal").modal('hide');
@@ -276,7 +276,7 @@ html
                 $(".modal-footer").prepend('<a type="button" class="btn btn-info" href=/component-profile/'+ response["identifier"] +'>Component Profile</a>')
               }
 
-              $("input#componentName").val("The component of " + response["title"]);
+              $("input#componentName").val("The component named the " + response["title"]);
               $("#previous-title").val(response["title"]);
             });
           });
@@ -298,7 +298,7 @@ html
             $(".modal-footer").prepend('<a type="button" class="btn btn-info" href=/component-profile/'+ response["identifier"] +'>Component Profile</a>')
           }
 
-          $("input#componentName").val("The component of " + response["title"]);
+          $("input#componentName").val("The component named the " + response["title"]);
           $("#previous-title").val(response["title"]);
       });
     });
@@ -350,7 +350,7 @@ html
 
     var input = $("#componentName");
     // This is for the main solution text input
-    var requiredText = "The component of "
+    var requiredText = "The component named the "
     input[0].addEventListener ("mousedown", function () {
       if (String($(this).val()).indexOf(requiredText) == -1) {
             $(this).val(requiredText);
