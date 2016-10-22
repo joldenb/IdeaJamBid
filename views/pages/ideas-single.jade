@@ -199,51 +199,53 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 Improve your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
-            h4 Before IdeaJam generates a provisional patent application template for your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}, you should complete the following steps:
+            h2 Improve your Idea
+            if idea.name
+              h4 Before IdeaJam generates a provisional patent application template for your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}, you should complete the following steps:
         .modal-body
           ul
-            each object, key in strengthResponse
-              case key
-                when "description"
-                  if object == ""
-                    li Add a brief description of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
-                      a.whats-left-button.btn.btn-go( href="/accomplish" ) Go 
-                when "problem"
-                  if object == ""
-                    li Add the problem that your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} Solves
-                      a.whats-left-button.btn.btn-go( href="/introduce-idea" ) Go
-                when "name"
-                  if object == ""
-                    li Give your idea a name
-                      a.whats-left-button.btn.btn-go#openTitleModal() Go
-                when "images"
-                  if object.length < 2
-                    li Add a few images for your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} 
-                      a.whats-left-button.btn.btn-go( href="/image-upload" ) Go
-                when "issues"
-                  if object.length < 4
-                    li Add a few imperfections of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} to improve upon
-                      a.whats-left-button.btn.btn-go#openAddProblemModal() Go
-                when "viabilityScores"
-                  if appStrengthText == "NOT YET..." && object.length < 4
-                    li Evaluate and score your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
-                      a.whats-left-button.btn.btn-go#openViabilityModal() Go
-                  else if appStrengthText == "ALMOST..." && object.length < 15
-                    li Finish scoring your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
-                      a.whats-left-button.btn.btn-go#openViabilityModal() Go
-                when "imagesWithAnnotations"
-                  if object.length < strengthResponse['images'].length 
-                    li Tag the images of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} with components and subcomponents
-                      a.whats-left-button.btn.btn-go( href="/image-upload" ) Go
-                when "problemsWithSuggestions"
-                  if object.length < strengthResponse['issues'].length
-                    li Suggest a solution for each #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} imperfection
-                      a.whats-left-button.btn.btn-go( href="/suggestion-summary" ) Go
-                when "compsWithRelationships"
-                  if object.length < strengthResponse['allComponents'].length
-                    li Describe how a #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} component relates to another component
-                      a.whats-left-button.btn.btn-go#viewComponentsTab() Go
+            if idea.name
+              each object, key in strengthResponse
+                case key
+                  when "description"
+                    if object == ""
+                      li Add a brief description of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
+                        a.whats-left-button.btn.btn-go( href="/accomplish" ) Go 
+                  when "problem"
+                    if object == ""
+                      li Add the problem that your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} Solves
+                        a.whats-left-button.btn.btn-go( href="/introduce-idea" ) Go
+                  when "name"
+                    if object == ""
+                      li Give your idea a name
+                        a.whats-left-button.btn.btn-go#openTitleModal() Go
+                  when "images"
+                    if object.length < 2
+                       li Add a few images for your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} 
+                         a.whats-left-button.btn.btn-go( href="/image-upload" ) Go
+                  when "issues"
+                    if object.length < 4
+                        li Add a few imperfections of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} to improve upon
+                          a.whats-left-button.btn.btn-go#openAddProblemModal() Go
+                  when "viabilityScores"
+                    if appStrengthText == "NOT YET..." && object.length < 4
+                      li Evaluate and score your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
+                        a.whats-left-button.btn.btn-go#openViabilityModal() Go
+                    else if appStrengthText == "ALMOST..." && object.length < 15
+                      li Finish scoring your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
+                        a.whats-left-button.btn.btn-go#openViabilityModal() Go
+                  when "imagesWithAnnotations"
+                    if object.length < strengthResponse['images'].length 
+                      li Tag the images of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} with components and subcomponents
+                        a.whats-left-button.btn.btn-go( href="/image-upload" ) Go
+                  when "problemsWithSuggestions"
+                    if object.length < strengthResponse['issues'].length
+                      li Suggest a solution for each #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} imperfection
+                        a.whats-left-button.btn.btn-go( href="/suggestion-summary" ) Go
+                  when "compsWithRelationships"
+                    if object.length < strengthResponse['allComponents'].length
+                      li Describe how a #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} component relates to another component
+                        a.whats-left-button.btn.btn-go#viewComponentsTab() Go
         .modal-footer
           button.btn.btn-success(data-dismiss="modal") Close
 
@@ -254,7 +256,10 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title
-            h2 Score #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
+            if idea.name
+              h2 Score #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
+            else 
+              h2 Score this idea
         .modal-body
           .view-all-viabilities
               include ../partials/viability-overview-modal.jade
@@ -271,7 +276,10 @@ html
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
             h2 New Imperfection
-            h4 Add an imperfection of the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} so that you and the IdeaJam crowd can suggest more refined solutions for improvement.
+            if idea.name
+              h4 Add an imperfection of the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} so that you and the IdeaJam crowd can suggest more refined solutions for improvement.
+            else 
+              h4 Add an imperfection so that you and the IdeaJam crowd can suggest more refined solutions for improvement of this idea.
         .modal-body
           form(role='form', id="addIdeaProblem" action="/add-idea-problem", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
@@ -293,11 +301,17 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 Add a new #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} component
+            if idea.name
+              h2 Add a new #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} component
+            else
+              h2 Add a new component
         .modal-body
           form(role='form', id="addIdeaComponent" action="/add-idea-component", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
-              h4 What is this new component of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} called?
+              if idea.name
+                h4 What is this new component of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} called?
+              else
+                h4 What is this new component called?
               input#componentName.form-control(type="text", name="componentName", value='Enter Component Name')
               p (Example: "The Flux Capacitor")
               #parentComponentDropdown(style="display:none;")
@@ -307,7 +321,10 @@ html
                       option(value=component.identifier) #{component.text || component.descriptions[0] || "No Component Title"}
               input(type="hidden", name="_csrf", value="#{csrfToken}")
               p.compNameCharRemaining
-              h4 How do you describe this component of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}?
+              if idea.name
+                h4 How do you describe this component of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}?
+              else
+                h4 How do you describe this component?
               input#componentDescription.form-control(type="text", name="componentDescription", value='This component is described as a ')
               p (Example: "This component is described as a power channeling device that processes 1.21 gigawatts to make time travel possible.")
               p.compDescrCharRemaining
@@ -324,9 +341,12 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h3 Visibility status of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
-            h4 Protect yourself against others who might see and steal ideas from your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}.
-            h4 IdeaJam can create a provisional patent application template for your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}.  Filing a patent application before making your ideas visible will provide you with patent pending status over #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} earning you potential rights over anyone who later makes or sells the same idea.
+            if idea.name
+              h3 Visibility status of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
+              h4 Protect yourself against others who might see and steal ideas from your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}.
+              h4 IdeaJam can create a provisional patent application template for your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}.  Filing a patent application before making your ideas visible will provide you with patent pending status over #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} earning you potential rights over anyone who later makes or sells the same idea.
+            else
+              h3 Name your idea before starting the process of generating a provisional patent application template.
         .modal-body
             if appStrengthClass == "yes col-md-12" || idea.visibility == "public"
               a.btn.btn-go#create-application-button( href="/create-application" ) Download Application
@@ -347,7 +367,10 @@ html
                 a.btn.btn-go( href="/view-idea-suggestions" ) Create a New Variant
                 br
             else if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
-              h4 Strong patent applications generally have more descriptions of the invention and its components.   To strengthen the provisional patent application template for your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}, you should enter more information about the concept.
+              if idea.name
+                h4 Strong patent applications generally have more descriptions of the invention and its components.   To strengthen the provisional patent application template for your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}, you should enter more information about the concept.
+              else
+                h3 Name your idea before starting the process of generating a provisional patent application template.
             br
 
           .modal-footer
