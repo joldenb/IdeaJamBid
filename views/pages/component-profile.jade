@@ -49,7 +49,7 @@ html
         p Contributed by #[a(href='/imagineer/'+ componentContributor.nickname) #{componentContributor.nickname}]
   
       if ideaInventor
-        h4 Part of <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b> by #[a(href='/imagineer/'+ ideaInventor.nickname) #{ideaInventor.nickname}]
+        h4 Part of <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b> by #[a(href='/imagineer/'+ ideaInventor.nickname) #{ideaInventor.nickname}] 
       .return-button
         a.home-logout.btn.btn-industry.btn-lg( href="/ideas/#{idea.name}") Back to Idea Summary
       br
@@ -76,10 +76,10 @@ html
                   input.form-control(name="description", id="description")
                   input(type="hidden", name="_csrf", value="#{csrfToken}")
                 .col-sm-4
-                  button.btn.btn-success#submit(type='submit') Save
+                  button.btn.btn-success#submit(type='submit') Save Description
             p.add-another-description-form(style="display:none;") (Example: 'a mechanism to create a nuclear reaction to generate 1.21 gigawatts of power')
         else if component.text
-          h3 Describe the #{component.text.toLowerCase()} of <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b>:
+          h3 Describe the #{component.text.toLowerCase()} component of <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b>:
           if idea.name && idea.inventorName == user.username
             form(role='form', id="addDescription" action="/add-description", method="post", data-idea-doc=idea)
               .row
@@ -87,8 +87,8 @@ html
                   input.form-control(name="description", id="description")
                   input(type="hidden", name="_csrf", value="#{csrfToken}")
                 .col-sm-4
-                  button.btn.btn-success#submit(type='submit') Save
-            p (Example: 'a mechanism to create a nuclear reaction to generate 1.21 gigawatts of power')
+                  button.btn.btn-success#submit(type='submit') Save Description
+            p (Example: "The Mr. Fusion is a portable power plant that creates a nuclear reaction to generate 1.21 gigawatts of power")
 
   
       .idea-function-column
@@ -122,12 +122,12 @@ html
             form(role='form', id="addDimension" action="/add-dimension", method="post", data-idea-doc=idea, style="display:none;")
               .row
                 .col-sm-8
-                  p#no-dimension-value-entered(style="display:none;") Please enter a valid dimension
+                  p#no-dimension-value-entered(style="display:none;") Please enter valid dimensions
                   input.form-control(name="dimension", id="dimension")
-                  p Example: '15 inches wide, 10 inches tall, and 5 inches deep' or 'a length of range 4-7 millimeters, a height of range 10-14 millimeters, and a depth of range 2-3 mm'
+                  p (Example: "The Mr. Fusion is 15 inches wide, 36 inches tall, and 15 inches deep")
                   input(type="hidden", name="_csrf", value="#{csrfToken}")
                 .col-sm-4
-                  button.btn.btn-success#dimensionSubmit(type='submit') Save
+                  button.btn.btn-success#dimensionSubmit(type='submit') Save Dimensions
         else
           h3 Dimensions of #{component.text}:
           if idea.name && idea.inventorName == user.username
@@ -136,10 +136,10 @@ html
                 .col-sm-8
                   p#no-dimension-value-entered(style="display:none;") Please enter a valid dimension
                   input.form-control(name="dimension", id="dimension")
-                  p Example: '15 inches wide, 10 inches tall, and 5 inches deep' or 'a length of range 4-7 millimeters, a height of range 10-14 millimeters, and a depth of range 2-3 mm'
+                  p (Example: "The Mr. Fusion is 15 inches wide, 36 inches tall, and 15 inches deep")
                   input(type="hidden", name="_csrf", value="#{csrfToken}")
                 .col-sm-4
-                  button.btn.btn-success#dimensionSubmit(type='submit') Save
+                  button.btn.btn-success#dimensionSubmit(type='submit') Save Dimensions
 
 
       .component-materials
@@ -158,10 +158,10 @@ html
                 .col-sm-8
                   p#no-material-value-entered(style="display:none;") Please enter a valid material
                   input.form-control(name="material", id="material")
-                  p Example: 'Inconel Alloy C-276' or 'an alloy comprising at least 15% Molybdenum, 15% Chromium, and 5% Iron
+                  p (Examples: "The Mr. Fusion is ideally made of titanium" or "The Mr. Fusion is ideally made of an alloy comprising at least 15% Molybdenum, 15% Chromium, and 5% Iron")
                   input(type="hidden", name="_csrf", value="#{csrfToken}")
                 .col-sm-4
-                  button.btn.btn-success#materialSubmit(type='submit') Save
+                  button.btn.btn-success#materialSubmit(type='submit') Save Materials
         else
           h3 Materials of #{component.text}:
           if idea.name && idea.inventorName == user.username
@@ -170,10 +170,10 @@ html
                 .col-sm-8
                   p#no-material-value-entered(style="display:none;") Please enter a valid material
                   input.form-control(name="material", id="material")
-                  p Example: 'Inconel Alloy C-276' or 'an alloy comprising at least 15% Molybdenum, 15% Chromium, and 5% Iron
+                  p (Examples: "The Mr. Fusion is ideally made of titanium" or "The Mr. Fusion is ideally made of an alloy comprising at least 15% Molybdenum, 15% Chromium, and 5% Iron")
                   input(type="hidden", name="_csrf", value="#{csrfToken}")
                 .col-sm-4
-                  button.btn.btn-success#materialSubmit(type='submit') Save
+                  button.btn.btn-success#materialSubmit(type='submit') Save Materials
 
       if idea.name && idea.inventorName == user.username
         .related-components
@@ -214,7 +214,7 @@ html
                     p <b>Relationship</b> 
                     p #{thisComponent[1].charAt(0).toUpperCase() + thisComponent[1].slice(1)}
                     if thisComponent[2]
-                      h5 Sub-Component
+                      h5 Subcomponent
                       p #{thisComponent[2]}
           else
             div <i>No related components yet</i>
@@ -230,19 +230,19 @@ html
           .modal-header
             button(type="button", class="close" data-dismiss="modal") &times;
             .modal-title 
-              h2 New Sub Component
+              h2 Add a new subcomponent of the #{component['text']}
           .modal-body
-            form(role='form', id="addIdeaComponent" action="/add-idea-component", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            form(role='form', id="addIdeaComponent" action="/add-idea-component", method="post", style='max-width: 450px;', data-idea-doc=idea)
               .form-group
-                h4 What is your new component called?
-                input#componentName.form-control(type="text", name="componentName", value='The ...')
+                h4 What is your new subcomponent called?
+                input#componentName.form-control(type="text", name="componentName", value='The subcomponent named the ')
                 input(type="hidden", name="_csrf", value="#{csrfToken}")
-                p (ex. "The Start Button")
-                input#componentDescription.form-control(type="text", name="componentDescription", value='The way it works is ')
-                p (ex. "it initiates the sequence automatically")
+                p (ex. "The subcomponent named the destination time display")
+                input#componentDescription.form-control(type="text", name="componentDescription", value='This subcomponent works by ')
+                p (Example "This subcomponent works by displaying the time you wish to travel to.")
                 p.compDescrCharRemaining
               .modal-footer
-                button.btn.btn-go.btn-block.btn-lg#componentSubmit(type='submit') Save
+                button.btn.btn-go.btn-block.btn-lg#componentSubmit(type='submit') Save Subcomponent
                 button.btn.btn-info.btn-block.btn-lg(data-dismiss="modal") Cancel
 
 
@@ -254,9 +254,9 @@ html
             .modal-title 
               h2 Add a Related Component:
           .modal-body
-            form(role='form', id="addRelatedComponent" action="/add-related-component", method="post", style='max-width: 340px;', data-idea-doc=idea)
+            form(role='form', id="addRelatedComponent" action="/add-related-component", method="post", style='max-width: 450px;', data-idea-doc=idea)
               .form-group
-                h4 Select another component of the invention that #{component['text']} relates to:
+                h4 Select another component of <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b> that #{component['text']} relates to:
                 |  
                 input(type="hidden", name="_csrf", value="#{csrfToken}")
                 select(name="addRelatedComponent").form-control#relatedComponents
@@ -274,14 +274,16 @@ html
                   textarea.form-control(rows='6', cols="75", name="newRelatedComponentDesc", id="newRelCompDesc")
                   p Example: "The Flux Capacitor relates to the Mr. Fusion by channeling the 1.21 gigawatts captured by Mr. Fusion through the time circuits of the Flux Capacitor."
                   p#charactersRemaining 200 characters remaining.
-                  h4 Sub-Component
+                  h4 Subcomponent
                   input(type="checkbox", name="subComponent")
                   span#sub-component-checkbox
                 input(type="hidden" id="component-identifier" name="component-identifier" value="#{component['identifier']}")
 
               .modal-footer
                 button.btn.btn-info(data-dismiss="modal") Cancel
-                button.btn.btn-success#newRelCompSubmit(type='submit') Submit (+20)
+                button.btn.btn-success#newRelCompSubmit(type='submit') Save Component Relationship
+
+                // This needs a fix here - crashing the app when no specific related component selected in the drop down but the submit button is clicked anyway
 
     #addTitleModal.modal.fade.annotate-modal(role="dialog")
       .modal-dialog
@@ -296,11 +298,11 @@ html
                 input(type="hidden", name="_csrf", value="#{csrfToken}")
                 input.form-control(name="compTitle", id="compTitle" value="The ...")
                 input(type="hidden" id="title-component-identifier" name="component-identifier" value="#{component['identifier']}")
-                p Ex. "Pizza hydrator"
+                p (Example: "Pizza hydrator")
 
               .modal-footer
                 button.btn.btn-info(data-dismiss="modal") Cancel
-                button.btn.btn-success#componentTitleSubmit(type='submit') Save
+                button.btn.btn-success#componentTitleSubmit(type='submit') Save Component Title
 
   script(src='/exif.js')
   include ../partials/js-includes.jade
@@ -533,9 +535,9 @@ html
     })
 
     if("!{component.materials.length > 0}" == "false"){
-      $("#material").val("The !{component.text || 'untitled'} ideally comprises the materials of ");
+      $("#material").val("The !{component.text || 'untitled'} is ideally made of ");
     } else {
-      $("#material").val("The !{component.text || 'untitled'} could also comprise the materials of ");
+      $("#material").val("The !{component.text || 'untitled'} could also be made of ");
     }
     
     // This is for the main solution text input
