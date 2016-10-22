@@ -7,7 +7,10 @@ html
   .container.image-upload
     .row.top-row
       .col-xs-10
-        h3.top-row-header Idea Imagery
+        if idea.name && inventorName == user.username
+          h3.top-row-header Add images of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
+        else
+          h3.top-row-header Add images of the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
       .col-xs-2
         a.close-viability(href="/ideas/#{idea.name}")
           img(src="/close_button.png" height="30" width="30")
@@ -17,17 +20,31 @@ html
         .col-xs-12
           form(role='form', id="formImageUpload" action="/image-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
             .form-group
-              h4 Upload a sketch, photo, or any other image
+
+                // For Joe to fix - I don't think this block is working quite as intended.  I'm trying to display the word "your" before the invention if the inventor is viewing.  Also have a different last sentence for the inventor view and the third party view
+                       
+              if idea.name && inventorName == user.username
+                h4 Upload a sketch, photo, or any other image of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} or any of its components.  You can tag the image to names your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} on uploaded images.  Tags will show up in the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} profile as components.
+              else
+                h4 Upload a sketch, photo, or any other image of the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} or any of its components.  You can tag the image to name components the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} on uploaded images.  Tags will show up in the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} profile as suggestions for the inventor to review. 
               input(type="hidden", name="_csrf", value="#{csrfToken}")
-              label.btn.btn-block.btn-file.btn-go#fileInput
-                h4 Upload Image
+
+            // For Joe to fix - Need to change the words "the inventor" in the above statement to the actual inventor's name linked to the inventor's profile
+
+            br
+            label.btn.btn-block.btn-file.btn-go#fileInput
+                h4 Upload an image of #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
                 input(type="file", name="picture" style="display:none;")
     if(canEdit)
       .imagesList
         if(imageURLs.length > 0)
           .row
             .col-xs-12
-              h4 All Idea Images
+              h4 All #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} images
+              p.text-left Click an image to tag it.  Tags will show up in the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} profile as suggestions for the inventor to review.
+
+            // For Joe to fix - Need to change the words "the inventor" in the above statement to the actual inventor's name linked to the inventor's profile
+
           each imageURL, index in imageURLs
             if( index % 3 == 0)
               .row
@@ -53,7 +70,11 @@ html
         if(imageURLs.length > 0)
           .row
             .col-xs-12
-              h4 All Idea Images
+              h4 All #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} images
+              p.text-left Click an image to tag it.  Tags will show up in the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} profile as suggestions for the inventor to review.
+
+            // For Joe to fix - Need to change the words "the inventor" in the above statement to the actual inventor's name linked to the inventor's profile
+
           each imageURL, index in imageURLs
             if( index % 3 == 0)
               .row

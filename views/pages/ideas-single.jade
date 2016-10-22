@@ -45,7 +45,7 @@ html
         if idea.name
           h1 #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
         if idea.name && inventorName == user.username
-          h4 <b>#{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}</b> solves the <span class="problemColor">problem of #[a(href='/introduce-idea') #{idea.problem}]</span> by #[a(href='/accomplish') <span class="solutionColor">#{idea.description}]</span>.
+          h4 Your <b>#{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}</b> solves the <span class="problemColor">problem of #[a(href='/introduce-idea') #{idea.problem}]</span> by #[a(href='/accomplish') <span class="solutionColor">#{idea.description}]</span>.
         else if idea.name 
           h4 <b>#{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}</b> solves the <span class="problemColor">problem of #{idea.problem}</span> by <span class="solutionColor">#{idea.description}</span>.
         if (inventorName == user.username) && idea.visibility == "private" && idea.collaborators.length < 6
@@ -117,7 +117,6 @@ html
         .row.idea-sumamart-buttons
           .col-xs-12
               button(type="button" id="componentModalButton"  class="btn btn-go btn-block btn-lg" data-toggle="modal" data-target="#addComponentModal") Add Component
-        
 
     .row.idea-seed-feedback
       .col-xs-12
@@ -294,13 +293,13 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 Add a #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)} Component
+            h2 Add a new #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} component
         .modal-body
           form(role='form', id="addIdeaComponent" action="/add-idea-component", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
               h4 What is this new component of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} called?
               input#componentName.form-control(type="text", name="componentName", value='Enter Component Name')
-              p (ex. "The Flux Capacitor")
+              p (Example: "The Flux Capacitor")
               #parentComponentDropdown(style="display:none;")
                 select.parentComponents
                   each component,index in components
@@ -310,13 +309,13 @@ html
               p.compNameCharRemaining
               h4 How do you describe this component of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}?
               input#componentDescription.form-control(type="text", name="componentDescription", value='This component is described as a ')
-              p (ex. "This component is described as a power channeling device that processes 1.21 gigawatts to make time travel possible.")
+              p (Example: "This component is described as a power channeling device that processes 1.21 gigawatts to make time travel possible.")
               p.compDescrCharRemaining
               // Jeff changed the below code because he thinks this option should only appear in the component profile page
                // input#subComponentCheckbox(type="checkbox", name="subComponent")
                // span This is a sub-component of another component.
             .modal-footer
-              button.btn.btn-go.btn-block.btn-lg#componentSubmit(type='submit') Save
+              button.btn.btn-go.btn-block.btn-lg#componentSubmit(type='submit') Save Component
               button.btn.btn-info.btn-block.btn-lg(data-dismiss="modal") Cancel
 
   #filePatentModal.modal.fade.annotate-modal(role="dialog")
