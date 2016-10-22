@@ -14,23 +14,25 @@ html
             .modal-title 
               h2 Describe the part of your invention that you just clicked:
           .modal-body
-            form(role='form', id="saveComponent" action="/save-component", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            form(role='form', id="saveComponent" action="/save-component", method="post", style='max-width: 400px;', data-idea-doc=idea)
               .form-group
                 |  
-                input.form-control.ui-front(type='text', name="component", id="componentName", value='The solution of ', autocomplete="on")
-                p.example-text (Example: The solution of a flux capacitor.)
+                input.form-control.ui-front(type='text', name="component", id="componentName", value='The component of ', autocomplete="on")
+                p.example-text (Example: 'The component of a flux capacitor.')
                 input(type="hidden", name="_csrf", value="#{csrfToken}")
                 input(type="hidden" id="previous-title" name="previousTitle")
           .modal-footer
             // button.btn.btn-info(data-dismiss="modal") Cancel
-            button.btn.btn-success#submit(type='submit') Submit
+            button.btn.btn-success#submit(type='submit') Save Component Tag
 
     button(type="button" id="modalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Go Win Fight
 
   .container-fluid.annotate-image-container
     .row
-      h2 Tag this image with components
+      h2 Tag this image with components of idea.name
       h3 Your tags will appear as components in the idea.name profile/Your tags will appear as suggestions to the inventor of idea.name.
+      br
+      h4 Click on the image to tag components of your idea.name, then click "Save Tagged Components" when finished:
 
       // For Joe to Fix - before the components the idea.name should appear, but it won't come through here.  Also the above language should come through differently to the inventor ("your tags will appear as components in the idea.name profile") and to third party viewers ("your tags will appear as suggestions to the inventor of idea.name")
 
@@ -56,8 +58,8 @@ html
                 h4 #{value.number}. #{value.text}
           br
           br
-          a#save-annotations.btn.btn-success( href="/image-upload" ) Save Annotations >
-          h4 Click on your image to describe the components of your invention:
+          a#save-annotations.btn.btn-success( href="/image-upload" ) Save Tagged Components
+
           .checkbox
       .col-md-10
         if (imgURL)
@@ -132,8 +134,8 @@ html
     
     $('canvas').click(function(e){
 
-        if($("#componentName").val() != "The solution of "){
-          $("#componentName").val("The solution of ");
+        if($("#componentName").val() != "The component of "){
+          $("#componentName").val("The component of ");
         }
         firstClickX = e.offsetX;
         firstClickY = e.offsetY;
@@ -197,7 +199,7 @@ html
         
 
         $.post('/save-component', data, function(resp) {
-          $("#componentName").val('The solution of ');
+          $("#componentName").val('The component of ');
           $("#description").val('');
           $("#existingComponents option[value='None Selected']").prop({'selected': true});
           $("#myModal").modal('hide');
@@ -274,7 +276,7 @@ html
                 $(".modal-footer").prepend('<a type="button" class="btn btn-info" href=/component-profile/'+ response["identifier"] +'>Component Profile</a>')
               }
 
-              $("input#componentName").val("The solution of " + response["title"]);
+              $("input#componentName").val("The component of " + response["title"]);
               $("#previous-title").val(response["title"]);
             });
           });
@@ -296,7 +298,7 @@ html
             $(".modal-footer").prepend('<a type="button" class="btn btn-info" href=/component-profile/'+ response["identifier"] +'>Component Profile</a>')
           }
 
-          $("input#componentName").val("The solution of " + response["title"]);
+          $("input#componentName").val("The component of " + response["title"]);
           $("#previous-title").val(response["title"]);
       });
     });
@@ -348,7 +350,7 @@ html
 
     var input = $("#componentName");
     // This is for the main solution text input
-    var requiredText = "The solution of "
+    var requiredText = "The component of "
     input[0].addEventListener ("mousedown", function () {
       if (String($(this).val()).indexOf(requiredText) == -1) {
             $(this).val(requiredText);
@@ -369,13 +371,13 @@ html
 
     $("#edit-image-title").click(function(event){
       $("#edit-image-title").hide();
-      $("#image-title").append("<input type='text' id='new-title-input' value='The ...'><input type='hidden', name='_csrf', value='!{csrfToken}'><button id='edit-image-title-save' class='btn btn-go btn-lg'>Save</button>");
+      $("#image-title").append("<input type='text' id='new-title-input' value='Enter image title'><input type='hidden', name='_csrf', value='!{csrfToken}'><button id='edit-image-title-save' class='btn btn-go btn-sm'>Save</button>");
 
       var titleInput = $("#new-title-input");
       // This is for the main solution text input
       var requiredTitleText = "The "
       titleInput[0].addEventListener ("mousedown", function () {
-        if (String($(this).val()).indexOf(requiredTitleText) == -1 || String($(this).val()) == "The ...") {
+        if (String($(this).val()).indexOf(requiredTitleText) == -1 || String($(this).val()) == "Enter image title") {
               $(this).val(requiredTitleText);
         }
         if (this.selectionStart < requiredTitleText.length) {
@@ -384,7 +386,7 @@ html
       }, false);
 
       titleInput[0].addEventListener ("keydown", function () {
-        if (String($(this).val()).indexOf(requiredTitleText) == -1 || String($(this).val()) == "The ...") {
+        if (String($(this).val()).indexOf(requiredTitleText) == -1 || String($(this).val()) == "Enter image title") {
               $(this).val(requiredTitleText);
         }
         if (this.selectionStart < requiredTitleText.length) {
@@ -393,7 +395,7 @@ html
       }, false);
 
       $("#edit-image-title-save").click(function(event){
-        if($("#new-title-input").val() != "The ..."){
+        if($("#new-title-input").val() != "Enter image title"){
           var data = {
             newTitle : $("#new-title-input").val().slice(4),
             _csrf : $('[name="_csrf"]').val(),
