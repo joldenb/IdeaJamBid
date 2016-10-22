@@ -96,14 +96,38 @@ router.post('/ideas/:ideaName/campaign/stripe-payment', csrfProtection, function
   }
 
   stripeService
-    .campaignCharge(req.body.tokenId, req.body.amount, req.params.ideaName)
+    .delayedChargeCreation(req.body.tokenId, req.body.amount, req.user, req.params.ideaName)
     .then(function (success){
-    if(success) {
-     res.send('success');
-    } else {
-     res.status(400).send('Transaction failed');
-    }
-  });
+      if(success) {
+       res.send('success');
+      } else {
+       res.status(400).send('Transaction failed');
+      }
+    }).catch(function (error) {
+      console.log("error creating customer: " + error);
+      res.status(400).send('Payment creation failed');
+    });
+});
+
+router.post('/ideas/:ideaName/campaign/fund', csrfProtection, function(req, res) {
+  if( !(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
+
+  stripeService
+    .fundCampaign(req.params.ideaName)
+    .then(function (success){
+      if(success) {
+        res.send('success');
+      } else {
+        res.status(400).send('Funding the campaign failed');
+      }
+    })
+    .catch(function (error) {
+      console.log("error funding campaign: " + error);
+      res.status(400).send('Funding the campaign failed');
+    });
 });
 
 module.exports = router;

@@ -26,6 +26,8 @@ var IdeaSeed = new Schema({
 
   collaborators : [String], //this will be a username
 
+	campaignPayments : [{type: Schema.Types.ObjectId, ref: 'CampaignPayment', autopopulate: true }],
+
 	variants			: [{
 		name				: String, /* should be a unique identifier */
 		components : [ String	], /* should match a suggestionID */
