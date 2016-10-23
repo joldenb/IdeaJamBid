@@ -811,6 +811,8 @@ img {
 .suggestion-element.variant-suggestion-block {
   height:auto;
   background-color: white;
+  margin-left: 1em;
+  width: 90%;
 }
 
 .suggestion-element.variant-suggestion-block:hover {
