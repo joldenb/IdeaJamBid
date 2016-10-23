@@ -29,9 +29,8 @@ html
 
   .container-fluid.annotate-image-container
     .row
-      h2 Tag this image with components of idea.name
-      h3 Your tags will appear as components in the idea.name profile/Your tags will appear as suggestions to the inventor of idea.name.
-      br
+      h2 Tag this image with components of idea.name:
+      h3 You should tag as many components of idea.name as you can because your tags will explain what idea.name is to the world.  Also, you will earn 10 einstein points for each tag.
       h4 Click on the image to tag components of your idea.name, then click "Save Tagged Components" when finished:
 
       // For Joe to Fix - before the components the idea.name should appear, but it won't come through here.  Also the above language should come through differently to the inventor ("your tags will appear as components in the idea.name profile") and to third party viewers ("your tags will appear as suggestions to the inventor of idea.name")
@@ -44,7 +43,7 @@ html
               img(src="/pencil.png" style="height:1em; vertical-align:baseline; padding-left:.3em;")
       else
         a#edit-image-title
-          h2.enter-title-text <i>Name this image</i>
+          h2.enter-title-text <i>Create a descriptive name for this image</i>
             span
               img(src="/pencil.png" style="height:1em; vertical-align:baseline; padding-left:.3em;")
     .row
@@ -371,7 +370,7 @@ html
 
     $("#edit-image-title").click(function(event){
       $("#edit-image-title").hide();
-      $("#image-title").append("<input type='text' id='new-title-input' value='Enter image title'><input type='hidden', name='_csrf', value='!{csrfToken}'><button id='edit-image-title-save' class='btn btn-go btn-sm'>Save</button>");
+      $("#image-title").append("<input type='text' id='new-title-input' value='Name this image'><input type='hidden', name='_csrf', value='!{csrfToken}'><button id='edit-image-title-save' class='btn btn-go btn-sm'>Save</button>");
 
       var titleInput = $("#new-title-input");
       // This is for the main solution text input

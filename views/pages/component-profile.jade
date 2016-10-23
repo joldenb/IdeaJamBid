@@ -260,7 +260,7 @@ html
           .modal-body
             form(role='form', id="addRelatedComponent" action="/add-related-component", method="post", style='max-width: 450px;', data-idea-doc=idea)
               .form-group
-                h4 Select another component of <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b> that #{component['text']} relates to:
+                h4 Select another <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b> component that this #{component['text']} component relates to:
                 |  
                 input(type="hidden", name="_csrf", value="#{csrfToken}")
                 select(name="addRelatedComponent").form-control#relatedComponents
@@ -273,12 +273,12 @@ html
                         if thisComponent['identifier']
                           option(value=thisComponent['identifier']) #{thisComponent['descriptions'][0]}
                 #relatedCompDescription
-                  h4#new-related-component-description Describe the relationship
+                  h4#new-related-component-description Describe the relationship of these components:
                   |  
                   textarea.form-control(rows='6', cols="75", name="newRelatedComponentDesc", id="newRelCompDesc")
                   p Example: "The Flux Capacitor relates to the Mr. Fusion by channeling the 1.21 gigawatts captured by Mr. Fusion through the time circuits of the Flux Capacitor."
                   p#charactersRemaining 200 characters remaining.
-                  h4 Subcomponent
+                  br
                   input(type="checkbox", name="subComponent")
                   span#sub-component-checkbox
                 input(type="hidden" id="component-identifier" name="component-identifier" value="#{component['identifier']}")
@@ -355,7 +355,7 @@ html
       }
 
       // updated text for the sub-component checkbox
-      $("#sub-component-checkbox").text("The "+ otherCompName + " is a sub-component of " + thisCompName + ".");
+      $("#sub-component-checkbox").text(" Check this if the "+ otherCompName + " component is a subcomponent of the " + thisCompName + " component.");
 
       var input = document.getElementsByTagName ("textarea");
 
