@@ -237,9 +237,13 @@ html
                 h4 What is your new subcomponent called?
                 input#componentName.form-control(type="text", name="componentName", value='The subcomponent named the ')
                 input(type="hidden", name="_csrf", value="#{csrfToken}")
-                p (ex. "The subcomponent named the destination time display")
+                p (Example: "The subcomponent named the destination time display")
+                if componentName
+                  h4 How does your #{componentName['text']} work?
+                else
+                  h4 How does your new subcomponent work?
                 input#componentDescription.form-control(type="text", name="componentDescription", value='This subcomponent works by ')
-                p (Example "This subcomponent works by displaying the time you wish to travel to.")
+                p (Example: "This subcomponent works by displaying the time you wish to travel to.")
                 p.compDescrCharRemaining
               .modal-footer
                 button.btn.btn-go.btn-block.btn-lg#componentSubmit(type='submit') Save Subcomponent
@@ -722,7 +726,7 @@ html
 
     // This is for the second text input field in the add component modal
     var inputTwo = $("#addIdeaComponent input#componentDescription")[0];
-    var requiredCompTextTwo = "The way it works is "
+    var requiredCompTextTwo = "This subcomponent works by "
     $("#addIdeaComponent .compDescrCharRemaining").text((200) + " characters remaining");
     inputTwo.addEventListener ("mousedown", function () {
       if (String($(this).val()).indexOf(requiredCompTextTwo) == -1) {
