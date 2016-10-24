@@ -276,22 +276,25 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 New Imperfection
+            h2 #{user.nickname}, add a new #{idea.name.toLowerCase()} imperfection
             if idea.name
-              h4 Add an imperfection of the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} so that you and the IdeaJam crowd can suggest more refined solutions for improvement.
+              h4 Empower the IdeaJam crowd to suggest more specific solutions to improve the #{idea.name.toLowerCase()}.
             else 
               h4 Add an imperfection so that you and the IdeaJam crowd can suggest more refined solutions for improvement of this idea.
         .modal-body
-          form(role='form', id="addIdeaProblem" action="/add-idea-problem", method="post", style='max-width: 300px;', data-idea-doc=idea)
+          form(role='form', id="addIdeaProblem" action="/add-idea-problem", method="post", style='max-width: 450px;', data-idea-doc=idea)
             .form-group
               input(type="hidden", name="_csrf", value="#{csrfToken}")
-              input#problemStatement.form-control(type="text", name="problemStatement", value='The imperfection of ')
-              p (ex. "The imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+              input#problemStatement.form-control(type="text", name="problemStatement", value='The #{idea.name.toLowerCase()} imperfection of ')
+              p (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
               p.charactersRemaining
               h4 Imperfection Category:
               select.form-control#problemArea(required)
                 each value in problemAreas
                   option(value=value) #{value}
+              h4 Describe an aptitude needed to solve this imperfection:
+              input#problemStatement.form-control(type="text", name="aptitudeStatement", value='The aptitude of ')
+              p (Example: "The aptitude of nuclear engineering.")
             .modal-footer
               button.btn.btn-go.btn-block.btn-lg#problemSubmit(type='submit') Save Imperfection
               button.btn.btn-info.btn-block.btn-lg(data-dismiss="modal") Cancel
@@ -303,9 +306,9 @@ html
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
             if idea.name
-              h2 Add a new #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} component
+              h2 #{user.nickname}, add a new #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} component
             else
-              h2 Add a new component
+              h2 #{user.nickname}, add a new component
         .modal-body
           form(role='form', id="addIdeaComponent" action="/add-idea-component", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
@@ -347,7 +350,7 @@ html
               h4 Protect yourself against others who might see and steal ideas from your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}.
               h4 IdeaJam can create a provisional patent application template for your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}.  Filing a patent application before making your ideas visible will provide you with patent pending status over #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} earning you potential rights over anyone who later makes or sells the same idea.
             else
-              h3 Name your idea before starting the process of generating a provisional patent application template.
+              h3 #{user.nickname}, name your idea before starting the process of generating a provisional patent application template.
         .modal-body
             if appStrengthClass == "yes col-md-12" || idea.visibility == "public"
               a.btn.btn-go#create-application-button( href="/create-application" ) Download Application
