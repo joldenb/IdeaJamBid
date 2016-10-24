@@ -128,6 +128,7 @@ router.post('/ideas/:ideaName/campaign/fund', csrfProtection, function(req, res)
       console.log("error funding campaign: " + error);
       res.status(400).send('Funding the campaign failed');
     });
+
 });
 
 module.exports = router;

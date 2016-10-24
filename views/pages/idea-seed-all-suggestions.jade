@@ -9,16 +9,19 @@ html
   .container-fluid.view-all-imperfections
     .row
       .col-md-4
-        h2 All Suggestions for #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
+        h2 All <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b> suggestions
+        h4 When you expose your idea to the IdeaJam networks, other imagineers can suggest solutions to imperfections that you and others have added.  
+        h4 You should create and share many imperfections because imperfections will lead to more suggestions and improvements for your ideas.  
       .col-md-4
       .col-md-4
         .return-button
-          a.home-logout.btn.btn-industry.btn-lg( href="/ideas/#{idea.name}") Back to Idea Summary
+          a.home-logout.btn.btn-industry.btn-lg( href="/ideas/#{idea.name}") Back to #{idea.name} profile
         br
-    each suggestion, identifier in wholeSuggestionBlockInfo
-      include ../partials/suggestion-summary-element.jade
+      .col-md-4
+        each suggestion, identifier in wholeSuggestionBlockInfo
+          include ../partials/suggestion-summary-element.jade
 
-    input(type="hidden", name="_csrf", value="#{csrfToken}")
+        input(type="hidden", name="_csrf", value="#{csrfToken}")
 
   include ../partials/js-includes.jade
   script(src='/exif.js')

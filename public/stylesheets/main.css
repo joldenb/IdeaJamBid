@@ -10,7 +10,8 @@ body {
 
 #login-page-body::after {
   content: "";
-  background: url("https://unsplash.it/1500/1000/?random");
+  background: url("/bulbs_big.png") no-repeat 50% 50% fixed;
+  background-size: cover;
   opacity: 0.5;
   top: 0;
   left: 0;
@@ -19,6 +20,7 @@ body {
   position: absolute;
   z-index: -1;
   height: 100%;
+  width: 100%;
 }
 
 .modal {
@@ -843,6 +845,12 @@ a.plus-overlay img{
 .suggestion-element.variant-suggestion-block {
   height:auto;
   background-color: white;
+  margin-left: 1em;
+  width: 90%;
+}
+
+.suggestion-element.variant-suggestion-block:hover {
+ background-color: #AFDDD1; 
 }
 
 .suggestion-element.variant-suggestion-block:hover {
@@ -1211,7 +1219,10 @@ button.suggestion-tactics, button.suggestion-targets {
 }
 
 .pagefooter {
-  text-align: center;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;  
 }
 
 .termsCenter {
@@ -1567,8 +1578,8 @@ button.suggestion-tactics, button.suggestion-targets {
 
 .about-pic {
   border-radius: 100%;
-  width: 10em;
-  max-width: 25%;
+  width: 30em;
+  max-width: 50%;
 }
 
 .collaboratorEmail {
