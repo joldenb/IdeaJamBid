@@ -10,7 +10,8 @@ body {
 
 #login-page-body::after {
   content: "";
-  background: url("https://unsplash.it/1500/1000/?random");
+  background: url("/bulbs_big.png") no-repeat 50% 50% fixed;
+  background-size: cover;
   opacity: 0.5;
   top: 0;
   left: 0;

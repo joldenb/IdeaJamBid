@@ -163,16 +163,19 @@ html
       .modal-content
         .modal-header
           .modal-title 
-            h2 Name Your Idea
+            h2 #{user.nickname}, Name Your Idea
         .modal-body
           form(role='form', id="saveIdeaName" action="/save-idea-name", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
               input(type="hidden", name="_csrf", value="#{csrfToken}")
-              input.form-control(type="text", name="inventionName", value='The ...')
-              p (ex. "Flux Capacitor")
+              input.form-control(type="text", name="inventionName", value='My idea is called the ')
+              p (Example: "My idea is called the DeLorean Time Machine")
               p.charactersRemaining
             .modal-footer
               button.btn.btn-success#titleSubmit(type='submit') Save
+          .row
+            .col-xs-12
+              .hint Hint: Choose a concise, catchy and descriptive name for your idea.
 
   #viewAllImperfections.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -200,52 +203,53 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 Enter More Information
+            h3 #{user.nickname}, add more details to complete your idea profile, because a detailed profile will help you generate a better patent application.
         .modal-body
           ul
-            each object, key in strengthResponse
-              case key
-                when "description"
-                  if object == ""
-                    li Add a brief Description of your idea
-                      a.whats-left-button.btn.btn-go( href="/accomplish" ) Go
-                when "problem"
-                  if object == ""
-                    li Add a Problem your idea is addressing
-                      a.whats-left-button.btn.btn-go( href="/introduce-idea" ) Go
-                when "name"
-                  if object == ""
-                    li Give your idea a name
-                      a.whats-left-button.btn.btn-go#openTitleModal() Go
-                when "images"
-                  if object.length < 2
-                    li Upload more images
-                      a.whats-left-button.btn.btn-go( href="/image-upload" ) Go
-                when "issues"
-                  if object.length < 4
-                    li Enter more issues with your idea
-                      a.whats-left-button.btn.btn-go#openAddProblemModal() Go
-                when "viabilityScores"
-                  if appStrengthText == "NOT YET..." && object.length < 4
-                    li Enter more viability scores
-                      a.whats-left-button.btn.btn-go#openViabilityModal() Go
-                  else if appStrengthText == "ALMOST..." && object.length < 15
-                    li Enter more viability scores
-                      a.whats-left-button.btn.btn-go#openViabilityModal() Go
-                when "imagesWithAnnotations"
-                  if object.length < strengthResponse['images'].length 
-                    li Add at least one annotation to every image
-                      a.whats-left-button.btn.btn-go( href="/image-upload" ) Go
-                when "problemsWithSuggestions"
-                  if object.length < strengthResponse['issues'].length
-                    li Add at least one suggestion per issue
-                      a.whats-left-button.btn.btn-go( href="/suggestion-summary" ) Go
-                when "compsWithRelationships"
-                  if object.length < strengthResponse['allComponents'].length
-                    li Add at least one relationship per component
-                      a.whats-left-button.btn.btn-go#viewComponentsTab() Go
+            if idea.name
+              each object, key in strengthResponse
+                case key
+                  when "description"
+                    if object == ""
+                      li Add a brief description of your #{idea.name}
+                        a.whats-left-button.btn.btn-go( href="/accomplish" ) Go
+                  when "problem"
+                    if object == ""
+                      li Add the main problem that your #{idea.name} is addressing
+                        a.whats-left-button.btn.btn-go( href="/introduce-idea" ) Go
+                  when "name"
+                    if object == ""
+                      li Give your idea a name
+                        a.whats-left-button.btn.btn-go#openTitleModal() Go
+                  when "images"
+                    if object.length < 2
+                      li Add more sketch drawings or photos of your #{idea.name}
+                        a.whats-left-button.btn.btn-go( href="/image-upload" ) Go
+                  when "issues"
+                    if object.length < 4
+                      li Add more imperfections of your #{idea.name} remaining to be solved
+                        a.whats-left-button.btn.btn-go#openAddProblemModal() Go
+                  when "viabilityScores"
+                    if appStrengthText == "NOT YET..." && object.length < 4
+                      li Finish rating your #{idea.name} to complete its viability score
+                        a.whats-left-button.btn.btn-go#openViabilityModal() Go
+                    else if appStrengthText == "ALMOST..." && object.length < 15
+                      li Finish rating your #{idea.name} to give it a viability score
+                        a.whats-left-button.btn.btn-go#openViabilityModal() Go
+                  when "imagesWithAnnotations"
+                    if object.length < strengthResponse['images'].length 
+                      li Add at least one tag to every #{idea.name} image
+                        a.whats-left-button.btn.btn-go( href="/image-upload" ) Go
+                  when "problemsWithSuggestions"
+                    if object.length < strengthResponse['issues'].length
+                      li Suggest at least one solution to each #{idea.name} imperfection
+                        a.whats-left-button.btn.btn-go( href="/suggestion-summary" ) Go
+                  when "compsWithRelationships"
+                    if object.length < strengthResponse['allComponents'].length
+                      li Explain how each component of #{idea.name} is related to at least one other component
+                        a.whats-left-button.btn.btn-go#viewComponentsTab() Go
         .modal-footer
-          button.btn.btn-success(data-dismiss="modal") Ok
+          button.btn.btn-success(data-dismiss="modal") Return to the #{idea.name} profile
 
 
   #viabilityModal.modal.fade(role="dialog")

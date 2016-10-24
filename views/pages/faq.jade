@@ -1,0 +1,50 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+    include ../partials/js-includes.jade
+  body#topSection
+    .header.navbar.navbar-default.jamTopNav
+      include ../partials/header.jade
+
+    .container.text-center
+      .row
+            div.hero-unit  
+                h1 <span class="aboutBold">Frequently Asked Questions
+    .container.text-left
+      .row
+        h3 What is IdeaJam's mission?
+        p IdeaJam's mission is to create the greatest engine for innovation the world has ever seen.
+      .row
+        h3 Can I use IdeaJam to create a patent application?
+        p The ideas you generate through IdeaJam can be exported into a provisional patent application template.  We recommend that you have an attorney review the patent application template before you file the patent application.
+      .row
+        h3 Why should I file a patent application to cover my ideas?
+        p While IdeaJam does not offer legal advice, nor does our platform offer a substitute for a licensed patent practictioner, the United States Patent and Trademark Office notes the following benefits of filing a provisional patent application:
+        ul
+            li Provides simplified filing with a lower initial investment with 12 months to assess the invention's commercial potential before committing to higher cost of filing and prosecuting a nonprovisional application for patent.
+            li Establishes official United States patent application filing date for the invention.
+            li Permits authorized use of "Patent Pending" notice for 12 months in connection with the description of the invention.
+            li Enables immediate commercial promotion of invention with greater security against having the invention stolen.
+          a(href='https://www.uspto.gov/patents-getting-started/patent-basics/types-patent-applications/provisional-application-patent') Provisional Application for Patent, USPTO
+      .row
+        h3 What does IdeaJam cost to use?
+        p For now, nothing.  The pre-beta version of IdeaJam is free. Once officially launched, we will utilize a "freemium" model, where you can create ideas, add imperfections and solutions and contribute to your inventive networks ("Jams") for free.  Certain services, including the generation of a provisional patent application template, private sharing within a group where all members must sign an NDA to view and develop ideas, will be premium services for a fee. 
+      .row
+        h3 Can I use IdeaJam to raise money?
+        p IdeaJam incorporates a rewards-based crowdfunding engine.  While IdeaJam does not currently allow for the sale of equity within the platform, you can use IdeaJam to set up your crowdfunding "store" to engage in pre-sales of products and sales of other merchandise and services to help you fund the ideas you generate on IdeaJam.   
+      .row
+        h3 What is the fee to use IdeaJam's crowdfunding platform?
+        p IdeaJam charges 5% of total amount raised plus any transactional fees charged by any third party financial transaction service providers.
+      .row
+        h3 What is the fee to use IdeaJam's crowdfunding platform?
+        p IdeaJam charges 5% of total amount raised plus any transactional fees charged by any third party financial transaction service providers.
+
+
+
+      
+
+    .pagefooter
+      include ../partials/footer.jade
+
+  script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js')

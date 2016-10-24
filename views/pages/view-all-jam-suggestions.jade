@@ -9,7 +9,7 @@ html
     if !networkImage
       form(role='form', id="jamProfilePicForm" action="/add-network-profile-pic", method="post", enctype="multipart/form-data")
         .form-group
-          h3 Upload a new Profile Picture
+          h3 Upload a new Profile Picture for the #{networkName} Jam
           |  
           input#profilePicButton(type="file", name="picture")
           input(type="hidden", name="networkName", value="#{networkName}")
@@ -25,7 +25,7 @@ html
       h2#suggestionSection All Suggestions for #{networkName}
       div  
         a(href="/jam/" + networkName)
-          button(class="btn btn-vision btn-lg btn-block") Back to Pitch Battle
+          button(class="btn btn-vision btn-lg btn-block") Back to All #{networkName} Suggestions
       each suggestion, identifier in wholeSuggestionBlockInfo             
         if suggestion.document.descriptions.length > 0 && suggestion.document.descriptions[0] != ""
           include ../partials/suggestion-summary-element.jade

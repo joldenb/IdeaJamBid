@@ -9,10 +9,10 @@ html
   .container
     form(role='form', id="formAccomplish" action="/accomplish", method="post", style='max-width: 300px;', data-idea-doc=idea)
       .form-group
-        h3 What is your solution to the problem of #{idea.problem}?
+        h3 What is your solution to the problem of #{idea.problem}, #{user.nickname}?
         input(type="hidden", name="_csrf", value="#{csrfToken}")
         input.form-control(type="text" name="purposeHow", value='The solution of ', id="accomplish")
-        p (ex. "The solution of channelling 1.21 jigawatts")
+        p (Example: "The solution of channelling 1.21 jigawatts into a flux capacitor to trigger travel to a past or future time")
         p#charactersRemaining
       .row
         .col-xs-4
@@ -21,7 +21,7 @@ html
           button#accomplishSubmit.btn.btn-success.btn-lg.btn-continue(type='submit') Continue
       .row
         .col-xs-12
-          .hint Hint : You can describe more later!
+          .hint Hint: You can build out more details later!
 
 
   include ../partials/js-includes.jade

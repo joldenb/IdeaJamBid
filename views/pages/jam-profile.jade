@@ -9,7 +9,7 @@ html
     if !networkImage
       form(role='form', id="jamProfilePicForm" action="/add-network-profile-pic", method="post", enctype="multipart/form-data")
         .form-group
-          h3 Upload a new Profile Picture
+          h3 Upload a new Profile Picture for the #{networkName} Jam
           |  
           input#profilePicButton(type="file", name="picture")
           input(type="hidden", name="networkName", value="#{networkName}")
