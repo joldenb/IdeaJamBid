@@ -5,6 +5,8 @@ body {
   left: 0;
   bottom: 0;
   background-color: #ededed; /* light gray */
+  height:100%;
+  margin:0;
 }
 
 
@@ -78,6 +80,9 @@ h1, h2, h3, h4 {
 .idea-summary {
   margin-top: -20px;
   padding-bottom:3em;
+  margin-bottom: -44px;
+  min-height:100%;
+  min-height: 91%;
 }
 
 .header .home-logout {
@@ -1219,10 +1224,6 @@ button.suggestion-tactics, button.suggestion-targets {
 }
 
 .pagefooter {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;  
 }
 
 .termsCenter {

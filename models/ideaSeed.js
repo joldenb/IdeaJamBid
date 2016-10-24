@@ -36,7 +36,7 @@ var IdeaSeed = new Schema({
 		variantReceipt : ObjectId, // once the variant application is built and filed.
 		contributorsSignedOff : Schema.Types.Mixed, //this will be a list of all the contributors to the variant with a
 		//true or false to indicate if they've signed off for the variant to be filed.  E.g. {"tom" : unsent, pending, or approved}
-		// it will get populated with a bunch of false's when when the variant is created, then switched to 
+		// it will get populated with a bunch of false's when when the variant is created, then switched to
 		// trues one by one as people sign off.
 		contributorContracts : Schema.Types.Mixed
 	}],

@@ -21,7 +21,7 @@ html
           form(role='form', id="formImageUpload" action="/image-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
             .form-group
 
-                // For Joe to fix - I don't think this block is working quite as intended.  I'm trying to display the word "your" before the invention if the inventor is viewing.  Also have a different last sentence for the inventor view and the third party view
+              // For Joe to fix - I don't think this block is working quite as intended.  I'm trying to display the word "your" before the invention if the inventor is viewing.  Also have a different last sentence for the inventor view and the third party view
                        
               if idea.name && inventorName == user.username
                 h4 Upload a sketch, photo, or any other image of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} or any of its components.  You can tag the image to names your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} on uploaded images.  Tags will show up in the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} profile as components.
@@ -31,6 +31,7 @@ html
               label.btn.btn-block.btn-file.btn-go#fileInput
                 h4 Upload an image of #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
                   img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                input(type="file", name="picture" style="display:none;")
 
             // For Joe to fix - Need to change the words "the inventor" in the above statement to the actual inventor's name linked to the inventor's profile
     if(canEdit)
