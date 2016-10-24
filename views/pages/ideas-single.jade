@@ -72,10 +72,10 @@ html
               h4 You can only score someone else's ideas (right now)
         .row
           .col-xs-12
-            if inventorName != user.username
+            if inventorName !== user.username
               a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign' ontouchstart="this.style.background = '#007338';") Fund This Idea
-            else 
-              a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign/new' ontouchstart="this.style.background = '#007338';") Crowdfund
+            else if idea.visibility === "public"
+              a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign/new' ontouchstart="this.style.background = '#007338';") Create Crowdfunding Campaign
 
           .col-xs-12(style="display:none;")
             #idea-summary-aptitudes.aptitudeList

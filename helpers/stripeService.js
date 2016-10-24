@@ -11,7 +11,7 @@ const TOKEN_URI = 'https://connect.stripe.com/oauth/token';
 // Set your secret key: remember to change this to your live secret key in production
 // See your keys here: https://dashboard.stripe.com/account/apikeys
 // TODO: Use a variable
-var stripe = require("stripe")("sk_test_dxHWhv5U1LCrruTtDLCGuap4");
+var stripe = require("stripe")(process.env.STRIPE_SECRET);
 
 function campaignCharge(customerId, amount, idea, hostAccount) {
   var application_fee = Math.round(amount * 0.2);
