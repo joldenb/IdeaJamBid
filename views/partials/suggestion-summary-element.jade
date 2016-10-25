@@ -1,6 +1,6 @@
 div.row.suggestion-row.suggestion-element.variant-suggestion-block(id="#{suggestion.document.identifier}")
 
-  .col-sm-6.problem-row-padding
+  .col-sm-9.problem-row-padding
     if suggestion.document.descriptions[0]
       if suggestion.ideaName
         div.suggestionStyle The #[a(href='/ideas/'+suggestion.ideaName) #{suggestion.ideaName}] solution of #{suggestion.document.descriptions[0]}
@@ -15,6 +15,6 @@ div.row.suggestion-row.suggestion-element.variant-suggestion-block(id="#{suggest
           span.suggestionStyle #{suggestion.creatorNickname}
           img(src="/avatar.png" height="15" width="15")
 
-  .col-sm-6.upvote
+  .col-sm-3.upvote
     img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
     a.btn.btn-vision.btn-block.full-width-mobile.btn-lg(class="upvote-suggestion" id="upvote-#{suggestion.document.identifier}" data-suggestion-id="#{suggestion.document.id}" ontouchstart="this.style.background = '#69847d';") Upvote #{suggestion.document.upvotes.length || 0} 

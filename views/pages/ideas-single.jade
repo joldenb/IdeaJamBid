@@ -165,7 +165,7 @@ html
         .modal-header
           .modal-title 
             if user.firstname
-              h2 #{user.nickname}, Name Your Idea
+              h2 #{user.nickname}, name Your Idea
             else
               h2 Name Your Idea
             p Give your idea a short, descriptive, memorable name:
@@ -175,8 +175,6 @@ html
               input(type="hidden", name="_csrf", value="#{csrfToken}")
               input.form-control(type="text", name="inventionName", value='My idea is called the ')
               p (Example: "My idea is called the DeLorean Time Machine")
-              input.form-control(type="text", name="inventionName", value='The ...')
-              p (Example: "The Flux Capacitor")
               p.charactersRemaining
             .modal-footer
               button.btn.btn-success#titleSubmit(type='submit') Save
@@ -290,7 +288,8 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 #{user.nickname}, add a new #{idea.name.toLowerCase()} imperfection
+            if idea.name
+              h2 #{user.nickname}, add a new #{idea.name.toLowerCase()} imperfection
             if idea.name
               h4 Empower the IdeaJam crowd to suggest more specific solutions to improve the #{idea.name.toLowerCase()}.
             else 
@@ -299,7 +298,7 @@ html
           form(role='form', id="addIdeaProblem" action="/add-idea-problem", method="post", style='max-width: 450px;', data-idea-doc=idea)
             .form-group
               input(type="hidden", name="_csrf", value="#{csrfToken}")
-              input#problemStatement.form-control(type="text", name="problemStatement", value='The #{idea.name.toLowerCase()} imperfection of ')
+              input#problemStatement.form-control(type="text", name="problemStatement", value='The problem is ')
               p (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
               p.charactersRemaining
               h4 Imperfection Category:
@@ -307,7 +306,7 @@ html
                 each value in problemAreas
                   option(value=value) #{value}
               h4 Describe an aptitude needed to solve this imperfection:
-              input#problemStatement.form-control(type="text", name="aptitudeStatement", value='The aptitude of ')
+              input#aptitudeStatement.form-control(type="text", name="aptitudeStatement", value='The aptitude of ')
               p (Example: "The aptitude of nuclear engineering.")
             .modal-footer
               button.btn.btn-go.btn-block.btn-lg#problemSubmit(type='submit') Save Imperfection
@@ -331,13 +330,8 @@ html
                 h4 What is this new component of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} called?
               else
                 h4 What is this new component called?
-              input#componentName.form-control(type="text", name="componentName", value='Enter Component Name')
+              input#componentName.form-control(type="text", name="componentName", value='The ...')
               p (Example: "The Flux Capacitor")
-              #parentComponentDropdown(style="display:none;")
-                select.parentComponents
-                  each component,index in components
-                    if component.identifier
-                      option(value=component.identifier) #{component.text || component.descriptions[0] || "No Component Title"}
               input(type="hidden", name="_csrf", value="#{csrfToken}")
               p.compNameCharRemaining
               if idea.name
@@ -347,9 +341,6 @@ html
               input#componentDescription.form-control(type="text", name="componentDescription", value='This component is described as a ')
               p (Example: "This component is described as a power channeling device that processes 1.21 gigawatts to make time travel possible.")
               p.compDescrCharRemaining
-              // Jeff changed the below code because he thinks this option should only appear in the component profile page
-               // input#subComponentCheckbox(type="checkbox", name="subComponent")
-               // span This is a sub-component of another component.
             .modal-footer
               button.btn.btn-go.btn-block.btn-lg#componentSubmit(type='submit') Save Component
                 img.einstein-point-btn-icon(src="/single-einstein-point.png")
@@ -1159,9 +1150,10 @@ html
 
     $("#titleSubmit").click(function(event){
       event.preventDefault();
-      if($("#saveIdeaName input[name='inventionName']").val() == "The ..." &&
-        $("#titleRequiredMessage").length == 0){
+      if($("#saveIdeaName input[name='inventionName']").val() == "My idea is called the "){
+        if($("#titleRequiredMessage").length == 0){
           $("<p id='titleRequiredMessage'>A title is required</p>").insertBefore("#saveIdeaName input[name='inventionName']");
+        }
       } else {
         $.post('/save-idea-name', 
           {
@@ -1192,9 +1184,9 @@ html
             componentName : newComponentName.slice(4)
         };
 
-        if($("#componentDescription").val().length > 20){
+        if($("#componentDescription").val().length > "This component is described as a ".length){
           newComponentDescr = $("#componentDescription").val().trim();
-          data['componentDescription'] = newComponentDescr.slice(20)
+          data['componentDescription'] = newComponentDescr.slice("This component is described as a ".length)
         }
 
         if($("#subComponentCheckbox").is(":checked")){
@@ -1222,10 +1214,10 @@ html
 
     // This is for the idea name
     var inputName = $("#saveIdeaName input")[1];
-    var requiredNameText = "The "
+    var requiredNameText = "My idea is called the "
     $("#saveIdeaName .charactersRemaining").text((30) + " characters remaining");
     inputName.addEventListener ("mousedown", function () {
-      if (String($(this).val()).indexOf(requiredNameText) == -1 || String($(this).val()) == "The ...") {
+      if (String($(this).val()).indexOf(requiredNameText) == -1 || String($(this).val()) == "My idea is called the ") {
             $(this).val(requiredNameText);
       }
       if (this.selectionStart < requiredNameText.length) {
@@ -1247,14 +1239,14 @@ html
 
     // This is for the problem input
     var inputProb = $("#addIdeaProblem input")[1];
-    var requiredProbText = "The imperfection of "
+    var requiredProbText = "The problem is "
     $("#addIdeaProblem .charactersRemaining").text((200) + " characters remaining");
     inputProb.addEventListener ("mousedown", function () {
       if (String($(this).val()).indexOf(requiredProbText) == -1) {
             $(this).val(requiredProbText);
       }
-      if (this.selectionStart < 17) {
-        this.selectionStart = 17;
+      if (this.selectionStart < 15) {
+        this.selectionStart = 15;
       }
     }, false);
 
@@ -1262,8 +1254,8 @@ html
       if (String($(this).val()).indexOf(requiredProbText) == -1) {
             $(this).val(requiredProbText);
       }
-      if (this.selectionStart < 17) {
-        this.selectionStart = 17;
+      if (this.selectionStart < 15) {
+        this.selectionStart = 15;
       }
       $("#addIdeaProblem input").keyup(function(){
         $("#addIdeaProblem .charactersRemaining").text((200 + requiredProbText.length - $(this).val().length) + " characters remaining");

@@ -1384,7 +1384,7 @@ router.post('/save-idea-name', csrfProtection, function(req, res) {
     return;
   }
   IdeaSeed.findOneAndUpdate({_id : req.session.idea}, {
-    name : req.body.inventionName.slice(4)},
+    name : req.body.inventionName.slice("My idea is called the ".length)},
     // options, this gets the new updated record
     { multi: false, new : true },
     function (err, idea) {
