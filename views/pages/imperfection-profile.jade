@@ -49,7 +49,8 @@ html
           .row.suggestion-form-buttons
             .col-xs-12
               img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
-              button.btn.btn-go.btn-lg.btn-block#submit(type='submit') Save Solution
+              button.btn.btn-go.btn-lg.btn-block#submit(type='submit') Save Solution  
+                img(src="/single-einstein-point.png" height="25" width="25")
           //- .row.suggestion-form-buttons
           //-   .col-xs-12.add-picture-btn
           //-     label#add-picture-button.btn.btn-vision.btn-lg.btn-block
@@ -240,6 +241,8 @@ script(type="text/javascript").
         $("#suggestion-question-header").text("How will you " + verb + " " + $(this).text().toLowerCase() + " " + $("#end-of-suggestion-query").text() + "?");
         $("#end-of-suggestion-query").remove();
         $("#suggestion-targets").hide(400);
+
+        $("#submit").append("<span>  + " + $(this).attr("data-points") + "</span>")
 
         document.getElementsByClassName('suggestion-input')[0].disabled = false;
       } 
