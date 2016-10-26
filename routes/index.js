@@ -2010,6 +2010,22 @@ router.post('/approve-suggestions', csrfProtection, function(req, res) {
     {$set:{
       inventorApproved : true
     }},function(err, results){
+      //give 100 points to people who contributed suggestions. this is kind
+      // of an inefficient way, but not sure how to do it simpler right now
+      Component.find({ "identifier" : {$in : suggestionIDs}}, function(err, suggestions){
+        var suggestors = _.map(suggestions, function(oneSugg, suggIndex){
+          return oneSugg.creator;
+        })
+        _.each(suggestors, function(oneSuggestor, suggestorIndex){
+          Account.findOne({"username" : oneSuggestor}, function(err, account)
+          {
+            if(account){
+              account.einsteinPoints = account.einsteinPoints + 100;
+              account.save(function (err) {});
+            }
+          });
+        })
+      })
       res.sendStatus(200);
   });
 
