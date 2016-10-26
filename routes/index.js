@@ -2015,6 +2015,39 @@ router.post('/approve-suggestions', csrfProtection, function(req, res) {
 
 });
 
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for removing a denied suggestion
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.post('/remove-suggestion', csrfProtection, function(req, res) {
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
+
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
+
+  if(req.body['remove-suggestion']){
+    Component.update(
+      {"identifier" : req.body['remove-suggestion']},
+      {$set:{
+        inventorApproved : false
+      }},function(err, results){
+        res.sendStatus(200);
+    });
+  } else {
+    res.sendStatus(200);
+  }
+
+
+});
+
 
 /*****************************************************************
 ******************************************************************

@@ -15,15 +15,18 @@ div.row.suggestion-row.suggestion-element(id="#{suggestion.document.identifier}"
           img(src="/avatar.png" height="15" width="15")
 
   .col-sm-3.incorporate-suggestion
-    h4 Accept this Suggestion?
-    .row
-      .col-sm-6.incorporate-suggestion-option
-        div
-          input.no-input(id="no-suggestion-#{suggestion.document.identifier}", type='checkbox', name="suggestion-#{suggestion.document.identifier}", value="notIncorporate")
-          label(for="no-suggestion-#{suggestion.document.identifier}")
-            <span><span></span></span>No
-      .col-sm-6.incorporate-suggestion-option
-        div
-          input.yes-input(id="yes-suggestion-#{suggestion.document.identifier}", type='checkbox', name="suggestion-#{suggestion.document.identifier}", value="incorporate")
-          label(for="yes-suggestion-#{suggestion.document.identifier}")
-            <span><span></span></span>Yes
+    if suggestion.document.inventorApproved
+      h4 This suggestion has been approved.
+    else
+      h4 Accept this Suggestion?
+      .row
+        .col-sm-6.incorporate-suggestion-option
+          div
+            input.no-input(id="no-suggestion-#{suggestion.document.identifier}", type='checkbox', name="suggestion-#{suggestion.document.identifier}", value="notIncorporate")
+            label(for="no-suggestion-#{suggestion.document.identifier}")
+              <span><span></span></span>No
+        .col-sm-6.incorporate-suggestion-option
+          div
+            input.yes-input(id="yes-suggestion-#{suggestion.document.identifier}", type='checkbox', name="suggestion-#{suggestion.document.identifier}", value="incorporate")
+            label(for="yes-suggestion-#{suggestion.document.identifier}")
+              <span><span></span></span>Yes

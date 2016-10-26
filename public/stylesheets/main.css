@@ -1343,6 +1343,10 @@ button.suggestion-tactics, button.suggestion-targets {
   color: #414142;
 }
 
+.btn-tomato {
+  background-color: #C64143;
+}
+
 .nickname {
   font-size: 1.2em;
   font-family: Roboto Slab, serif;

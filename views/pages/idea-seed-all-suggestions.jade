@@ -19,12 +19,26 @@ html
     if idea.inventorName === user.username
       input(type="hidden", name="_csrf", value="#{csrfToken}")
       each suggestion, identifier in wholeSuggestionBlockInfo
-        include ../partials/suggestion-incorporate-element.jade
+        if suggestion.document.inventorApproved !== false
+          include ../partials/suggestion-incorporate-element.jade
     else
       each suggestion, identifier in wholeSuggestionBlockInfo
-        include ../partials/suggestion-summary-element.jade
+        if suggestion.document.inventorApproved !== false
+          include ../partials/suggestion-summary-element.jade
 
       input(type="hidden", name="_csrf", value="#{csrfToken}")
+  #removeSuggestionConfirmation.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          .modal-title
+            h2 Are you sure you want to permanently remove this suggestion?
+        .modal-body
+          .row
+            .col-sm-6
+              a.btn.btn-lg.btn-industry Cancel
+            .col-sm-6
+              a.btn.btn-lg.btn-tomato Remove
 
   include ../partials/js-includes.jade
   script(src='/exif.js')
@@ -75,7 +89,21 @@ html
       if($(this).hasClass("yes-input")){
         $(".no-input[name='" + $(this).attr("name") + "']").prop( "checked", false );
       } else if($(this).hasClass("no-input")){
-        alert("are you sure?")
+        $("#removeSuggestionConfirmation").modal('show');
+        $("#removeSuggestionConfirmation .btn-tomato").attr("data-suggestion-id", $(this).attr("name").slice(11));
       }
-
     });
+
+    $("#removeSuggestionConfirmation .btn-tomato").click(function(event){
+      if($(this).attr("data-suggestion-id")){
+        var suggestionID = $(this).attr("data-suggestion-id");
+        $.post("/remove-suggestion", 
+        {
+          _csrf : $('[name="_csrf"]').val(),
+          "remove-suggestion" : $(this).attr("data-suggestion-id")
+        }, function(response){
+          $("#removeSuggestionConfirmation").modal('hide');
+          $(".suggestion-row#"+suggestionID).hide(200);
+        });
+      }
+    })
