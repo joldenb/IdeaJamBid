@@ -9,6 +9,7 @@ html
     div.container
       .row
         .col-md-6
+          h1 Your Profile
           if accountHeadshot
             .imagineerProfilePicWrapper
               div(class="imagineerProfilePic" style="height: 300px; max-width: 400px; background-image : url('" + accountHeadshot.amazonURL + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + accountHeadshot.style)
@@ -16,7 +17,9 @@ html
           else
             img(src="/avatar.png" height="100" width="100")
           h2.profile-name #{profileAccount.nickname}
-            div(class="imagineer-profile profile-einstein-points") #{user.einsteinPoints || "0"}            
+            //- div(class="imagineer-profile profile-einstein-points") #{user.einsteinPoints || "0"}            
+          .view-all-components-wrapper
+            a.btn.btn-electric.btn-lg.btn-block(type="button" href='/ideas/') Go to Pitch Battle!
           .profileSchool
             if schoolNetwork
               h4 My School  #[a(class="network-link") #{schoolNetwork}]
@@ -28,15 +31,17 @@ html
               h4 My Location #[a(class="network-link") #{locationNetwork}]
           .profileAptitudes
             if aptitudes && aptitudes.length > 0
-              h3 My Aptitudes 
+              h4 My Aptitudes 
               ul
                 each aptitude in aptitudes
                   li(data-apt-id="#{aptitude.identifier}")
                     p #{aptitude.title}
+          if Object.keys(user).length != 0 && user.id == profileAccount.id
+              a.home-login.btn.btn-success.btn-lg.btn-block( href="/imagineer-picture/") Edit My Profile
           
     
         .col-md-6
-          h3 Original Ideas
+          h3 Your Original Ideas
           if accountIdeaSeeds.length > 0
             ul
               each val, index in accountIdeaSeeds
@@ -47,9 +52,9 @@ html
                     span.idea-text-date= val['creationDate']
 
           else
-            h4 None so far.
+            h4 None yet.
           if Object.keys(user).length != 0 && user.id == profileAccount.id
-            a.home-login.btn.btn-success.btn-lg( href="/introduce-idea" ) Begin a New Idea
+            a.home-login.btn.btn-success.btn-lg.btn-block( href="/introduce-idea" ) Begin a New Idea
           h3 Collaborations
           if collaboratorIdeas.length > 0
             ul
@@ -61,7 +66,7 @@ html
                   span #{val.inventorName}
                   span.idea-text-date= val['creationDate']
           else
-            h4 None so far.
+            h4 None yet.
 
 
           h3 Contributions
@@ -76,23 +81,18 @@ html
                     span #{val.inventorName}
                     span.idea-text-date= val['creationDate']
           else
-            h4 None so far.
-          a.home-login.btn.btn-industry.btn-lg( href="/ideas" ) View All Ideas
-      .row
-        .col-md-6
-          h2.text-left My Rank:
-          h3.text-left Tenderfoot
-          img(src="http://www.cmchtroop65.com/images/BadgeTenderfoot.jpg")
-          p.text-left Rank up by contributing inventive thought to your own and others' ideas on IdeaJam.  
-        .col-md-6
-          h3.text-left My Badges
-          p.text-left Earn badges by leveling up through earning Einstein Points on IdeaJam.  Your badges will be displayed here as your inventive thought is rewarded:
+            h4 None yet.
+          a.home-login.btn.btn-industry.btn-lg.btn-block( href="/ideas" ) View All Ideas
+      //- .row
+      //-   .col-md-6
+      //-     h2.text-left My Rank:
+      //-     h3.text-left Tenderfoot
+      //-     img(src="http://www.cmchtroop65.com/images/BadgeTenderfoot.jpg")
+      //-     p.text-left Rank up by contributing inventive thought to your own and others' ideas on IdeaJam.  
+      //-   .col-md-6
+      //-     h3.text-left My Badges
+      //-     p.text-left Earn badges by leveling up through earning Einstein Points on IdeaJam.  Your badges will be displayed here as your inventive thought is rewarded:
 
-      .row
-        br
-        br
-        if Object.keys(user).length != 0 && user.id == profileAccount.id
-            a.home-login.btn.btn-success.btn-lg.btn-block( href="/imagineer-picture/") Edit My Profile
   #schoolModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
       .modal-content

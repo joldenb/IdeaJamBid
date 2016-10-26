@@ -283,5 +283,25 @@
 		list-style-image: none;
 	}
 
+	.desktop-component-section {
+		display: none;
+	}
+
+	.score-idea-row {
+		display: none;
+	}
+
+	.imagineer-profile.profile-einstein-points {
+    line-height: 55px;
+    height: 60px;
+    font-size: large;
+    width: 60px;
+    vertical-align: initial;		
+	}
+
+	.app-strength-button {
+		padding: .5em 0;
+	}
+
 }
 

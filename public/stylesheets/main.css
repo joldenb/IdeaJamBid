@@ -1581,6 +1581,10 @@ button.suggestion-tactics, button.suggestion-targets {
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  .mobile-component-section {
+    display:none;
+  }
 }
 
 .aboutPadding {

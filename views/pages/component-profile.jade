@@ -232,7 +232,7 @@ html
             form(role='form', id="addIdeaComponent" action="/add-idea-component", method="post", style='max-width: 450px;', data-idea-doc=idea)
               .form-group
                 h4 What is your new subcomponent called?
-                input#componentName.form-control(type="text", name="componentName", value='The subcomponent named the ')
+                input#componentName.form-control(type="text", name="componentName", value='The ...')
                 input(type="hidden", name="_csrf", value="#{csrfToken}")
                 p (Example: "The subcomponent named the destination time display")
                 if componentName
@@ -682,14 +682,14 @@ html
       } else {
         var newComponentName = $("#componentName").val().trim();
         var newComponentDescr = "";
-        if($("#componentDescription").val().length > 20){
+        if($("#componentDescription").val().length > "This component works by ".length){
           newComponentDescr = $("#componentDescription").val().trim();
         }
 
         var data = {
             _csrf : $('[name="_csrf"]').val(),
             componentName : newComponentName.slice(4),
-            componentDescription : newComponentDescr.slice(20)
+            componentDescription : newComponentDescr.slice("This component works by ".length)
         };
         data['subComponent'] = "on";
         data['componentParent'] = "!{component.identifier}"
@@ -736,8 +736,8 @@ html
       if (String($(this).val()).indexOf(requiredCompTextTwo) == -1) {
             $(this).val(requiredCompTextTwo);
       }
-      if (this.selectionStart < 21) {
-        this.selectionStart = 21;
+      if (this.selectionStart < "This subcomponent works by ") {
+        this.selectionStart = "This subcomponent works by ";
       }
     }, false);
 
@@ -745,8 +745,8 @@ html
       if (String($(this).val()).indexOf(requiredCompTextTwo) == -1) {
             $(this).val(requiredCompTextTwo);
       }
-      if (this.selectionStart < 21) {
-        this.selectionStart = 21;
+      if (this.selectionStart < "This subcomponent works by ") {
+        this.selectionStart = "This subcomponent works by ";
       }
       $("#addIdeaComponent input#componentDescription").keyup(function(){
         $("#addIdeaComponent .compDescrCharRemaining").text((200 + requiredCompTextTwo.length - $(this).val().length) + " characters remaining");

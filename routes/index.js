@@ -508,9 +508,7 @@ router.post('/reset-password', csrfProtection, function(req, res) {
 ******************************************************************
 *****************************************************************/
 router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
-  if (req.session.idea){
-    req.session.idea = null;
-  }
+  req.session.idea = null;
 
   var userNickname = req.params.nickname || req.user.nickname;
   if (!userNickname){
