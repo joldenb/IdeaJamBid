@@ -847,7 +847,7 @@ a.plus-overlay img{
   color: white;
 }
 
-.suggestion-element.variant-suggestion-block {
+.suggestion-element, .suggestion-element.variant-suggestion-block {
   height:auto;
   background-color: white;
   margin-left: 1em;
@@ -1566,6 +1566,17 @@ button.suggestion-tactics, button.suggestion-targets {
     display: none;
   }
 
+  .suggestion-row-description, .idea-seed-all-suggestions .incorporate-suggestion {
+    height: 9em;
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+
+  .suggestion-row-description .suggestionStyle {
+    max-height:3em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 .aboutPadding {
@@ -1636,4 +1647,24 @@ button.suggestion-tactics, button.suggestion-targets {
     /* Position the tooltip */
     position: absolute;
     z-index: 1;  
+}
+
+.idea-seed-all-suggestions a.home-logout {
+  width: 100%;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.idea-seed-all-suggestions .incorporate-suggestion {
+  background-color: #414142;
+  color: #ededed; /* light gray */
+  padding: 15px;
+}
+
+.incorporate-suggestion .incorporate-suggestion-option {
+  font-size: 1.3em;
+}
+
+.save-suggestion-btn {
+  margin:1em 0;
 }

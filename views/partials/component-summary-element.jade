@@ -9,7 +9,10 @@ a.component-block-link(href='/component-profile/'+ component.document.identifier
 
 
     .col-sm-8.problem-row-padding
-      h3.component-header #{component.document.text.charAt(0).toUpperCase() + component.document.text.slice(1)}
+      if component.document.text
+        h3.component-header #{component.document.text.charAt(0).toUpperCase() + component.document.text.slice(1)}
+      else
+        h3.component-header <i>No title yet</i>
       if component.document.descriptions && component.document.descriptions[0]
         p <b>Description:</b> #{component.document.descriptions[0]}
       else

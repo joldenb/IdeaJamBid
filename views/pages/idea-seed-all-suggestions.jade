@@ -6,17 +6,21 @@ html
   .header.navbar.navbar-default
     include ../partials/header.jade
 
-  .container-fluid.view-all-imperfections
+  .container-fluid.view-all-imperfections.idea-seed-all-suggestions
     .row
-      .col-md-9
+      .col-md-8
         h2 All <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b> suggestions
         h4 When you expose your idea to the IdeaJam networks, other imagineers can suggest solutions to imperfections that you and others have added.  
         h4 You should create and share many imperfections because imperfections will lead to more suggestions and improvements for your ideas.  
-      .col-md-3
+      .col-md-4
         .return-button
           a.home-logout.btn.btn-industry.btn-lg( href="/ideas/#{idea.name}") Back to #{idea.name} profile
         br
-    .row
+    if idea.inventorName === user.username
+      input(type="hidden", name="_csrf", value="#{csrfToken}")
+      each suggestion, identifier in wholeSuggestionBlockInfo
+        include ../partials/suggestion-incorporate-element.jade
+    else
       each suggestion, identifier in wholeSuggestionBlockInfo
         include ../partials/suggestion-summary-element.jade
 
@@ -40,3 +44,38 @@ html
 
       return false;
     });   
+
+    $(".incorporate-suggestion-option input").change(function(event){
+      if($(".return-button a").length ==1){
+        $(".return-button a").text("Back to !{idea.name}");
+        $(".return-button").prepend("<a class='btn btn-go btn-lg btn-block save-suggestion-btn'>Save Suggestions</a>")
+          .click(function(event){
+            
+            //get the list of suggestions to approve for the idea seed
+            var data = {_csrf : $('[name="_csrf"]').val()};
+
+            $(".incorporate-suggestion-option input").each(function(index){
+              if( $(this).prop("checked") && $(this).hasClass("yes-input")){
+                data[$(this).attr("name").slice(11)] = "approved";
+              }
+            });
+
+            $.post("/approve-suggestions", data, function(response){
+              if(response == 200){
+                window.location.href= "/ideas/!{idea.name}"
+              } else {
+                window.location.reload(true);
+              }
+            })
+          });
+      }
+    });
+
+    $(".incorporate-suggestion-option input").change(function(event){
+      if($(this).hasClass("yes-input")){
+        $(".no-input[name='" + $(this).attr("name") + "']").prop( "checked", false );
+      } else if($(this).hasClass("no-input")){
+        alert("are you sure?")
+      }
+
+    });

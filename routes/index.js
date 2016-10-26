@@ -1793,7 +1793,7 @@ router.get('/suggestion-summary', csrfProtection, function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/view-idea-suggestions', csrfProtection, function(req, res){
+router.get('/create-new-variant', csrfProtection, function(req, res){
   if(!(req.user && req.user.username)) {
     res.redirect('/');
     return;
@@ -1870,7 +1870,7 @@ router.get('/view-idea-suggestions', csrfProtection, function(req, res){
               }
 
               currentIdea = idea._doc;
-              res.render('pages/view-idea-suggestions', {
+              res.render('pages/new-variant', {
                 csrfToken: req.csrfToken(),
                 user : req.user || {}, //user document
                 idea : currentIdea, //document
@@ -1980,6 +1980,47 @@ router.post('/order-problems', csrfProtection, function(req, res) {
 ******************************************************************
 ******************************************************************
 * Route for saving a new suggestion
+* This has the effect of building a new variant.
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.post('/approve-suggestions', csrfProtection, function(req, res) {
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
+
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
+
+  var suggestionIDs = _.map(req.body, function(value, key){
+    if(key == "_csrf"){
+      return false;
+    } else {
+      return key;
+    }
+  });
+
+  suggestionIDs = _.filter(suggestionIDs, Boolean);
+
+  Component.update(
+    {"identifier" : { $in : suggestionIDs}},
+    {$set:{
+      inventorApproved : true
+    }},function(err, results){
+      res.sendStatus(200);
+  });
+
+});
+
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for saving a new suggestion
+* This has the effect of building a new variant.
 ******************************************************************
 ******************************************************************
 *****************************************************************/
@@ -2250,7 +2291,17 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
       }
     });
 
-    components = _.filter(components, function(item){return item['text'];});
+    components = _.filter(components, function(item){return item['text'] || item.inventorApproved;});
+    var newCompOrder = [];
+    _.each(components, function(oneComp, index){
+      if( !oneComp.text ){
+        newCompOrder.unshift(oneComp);  
+      } else {
+        newCompOrder.push(oneComp);
+      }
+    });
+
+    components = newCompOrder;
     components = components.slice(0,3);
 
     // Figure out which account and headshot go with with suggestion

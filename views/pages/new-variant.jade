@@ -117,7 +117,7 @@ html
     $("#selectProblem").change(function(){
       var problem = $("#selectProblem option:selected").attr("id");
       $.get("/update-suggestion-list/"+problem, function(data){
-        document.location.href = "/view-idea-suggestions";
+        document.location.href = "/new-variant";
       });
     });
 

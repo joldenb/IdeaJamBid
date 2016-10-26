@@ -102,8 +102,7 @@ html
           h2.component-title Components of the #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
           if components.length > 0
             each component, identifier in wholeSuggestionBlockInfo
-              if component.document.text
-                include ../partials/component-summary-element.jade
+              include ../partials/component-summary-element.jade
           else
             h4 <i>No Components Yet</i>
         else
@@ -375,7 +374,7 @@ html
                   .row
                     a(href="/ideas/#{idea.name}/variant/"+variantDate[1]) #{variantDate[0]}
 
-                a.btn.btn-go( href="/view-idea-suggestions" ) Create a New Variant
+                a.btn.btn-go( href="/new-variant" ) Create a New Variant
                 br
             else if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
               if idea.name

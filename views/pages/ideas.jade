@@ -67,24 +67,3 @@ html
 
   include ../partials/js-includes.jade
   script(type="text/javascript").
-    $(".btn.suggest").click(function(){
-      $("#suggestion-category").val($(this).attr("id"));
-      $("#point-value").val($(this).text());
-      $("#problem-type").val($("#selectProblem option:selected").attr("id"));
-    });
-
-    $("#submit").click(function(){
-      $("#formSuggestion").submit();
-      $("#myModal").modal('hide');
-    });
-
-    $("#selectProblem").change(function(){
-      var problem = $("#selectProblem option:selected").attr("id");
-      $.get("/update-suggestion-list/"+problem, function(data){
-        document.location.href = "/view-idea-suggestions";
-      });
-    });
-
-
-
-

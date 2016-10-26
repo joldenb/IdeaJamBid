@@ -9,6 +9,7 @@ var Component = new Schema({
 	descriptions : [ String ], // must have at least one
 	dimensions : [String],
 	materials : [String],
+	inventorApproved : Boolean,
 
 	hindsight	: String,
 	outsight	: String,
