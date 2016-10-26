@@ -514,6 +514,141 @@ router.get('/view-all-viabilities', csrfProtection, function(req, res) {
 });
 
 ////////////////////////////////////////////////
+// Overall Single Score Page
+////////////////////////////////////////////////
+router.get('/view-single-overall-score', csrfProtection, function(req, res) {
+
+  if(!req.session.idea){
+    res.redirect('/');
+    return;
+  }
+
+  function shuffle(a) {
+      var j, x, i;
+      for (i = a.length; i; i--) {
+          j = Math.floor(Math.random() * i);
+          x = a[i - 1];
+          a[i - 1] = a[j];
+          a[j] = x;
+      }
+  }
+
+  shuffle(viabilities);
+
+  for (var via in viabilities) {
+    if (!viabilities[via]['iconId']) {
+      viabilities[via]['iconId'] = viabilities[via].prefix + "Icon";      
+    }
+    if (!viabilities[via]['sliderId']) {
+      viabilities[via]['sliderId'] = viabilities[via].prefix + "Slider";
+    }
+    if (!viabilities[via]['labelId']) {
+      viabilities[via]['labelId'] = viabilities[via].prefix + "Label";
+    }
+    viabilities[via]['link'] = viabilities[via].link || viabilities[via].name;
+    viabilities[via]['name'] = viabilities[via].name.charAt(0).toUpperCase() + viabilities[via].name.slice(1);
+  };
+
+  req.session.viabilities = viabilities;
+
+  var headshotData = ideaSeedHelpers.getUserHeadshot(req);
+  var headshotURL = headshotData['headshotURL'];
+  var headshotStyle = headshotData['headshotStyle'];
+    IdeaSeed.findById(req.session.idea,function(err, idea){
+      if(!idea){
+        res.redirect("/view-all-ideas");
+        return;
+      }
+      IdeaProblem.find({"ideaSeed" : idea.id, "creator" : req.user.username}, function(err, problems){
+        var problemObject = {};
+        _.each(problems, function(problem, index){
+          if(problem.identifier && problem.text){
+            problemObject[problem.problemArea] = {'text' : problem.text, 'identifier' : problem.identifier};
+          }
+        });
+
+        IdeaReview.find({"reviewer" : req.user.username, "ideaSeedId" : idea.id}, function(err, currentReview){
+          //if there is a review already for this user and idea
+          if(currentReview.length > 0){
+            var averageScore = 0;
+
+            averageScore = Math.round(IdeaReview.averageViabilityScores([currentReview[0]]));
+
+            req.session.ideaReview = currentReview[0];
+            res.render('pages/values-wastes-mobile/view-single-overall-score', {
+              csrfToken: req.csrfToken(),
+              user : req.user || {},
+              idea : idea,
+              headshot : headshotURL,
+              viabilities : viabilities,
+              averageScore : averageScore,
+              problems : problemObject,
+              currentReview :  currentReview[0],
+              headshotURL : headshotURL,
+              headshotStyle : headshotStyle
+            });
+          // if no review by this user for this idea
+          } else {
+            var newReview = {
+              ideaSeedId : req.session.idea,
+              reviewer : req.user.username
+            };
+            IdeaReview.create(newReview, function(err, newReview){
+              if(err) { console.log("new review not created correctly")}
+              idea.ideaReviews.push(newReview.id);
+              idea.save(function(err, updatedIdea){
+                req.session.ideaReview = newReview;
+                res.render('pages/values-wastes-mobile/view-single-overall-score', {
+                  csrfToken: req.csrfToken(),
+                  user : req.user || {},
+                  idea : idea,
+                  headshot : headshotURL,
+                  averageScore : 0,
+                  viabilities : viabilities,
+                  problems : problemObject,
+                  currentReview :  currentReview,
+                  headshotURL : headshotURL,
+                  headshotStyle : headshotStyle
+                });
+              });
+            });
+          }
+        });//end of review query
+      });  //end of the problem query
+    });
+});
+
+
+router.post("/save-all-viability-scores", csrfProtection, function(req, res){
+  IdeaReview.findOne({"reviewer" : req.user.username, "ideaSeedId" : req.session.idea}, function(err, currentReview){
+    //if there is a review already for this user and idea
+    if(currentReview){
+      currentReview.performOne = req.body.overallScore;
+      currentReview.affordOne = req.body.overallScore;
+      currentReview.featureOne = req.body.overallScore;
+      currentReview.deliverOne = req.body.overallScore;
+      currentReview.useabilityOne = req.body.overallScore;
+      currentReview.maintainOne = req.body.overallScore;
+      currentReview.durabilityOne = req.body.overallScore;
+      currentReview.imageOne = req.body.overallScore;
+      currentReview.complexOne = 100 - req.body.overallScore;
+      currentReview.precisionOne = 100 - req.body.overallScore;
+      currentReview.variabilityOne = 100 - req.body.overallScore;
+      currentReview.sensitivityOne = 100 - req.body.overallScore;
+      currentReview.immatureOne = 100 - req.body.overallScore;
+      currentReview.dangerOne = 100 - req.body.overallScore;
+      currentReview.skillsOne = 100 - req.body.overallScore;
+      currentReview.save(function(err, results){
+        res.sendStatus(200);
+      });
+    }
+  });
+
+
+
+});
+
+////////////////////////////////////////////////
 // Performability
 ////////////////////////////////////////////////
 
