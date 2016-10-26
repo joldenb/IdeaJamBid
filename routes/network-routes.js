@@ -331,8 +331,8 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
           var accountNameAndURLs = [];
           if(topAccountsToDisplay[i].headshots && topAccountsToDisplay[i].headshots[0] && topAccountsToDisplay[i].headshots[0].orientation){
             accountHeadshotStyle = ideaSeedHelpers.getImageOrientation(topAccountsToDisplay[i].headshots[0].orientation);
+            accountNameAndURLs[topAccountsToDisplay[i].username] = [topAccountsToDisplay[i].headshots[0].amazonURL,accountHeadshotStyle];
           }
-          accountNameAndURLs[topAccountsToDisplay[i].username] = [topAccountsToDisplay[i].headshots[0].amazonURL,accountHeadshotStyle];
         }
           /* First, make a list of all the aptitude IDs for everyone, then query the database for them,
           then figure out who has what aptitudes. */
