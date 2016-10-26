@@ -308,6 +308,10 @@
 		margin-bottom: 3em;
 	}
 
+	.scoring-stars .col-xs-2{
+		padding: 0 3px;
+	}
+
 	.view-single-overall-score .scoring-stars img {
 		width:100%;
 		height:100%;
