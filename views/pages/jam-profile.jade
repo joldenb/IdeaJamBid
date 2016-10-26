@@ -32,50 +32,50 @@ html
               li
                 a(href='#suggestionSection').underline Suggestions      
 
-      h3 Jam Leaders
-      each inventor, index in topInventors
-        - var inventorImage
-        - var inventorImageStyle
-        - var inventorName
-        - var inventorPoints
-        - var inventorAptitudeIds
-        - var aptitudes = inventorAptitudes
-        - var profileLinkURL
-        if index % 3 == 0 
-          .row
-            .col-md-4
-              if(topInventors[index])
-                if accountNameAndURLs[topInventors[index].username]
-                  - inventorImage = accountNameAndURLs[topInventors[index].username][0]
-                  - inventorImageStyle = accountNameAndURLs[topInventors[index].username][1]
-                - inventorName = topInventors[index].nickname
-                - inventorPoints = topInventors[index].einsteinPoints
-                - inventorAptitudeIds = topInventors[index].aptitudes
-                include ../partials/inventor-block.jade
-            .col-md-4
-              if(topInventors[index + 1])
-                if accountNameAndURLs[topInventors[index + 1].username]
-                  - inventorImage = accountNameAndURLs[topInventors[index + 1].username][0]
-                  - inventorImageStyle = accountNameAndURLs[topInventors[index + 1].username][1]
-                else
-                  - inventorImage = ""
-                  - inventorImageStyle = ""
-                - inventorName = topInventors[index + 1].nickname
-                - inventorPoints = topInventors[index + 1].einsteinPoints
-                - inventorAptitudeIds = topInventors[index + 1].aptitudes
-                include ../partials/inventor-block.jade
-            .col-md-4
-              if(topInventors[index + 2 ])
-                if accountNameAndURLs[topInventors[index + 2].username]
-                  - inventorImage = accountNameAndURLs[topInventors[index + 2].username][0]
-                  - inventorImageStyle = accountNameAndURLs[topInventors[index + 2].username][1]
-                else 
-                  - inventorImage = ""
-                  - inventorImageStyle = ""
-                - inventorName = topInventors[index + 2].nickname
-                - inventorPoints = topInventors[index + 2].einsteinPoints
-                - inventorAptitudeIds = topInventors[index + 2].aptitudes
-                include ../partials/inventor-block.jade
+      //- h3 Jam Leaders
+      //- each inventor, index in topInventors
+      //-   - var inventorImage
+      //-   - var inventorImageStyle
+      //-   - var inventorName
+      //-   - var inventorPoints
+      //-   - var inventorAptitudeIds
+      //-   - var aptitudes = inventorAptitudes
+      //-   - var profileLinkURL
+      //-   if index % 3 == 0 
+      //-     .row
+      //-       .col-md-4
+      //-         if(topInventors[index])
+      //-           if accountNameAndURLs[topInventors[index].username]
+      //-             - inventorImage = accountNameAndURLs[topInventors[index].username][0]
+      //-             - inventorImageStyle = accountNameAndURLs[topInventors[index].username][1]
+      //-           - inventorName = topInventors[index].nickname
+      //-           - inventorPoints = topInventors[index].einsteinPoints
+      //-           - inventorAptitudeIds = topInventors[index].aptitudes
+      //-           include ../partials/inventor-block.jade
+      //-       .col-md-4
+      //-         if(topInventors[index + 1])
+      //-           if accountNameAndURLs[topInventors[index + 1].username]
+      //-             - inventorImage = accountNameAndURLs[topInventors[index + 1].username][0]
+      //-             - inventorImageStyle = accountNameAndURLs[topInventors[index + 1].username][1]
+      //-           else
+      //-             - inventorImage = ""
+      //-             - inventorImageStyle = ""
+      //-           - inventorName = topInventors[index + 1].nickname
+      //-           - inventorPoints = topInventors[index + 1].einsteinPoints
+      //-           - inventorAptitudeIds = topInventors[index + 1].aptitudes
+      //-           include ../partials/inventor-block.jade
+      //-       .col-md-4
+      //-         if(topInventors[index + 2 ])
+      //-           if accountNameAndURLs[topInventors[index + 2].username]
+      //-             - inventorImage = accountNameAndURLs[topInventors[index + 2].username][0]
+      //-             - inventorImageStyle = accountNameAndURLs[topInventors[index + 2].username][1]
+      //-           else 
+      //-             - inventorImage = ""
+      //-             - inventorImageStyle = ""
+      //-           - inventorName = topInventors[index + 2].nickname
+      //-           - inventorPoints = topInventors[index + 2].einsteinPoints
+      //-           - inventorAptitudeIds = topInventors[index + 2].aptitudes
+      //-           include ../partials/inventor-block.jade
 
       h3#ideaSection Top #{networkName} Ideas
       if ideas.length > 0
