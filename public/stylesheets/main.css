@@ -79,7 +79,7 @@ h1, h2, h3, h4 {
 
 .idea-summary {
   margin-top: -20px;
-  padding-bottom:3em;
+  padding-bottom:6em;
   margin-bottom: -44px;
   min-height:100%;
   min-height: 91%;
@@ -1585,6 +1585,10 @@ button.suggestion-tactics, button.suggestion-targets {
   .mobile-component-section {
     display:none;
   }
+
+  .idea-seed-all-feedback-areas {
+    display:none;
+  }
 }
 
 .aboutPadding {
@@ -1675,4 +1679,8 @@ button.suggestion-tactics, button.suggestion-targets {
 
 .save-suggestion-btn {
   margin:1em 0;
+}
+
+#problemModalButton {
+  margin-bottom:1em;
 }

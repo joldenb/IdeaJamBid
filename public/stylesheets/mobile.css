@@ -324,5 +324,21 @@
 		background: #dedf26; border-radius: 50%; -moz-border-radius: 50%; -webkit-border-radius: 50%; 
 	}
 
+	.idea-seed-feedback {
+		display:none;
+	}
+
+	.idea-seed-all-feedback-areas {
+		display: initial;
+	}
+
+	.row.idea-seed-profile {
+		margin-bottom: -2em;
+	}
+
+	.idea-seed-imperfections .problem-row {
+		display: none;
+	}
+
 }
 

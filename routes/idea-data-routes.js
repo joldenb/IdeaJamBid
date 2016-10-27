@@ -41,6 +41,9 @@ router.post('/add-idea-problem', csrfProtection, function(req, res) {
 
   IdeaProblem.create( newProblem,
     function (err, problem) {
+      res.json({
+        problemIdentifier : problem.identifier
+      });
       if (err) return handleError(err);
       IdeaSeed.update(
         { _id : req.session.idea },
@@ -57,7 +60,6 @@ router.post('/add-idea-problem', csrfProtection, function(req, res) {
       );
     }
   );
-  res.sendStatus(200);
 });
 
 ////////////////////////////////////////////////
