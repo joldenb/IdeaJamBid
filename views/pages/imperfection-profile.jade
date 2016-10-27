@@ -23,7 +23,7 @@ html
           if locationNetwork
             #[a(class="network-link" href="/jam/#{locationNetwork}") #{locationNetwork}]
 
-      .col-sm-6.desktop-buttons-with-tooltip
+      .col-sm-6
         h3#suggestion-question-header How will you:
         form(role='form', id="formSuggestion" action="/suggestion-submit-new", method="post", data-idea-doc=idea)
           .form-group
@@ -31,14 +31,14 @@ html
             div#suggestion-tactics(class="btn-group" role="group" aria-label="suggestionTactic" data-toggle="buttons")
               h4.suggestion-number 1.
               each value in tactics
-                label.btn.btn-go.btn-lg.suggestion-tactics( title="Max points : #{value[1]}" data-toggle="tooltip" data-placement="right")
+                label.btn.btn-go.btn-lg.suggestion-tactics( title="Max points : #{value[1]}")
                   input(type="checkbox" value=value[0])
                   | #{value[0]}
 
             div#suggestion-targets(class="btn-group" role="group" aria-label="suggestionTarget" data-toggle="buttons")
               h4.suggestion-number 2.
               each value in targetPoints
-                label.btn.btn-go.btn-lg.suggestion-targets.disabled(style="background-color : #00A550 !important;" title="" data-toggle="tooltip" data-placement="right" id="#{value[1]}-target")
+                label.btn.btn-go.btn-lg.suggestion-targets.disabled(style="background-color : #00A550 !important;" title="" id="#{value[1]}-target")
                   input.target-inputs(type="checkbox" value=value[0] disabled)
                   | #{value[0]}
 
@@ -60,46 +60,6 @@ html
           .row.suggestion-form-buttons
             .col-xs-12
               button#reset-suggestion-form.btn.btn-industry.btn-lg.btn-block(type="button") Reset Form
-
-      .col-sm-6.mobile-buttons-with-tooltip
-        h3#suggestion-question-header How will you:
-        form(role='form', id="formSuggestion" action="/suggestion-submit-new", method="post", data-idea-doc=idea)
-          .form-group
-            input(type="hidden", name="_csrf", value="#{csrfToken}")
-            div#suggestion-tactics(class="btn-group" role="group" aria-label="suggestionTactic" data-toggle="buttons")
-              h4.suggestion-number 1.
-              each value in tactics
-                label.btn.btn-go.btn-lg.suggestion-tactics
-                  input(type="checkbox" value=value[0])
-                  | #{value[0]}
-
-            div#suggestion-targets(class="btn-group" role="group" aria-label="suggestionTarget" data-toggle="buttons")
-              h4.suggestion-number 2.
-              each value in targetPoints
-                label.btn.btn-go.btn-lg.suggestion-targets.disabled(style="background-color : #00A550 !important;")
-                  input.target-inputs(type="checkbox" value=value[0] disabled)
-                  | #{value[0]}
-
-          h3#end-of-suggestion-query to help solve the imperfection of 
-            <span class="problemColor">#{problem.text}?</span>
-            h4#suggestion-input-header.suggestion-number 3.
-            input.form-control.suggestion-input(type="text", name="suggestionText", value='By ' disabled)
-            p.charactersRemaining
-          .row.suggestion-form-buttons
-            .col-xs-12
-              img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
-              button.btn.btn-go.btn-lg.btn-block#submit(type='submit') Save Solution  
-                img(src="/single-einstein-point.png" height="25" width="25")
-          //- .row.suggestion-form-buttons
-          //-   .col-xs-12.add-picture-btn
-          //-     label#add-picture-button.btn.btn-vision.btn-lg.btn-block
-          //-       input(type="file" name="picture" style="display: none;")
-          //-       | Add Picture
-          .row.suggestion-form-buttons
-            .col-xs-12
-              button#reset-suggestion-form.btn.btn-industry.btn-lg.btn-block(type="button") Reset Form
-
-
       .col-sm-6
         #existing-suggestion-list.edit-column
           h3 Other Suggestions
@@ -383,7 +343,12 @@ script(type="text/javascript").
       return false;
     });   
 
-    $('[data-toggle="tooltip"]').tooltip();
+
+    if(window.innerWidth > 768){
+       $(".suggestion-tactics").attr("data-toggle", "tooltip").attr("data-placement", "right");
+       $(".suggestion-targets").attr("data-toggle", "tooltip").attr("data-placement", "right");
+      $('[data-toggle="tooltip"]').tooltip();
+    }
 
     
   });
