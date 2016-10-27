@@ -340,5 +340,9 @@
 		display: none;
 	}
 
+	.desktop-buttons-with-tooltip {
+		display:none;
+	}
+
 }
 

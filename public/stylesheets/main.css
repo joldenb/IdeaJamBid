@@ -1589,6 +1589,11 @@ button.suggestion-tactics, button.suggestion-targets {
   .idea-seed-all-feedback-areas {
     display:none;
   }
+
+  .mobile-buttons-with-tooltip {
+    display: none;
+  }
+
 }
 
 .aboutPadding {
@@ -1684,3 +1689,4 @@ button.suggestion-tactics, button.suggestion-targets {
 #problemModalButton {
   margin-bottom:1em;
 }
+
