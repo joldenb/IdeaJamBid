@@ -17,4 +17,4 @@ div.row.suggestion-row.suggestion-element.variant-suggestion-block(id="#{suggest
 
   .col-sm-3.upvote
     img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
-    a.btn.btn-vision.btn-block.full-width-mobile.btn-lg(class="upvote-suggestion" id="upvote-#{suggestion.document.identifier}" data-suggestion-id="#{suggestion.document.id}" ontouchstart="this.style.background = '#69847d';") Upvote #{suggestion.document.upvotes.length || 0} 
+    a.btn.btn-vision.btn-block.full-width-mobile.btn-lg(class="upvote-suggestion" id="upvote-#{suggestion.document.identifier}" data-suggestion-id="#{suggestion.document.id}" ontouchstart="this.style.background = '#69847d';" ontouchend="this.style.background='initial';") Upvote #{suggestion.document.upvotes.length || 0} 

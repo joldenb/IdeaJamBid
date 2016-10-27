@@ -6,12 +6,12 @@ html
 
   .container.image-upload
     .row.top-row
-      .col-xs-10
+      .col-md-10
         if idea.name && inventorName == user.username
           h3.top-row-header Add images of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
         else
           h3.top-row-header Add images of the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
-      .col-xs-2
+      .col-md-2
         .return-button
           a.home-logout.btn.btn-industry.btn-lg( href="/ideas/#{idea.name}") Back to Idea Summary
   

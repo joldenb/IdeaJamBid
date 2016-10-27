@@ -163,16 +163,16 @@ html
             h2 Login
         .modal-body
           form#dsw-signup-form(role='form', action="/register-dsw",method="post")
-            a(href="/auth/google",class="btn btn-danger btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';")
+            a(href="/auth/google",class="btn btn-danger btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background='initial';")
               span.fa.fa-google-plus Google
             |  
-            a(href="/auth/facebook",class="btn btn-primary btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';")
+            a(href="/auth/facebook",class="btn btn-primary btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background='initial';")
               span.fa.fa-facebook Facebook
             |  
-            a(href="/auth/linkedin",class="btn btn-info btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';")
+            a(href="/auth/linkedin",class="btn btn-info btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background='initial';")
               span.fa.fa-linkedin LinkedIn
             |  
-            a#ideajam-login(class="btn btn-go btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';")
+            a#ideajam-login(class="btn btn-go btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background='initial';")
               span.fa IdeaJam
             h4 New Account:
             .form-group

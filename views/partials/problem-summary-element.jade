@@ -19,7 +19,7 @@ div.row.problem-row.suggestion-element.variant-suggestion-block(id="#{problem.id
 
   .col-sm-3
     img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
-    a.btn.btn-vision.btn-block.full-width-mobile.btn-lg(class="upvote-imperfection" id="upvote-#{problem.identifier}" data-problem-id="#{problem.id}"  ontouchstart="this.style.background = '#69847d';") Upvote #{problem.upvotes.length || 0}
+    a.btn.btn-vision.btn-block.full-width-mobile.btn-lg(class="upvote-imperfection" id="upvote-#{problem.identifier}" data-problem-id="#{problem.id}"  ontouchstart="this.style.background = '#69847d';" ontouchend="this.style.background='initial';") Upvote #{problem.upvotes.length || 0}
 
   .col-sm-3.right-jam-col
     img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
