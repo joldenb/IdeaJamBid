@@ -1711,3 +1711,9 @@ button.suggestion-tactics, button.suggestion-targets {
         background-color: #337ab7;
     }
 }
+
+.avatar-clicked {
+  border: 2px solid gray;
+  padding:1em;
+  border-radius:5px;
+}

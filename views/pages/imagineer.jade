@@ -15,7 +15,8 @@ html
               div(class="imagineerProfilePic" style="height: 300px; max-width: 400px; background-image : url('" + accountHeadshot.amazonURL + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + accountHeadshot.style)
             
           else
-            img(src="/avatar.png" height="100" width="100")
+            a(href="/imagineer-picture/")
+              img.avatar(src="/avatar.png" height="120" width="120")
           h2.profile-name #{profileAccount.nickname}
             //- div(class="imagineer-profile profile-einstein-points") #{user.einsteinPoints || "0"}            
           .view-all-components-wrapper
@@ -269,3 +270,7 @@ html
         alert("Please enter a valid aptitude.");  
       }
     });
+
+    $(".avatar").click(function(event){
+      $(this).attr("src", "/IdeaJam-logo.gif");
+    })

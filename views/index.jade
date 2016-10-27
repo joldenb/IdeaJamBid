@@ -10,9 +10,9 @@ html
         .row
           if (!user)
             p.lead Login or Register to Continue
-            a.home-login.btn.btn-go.btn-lg.btn-block(href="/login") Login
+            a.home-login.btn.btn-go.btn-lg(href="/login") Login
             |  
-            a.home-login.btn.btn-primary.btn-lg.btn-block(href="/register") Register
+            a.home-login.btn.btn-primary.btn-lg(href="/register") Register
             br
             p Login with Social Media:
             a(href="/auth/google", class="btn btn-danger btn-lg") 

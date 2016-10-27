@@ -120,10 +120,10 @@ html
                   .col-xs-3
                     h3.average-score-number #{averageScore}
                 img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
-                a.btn(type="button"  class="btn btn-go" href="/view-single-overall-score" ontouchstart="this.style.background = '#007338';") Keep Scoring
+                a.btn(type="button"  class="btn btn-go" href="/view-single-overall-score" ontouchstart="this.style.background = '#007338';"  ontouchend="this.style.background = '#00A550';") Keep Scoring
               else
                 img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")                
-                a.btn(type="button"  class="btn btn-go" href="/view-single-overall-score" ontouchstart="this.style.background = '#007338';") Score Now
+                a.btn(type="button"  class="btn btn-go" href="/view-single-overall-score" ontouchstart="this.style.background = '#007338';" ontouchend="this.style.background = '#00A550';") Score Now
               br
           else
             .idea-summary-data#idea-summary-waste-values
@@ -287,7 +287,7 @@ html
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
             if idea.name
-              h2 New Imperfection
+              h3 New Imperfection
             //- if idea.name
             //-   h4 Empower the IdeaJam crowd to suggest more specific solutions to improve the #{idea.name.toLowerCase()}.
             //- else 
@@ -308,7 +308,7 @@ html
               //- p (Example: "The aptitude of nuclear engineering.")
             .modal-footer
               button.btn.btn-go.btn-block.btn-lg#problemSubmit(type='submit') Save Imperfection
-                img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
               button.btn.btn-info.btn-block.btn-lg(data-dismiss="modal") Cancel
 
   #addComponentModal.modal.fade.annotate-modal(role="dialog")
@@ -1137,6 +1137,7 @@ html
       if($("#problemStatement").val() == "The problem is "){
         $("#addProblemModal").modal('hide');
       } else if ($("#problemStatement").val().length > 15){
+        $("#addProblemModal").modal('hide');
         var newProblemStatement = $("#problemStatement").val().trim();
         $.post('/add-idea-problem', 
           {
