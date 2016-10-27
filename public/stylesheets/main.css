@@ -855,12 +855,12 @@ a.plus-overlay img{
 }
 
 .suggestion-element.variant-suggestion-block:hover {
- background-color: #AFDDD1; 
-}
+/* background-color: #AFDDD1; 
+*/}
 
 .suggestion-element.variant-suggestion-block:hover {
- background-color: #337ab7; 
-}
+/* background-color: #337ab7; 
+*/}
 
 .footer.variant-suggestion.image-block {
   height:4em;

@@ -203,13 +203,14 @@ html
 
     $("#locationSubmit").click(function(event){
       event.preventDefault();
+      $("#locationModal").modal('hide');
       $.post('/save-location-network', 
         {
           locationCity : $("select.locationCity option:selected").text(),
           "_csrf" : $('[name="_csrf"]').val()
         },
         function(resp) {
-          window.location.reload(true);
+          $(".profileLocation").append("<h4>" + $("select.locationCity option:selected").text() + "</h4>")
         });      
     });
 
