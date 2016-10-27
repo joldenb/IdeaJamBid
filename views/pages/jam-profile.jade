@@ -322,6 +322,10 @@ html
       $(".upvote-imperfection").click(function(event){  
         console.log("imperfection");    
         event.preventDefault();
+        if(!$(this).hasClass("clicked-upvote")){
+          $(this).addClass("clicked-upvote");
+          $(this).text("Upvote " + (parseInt($(this).text().slice(7)) + 1));
+        }
 
         $.post('/upvote-imperfection', 
         {
@@ -329,7 +333,6 @@ html
           problem : $(this)[0].dataset['problemId']
         },
         function(data, response) {
-          window.location.reload(true);          
         });
 
         return false;
@@ -338,13 +341,17 @@ html
       $(".upvote-suggestion").click(function(event){
         event.preventDefault();
 
+        if(!$(this).hasClass("clicked-upvote")){
+          $(this).addClass("clicked-upvote");
+          $(this).text("Upvote " + (parseInt($(this).text().slice(7)) + 1));
+        }
+
         $.post('/upvote-suggestion', 
         {
           _csrf : $('[name="_csrf"]').val(),
           suggestion : $(this)[0].dataset['suggestionId']
         },
         function(data, response) {
-          window.location.reload(true);
         });
 
         return false;

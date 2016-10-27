@@ -1690,3 +1690,25 @@ button.suggestion-tactics, button.suggestion-targets {
   margin-bottom:1em;
 }
 
+.clicked-upvote {
+    -webkit-animation-duration: 3s;
+    -webkit-animation-name: fading;
+    animation-duration: 3s;
+    animation-name: fading;
+}
+@-webkit-keyframes fading {
+    from {
+        background-color: #D6DE26;
+    }
+    to {
+        background-color: #337ab7;
+    }
+}
+@keyframes fading {
+    from {
+        background-color: #D6DE26;
+    }
+    to {
+        background-color: #337ab7;
+    }
+}

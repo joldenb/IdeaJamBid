@@ -117,7 +117,7 @@ html
               overallScore : 100
             };
             $.post("/save-all-viability-scores", data, function(response){
-              window.location.reload(true);
+              window.location.href= "/ideas/!{idea.name}";
             })
           } else if ( $("img#star-four.scored").length > 0 ) {
             var data = {
@@ -125,7 +125,7 @@ html
               overallScore : 80
             };
             $.post("/save-all-viability-scores", data, function(response){
-              window.location.reload(true);
+              window.location.href= "/ideas/!{idea.name}";
             })
           } else if ( $("img#star-three.scored").length > 0 ) {
             var data = {
@@ -133,7 +133,7 @@ html
               overallScore : 60
             };
             $.post("/save-all-viability-scores", data, function(response){
-              window.location.reload(true);
+              window.location.href= "/ideas/!{idea.name}";
             })
           } else if ( $("img#star-two.scored").length > 0 ) {
             var data = {
@@ -141,7 +141,7 @@ html
               overallScore : 40
             };
             $.post("/save-all-viability-scores", data, function(response){
-              window.location.reload(true);
+              window.location.href= "/ideas/!{idea.name}";
             })
           } else if ( $("img#star-one.scored").length > 0 ) {
             var data = {
@@ -149,11 +149,11 @@ html
               overallScore : 20
             };
             $.post("/save-all-viability-scores", data, function(response){
-              window.location.reload(true);
+              window.location.href= "/ideas/!{idea.name}";
             })
           }
         } else {
-          window.location.reload(true);
+          window.location.href= "/ideas/!{idea.name}";
         }
       });
 
