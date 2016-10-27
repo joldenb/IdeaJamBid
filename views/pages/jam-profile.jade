@@ -144,7 +144,8 @@ html
               include ../partials/problem-summary-element.jade
       br
 
-      button.view-all-imperfections(class="btn btn-industry btn-lg btn-block") View All Imperfections
+      if(Object.keys(wholeImperfectionBlockInfo).length > 0)
+        button.view-all-imperfections(class="btn btn-industry btn-lg btn-block") View All Imperfections
 
       h3#suggestionSection Top #{networkName} Suggestions
       each suggestion, identifier in wholeSuggestionBlockInfo
