@@ -28,6 +28,10 @@ html
   script(type="text/javascript").
     $(".upvote-imperfection").click(function(event){
       event.preventDefault();
+      if(!$(this).hasClass("clicked-upvote")){
+        $(this).addClass("clicked-upvote");
+        $(this).text("Upvote " + (parseInt($(this).text().slice(7)) + 1));
+      }
 
         $.post('/upvote-imperfection', 
         {
@@ -35,7 +39,6 @@ html
           problem : $(this)[0].dataset['problemId']
         },
         function(data, response) {
-          window.location.reload(true);          
         });
       
 

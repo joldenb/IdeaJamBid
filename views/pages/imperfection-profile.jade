@@ -330,6 +330,10 @@ script(type="text/javascript").
       $(this).hide();
       $(this).prev().show();
       event.preventDefault();
+      if(!$(this).hasClass("clicked-upvote")){
+        $(this).addClass("clicked-upvote");
+        $(this).text("Upvote " + (parseInt($(this).text().slice(7)) + 1));
+      }
 
       $.post('/upvote-suggestion', 
       {
@@ -337,7 +341,6 @@ script(type="text/javascript").
         suggestion : $(this)[0].dataset['suggestionId']
       },
       function(data, response) {
-        window.location.reload(true);
       });
 
       return false;
