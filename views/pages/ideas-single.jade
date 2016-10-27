@@ -318,14 +318,14 @@ html
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
             if idea.name
-              h2 #{user.nickname}, add a new #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} component
+              h2 #{user.nickname}, add a new #{idea.name} component
             else
               h2 #{user.nickname}, add a new component
         .modal-body
           form(role='form', id="addIdeaComponent" action="/add-idea-component", method="post", style='max-width: 300px;', data-idea-doc=idea)
             .form-group
               if idea.name
-                h4 What is this new component of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} called?
+                h4 What is this new component of your #{idea.name} called?
               else
                 h4 What is this new component called?
               input#componentName.form-control(type="text", name="componentName", value='The ...')
@@ -333,7 +333,7 @@ html
               input(type="hidden", name="_csrf", value="#{csrfToken}")
               p.compNameCharRemaining
               if idea.name
-                h4 How do you describe this component of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}?
+                h4 How do you describe this component of your #{idea.name}?
               else
                 h4 How do you describe this component?
               input#componentDescription.form-control(type="text", name="componentDescription", value='This component is described as ')

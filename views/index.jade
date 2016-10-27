@@ -10,18 +10,18 @@ html
         .row
           if (!user)
             p.lead Login or Register to Continue
-            a.home-login.btn.btn-go(href="/login") Login
+            a.home-login.btn.btn-go.btn-lg.btn-block(href="/login") Login
             |  
-            a.home-login.btn.btn-primary(href="/register") Register
+            a.home-login.btn.btn-primary.btn-lg.btn-block(href="/register") Register
             br
             p Login with Social Media:
-            a(href="/auth/google", class="btn btn-danger") 
+            a(href="/auth/google", class="btn btn-danger btn-lg btn-block") 
               span.fa.fa-google-plus Google
             |  
-            a(href="/auth/facebook",class="btn btn-primary") 
+            a(href="/auth/facebook",class="btn btn-primary btn-lg btn-block") 
               span.fa.fa-facebook Facebook
             |  
-            a(href="/auth/linkedin",class="btn btn-info") 
+            a(href="/auth/linkedin",class="btn btn-info btn-lg btn-block") 
               span.fa.fa-linkedin LinkedIn
             br
             br
