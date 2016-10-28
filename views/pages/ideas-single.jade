@@ -48,16 +48,16 @@ html
           h4 Your <b>#{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}</b> solves the <span class="problemColor">problem of #[a(href='/introduce-idea') #{idea.problem}]</span> by #[a(href='/accomplish') <span class="solutionColor">#{idea.description}]</span>.
         else if idea.name 
           h4 <b>#{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}</b> solves the <span class="problemColor">problem of #{idea.problem}</span> by <span class="solutionColor">#{idea.description}</span>.
-        //- if (inventorName == user.username) && idea.visibility == "private" && idea.collaborators.length < 6
-        //-   .row
-        //-     .col-xs-12
-        //-       a.btn.btn-electric.btn-lg.btn-block#inviteCollaboratorsButton(type="button" data-toggle="modal" data-target="#inviteCollaboratorsModal") Invite Collaborators
+        if (inventorName == user.username) && idea.visibility == "private" && idea.collaborators.length < 6
+          .row
+            .col-xs-12
+              a.btn.btn-electric.btn-lg.btn-block#inviteCollaboratorsButton(type="button" data-toggle="modal" data-target="#inviteCollaboratorsModal") Invite Collaborators
         .row
-          //- .col-xs-12
-          //-   if inventorName !== user.username
-          //-     a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign' ontouchstart="this.style.background = '#007338';") Fund This Idea
-          //-   else if idea.visibility === "public"
-          //-     a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign/new' ontouchstart="this.style.background = '#007338';") Crowdfund
+          .col-xs-12
+          if inventorName !== user.username
+            a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign' ontouchstart="this.style.background = '#007338';") Fund This Idea
+          else if idea.visibility === "public"
+            a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign/new' ontouchstart="this.style.background = '#007338';") Crowdfund
 
           .col-xs-12(style="display:none;")
             #idea-summary-aptitudes.aptitudeList
