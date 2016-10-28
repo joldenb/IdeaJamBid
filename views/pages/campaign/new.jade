@@ -7,25 +7,150 @@ html
       include ../../partials/header.jade
 
     .container-fluid
-      h1 New Campaign
-      p.lead Please provide some info
-      br
-      form(role='form',
-           action='/ideas/' + idea.name + '/campaign/new',
-           method="post",
-           style='max-width: 300px;')
-        .form-group
-          input.form-control(type='text', name="a", placeholder='A' required)
-        .form-group
-          input.form-control(type='text', name="b", placeholder='B' required)
-        .form-group
-          input.form-control(type='text', name="c", placeholder='C' required)
-          input(type="hidden", name="_csrf", value="#{csrfToken}")
-        .row
-          .col-xs-4
-            a.home-logout.btn.btn-industry.btn-lg( href="/imagineer/" + user.nickname ) Cancel
-          .col-xs-8
-            button#submitProlem.btn.btn-go.btn-lg.btn-continue(type='submit') Continue
-        h4 #{message}
+      .row
+        .col-md-8.col-md-offset-2
+          h1 New Campaign
+          p.lead Please provide some info
+          form(role='form',
+               action='/ideas/' + idea.name + '/campaign/new',
+               method="post")
+            input(type="hidden", name="_csrf", value="#{csrfToken}")
+            .form-group
+              label(for="goal") Goal
+              .input-group
+                div.input-group-addon $
+                input.form-control(type='number', name="goal", id="goal" placeholder='10000.00' required)
+            .form-group.row
+              .col-md-12.h4 Prizes
+              .col-md-12(id="prizes")
+                .row
+                  .col-md-6.col-md-offset-1
+                    .form-group
+                      label(for="prizeName0") Name
+                      input.form-control(type='text', name="prizeName0", id="prizeName0" placeholder='1 set of ...' maxlength=50 required)
+                    .form-group
+                      label(for="prizeDesc0") Description
+                      input.form-control(type='text', name="prizeDesc0", id="prizeDesc0" placeholder='You will receive ...' maxlength=1000 required)
+                    .form-group
+                      label(for="prizeCost0") Cost
+                      .input-group
+                        div.input-group-addon $
+                        input.form-control(type='number', name="prizeCost0", id="prizeCost0" placeholder='25.00' required)
+                    .form-group
+                      label.btn.btn-block.btn-file.btn-go#fileInput
+                        span Upload Prize Image
+                        input(type="file", id="prizeImage0" name="prizeImage0" style="display:none;", accept="image/jpeg, image/png")
+                        input(type="hidden", id="prizeImageUrl0", name="prizeImageUrl0")
+                .row#addPrizeRow
+                  .col-md-6.col-md-offset-1
+                    button.btn.btn-go.btn-block(id="addPrize", type="button") Add Another Prize
+            .form-group
+                p The campaign will end 60 days from creation, if created today this campaign will end on #{endDate}
+            .row
+              .col-xs-4
+                a.home-logout.btn.btn-industry.btn-lg( href="/imagineer/" + user.nickname ) Cancel
+              .col-xs-8
+                if user.stripeCredentials === undefined || user.stripeCredentials.access_token === undefined
+                  button.btn.btn-go.btn-lg.btn-continue(type='submit') Continue
+                else
+                  button.btn.btn-go.btn-lg.btn-continue(type='submit') Create
+            h4 #{message}
 
   include ../../partials/js-includes.jade
+    script(src='/exif.js')
+    script(type="text/javascript").
+
+      var i = 1;
+      $('#addPrize').click(addPrizeInput);
+      function addPrizeInput(event) {
+        //It would be better to use a mixin that can be rendered on server side and returned for reuse instead of this copy/paste.
+        var number = i;
+        $("#addPrizeRow").before(
+          '<div class="row"><div class="col-md-6 col-md-offset-1"><div class="form-group"><label for="prizeName' +
+          number + '">Name</label><input type="text" name="prizeName' +
+          number + '" id="prizeName' + 
+          number + '" placeholder="1 set of ..." maxlength="50" required="required" class="form-control"></div><div class="form-group"><label for="prizeDesc' +
+          number + '">Description</label><input type="text" name="prizeDesc' +
+          number + '" id="prizeDesc' +
+          number + '" placeholder="You will receive ..." maxlength="1000" required="required" class="form-control"></div><div class="form-group"><label for="prizeCost' +
+          number + '">Cost</label><input type="number" name="prizeCost' +
+          number + '" id="prizeCost' +
+          number + '" placeholder="25.00" required="required" class="form-control"></div><div class="form-group"><label id="fileInput" class="btn btn-block btn-file btn-go"><h5>Upload Prize Image</h5>' +
+          '<input type="file" id="prizeImage' +
+          number + '" name="prizeImage' +
+          number + '" style="display:none;" accept="image/jpeg, image/png">' + '<input type="hidden" id="prizeImageUrl' + 
+          number + '" name="prizeImageUrl' +
+          number + '"></label></label></div></div></div>'
+        );
+        i++;
+
+        $('#prizeImage' + number)[0].onchange = fileInputChanged;
+      }
+
+      $("#fileInput [type='file']")[0].onchange = function (event) {
+        fileInputChanged(event);
+      };
+
+      function fileInputChanged(event) {
+        var prizeNumber = event.target.id.substring(10);
+        $("<img id='spinner' src='/spinner.gif'>").insertAfter("#formImageUpload");
+        const files = $(event.target)[0].files;
+        const file = files[0];
+        const csrf = $("input[name='_csrf']").val();
+        if (file == null) {
+          return alert('No file selected.');
+        }
+        var fr = new FileReader;
+
+        fr.onloadend = function () {
+          // get EXIF data
+          var exif = EXIF.readFromBinaryFile(this.result);
+
+          if (file.size < 3000000) {
+            getSignedRequest(prizeNumber, file, exif, csrf);
+          } else if (file.size > 3000000) {
+            alert('Please choose an image smaller than 3 MB.')
+          } else {
+            alert('An error ocurred with this image.')
+          }
+        };
+
+        fr.readAsArrayBuffer(file); // read the file
+      }
+
+      function uploadFile(prizeNumber, file, signedRequest, url, exif, csrf) {
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', signedRequest);
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200 && (file.type == "image/jpeg" || file.type == "image/png")) {
+              $('#prizeImageUrl' + prizeNumber).val(url);
+            }
+            else {
+              alert('Could not upload file.');
+            }
+          }
+        };
+        xhr.send(file);
+      }
+
+      function getSignedRequest(prizeNumber, file, exif, csrf) {
+        const xhr = new XMLHttpRequest();
+        var filename = file.name.split(".");
+        filename[0] = filename[0] + "-" + Date.now().toString();
+        filename = filename.join(".");
+        xhr.open('GET', '/sign-s3?file-name=' + filename + '&file-type=' + file.type);
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4 && xhr.responseText != "") {
+            if (xhr.status === 200) {
+              var response = JSON.parse(xhr.responseText);
+              uploadFile(prizeNumber, file, response.signedRequest, response.url, exif, csrf);
+            }
+            else {
+              alert('Could not get signed URL.');
+            }
+          }
+
+        };
+        xhr.send();
+      }

@@ -341,8 +341,6 @@ router.post('/register-nda', csrfProtection, function(req, res) {
         var newNickname = req.body.nickname;
       }
 
-
-      // gets a default password value from jam profile page "itcrashed"
       Account.register(new Account({
         firstname : req.body.firstname,
         lastname : req.body.lastname,

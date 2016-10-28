@@ -10,28 +10,41 @@ const TOKEN_URI = 'https://connect.stripe.com/oauth/token';
 
 // Set your secret key: remember to change this to your live secret key in production
 // See your keys here: https://dashboard.stripe.com/account/apikeys
-// TODO: Use a variable
-var stripe = require("stripe")(process.env.STRIPE_SECRET);
+var stripe = require("stripe").Stripe(process.env.STRIPE_SECRET);
 
 function campaignCharge(customerId, amount, idea, hostAccount) {
   var application_fee = Math.round(amount * 0.2);
 
-  return stripe.charges.create({
-    amount: amount, // Amount in cents
-    currency: "usd",
-    customer: customerId,
-    destination: hostAccount.stripeCredentials.stripe_user_id,
-    application_fee: application_fee,
-    description: "Funding idea: " + idea.name
-  }).then(function() {
-    console.log('Successfully charged the card for customer ' + customerId);
-    return true;
-  }, function(err) {
-    if (err && err.type === 'StripeCardError') {
-      console.error('Could not process the payment: ', err);
-      return false;
-    }
-  });
+  try {
+    return stripe.charges.create({
+      amount: amount, // Amount in cents
+      currency: "usd",
+      customer: customerId,
+      destination: hostAccount.stripeCredentials.stripe_user_id,
+      application_fee: application_fee,
+      description: "Funding idea: " + idea.name
+    }).then(function () {
+      console.log('Successfully charged the card for customer ' + customerId);
+      return true;
+    }, function (err) {
+      if (err && err.type === 'StripeCardError') {
+        console.error('Could not process the payment: ', err);
+        return false;
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
+function getOpenCampaign(ideaSeed) {
+  var openCampaigns = ideaSeed.campaigns.filter(function(campaign) { return campaign.state === 'open' });
+  if(openCampaigns.length !== 1) {
+    console.log("Could not find a single open campaign for the idea: " + ideaSeed.name);
+    throw new Error("Could not find a single open campaign for the idea: " + ideaSeed.name);
+  }
+  return openCampaigns[0];
 }
 
 exports.basicCharge = function(tokenId, amount) {
@@ -66,10 +79,12 @@ exports.delayedChargeCreation = function(tokenId, amount, user, ideaName) {
       throw new Error("Can't find idea with name: " + ideaName);
     }
 
+    var campaign = getOpenCampaign(idea);
+
     var campaignPayment = new CampaignPayment({username: user.username, stripeCustomerId: stripeCustomer.id, amount: amount});
     return campaignPayment.save().then(function (campaignPayment) {
-      idea.campaignPayments.push(campaignPayment.id);
-      return idea.save().then(function() {
+      campaign.payments.push(campaignPayment.id);
+      return campaign.save().then(function() {
         return true;
       })
     });
@@ -77,12 +92,16 @@ exports.delayedChargeCreation = function(tokenId, amount, user, ideaName) {
 };
 
 exports.fundCampaign = function(ideaName) {
-  return IdeaSeed.findOne({"name" : ideaName}).populate('campaignPayments').then(function (idea){
+  return IdeaSeed.findOne({"name" : ideaName}).then(function (idea){
     return Account.findOne({'username': idea.inventorName}).then(function (account) {
-      var charges = idea.campaignPayments.map(function(campaignPayment) {
-        campaignCharge(campaignPayment.stripeCustomerId, campaignPayment.amount, idea, account);
+      var campaign = getOpenCampaign(idea);
+      campaign.populate('payments.campaignpayment');
+      return CampaignPayment.find({'_id': {$in: campaign.payments}}).exec().then(function (payments) {
+        var charges = payments.map(function(campaignPayment) {
+          return campaignCharge(campaignPayment.stripeCustomerId, campaignPayment.amount, idea, account);
+        });
+        return Promise.all(charges);
       });
-      return Promise.all(charges);
     });
   });
 };

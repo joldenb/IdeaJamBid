@@ -2,9 +2,11 @@ var express = require('express');
 var router = express.Router();
 var csrf = require('csurf');
 var csrfProtection = csrf({ cookie: true });
-var stripeService = require('../helpers/stripeService');
+var stripeService = require('../services/stripeService');
+var crowdfundingService = require('../services/crowdfundingService');
 var Account = require('../models/account');
 var IdeaSeed = require('../models/ideaSeed');
+var moment = require('moment');
 
 router.get('/ideas/:ideaName/campaign/new', csrfProtection, function(req, res){
   if( !(req.user && req.user.username)){
@@ -16,7 +18,8 @@ router.get('/ideas/:ideaName/campaign/new', csrfProtection, function(req, res){
     res.render('pages/campaign/new', {
       csrfToken: req.csrfToken(),
       user: req.user,
-      idea: idea
+      idea: idea,
+      endDate: moment().add(60, 'days').calendar()
     });
   });
 });
@@ -29,7 +32,9 @@ router.post('/ideas/:ideaName/campaign/new', csrfProtection, function(req, res){
   }
 
   Account.findOne({'username': req.user.username}).then(function (account) {
-    if(account.stripeCredentials == undefined || account.stripeCredentials.access_token == undefined) {
+    crowdfundingService.createCampaign(req.body, account, ideaName);
+
+    if(account.stripeCredentials === undefined || account.stripeCredentials.access_token === undefined) {
       res.redirect('/ideas/' + req.params.ideaName +'/campaign/connect');
     } else {
       res.redirect('/ideas/' + req.params.ideaName + '/campaign');

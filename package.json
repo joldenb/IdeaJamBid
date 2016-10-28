@@ -4,6 +4,8 @@
   "description": "A sample Node.js app using Express 4",
   "main": "index.js",
   "scripts": {
+    "test": "mocha 'spec/**/*.js'",
+    "test:watch": "npm run test -- -w",
     "start": "node index.js"
   },
   "dependencies": {
@@ -53,6 +55,11 @@
     "stripe": "^4.11.0",
     "underscore": "^1.8.3",
     "validator": "^5.4.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.1.2",
+    "sinon": "^1.17.6"
   },
   "engines": {
     "node": "6.2.0"

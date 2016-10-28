@@ -9,6 +9,7 @@ var path = require('path');
 var IdeaReview = require('./ideaReviews');
 var ObjectId = mongoose.Schema.Types.ObjectId;
 var Canvas = require('canvas'), Image = Canvas.Image;
+var autopopulate = require('mongoose-autopopulate');
 
 var IdeaSeed = new Schema({
 	name			: String,
@@ -26,7 +27,7 @@ var IdeaSeed = new Schema({
 
   collaborators : [String], //this will be a username
 
-	campaignPayments : [{type: Schema.Types.ObjectId, ref: 'CampaignPayment', autopopulate: true }],
+	campaigns : [{type: Schema.Types.ObjectId, ref: 'Campaign', autopopulate: true }],
 
 	variants			: [{
 		name				: String, /* should be a unique identifier */
@@ -1215,5 +1216,7 @@ IdeaSeed.statics.getTopThreeProblems = function(idea){
 	});
 	return _.map(topProblems, function(problem){ return [problem, idea[problem]]; });
 };
+
+IdeaSeed.plugin(autopopulate);
 
 module.exports = mongoose.model('IdeaSeed', IdeaSeed);
