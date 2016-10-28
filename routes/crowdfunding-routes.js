@@ -32,7 +32,7 @@ router.post('/ideas/:ideaName/campaign/new', csrfProtection, function(req, res){
   }
 
   Account.findOne({'username': req.user.username}).then(function (account) {
-    crowdfundingService.createCampaign(req.body, account, ideaName);
+    crowdfundingService.createCampaign(req.body, account, req.params.ideaName);
 
     if(account.stripeCredentials === undefined || account.stripeCredentials.access_token === undefined) {
       res.redirect('/ideas/' + req.params.ideaName +'/campaign/connect');
