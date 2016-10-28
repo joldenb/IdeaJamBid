@@ -12,8 +12,9 @@ body {
 
 #login-page-body::after {
   content: "";
-  background: url("/bulbs_big.png") no-repeat 50% 50% fixed;
-  background-size: cover;
+/*  background: url("/bulbs_big.png") no-repeat 50% 50% fixed;
+*/  background-size: cover;
+  background-color: gray;
   opacity: 0.5;
   top: 0;
   left: 0;
