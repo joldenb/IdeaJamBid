@@ -25,7 +25,6 @@ router.get('/ideas/:ideaName/campaign/new', csrfProtection, function(req, res){
 });
 
 router.post('/ideas/:ideaName/campaign/new', csrfProtection, function(req, res){
-  //TODO: Hey - we need to actually save stuff here
   if( !(req.user && req.user.username)){
     res.redirect('/');
     return;
@@ -134,6 +133,15 @@ router.post('/ideas/:ideaName/campaign/fund', csrfProtection, function(req, res)
       res.status(400).send('Funding the campaign failed');
     });
 
+});
+
+router.get('/paypalTestPayment', csrfProtection, function(req, res) {
+  try {
+    crowdfundingService.payContributors(['billingb@gmail.com', 'joseph.oldenburg@gmail.com'], 'test');
+    res.send('success');
+  } catch(error) {
+    res.status(500).send('Failed to pay contributors');
+  }
 });
 
 module.exports = router;

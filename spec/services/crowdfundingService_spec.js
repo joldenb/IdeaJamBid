@@ -1,4 +1,9 @@
-var should = require('chai').should();
+var chai = require('chai');
+var sinon = require('sinon');
+var sinonChai = require('sinon-chai');
+chai.should();
+chai.use(sinonChai);
+
 var CrowdfundingService = require('../../services/crowdfundingService');
 var CampaignPrize = require('../../models/campaignPrize');
 var SpecHelper = require('../specHelper');
@@ -16,7 +21,6 @@ describe('Crowdfunding Service', function () {
       prizeName1: "2 automas",
       prizeDesc1: "You'd get three automated developers!",
       prizeCost1: "550",
-      prizeImageUrl1: "https://myfaketest.com/test1.jpg",
       prizeName2: "5 automas",
       prizeDesc2: "You'll get five automated developers",
       prizeCost2: "850",
@@ -34,6 +38,7 @@ describe('Crowdfunding Service', function () {
               campaign.prizes.length.should.eql(3);
             } catch (error) {
               done(error);
+              return;
             }
             CampaignPrize.findById(campaign.prizes[0]).then(function(prize) {
               try {
@@ -50,5 +55,19 @@ describe('Crowdfunding Service', function () {
         });
       });
     });
+  });
+
+  it('should pay contributors of the campaign', function () {
+    var ideaName = 'automation';
+    var stub = sinon.stub(CrowdfundingService, '_paypalPayContributors');
+    stub.returns(true);
+
+    CrowdfundingService.payContributors(['billingb@gmail.com', 'joseph.oldenburg@gmail.com'], ideaName).should.be.true;
+
+    stub.should.have.been.calledWith(sinon.match(function(data) {
+      return data.items.length == 2 &&
+        data.items[0].amount.value == 1500 &&
+        data.items[0].receiver == 'billingb@gmail.com';
+    }));
   });
 });
