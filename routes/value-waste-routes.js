@@ -19,7 +19,7 @@ var uploading = multer({
   dest: '../uploads/'
 });
 
-                  
+var today;                  
                   
 
 ////////////////////////////////////////////////
@@ -102,9 +102,21 @@ router.post('/performability', csrfProtection, function(req, res) {
       function (err, account) {
         if(req.body.perfSliderOneValue){
           account.einsteinPoints = account.einsteinPoints + 5;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+          }
         }
         if(req.body.performProblem){
           account.einsteinPoints = account.einsteinPoints + 10;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+          }
         }
         account.save(function (err) {
           res.redirect('/affordability');
@@ -150,9 +162,21 @@ router.post('/performability', csrfProtection, function(req, res) {
         function (err, account) {
           if(req.body.perfSliderOneValue){
             account.einsteinPoints = account.einsteinPoints + 5;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+            }
           }
           if(req.body.performProblem){
             account.einsteinPoints = account.einsteinPoints + 10;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+            }
           }
           account.save(function (err) {
             res.redirect('/affordability');
@@ -236,9 +260,21 @@ router.post('/affordability', csrfProtection, function(req, res) {
       function (err, account) {
         if(req.body.affordSliderOneValue){
           account.einsteinPoints = account.einsteinPoints + 5;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+          }
         }
         if(req.body.affordProblem){
           account.einsteinPoints = account.einsteinPoints + 10;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+          }
         }
         account.save(function (err) {
             res.redirect('/featurability');
@@ -284,9 +320,21 @@ router.post('/affordability', csrfProtection, function(req, res) {
         function (err, account) {
           if(req.body.affordSliderOneValue){
             account.einsteinPoints = account.einsteinPoints + 5;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+            }
           }
           if(req.body.affordProblem){
             account.einsteinPoints = account.einsteinPoints + 10;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+            }
           }
           account.save(function (err) {
             res.redirect('/featurability');
@@ -376,9 +424,21 @@ router.post('/featurability', csrfProtection, function(req, res) {
       function (err, account) {
         if(req.body.featureSliderOneValue){
           account.einsteinPoints = account.einsteinPoints + 5;
-        }
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+          }
+       }
         if(req.body.featureProblem){
           account.einsteinPoints = account.einsteinPoints + 10;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+          }
         }
         account.save(function (err) {
           res.redirect('/deliverability');
@@ -424,9 +484,21 @@ router.post('/featurability', csrfProtection, function(req, res) {
         function (err, account) {
           if(req.body.featureSliderOneValue){
             account.einsteinPoints = account.einsteinPoints + 5;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+            }
           }
           if(req.body.featureProblem){
             account.einsteinPoints = account.einsteinPoints + 10;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+            }
           }
           account.save(function (err) {
             res.redirect('/deliverability');
@@ -510,9 +582,21 @@ router.post('/deliverability', csrfProtection, function(req, res) {
       function (err, account) {
         if(req.body.deliverSliderOneValue){
           account.einsteinPoints = account.einsteinPoints + 5;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+          }
         }
         if(req.body.deliverProblem){
           account.einsteinPoints = account.einsteinPoints + 10;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+          }
         }
         account.save(function (err) {
           res.redirect('/useability');
@@ -558,9 +642,21 @@ router.post('/deliverability', csrfProtection, function(req, res) {
         function (err, account) {
           if(req.body.deliverSliderOneValue){
             account.einsteinPoints = account.einsteinPoints + 5;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+            }
           }
           if(req.body.deliverProblem){
             account.einsteinPoints = account.einsteinPoints + 10;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+            }
           }
           account.save(function (err) {
             res.redirect('/useability');
@@ -648,9 +744,21 @@ router.post('/useability', csrfProtection, function(req, res) {
       function (err, account) {
         if(req.body.useabilitySliderOneValue){
           account.einsteinPoints = account.einsteinPoints + 5;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+          }
         }
         if(req.body.useabilityProblem){
           account.einsteinPoints = account.einsteinPoints + 10;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+          }
         }
         account.save(function (err) {
           res.redirect('/maintainability');
@@ -697,9 +805,21 @@ router.post('/useability', csrfProtection, function(req, res) {
         function (err, account) {
           if(req.body.useabilitySliderOneValue){
             account.einsteinPoints = account.einsteinPoints + 5;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+            }
           }
           if(req.body.useabilityProblem){
             account.einsteinPoints = account.einsteinPoints + 10;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+            }
           }
           account.save(function (err) {
             res.redirect('/maintainability');
@@ -786,9 +906,21 @@ router.post('/maintainability', csrfProtection, function(req, res) {
       function (err, account) {
         if(req.body.maintainabilitySliderOneValue){
           account.einsteinPoints = account.einsteinPoints + 5;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+          }
         }
         if(req.body.maintainProblem){
           account.einsteinPoints = account.einsteinPoints + 10;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+          }
         }
         account.save(function (err) {
           res.redirect('/durability');
@@ -834,9 +966,21 @@ router.post('/maintainability', csrfProtection, function(req, res) {
         function (err, account) {
           if(req.body.maintainabilitySliderOneValue){
             account.einsteinPoints = account.einsteinPoints + 5;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+            }
           }
           if(req.body.maintainProblem){
             account.einsteinPoints = account.einsteinPoints + 10;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+            }
           }
           account.save(function (err) {
             res.redirect('/durability');
@@ -923,9 +1067,21 @@ router.post('/durability', csrfProtection, function(req, res) {
       function (err, account) {
         if(req.body.durabilitySliderOneValue){
           account.einsteinPoints = account.einsteinPoints + 5;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+          }
         }
         if(req.body.durabilityProblem){
           account.einsteinPoints = account.einsteinPoints + 10;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+          }
         }
         account.save(function (err) {
           res.redirect('/imageability');
@@ -971,9 +1127,21 @@ router.post('/durability', csrfProtection, function(req, res) {
         function (err, account) {
           if(req.body.durabilitySliderOneValue){
             account.einsteinPoints = account.einsteinPoints + 5;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+            }
           }
           if(req.body.durabilityProblem){
             account.einsteinPoints = account.einsteinPoints + 10;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+            }
           }
           account.save(function (err) {
             res.redirect('/imageability');
@@ -1060,9 +1228,21 @@ router.post('/imageability', csrfProtection, function(req, res) {
       function (err, account) {
         if(req.body.imageabilitySliderOneValue){
           account.einsteinPoints = account.einsteinPoints + 5;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+          }
         }
         if(req.body.imageProblem){
           account.einsteinPoints = account.einsteinPoints + 10;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+          }
         }
         account.save(function (err) {
           res.redirect('/complexity');
@@ -1108,9 +1288,21 @@ router.post('/imageability', csrfProtection, function(req, res) {
         function (err, account) {
           if(req.body.imageabilitySliderOneValue){
             account.einsteinPoints = account.einsteinPoints + 5;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+            }
           }
           if(req.body.imageProblem){
             account.einsteinPoints = account.einsteinPoints + 10;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+            }
           }
           account.save(function (err) {
             res.redirect('/complexity');
@@ -1197,9 +1389,21 @@ router.post('/complexity', csrfProtection, function(req, res) {
       function (err, account) {
         if(req.body.complexitySliderOneValue){
           account.einsteinPoints = account.einsteinPoints + 5;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+          }
         }
         if(req.body.complexProblem){
           account.einsteinPoints = account.einsteinPoints + 10;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+          }
         }
         account.save(function (err) {
           res.redirect('/precision');
@@ -1245,9 +1449,21 @@ router.post('/complexity', csrfProtection, function(req, res) {
         function (err, account) {
           if(req.body.complexitySliderOneValue){
             account.einsteinPoints = account.einsteinPoints + 5;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+            }
           }
           if(req.body.complexProblem){
             account.einsteinPoints = account.einsteinPoints + 10;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+            }
           }
           account.save(function (err) {
             res.redirect('/precision');
@@ -1334,9 +1550,21 @@ router.post('/precision', csrfProtection, function(req, res) {
       function (err, account) {
         if(req.body.precisionSliderOneValue){
           account.einsteinPoints = account.einsteinPoints + 5;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+          }
         }
         if(req.body.precisionProblem){
           account.einsteinPoints = account.einsteinPoints + 10;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+          }
         }
         account.save(function (err) {
           res.redirect('/variability');
@@ -1382,9 +1610,21 @@ router.post('/precision', csrfProtection, function(req, res) {
         function (err, account) {
           if(req.body.precisionSliderOneValue){
             account.einsteinPoints = account.einsteinPoints + 5;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+            }
           }
           if(req.body.precisionProblem){
             account.einsteinPoints = account.einsteinPoints + 10;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+            }
           }
           account.save(function (err) {
             res.redirect('/variability');
@@ -1474,9 +1714,21 @@ router.post('/variability', csrfProtection, function(req, res) {
       function (err, account) {
         if(req.body.variabilitySliderOneValue){
           account.einsteinPoints = account.einsteinPoints + 5;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+          }
         }
         if(req.body.variabilityProblem){
           account.einsteinPoints = account.einsteinPoints + 10;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+          }
         }
         account.save(function (err) {
           res.redirect('/sensitivity');
@@ -1522,9 +1774,21 @@ router.post('/variability', csrfProtection, function(req, res) {
         function (err, account) {
           if(req.body.variabilitySliderOneValue){
             account.einsteinPoints = account.einsteinPoints + 5;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+            }
           }
           if(req.body.variabilityProblem){
             account.einsteinPoints = account.einsteinPoints + 10;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+            }
           }
           account.save(function (err) {
             res.redirect('/sensitivity');
@@ -1612,9 +1876,21 @@ router.post('/sensitivity', csrfProtection, function(req, res) {
       function (err, account) {
         if(req.body.sensitivitySliderOneValue){
           account.einsteinPoints = account.einsteinPoints + 5;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+          }
         }
         if(req.body.sensitivityProblem){
           account.einsteinPoints = account.einsteinPoints + 10;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+          }
         }
         account.save(function (err) {
           res.redirect('/immaturity');
@@ -1660,9 +1936,21 @@ router.post('/sensitivity', csrfProtection, function(req, res) {
         function (err, account) {
           if(req.body.sensitivitySliderOneValue){
             account.einsteinPoints = account.einsteinPoints + 5;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+            }
           }
           if(req.body.sensitivityProblem){
             account.einsteinPoints = account.einsteinPoints + 10;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+            }
           }
           account.save(function (err) {
             res.redirect('/immaturity');
@@ -1752,9 +2040,21 @@ router.post('/immaturity', csrfProtection, function(req, res) {
       function (err, account) {
         if(req.body.immaturitySliderOneValue){
           account.einsteinPoints = account.einsteinPoints + 5;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+          }
         }
         if(req.body.immatureProblem){
           account.einsteinPoints = account.einsteinPoints + 10;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+          }
         }
         account.save(function (err) {
           res.redirect('/dangerous');
@@ -1800,9 +2100,21 @@ router.post('/immaturity', csrfProtection, function(req, res) {
         function (err, account) {
           if(req.body.immaturitySliderOneValue){
             account.einsteinPoints = account.einsteinPoints + 5;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+            }
           }
           if(req.body.immatureProblem){
             account.einsteinPoints = account.einsteinPoints + 10;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+            }
           }
           account.save(function (err) {
             res.redirect('/dangerous');
@@ -1888,9 +2200,21 @@ router.post('/dangerous', csrfProtection, function(req, res) {
       function (err, account) {
         if(req.body.dangerousSliderOneValue){
           account.einsteinPoints = account.einsteinPoints + 5;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+          }
         }
         if(req.body.dangerProblem){
           account.einsteinPoints = account.einsteinPoints + 10;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+          }
         }
         account.save(function (err) {
           res.redirect('/skills');
@@ -1936,9 +2260,21 @@ router.post('/dangerous', csrfProtection, function(req, res) {
         function (err, account) {
           if(req.body.dangerousSliderOneValue){
             account.einsteinPoints = account.einsteinPoints + 5;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+            }
           }
           if(req.body.dangerProblem){
             account.einsteinPoints = account.einsteinPoints + 10;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+            }
           }
           account.save(function (err) {
             res.redirect('/skills');
@@ -2025,9 +2361,21 @@ router.post('/skills', csrfProtection, function(req, res) {
       function (err, account) {
         if(req.body.skillsSliderOneValue){
           account.einsteinPoints = account.einsteinPoints + 5;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+          }
         }
         if(req.body.skillsProblem){
           account.einsteinPoints = account.einsteinPoints + 10;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+          }
         }
         account.save(function (err) {
           res.redirect('/ideas/' + thisIdea.name);
@@ -2073,9 +2421,21 @@ router.post('/skills', csrfProtection, function(req, res) {
         function (err, account) {
           if(req.body.skillsSliderOneValue){
             account.einsteinPoints = account.einsteinPoints + 5;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a viability score to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a viability score to an idea."];
+            }
           }
           if(req.body.skillsProblem){
             account.einsteinPoints = account.einsteinPoints + 10;
+            today = ideaSeedHelpers.getCurrentDate();
+            if(account.einsteinHistory){
+              account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea.");
+            } else {
+              account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding an imperfection to an idea."];
+            }
           }
           account.save(function (err) {
             res.redirect('/ideas/' + thisIdea.name);

@@ -16,6 +16,7 @@ var Account = new Schema({
     username		: {type: String, unique: true},
     password		: String,
     einsteinPoints	: {type: Number, default:0},
+    einsteinHistory : [String],
     rupees			: {type: Number, default:0},
     ideaSeeds       : [{type: Schema.Types.ObjectId, ref: 'IdeaSeed', autopopulate: true }],    
     aptitudes       : [{type: Schema.Types.ObjectId, ref: 'Aptitude', autopopulate: true }],

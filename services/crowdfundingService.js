@@ -60,8 +60,12 @@ exports._paypalPayContributors = function(data) {
 exports.createCampaign = function(campaignData, account, ideaName) {
   return IdeaSeed.findOne({name: ideaName}).then(function(ideaSeed) {
     var prizeValues = Object.keys(campaignData)
-      .filter(function(key) { return key.startsWith('prizeName') })
-      .map(function(key) { return key.substring(9) });
+      .filter(function(key) { 
+        return key.startsWith('prizeName') 
+      })
+      .map(function(key) { 
+        return key.substring(9) 
+      });
 
     var prizeIds = prizeValues.map(function(val) {
       var prize = new CampaignPrize({

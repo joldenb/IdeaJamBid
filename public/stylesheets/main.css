@@ -718,6 +718,8 @@ a.plus-overlay img{
 
 .placeholder {
   display: inline-block;
+  border-radius: 20px;
+
 }
 
 .profile-headshot:hover .placeholder {
@@ -792,11 +794,11 @@ a.plus-overlay img{
   line-height: 45px;
   height: 50px;
   width: 50px;
-  vertical-align: bottom;
   margin: 0 1em;
   border: 3px solid #D6DE26;
   color: #D6DE26;
   text-align: center;
+  border-radius: 25px;
 }
 
 .imagineer-profile.profile-einstein-points {
@@ -952,7 +954,7 @@ button.btn.btn-info.modal-view-all {
 }
 
 .header .newUserName {
-  padding-right: 1%;
+  padding-right: .5%;
 }
 
 .navbar-brand {
@@ -1167,14 +1169,13 @@ button.suggestion-tactics, button.suggestion-targets {
     display: block;
     padding-top: 10px;
   }
-  body > div.header.navbar.navbar-default > div > div.dropdown.custom-nav.open > ul#test {
-    right: 0;
-    left: auto;
+  body  div.header.navbar.navbar-default  div  div.dropdown.custom-nav  ul {
     background-color: #414142;
   }
-  body > div.header.navbar.navbar-default > div > div.dropdown.custom-nav.open > .btn {
+  body  div.header.navbar.navbar-default  div  div.dropdown.custom-nav  .btn {
     color: white;
   }  
+
   .custom-nav button.btn {
     padding: 0;
     background-color: transparent;
@@ -1190,6 +1191,11 @@ button.suggestion-tactics, button.suggestion-targets {
   .desktopOnly {
     display: block;
   }  
+
+  .custom-nav .navbar-nav > li {
+    list-style-type: none;
+    display:inline; 
+  }
 
 }
 
@@ -1285,10 +1291,6 @@ button.suggestion-tactics, button.suggestion-targets {
   margin-top:1em;
 }
 
-.navbar-brand img{
-  max-width: 300px;
-  display: inline;
-}
 
 .jamH2 {
   font-family: Roboto Slab, serif;
@@ -1593,6 +1595,15 @@ button.suggestion-tactics, button.suggestion-targets {
     display: none;
   }
 
+  .navbar-brand img{
+    max-width: 300px !important;
+  }
+
+
+}
+
+.navbar-brand img{
+  display: inline;
 }
 
 .aboutPadding {
@@ -1717,3 +1728,39 @@ button.suggestion-tactics, button.suggestion-targets {
   padding:1em;
   border-radius:5px;
 }
+
+.navbar-header {
+    float: none;
+}
+.navbar-toggle.desktop {
+    display: block;
+}
+.navbar-collapse {
+    border-top: 1px solid transparent;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.navbar-nav {
+    float: none!important;
+    margin: 7.5px -15px;
+}
+.navbar-nav>li {
+    float: none;
+}
+.navbar-nav>li>a {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.einsteinHistoryDropdown {
+  width: 400px !important;
+}
+
+.einsteinHistoryDropdown li {
+  padding: .5em;
+  border-top: 1px solid lightgray;
+}
+
+.einsteinHistoryDropdown li.first {
+  border: none;
+} 

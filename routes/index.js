@@ -31,6 +31,8 @@ var uploading = multer({
   dest: '../uploads/'
 });
 
+var today;
+
 router.use(function (req, res, next) {
   res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
   req.body = JSON.parse(sanitizer.sanitize(JSON.stringify(mongoSanitize(req.body))));
@@ -1038,6 +1040,12 @@ router.post('/introduce-idea', csrfProtection, function(req, res) {
       Account.findById( req.user.id,
         function (err, account) {
           account.einsteinPoints = account.einsteinPoints + 5;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a challenge for your idea.");
+          } else {
+            account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a challenge for your idea."];
+          }
           account.save(function (err) {});
       });
       console.log('The raw response from Mongo was ', raw);
@@ -1102,6 +1110,12 @@ router.post('/accomplish', csrfProtection, function(req, res) {
       Account.findById( req.user.id,
         function (err, account) {
           account.einsteinPoints = account.einsteinPoints + 5;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by adding a solution for your idea.");
+          } else {
+            account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by adding a solution for your idea."];
+          }
           account.save(function (err) {});
       });
       res.redirect("/ideas/yet-to-be-named");
@@ -1148,6 +1162,12 @@ router.post('/suggestion-submit', csrfProtection, function(req, res) {
       function (err, account) {
         var points = parseInt(req.body.pointValue.slice(1));
         account.einsteinPoints = account.einsteinPoints + points;
+        today = ideaSeedHelpers.getCurrentDate();
+        if(account.einsteinHistory){
+          account.einsteinHistory.push("You earned " + points + " Einstein Points on " + today + " by making a suggestion to an idea.");
+        } else {
+          account.einsteinHistory = ["You earned " + points + " Einstein Points on " + today + " by making a suggestion to an idea."];
+        }
         account.save(function (err) {});
     });
 
@@ -1214,6 +1234,12 @@ router.post('/suggestion-submit-new', csrfProtection, function(req, res) {
               function (err, account) {
                 var points = parseInt(req.body.points);
                 account.einsteinPoints = account.einsteinPoints + points;
+                today = ideaSeedHelpers.getCurrentDate();
+                if(account.einsteinHistory){
+                  account.einsteinHistory.push("You earned " + points + " Einstein Points on " + today + " by making a suggestion to an idea.");
+                } else {
+                  account.einsteinHistory = ["You earned " + points + " Einstein Points on " + today + " by making a suggestion to an idea."];
+                }
                 account.save(function (err) {});
             });
             Component.create(newSuggestion,
@@ -1230,6 +1256,12 @@ router.post('/suggestion-submit-new', csrfProtection, function(req, res) {
         function (err, account) {
           var points = parseInt(req.body.points);
           account.einsteinPoints = account.einsteinPoints + points;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned " + points + " Einstein Points on " + today + " by making a suggestion to an idea.");
+          } else {
+            account.einsteinHistory = ["You earned " + points + " Einstein Points on " + today + " by making a suggestion to an idea."];
+          }
           account.save(function (err) {});
       });
       Component.create(newSuggestion,
@@ -1387,6 +1419,12 @@ router.post('/save-idea-name', csrfProtection, function(req, res) {
       Account.findById( req.user.id,
         function (err, account) {
           account.einsteinPoints = account.einsteinPoints + 5;
+          today = ideaSeedHelpers.getCurrentDate();
+          if(account.einsteinHistory){
+            account.einsteinHistory.push("You earned 5 Einstein Points on " + today + " by giving your idea a title.");
+          } else {
+            account.einsteinHistory = ["You earned 5 Einstein Points on " + today + " by giving your idea a title."];
+          }
           account.save(function (err) {});
       });
 
@@ -1616,6 +1654,12 @@ router.post('/image-upload', csrfProtection, function(req, res) {
               Account.findById( req.user.id,
                 function (err, account) {
                   account.einsteinPoints = account.einsteinPoints + 25;
+                  today = ideaSeedHelpers.getCurrentDate();
+                  if(account.einsteinHistory){
+                    account.einsteinHistory.push("You earned 25 Einstein Points on " + today + " by adding an image to your idea.");
+                  } else {
+                    account.einsteinHistory = ["You earned 25 Einstein Points on " + today + " by adding an image to your idea."];
+                  }
                   account.save(function (err) {});
               });
               res.json({"redirectURL" : '/image-upload'});
@@ -2017,6 +2061,12 @@ router.post('/approve-suggestions', csrfProtection, function(req, res) {
           {
             if(account){
               account.einsteinPoints = account.einsteinPoints + 100;
+              today = ideaSeedHelpers.getCurrentDate();
+              if(account.einsteinHistory){
+                account.einsteinHistory.push("You earned 100 Einstein Points on " + today + " by having one of your suggestions accepted by another inventor.");
+              } else {
+                account.einsteinHistory = ["You earned 100 Einstein Points on " + today + " by having one of your suggestions accepted by another inventor."];
+              }
               account.save(function (err) {});
             }
           });
@@ -3318,6 +3368,12 @@ router.post('/save-component', csrfProtection, function(req, res) {
           Account.findById( req.user.id,
             function (err, account) {
               account.einsteinPoints = account.einsteinPoints + 10;
+              today = ideaSeedHelpers.getCurrentDate();
+              if(account.einsteinHistory){
+                account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by saving a component for your idea.");
+              } else {
+                account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by saving a component for your idea."];
+              }
               account.save(function (err) {});
           });
         });
@@ -3342,6 +3398,12 @@ router.post('/save-component', csrfProtection, function(req, res) {
           Account.findById( req.user.id,
             function (err, account) {
               account.einsteinPoints = account.einsteinPoints + 10;
+              today = ideaSeedHelpers.getCurrentDate();
+              if(account.einsteinHistory){
+                account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by saving a component for your idea.");
+              } else {
+                account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by saving a component for your idea."];
+              }
               account.save(function (err) {});
           });
         });
@@ -4176,6 +4238,12 @@ router.post('/add-related-component', csrfProtection, function(req, res) {
             Account.findById( req.user.id,
               function (err, account) {
                 account.einsteinPoints = account.einsteinPoints + 20;
+                today = ideaSeedHelpers.getCurrentDate();
+                if(account.einsteinHistory){
+                  account.einsteinHistory.push("You earned 20 Einstein Points on " + today + " by adding a component relationship to your idea.");
+                } else {
+                  account.einsteinHistory = ["You earned 20 Einstein Points on " + today + " by adding a component relationship to your idea."];
+                }
                 account.save(function (err) {});
             });
             res.redirect('/component-profile/'+compIdentifier);

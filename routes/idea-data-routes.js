@@ -21,6 +21,7 @@ var uploading = multer({
   dest: '../uploads/'
 });
 
+var today;
 
 ////////////////////////////////////////////////
 // Add a problem to an idea seed
@@ -52,6 +53,12 @@ router.post('/add-idea-problem', csrfProtection, function(req, res) {
           Account.findById( req.user.id,
             function (err, account) {
               account.einsteinPoints = account.einsteinPoints + 15;
+              today = ideaSeedHelpers.getCurrentDate();
+              if(account.einsteinHistory){
+                account.einsteinHistory.push("You earned 15 Einstein Points on " + today + " by adding an imperfection to an idea.");
+              } else {
+                account.einsteinHistory = ["You earned 15 Einstein Points on " + today + " by adding an imperfection to an idea."];
+              }
               account.save(function (err) {});
           });
 
@@ -161,6 +168,12 @@ router.post('/add-idea-component', csrfProtection, function(req, res) {
                 Account.findById( req.user.id,
                   function (err, account) {
                     account.einsteinPoints = account.einsteinPoints + 10;
+                    today = ideaSeedHelpers.getCurrentDate();
+                    if(account.einsteinHistory){
+                      account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding a component to an idea.");
+                    } else {
+                      account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding a component to an idea."];
+                    }
                     account.save(function (err) {});
                 });
 
@@ -177,6 +190,12 @@ router.post('/add-idea-component', csrfProtection, function(req, res) {
           Account.findById( req.user.id,
             function (err, account) {
               account.einsteinPoints = account.einsteinPoints + 10;
+              today = ideaSeedHelpers.getCurrentDate();
+              if(account.einsteinHistory){
+                account.einsteinHistory.push("You earned 10 Einstein Points on " + today + " by adding a component to an idea.");
+              } else {
+                account.einsteinHistory = ["You earned 10 Einstein Points on " + today + " by adding a component to an idea."];
+              }
               account.save(function (err) {});
           });
           res.json(newComponent);

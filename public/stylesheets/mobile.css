@@ -1,4 +1,7 @@
 @media (max-width: 768px) {
+	.header .newUserName {
+  	padding-right: 1%;
+	}
 
 	.container {
 		width: 90%;

@@ -1,6 +1,6 @@
 .container-fluid.custom-header
   .navbar-header
-    button(type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false")
+    button(type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1")
       span(class="sr-only") Toggle navigation
       span(class="icon-bar")
       span(class="icon-bar")
@@ -47,41 +47,64 @@
           a.home-logout.btn.btn-vision( href="/"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") Log In
 
   .dropdown.custom-nav
-    a(class="navbar-brand" href="/")
-      img(src="/IdeaJam-prebeta.png")
-    if Object.keys(user).length != 0
-      span.newUserName #{user.nickname}
-    else
-      span.newUserName Welcome Imagineer!      
-
-    if headshot
-      button.btn.dropdown-toggle(type='button')
-        div(class="placeholder" style="height: 40px; width: 40px; background-image : url('" + headshot + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;")
-        div(class="profile-einstein-points") #{user.einsteinPoints || "0"}     
-    else
-      button.btn.dropdown-toggle(type='button')
-        div(class="placeholder" style="height: 40px; width: 40px; background-image : url('/avatar.png');  background-position: center center; background-repeat: no-repeat; background-size: cover;")
-        div(class="profile-einstein-points") #{user.einsteinPoints || "0"}
-     ul.dropdown-menu(id="test")
+    ul(class="nav navbar-nav")
+      li
+        a(class="navbar-brand" href="/")
+          img(src="/IdeaJam-prebeta.png")
       if Object.keys(user).length != 0
         li
-          a.home-logout.btn.btn-vision( href="/jam/Startup%20Denver%20Pitch%20Battle"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Startup Pitch Battle
+          span.newUserName #{user.nickname}
+      else
         li
-          a.home-logout.btn.btn-vision( href="/ideas"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") View All Ideas
-        if user.nickname
-          li
-            a.home-logout.btn.btn-vision( href="/imagineer/" + user.nickname ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") My Profile
+          span.newUserName Welcome Imagineer!      
+
+      if headshot
         li
-          a.home-logout.btn.btn-vision( href="/about"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") About IdeaJam
+          div(class="placeholder" style="height: 40px; width: 40px; margin-bottom: -13px; background-image : url('" + headshot + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;")
         li
-          a.home-logout.btn.btn-vision( href="/logout"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") Log Out
-      else 
+          div(class="dropdown-toggle profile-einstein-points" data-toggle="dropdown") #{user.einsteinPoints || "0"}     
+          ul.einsteinHistoryDropdown.dropdown-menu.dropdown-menu-right
+            if user.einsteinHistory && user.einsteinHistory.length > 0
+              each item, index in user.einsteinHistory
+                if index < 6
+                  li(class="#{index == 0 ? 'first' : ''}") #{item}
+
+      else
         li
-          a.home-logout.btn.btn-vision( href="/jam/Startup%20Denver%20Pitch%20Battle"  ontouchstart="this.style.background = '#D6DE26';") Startup Pitch Battle
+          div(class="placeholder" style="height: 40px; width: 40px; margin-bottom: -13px; background-image : url('/avatar.png');  background-position: center center; background-repeat: no-repeat; background-size: cover;")
         li
-          a.home-logout.btn.btn-vision( href="/about"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") About IdeaJam
-        li
-          a.home-logout.btn.btn-vision( href="/"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") Log In
+          div(class="dropdown-toggle profile-einstein-points" data-toggle="dropdown") #{user.einsteinPoints || "0"}
+            ul.einsteinHistoryDropdown.dropdown-menu.dropdown-menu-right
+              if user.einsteinHistory && user.einsteinHistory.length > 0
+                each item, index in user.einsteinHistory
+                  if index < 6
+                    li(class="#{index == 0 ? 'first' : ''}") #{item}
+      li
+        button(type="button" class="navbar-toggle desktop dropdown-toggle" data-toggle="dropdown")
+          span(class="sr-only") Toggle navigation
+          span(class="icon-bar")
+          span(class="icon-bar")
+          span(class="icon-bar")
+        ul.dropdown-menu.dropdown-menu-right(id="test")
+          if Object.keys(user).length != 0
+            li
+              a.home-logout.btn.btn-vision( href="/jam/Startup%20Denver%20Pitch%20Battle"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Startup Pitch Battle
+            li
+              a.home-logout.btn.btn-vision( href="/ideas"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") View All Ideas
+            if user.nickname
+              li
+                a.home-logout.btn.btn-vision( href="/imagineer/" + user.nickname ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") My Profile
+            li
+              a.home-logout.btn.btn-vision( href="/about"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") About IdeaJam
+            li
+              a.home-logout.btn.btn-vision( href="/logout"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") Log Out
+          else 
+            li
+              a.home-logout.btn.btn-vision( href="/jam/Startup%20Denver%20Pitch%20Battle"  ontouchstart="this.style.background = '#D6DE26';") Startup Pitch Battle
+            li
+              a.home-logout.btn.btn-vision( href="/about"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") About IdeaJam
+            li
+              a.home-logout.btn.btn-vision( href="/"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") Log In
 
 
     include 

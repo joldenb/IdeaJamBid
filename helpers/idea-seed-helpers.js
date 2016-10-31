@@ -320,22 +320,37 @@ var getUserHeadshot = function getUserHeadshot(req){
 var getImageOrientation = function getImageOrientation(string){
 	var returnStyle = "";
 	switch (string) {
-	  case 1 :
-	    returnStyle = "";
-	    break;
-	  case 6 :
-	    returnStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
-	    break;
-	  case 3 :
-	    returnStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
-	    break;
-	  case 8 :
-	    returnStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
-	    break;
+		case 1 :
+			returnStyle = "";
+			break;
+		case 6 :
+			returnStyle = "-webkit-transform: rotate(90deg);-moz-transform: rotate(90deg);-o-transform: rotate(90deg);-ms-transform: rotate(90deg);transform: rotate(90deg);";
+			break;
+		case 3 :
+			returnStyle = "-webkit-transform: rotate(180deg);-moz-transform: rotate(180deg);-o-transform: rotate(180deg);-ms-transform: rotate(180deg);transform: rotate(180deg);";
+			break;
+		case 8 :
+			returnStyle = "-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);-ms-transform: rotate(270deg);transform: rotate(270deg);";
+			break;
 	}
 	return returnStyle;
 }
 
+var getCurrentDate = function getCurrentDate(){
+  var today = new Date();
+  var dd = today.getDate();
+  var mm = today.getMonth()+1; //January is 0!
+  var yyyy = today.getFullYear();
+  if(dd<10) {
+      dd='0'+dd
+  } 
+  if(mm<10) {
+      mm='0'+mm
+  } 
+  return mm+'/'+dd+'/'+yyyy;
+}
+
+exports.getCurrentDate = getCurrentDate;
 exports.getUserHeadshot = getUserHeadshot;
 exports.getApplicationStrength = getApplicationStrength;
 exports.getStrengthData = getStrengthData;
