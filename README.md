@@ -27,6 +27,12 @@ You just deploy to GitHub in the normal way (e.g. "git push origin develop").  C
 
 [The Production Site](https://ideajam.io/)
 
+## Running tests
+
+Run `npm test`. To debug use the command in the package.json file (currently `mocha 'spec/**/*.js'` with full path to mocha)
+
+Test use mongodb at 'localhost:27017/ideaJamSpec'. The tests drop and recreate the database and the start.
+
 ## Other notes
 
 Despite the code being in one repo on GitHub, there are two Heroku projects corresponding to the environments.  Each environment has their own plugins, etc.  One big difference is that the MongoDB host for the development/staging project is mLab, and the production site uses Mongo Atlas.  mLab is an official partner of Heroku and Mongo Atlas is not, so you can access the mLab dashboard through Heroku, whereas Mongo Atlas must be accessed indpendently.  
