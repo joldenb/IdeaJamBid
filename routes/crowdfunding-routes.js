@@ -48,11 +48,18 @@ router.get('/ideas/:ideaName/campaign/connect', csrfProtection, function(req, re
   }
 
   var query = IdeaSeed.findOne({"name" : req.params.ideaName});
+
+  var redirectUri = 'https://' + req.hostname + '/stripe-campaign-connect';
+  if(req.hostname === 'localhost') {
+    redirectUri = 'http://localhost:5000/stripe-campaign-connect';
+  }
+
   query.exec().then(function(idea){
     res.render('pages/campaign/connect', {
       csrfToken: req.csrfToken(),
       user: req.user,
-      idea: idea
+      idea: idea,
+      redirectUri: redirectUri
     })
   });
 });
