@@ -96,3 +96,15 @@ exports.payContributors = function(contributors, ideaName) {
   var paypalMap = buildPaypalPayContributors(contributors, 3000);
   return this._paypalPayContributors(paypalMap);
 };
+
+exports.getOpenCampaign = function(ideaSeed) {
+  var openCampaigns = ideaSeed.campaigns.filter(function(campaign) { return campaign.state === 'open' });
+  if(openCampaigns.length > 1) {
+    console.log("Found multiple open campaigns for the idea: " + ideaSeed.name);
+    throw new Error("Found multiple open campaigns for the idea: " + ideaSeed.name);
+    return undefined;
+  } else if(openCampaigns.length < 1) {
+    return undefined;
+  }
+  return openCampaigns[0];
+};

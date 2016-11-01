@@ -5,6 +5,7 @@ var _ = require('underscore');
 var ObjectId = mongoose.Schema.Types.ObjectId;
 var aws = require('aws-sdk');
 var env = require('node-env-file');
+var CrowdfundingService = require('../services/crowdfundingService');
 var IdeaImage = require('../models/ideaImage');
 var Aptitude = require('../models/aptitude');
 var IdeaReview = require('../models/ideaReviews');
@@ -2322,6 +2323,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
     "Area : Skills"
   ];
   var ideaAptitudes;
+  var openCampaign;
 
   query.exec()
   .then(function(idea){
@@ -2345,6 +2347,8 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
       throw new Error('abort promise chain');
       return;
     }
+
+    openCampaign = CrowdfundingService.getOpenCampaign(idea);
 
     return ideaSeedHelpers.getApplicationStrength(idea.id)
   })
@@ -2492,7 +2496,8 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
       problems : problems,
       components : components,
       viabilities : viabilities,
-      listOfProblems : listOfProblems
+      listOfProblems : listOfProblems,
+      openCampaign: openCampaign
     });
   
   })

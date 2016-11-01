@@ -54,9 +54,9 @@ html
               a.btn.btn-electric.btn-lg.btn-block#inviteCollaboratorsButton(type="button" data-toggle="modal" data-target="#inviteCollaboratorsModal") Invite Collaborators
         .row
           .col-xs-12
-          if inventorName !== user.username
+          if inventorName !== user.username && openCampaign !== undefined
             a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign' ontouchstart="this.style.background = '#007338';") Fund This Idea
-          else if idea.visibility === "public"
+          else if inventorName === user.username && idea.visibility === "public"
             a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign/new' ontouchstart="this.style.background = '#007338';") Crowdfund
 
           .col-xs-12(style="display:none;")

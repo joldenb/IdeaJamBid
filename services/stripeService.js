@@ -1,5 +1,6 @@
 var exports = module.exports = {};
 var requestpromise = require('request-promise');
+var CrowdfundingService = require('./crowdfundingService');
 var Account = require('../models/account');
 var IdeaSeed = require('../models/ideaSeed');
 var StripeCredentials = require('../models/stripeCredentials');
@@ -38,15 +39,6 @@ function campaignCharge(customerId, amount, idea, hostAccount) {
   }
 }
 
-function getOpenCampaign(ideaSeed) {
-  var openCampaigns = ideaSeed.campaigns.filter(function(campaign) { return campaign.state === 'open' });
-  if(openCampaigns.length !== 1) {
-    console.log("Could not find a single open campaign for the idea: " + ideaSeed.name);
-    throw new Error("Could not find a single open campaign for the idea: " + ideaSeed.name);
-  }
-  return openCampaigns[0];
-}
-
 exports.basicCharge = function(tokenId, amount) {
   return stripe.charges.create({
     amount: amount, // Amount in cents
@@ -79,7 +71,11 @@ exports.delayedChargeCreation = function(tokenId, amount, user, ideaName) {
       throw new Error("Can't find idea with name: " + ideaName);
     }
 
-    var campaign = getOpenCampaign(idea);
+    var campaign = CrowdfundingService.getOpenCampaign(idea);
+    if(campaign === undefined) {
+      console.error('Could not find an open campaign to create future payment for with ideaName ' + ideaName);
+      throw new Error('Could not find an open campaign to create future payment for');
+    }
 
     var campaignPayment = new CampaignPayment({username: user.username, stripeCustomerId: stripeCustomer.id, amount: amount});
     return campaignPayment.save().then(function (campaignPayment) {
@@ -94,7 +90,11 @@ exports.delayedChargeCreation = function(tokenId, amount, user, ideaName) {
 exports.fundCampaign = function(ideaName) {
   return IdeaSeed.findOne({"name" : ideaName}).then(function (idea){
     return Account.findOne({'username': idea.inventorName}).then(function (account) {
-      var campaign = getOpenCampaign(idea);
+      var campaign = CrowdfundingService.getOpenCampaign(idea);
+      if(campaign === undefined) {
+        console.error('Could not find an open campaign to fund for ideaName ' + ideaName);
+        throw new Error('Could not find an open campaign to fund');
+      }
       campaign.populate('payments.campaignpayment');
       return CampaignPayment.find({'_id': {$in: campaign.payments}}).exec().then(function (payments) {
         var charges = payments.map(function(campaignPayment) {
