@@ -7,12 +7,21 @@ html
     include ../../partials/header.jade
 
   .container-fluid
+    .row.text-center
+      .col-xs-12
+        h1 Fund #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}!
+      .col-xs-12
+        h3.fundSubHeader solves the <span class="problemColor">problem of #[a(href='/introduce-idea') #{idea.problem}]</span> by #[a(href='/accomplish') <span class="solutionColor">#{idea.description}]</span>
     .row
-      h1 Fund This Idea!
-    .row
-      p Here is a video      
-    .row
-      p Target: $5000
+      .col-sm-4
+        h2 #{campaign.payments.length}
+          small funders
+      .col-sm-4
+        h2 #{funderTotalPayments}
+          small raised of $#{campaign.goal}
+      .col-sm-4
+        h2 #{daysLeft}
+          small days left
     .row
       p Rewards: $250
         input(type="hidden", name="_csrf", value="#{csrfToken}")

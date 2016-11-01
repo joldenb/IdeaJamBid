@@ -2,6 +2,7 @@ var exports = module.exports = {};
 var IdeaSeed = require('../models/ideaSeed');
 var Campaign = require('../models/campaign');
 var CampaignPrize = require('../models/campaignPrize');
+var CampaignPayment = require('../models/campaignPayment');
 var moment = require('moment');
 var paypal = require('paypal-rest-sdk');
 
@@ -107,4 +108,17 @@ exports.getOpenCampaign = function(ideaSeed) {
     return undefined;
   }
   return openCampaigns[0];
+};
+
+exports.sumPayments = function(campaign) {
+  return CampaignPayment.aggregate([
+    {$match: {'_id': {$in: campaign.payments}}},
+    {$group: {'_id': null, total: {$sum: '$amount'}}}
+    ]).exec().then(function(result) {
+      if(result.length === 0) {
+        return 0;
+      } else {
+        return result[0].total;
+      }
+  });
 };

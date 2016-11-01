@@ -60,7 +60,7 @@ router.get('/ideas/:ideaName/campaign/connect', csrfProtection, function(req, re
       user: req.user,
       idea: idea,
       redirectUri: redirectUri,
-      stripeClientId: process.env.STRIPE_CLIENT_ID,
+      stripeClientId: process.env.STRIPE_CLIENT_ID
     })
   });
 });
@@ -94,10 +94,16 @@ router.get('/ideas/:ideaName/campaign', csrfProtection, function(req, res){
 
   var query = IdeaSeed.findOne({"name" : req.params.ideaName});
   query.exec().then(function(idea){
-    res.render('pages/campaign/view', {
-      csrfToken: req.csrfToken(),
-      user: req.user,
-      idea: idea
+    var openCampaign = crowdfundingService.getOpenCampaign(idea);
+
+    crowdfundingService.sumPayments(openCampaign).then(function (totalPayments) {
+      res.render('pages/campaign/view', {
+        csrfToken: req.csrfToken(),
+        user: req.user,
+        idea: idea,
+        campaign: openCampaign,
+        funderTotalPayments: totalPayments
+      });
     });
   });
 });

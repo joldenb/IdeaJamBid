@@ -6,12 +6,14 @@ chai.use(sinonChai);
 
 var CrowdfundingService = require('../../services/crowdfundingService');
 var CampaignPrize = require('../../models/campaignPrize');
+var CampaignPayment = require('../../models/campaignPayment');
+var IdeaSeed = require('../../models/ideaSeed');
 var SpecHelper = require('../specHelper');
 
+const ideaName = 'automation';
 
 describe('Crowdfunding Service', function () {
   it('should create a campaign', function (done) {
-    var ideaName = 'automation';
     var body = {
       goal: "10000",
       prizeName0: "1 automa",
@@ -58,7 +60,6 @@ describe('Crowdfunding Service', function () {
   });
 
   it('should pay contributors of the campaign', function () {
-    var ideaName = 'automation';
     var stub = sinon.stub(CrowdfundingService, '_paypalPayContributors');
     stub.returns(true);
 
@@ -69,5 +70,37 @@ describe('Crowdfunding Service', function () {
         data.items[0].amount.value == 1500 &&
         data.items[0].receiver == 'billingb@gmail.com';
     }));
+  });
+
+  it('should compute the total raised for a campaign', function(done) {
+    IdeaSeed.findOne({name: ideaName}).exec().then(function(ideaSeed) {
+      var campaign = CrowdfundingService.getOpenCampaign(ideaSeed);
+
+      var payments = [250, 350, 500].map(function (payment) {
+        var campaignPayment = new CampaignPayment({
+          username: 'testuser@fake.com',
+          stripeCustomerId: '123',
+          amount: payment
+        });
+        return campaignPayment.save().then(function (campaignPayment) {
+          campaign.payments.push(campaignPayment.id);
+          return campaign.save();
+        });
+      });
+
+      Promise.all(payments).then(function () {
+        IdeaSeed.findOne({name: ideaName}).exec().then(function (ideaSeed) {
+          var campaign = CrowdfundingService.getOpenCampaign(ideaSeed);
+          CrowdfundingService.sumPayments(campaign).then(function (sum) {
+            try {
+              sum.should.eql(1100);
+              done();
+            } catch (error) {
+              done(error);
+            }
+          });
+        });
+      });
+    });
   });
 });

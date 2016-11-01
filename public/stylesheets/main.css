@@ -1780,3 +1780,7 @@ button.suggestion-tactics, button.suggestion-targets {
   margin-right: 5px;
   margin-bottom: 0;
 }
+
+.fundSubHeader {
+  margin-top: 0;
+}
