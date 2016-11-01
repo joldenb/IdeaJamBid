@@ -80,6 +80,7 @@ router.get('/stripe-campaign-connect', csrfProtection, function(req, res) {
       return;
     })
     .catch(function (err) {
+      console.error('Error in connecting Stripe account: ', err);
       res.render('pages/404'); //TODO: make error page for connecting
     });
 });

@@ -124,6 +124,7 @@ exports.connect = function(stripeInfo, user) {
     var postResponse = values[1];
 
     if(!account){
+      console.error("When connecting accounts can't find user with username: " + account.username)
       throw new Error("Can't find user with username: " + account.username);
     }
 
@@ -136,6 +137,7 @@ exports.connect = function(stripeInfo, user) {
         var stateParts = stripeInfo.state.split(',');
         return stateParts[0];
       }
+      console.error('After connecting accounts failed to get state info');
       return null;
     });
   });
