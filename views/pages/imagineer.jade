@@ -36,7 +36,8 @@ html
               ul
                 each aptitude in aptitudes
                   li(data-apt-id="#{aptitude.identifier}")
-                    p #{aptitude.title}
+                    a(href='/aptitudes/'+ aptitude.title)
+                      p #{aptitude.title}
           if Object.keys(user).length != 0 && user.id == profileAccount.id
               a.home-login.btn.btn-success.btn-lg.btn-block( href="/imagineer-picture/") Edit My Profile
           

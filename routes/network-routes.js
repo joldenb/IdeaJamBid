@@ -895,12 +895,12 @@ router.get('/aptitudes/:aptitudeName', csrfProtection, function(req, res){
               });
 
 
-              _.each(allIdeas, function(ideaKey, index){
-                if(Object.keys(reviewScores).indexOf(allIdeas[index]) == -1){
-                  reviewScores[allIdeas[index]] = 0;
+              _.each(ideas, function(ideaKey, index){
+                if(Object.keys(reviewScores).indexOf(ideas[index]) == -1){
+                  reviewScores[ideas[index].id] = 0;
                 }
               });
-              
+
 
               // reviewScores is an object with idea seed ids as the keys and
               // the average review score as the value. we need to sort them,
@@ -1003,48 +1003,32 @@ router.get('/aptitudes/:aptitudeName', csrfProtection, function(req, res){
                 Account.find({"username" : {$in : inventorList}},
                   function(err, accounts){
                     if(err){ console.log("error is " + err)}
-                    var accountPictures = _.map(accounts, function(account){
-                      if(account.headshots){
-                        return account.headshots[0];
-                      } else {
-                        return "";
-                      }
-                    });
-
-                    accountPictures = _.without(accountPictures, "");
-                    IdeaImage.find({"_id" : {$in : accountPictures}}, function(err, profilePictures){
-                      if(err){ console.log("error is " + err)}
-                      if(profilePictures){
-                        //find which ideaList item is connected to the right profile picture
-                        for(var j=0; j < ideaList.length; j++){
-                          //find the account with the right username
-                          for(var k = 0; k < accounts.length; k++){
-                            if(accounts[k].username == ideaList[j][3]){
-                              //find the profile picture with the id that matches the accounts
-                              // first profile picture ID and attach it to the ideaList
-                              if(accounts[k].headshots && accounts[k].headshots[0]){
-                                for(var n = 0; n < profilePictures.length; n++){
-                                  if(profilePictures[n]["id"].toString() == accounts[k].headshots[0].toString()
-                                    && profilePictures[n]["amazonURL"]){
-                                    ideaList[j].push(profilePictures[n]["amazonURL"]);
-                                    var creatorHeadshotStyle = "";
-                                    creatorHeadshotStyle = ideaSeedHelpers.getImageOrientation(profilePictures[n]["orientation"]);
-                                    ideaList[j].push(creatorHeadshotStyle);
-                                  }
-                                }
-                              }
-
-                              //tack on the account nick name to display in the block
-                              if(accounts[k].nickname){
-                                ideaList[j].push(accounts[k].nickname);
-                              } else {
-                                ideaList[j].push("User");
-                              }
-
-                            }
+                    //find which ideaList item is connected to the right profile picture
+                    for(var j=0; j < ideaList.length; j++){
+                      //find the account with the right username
+                      for(var k = 0; k < accounts.length; k++){
+                        if(accounts[k].username == ideaList[j][3]){
+                          //find the profile picture with the id that matches the accounts
+                          // first profile picture ID and attach it to the ideaList
+                          if(accounts[k].headshots && accounts[k].headshots[0]){
+                            ideaList[j].push(accounts[k].headshots[0]["amazonURL"]);
+                            var creatorHeadshotStyle = "";
+                            creatorHeadshotStyle = ideaSeedHelpers.getImageOrientation(accounts[k].headshots[0]["orientation"]);
+                            ideaList[j].push(creatorHeadshotStyle);
+                          } else {
+                            ideaList[j].push("") // no image url
+                            ideaList[j].push("") // no image style
+                          }
+                          //tack on the account nick name to display in the block
+                          if(accounts[k].nickname){
+                            ideaList[j].push(accounts[k].nickname);
+                          } else {
+                            ideaList[j].push("User");
                           }
                         }
+
                       }
+                    }
                       return res.render('pages/aptitude-profile', {
                         csrfToken: req.csrfToken(),
                         user : req.user || {},
@@ -1055,7 +1039,6 @@ router.get('/aptitudes/:aptitudeName', csrfProtection, function(req, res){
                         accountNameAndURLs : accountNameAndURLs
 
                       });
-                    });
                   }); //end of account lookup
                 });
               });

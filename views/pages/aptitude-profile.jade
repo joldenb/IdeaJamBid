@@ -6,7 +6,6 @@ html
 		.header.navbar.navbar-default
 			include ../partials/header.jade
 
-
 		.container.network-profile.aptitude-profile
 			h2 #{thisAptitude.title}
 			h3 Aptitude Leaders
@@ -111,3 +110,5 @@ html
 			else
 				p <i>No ideas in this aptitude area have been reviewed yet.</i>
 			br
+	include ../partials/js-includes.jade
+	script(type="text/javascript").

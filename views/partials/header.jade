@@ -74,11 +74,11 @@
           div(class="placeholder" style="height: 40px; width: 40px; margin-bottom: -13px; background-image : url('/avatar.png');  background-position: center center; background-repeat: no-repeat; background-size: cover;")
         li
           div(class="dropdown-toggle profile-einstein-points" data-toggle="dropdown") #{user.einsteinPoints || "0"}
-            ul.einsteinHistoryDropdown.dropdown-menu.dropdown-menu-right
-              if user.einsteinHistory && user.einsteinHistory.length > 0
-                each item, index in user.einsteinHistory
-                  if index < 6
-                    li(class="#{index == 0 ? 'first' : ''}") #{item}
+          ul.einsteinHistoryDropdown.dropdown-menu.dropdown-menu-right
+            if user.einsteinHistory && user.einsteinHistory.length > 0
+              each item, index in user.einsteinHistory
+                if index < 6
+                  li(class="#{index == 0 ? 'first' : ''}") #{item}
       li
         button(type="button" class="navbar-toggle desktop dropdown-toggle" data-toggle="dropdown")
           span(class="sr-only") Toggle navigation
@@ -110,13 +110,13 @@
     include 
       script(type="text/javascript").
 
-        $(".dropdown-toggle").click(function(event){
-          console.log("clicked");
-          var customNav = $('.custom-nav');
-          if(customNav.hasClass("open")) {
-            customNav.removeClass("open");
-          } else {
-            customNav.addClass("open");
-          }
-        });
-     
+     //-    $(".dropdown-toggle").click(function(event){
+     //-      console.log("clicked");
+     //-      var customNav = $('.custom-nav');
+     //-      if(customNav.hasClass("open")) {
+     //-        customNav.removeClass("open");
+     //-      } else {
+     //-        customNav.addClass("open");
+     //-      }
+     //-    });
+     //- 

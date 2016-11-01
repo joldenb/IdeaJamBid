@@ -36,7 +36,6 @@ html
                 img.ideaSeedThumbnails(src=imageURL[1]  style=imageURL[2])
           .view-all-images-btn
             a.btn.secondary-btn.btn-go.btn-lg.btn-block( href="/image-upload" ) More Photos
-              
         else
           a(href="/image-upload")
             .upload-image-div
@@ -59,7 +58,7 @@ html
           else if inventorName === user.username && idea.visibility === "public"
             a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign/new' ontouchstart="this.style.background = '#007338';") Crowdfund
 
-          .col-xs-12(style="display:none;")
+          .col-xs-12
             #idea-summary-aptitudes.aptitudeList
               .profileAptitudes
                 if aptitudes && aptitudes.length > 0 && idea.name
