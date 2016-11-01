@@ -19,7 +19,8 @@ html
               label(for="goal") Goal
               .input-group
                 div.input-group-addon $
-                input.form-control(type='number', name="goal", id="goal" placeholder='10000.00' required)
+                input.form-control(type='number', pattern="[0-9]", name="goal", id="goal" placeholder='10000' required)
+                div.input-group-addon .00
             .form-group.row
               .col-md-12.h4 Prizes
               .col-md-12(id="prizes")
@@ -35,7 +36,8 @@ html
                       label(for="prizeCost0") Cost
                       .input-group
                         div.input-group-addon $
-                        input.form-control(type='number', name="prizeCost0", id="prizeCost0" placeholder='25.00' required)
+                        input.form-control(type='number', pattern="[0-9]" name="prizeCost0", id="prizeCost0" placeholder='25' required)
+                        div.input-group-addon .00
                     .form-group
                       label.btn.btn-block.btn-file.btn-go#fileInput
                         span Upload Prize Image
@@ -72,10 +74,11 @@ html
           number + '" placeholder="1 set of ..." maxlength="50" required="required" class="form-control"></div><div class="form-group"><label for="prizeDesc' +
           number + '">Description</label><input type="text" name="prizeDesc' +
           number + '" id="prizeDesc' +
-          number + '" placeholder="You will receive ..." maxlength="1000" required="required" class="form-control"></div><div class="form-group"><label for="prizeCost' +
-          number + '">Cost</label><input type="number" name="prizeCost' +
+          number + '" placeholder="You will receive ..." maxlength="1000" required="required" class="form-control"></div><div class="form-group">' +
+          '<label for="prizeCost' +
+          number + '">Cost</label><div class="input-group"><div class="input-group-addon">$</div><input type="number" pattern="[0-9]" name="prizeCost' +
           number + '" id="prizeCost' +
-          number + '" placeholder="25.00" required="required" class="form-control"></div><div class="form-group"><label id="fileInput" class="btn btn-block btn-file btn-go"><h5>Upload Prize Image</h5>' +
+          number + '" placeholder="25.00" required="required" class="form-control"><div class="input-group-addon">.00</div></div><div class="form-group"><label id="fileInput" class="btn btn-block btn-file btn-go"><span>Upload Prize Image</span>' +
           '<input type="file" id="prizeImage' +
           number + '" name="prizeImage' +
           number + '" style="display:none;" accept="image/jpeg, image/png">' + '<input type="hidden" id="prizeImageUrl' + 
