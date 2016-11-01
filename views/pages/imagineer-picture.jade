@@ -59,6 +59,23 @@ html
           else
             if Object.keys(user).length != 0
               button(type="button" id="locationModalButton" class="btn btn-industry" data-toggle="modal" data-target="#locationModal") Add your Location
+      div#begin-info-general-jams.generalJamList
+        .generalJams
+          if generalJams
+            h3 Jams : 
+            ul
+              each jam in generalJams
+                li
+                  a(href='/jams/' + jam)
+                    p #{jam}
+          if Object.keys(user).length != 0
+            form.imagineer-profile-edit(role='form', id="saveGeneralJam" action="/save-jam", method="post", style='max-width: 300px;', data-idea-doc=idea)
+              .form-group
+                |  
+                input.form-control.ui-front(type='text', id="jamName", name="jamName", placeholder='What jam would you like to join?', autocomplete="on")
+                input(type="hidden", name="_csrf", value="#{csrfToken}")
+              .general-jam-footer
+                button.btn.btn-go#generalJamSubmit(type='submit') Save
       div#begin-info-aptitudes.aptitudeList
         .profileAptitudes
           if aptitudes
@@ -68,7 +85,7 @@ html
                 li(data-apt-id="#{aptitude.identifier}")
                   p #{aptitude.title}
           if Object.keys(user).length != 0
-            form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            form.imagineer-profile-edit(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
               .form-group
                 |  
                 input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='What skill set can you contribute?', autocomplete="on")
@@ -210,8 +227,8 @@ html
           "_csrf" : $('[name="_csrf"]').val()
         },
         function(resp) {
-          $(".profileLocation").append("<h4>" + $("select.locationCity option:selected").text() + "</h4>")
-        });      
+          window.location.reload(true);
+        });
     });
 
     $("#aptitudeSubmit").click(function(event){
@@ -228,6 +245,23 @@ html
           });
       } else {
         alert("Please enter a valid aptitude.");  
+      }
+    });
+
+    $("#generalJamSubmit").click(function(event){
+      event.preventDefault();
+      if($("#jamName").val() != ""){
+        var newJam = $("#jamName").val().trim();
+        $.post('/save-jam', 
+          {
+            jamName : newJam,
+            "_csrf" : $('[name="_csrf"]').val()
+          },
+          function(resp) {
+            window.location.reload(true);
+          });
+      } else {
+        alert("Please enter a valid jam name.");  
       }
     });
 

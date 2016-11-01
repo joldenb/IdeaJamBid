@@ -27,7 +27,64 @@ var uploading = multer({
   storage: storage,
   dest: '../uploads/'
 });
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for saving a general jam
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.post('/save-jam', csrfProtection, function(req, res) {
+  if( !(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
+  
+  req.body.jamName = req.body.jamName.trim();
 
+  Network.findOne({"name" : req.body.jamName}, function(err, jam){
+      if(err){
+        res.json({error: err});
+      }
+
+      if(jam){
+        Account.findById( req.user.id,
+          function (err, account) {
+            if(account.otherNetworks && account.otherNetworks.length){
+              account.otherNetworks.push(jam.id)
+            } else {
+              account.otherNetworks = [jam.id];
+            }
+            account.save(function (err) {});
+        });
+        if(req.user.nickname){
+          res.redirect('/imagineer/' + req.user.nickname);
+        } else {
+          res.redirect('/');
+        }
+      } else {
+        var newJam = new Network({
+          name : req.body.jamName,
+        });
+        newJam.save(function(err, newJam){
+          Account.findById( req.user.id,
+            function (err, account) {
+            if(account.otherNetworks && account.otherNetworks.length){
+              account.otherNetworks.push(newJam.id)
+            } else {
+              account.otherNetworks = [newJam.id];
+            }
+            account.save(function (err) {});
+          });
+        });
+        if(req.user.nickname){
+          res.redirect('/imagineer/' + req.user.nickname);
+        } else {
+          res.redirect('/');
+        }
+      }
+  });
+});
 
 /*****************************************************************
 ******************************************************************
@@ -73,7 +130,7 @@ router.post('/save-school-network', csrfProtection, function(req, res) {
           });
         });
         if(req.user.nickname){
-          res.redirect('/imagineer/' + req.user.nickname);
+          res.redirect('/imagineer-picture/' + req.user.nickname);
         } else {
           res.redirect('/');
         }
@@ -125,7 +182,7 @@ router.post('/save-company-network', csrfProtection, function(req, res) {
           });
         });
         if(req.user.nickname){
-          res.redirect('/imagineer/' + req.user.nickname);
+          res.redirect('/imagineer-picture/' + req.user.nickname);
         } else {
           res.redirect('/');
         }
@@ -176,7 +233,7 @@ router.post('/save-location-network', csrfProtection, function(req, res) {
           });
         });
         if(req.user.nickname){
-          res.redirect('/imagineer/' + req.user.nickname);
+          res.redirect('/imagineer-picture/' + req.user.nickname);
         } else {
           res.redirect('/');
         }

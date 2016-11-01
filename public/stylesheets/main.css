@@ -302,6 +302,10 @@ form {
   margin: 0 auto;
 }
 
+form.imagineer-profile-edit {
+  margin: initial;
+}
+
 .view-idea-suggestions {
   margin: 0 auto;
   max-width: 80%;

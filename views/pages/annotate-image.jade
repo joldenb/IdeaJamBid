@@ -253,15 +253,15 @@ html
           }
           ctx.fillText(data['number']+".",textCoordX,textCoordY);
 
-          if(data['component'].slice(16).indexOf("the ") == 0 || data['component'].slice(16).indexOf("The ") == 0){
+          if(data['component'].slice("The component named the ".length).indexOf("the ") == 0 || data['component'].slice("The component named the ".length).indexOf("The ") == 0){
             data['component'] = data['component'].slice(4)
           }
 
           if($("#listOfComponents .individual-component").length == 0){
-            $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component'].slice(16)+"' src='/delete.png' height='25' width='25'><img class='edit-annotation' data-component='"+ data['component'].slice(16)+"' data-toggle='modal' data-target='#myModal' src='/pencil.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component'].slice(16)+"</h4></div>").
+            $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component'].slice("The component named the ".length)+"' src='/delete.png' height='25' width='25'><img class='edit-annotation' data-component='"+ data['component'].slice("The component named the ".length)+"' data-toggle='modal' data-target='#myModal' src='/pencil.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component'].slice("The component named the ".length)+"</h4></div>").
               appendTo("#listOfComponents");
           } else {
-            $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component'].slice(16)+"' src='/delete.png' height='25' width='25'><img class='edit-annotation' data-component='"+ data['component'].slice(16)+"' data-toggle='modal' data-target='#myModal' src='/pencil.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component'].slice(16)+"</h4></div>").
+            $("<div class='individual-component'><img class='delete-component' data-component='"+ data['component'].slice("The component named the ".length)+"' src='/delete.png' height='25' width='25'><img class='edit-annotation' data-component='"+ data['component'].slice("The component named the ".length)+"' data-toggle='modal' data-target='#myModal' src='/pencil.png' height='25' width='25'><h4>"+ data['number']+". "+ data['component'].slice("The component named the ".length)+"</h4></div>").
               insertAfter("#listOfComponents div:last-of-type");
           }
 
@@ -355,8 +355,8 @@ html
       if (String($(this).val()).indexOf(requiredText) == -1) {
             $(this).val(requiredText);
       }
-      if (this.selectionStart < 16) {
-        this.selectionStart = 16;
+      if (this.selectionStart < "The component named the ".length) {
+        this.selectionStart = "The component named the ".length;
       }
     }, false);
 
@@ -364,8 +364,8 @@ html
       if (String($(this).val()).indexOf(requiredText) == -1) {
             $(this).val(requiredText);
       }
-      if (this.selectionStart < 16) {
-        this.selectionStart = 16;
+      if (this.selectionStart < "The component named the ".length) {
+        this.selectionStart = "The component named the ".length;
       }
     }, false);
 

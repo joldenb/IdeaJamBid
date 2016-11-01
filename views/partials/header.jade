@@ -65,6 +65,7 @@
           div(class="dropdown-toggle profile-einstein-points" data-toggle="dropdown") #{user.einsteinPoints || "0"}     
           ul.einsteinHistoryDropdown.dropdown-menu.dropdown-menu-right
             if user.einsteinHistory && user.einsteinHistory.length > 0
+              - user.einsteinHistory = user.einsteinHistory.reverse()
               each item, index in user.einsteinHistory
                 if index < 6
                   li(class="#{index == 0 ? 'first' : ''}") #{item}
@@ -76,6 +77,7 @@
           div(class="dropdown-toggle profile-einstein-points" data-toggle="dropdown") #{user.einsteinPoints || "0"}
           ul.einsteinHistoryDropdown.dropdown-menu.dropdown-menu-right
             if user.einsteinHistory && user.einsteinHistory.length > 0
+              - user.einsteinHistory = user.einsteinHistory.reverse()
               each item, index in user.einsteinHistory
                 if index < 6
                   li(class="#{index == 0 ? 'first' : ''}") #{item}

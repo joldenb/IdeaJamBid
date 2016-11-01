@@ -518,6 +518,8 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
       return;
   }
 
+  var generalJams = [];
+
 
   Account.find({"nickname" : {$regex : ".*"+userNickname+".*"}}, function(err, accounts){
 
@@ -570,6 +572,11 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
                 locationNetwork = element['name'];
             }
           }
+
+          if(req.user.otherNetworks && req.user.otherNetworks.indexOf(element.id) > -1 ){
+            generalJams.push(element.name);
+          }
+
         });
         Aptitude.find({"_id" : {$in : account.aptitudes}}, function(err, myAptitudes){
           var headshotData = ideaSeedHelpers.getUserHeadshot(req);
@@ -632,6 +639,7 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
                                           profileAccount: account,
                                           collaboratorIdeas : collaboratorIdeas,
                                           accountHeadshot : accountHeadshot,
+                                          generalJams : generalJams,
                                           aptitudes : myAptitudes,
                                           schoolNetwork : schoolNetwork,
                                           locationNetwork : locationNetwork,
@@ -659,6 +667,7 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
                                           headshotStyle : headshotStyle,
                                           user : req.user || {},
                                           profileAccount: account,
+                                          generalJams : generalJams,
                                           collaboratorIdeas : collaboratorIdeas,
                                           accountHeadshot : accountHeadshot,
                                           aptitudes : myAptitudes,
@@ -711,7 +720,8 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
       masterCompanyNetworkList = [],
       companyNetwork = "",
       masterLocationNetworkList = [],
-      locationNetwork = "";
+      locationNetwork = "",
+      generalJams = [];
 
   var headshotData = ideaSeedHelpers.getUserHeadshot(req);
   var headshotURL = headshotData['headshotURL'];
@@ -724,7 +734,7 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
   /* oh, this is a find all. this should change at some point */
   Network.find({})
   .exec()
-  .then(function(err, networks){
+  .then(function(networks){
 
     _.each(networks, function(element, index, list){
       if(element['type'] == 'school'){
@@ -756,7 +766,12 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
             locationNetwork = element['name'];
         }
       }
+
+      if(req.user.otherNetworks && req.user.otherNetworks.indexOf(element.id) > -1 ){
+        generalJams.push(element.name);
+      }
     });
+
   })
   .then(function(){
     return Aptitude.find({"_id" : {$in : req.user.aptitudes}}).exec();
@@ -813,6 +828,7 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
       schoolNetwork : schoolNetwork,
       locationNetwork : locationNetwork,
       companyNetwork : companyNetwork,
+      generalJams : generalJams,
       headshotIDs : imageURLs,
       headshotStyle : headshotStyle,
       headshot : headshotURL
@@ -3341,7 +3357,7 @@ router.post('/save-component', csrfProtection, function(req, res) {
       res.json({error: err});
     }
 
-    req.body.component = req.body.component.slice(16); //get rid of "the solution of "
+    req.body.component = req.body.component.slice("The component named the ".length); //get rid of "the solution of "
 
     if(req.body.component.indexOf("the") == 0 || req.body.component.indexOf("The") == 0){
       req.body.component = req.body.component.slice(4);      
