@@ -59,7 +59,8 @@ router.get('/ideas/:ideaName/campaign/connect', csrfProtection, function(req, re
       csrfToken: req.csrfToken(),
       user: req.user,
       idea: idea,
-      redirectUri: redirectUri
+      redirectUri: redirectUri,
+      stripeClientId: process.env.STRIPE_CLIENT_ID,
     })
   });
 });
