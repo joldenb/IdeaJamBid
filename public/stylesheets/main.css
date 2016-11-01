@@ -1763,4 +1763,20 @@ button.suggestion-tactics, button.suggestion-targets {
 
 .einsteinHistoryDropdown li.first {
   border: none;
-} 
+}
+
+.prizeBlock {
+  border-bottom: 1px solid lightgray;
+  margin-bottom: 15px;
+}
+
+.fileInput {
+  font-size: 24px;
+}
+
+.prizeImage {
+  max-width: 100px;
+  float: left;
+  margin-right: 5px;
+  margin-bottom: 0;
+}

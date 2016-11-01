@@ -25,7 +25,7 @@ html
               .col-md-12.h4 Prizes
               .col-md-12(id="prizes")
                 .row
-                  .col-md-6.col-md-offset-1
+                  .col-md-6.col-md-offset-1.prizeBlock
                     .form-group
                       label(for="prizeName0") Name
                       input.form-control(type='text', name="prizeName0", id="prizeName0" placeholder='1 set of ...' maxlength=50 required)
@@ -39,23 +39,26 @@ html
                         input.form-control(type='number', pattern="[0-9]" name="prizeCost0", id="prizeCost0" placeholder='25' required)
                         div.input-group-addon .00
                     .form-group
-                      label.btn.btn-block.btn-file.btn-go#fileInput
-                        span Upload Prize Image
-                        input(type="file", id="prizeImage0" name="prizeImage0" style="display:none;", accept="image/jpeg, image/png")
-                        input(type="hidden", id="prizeImageUrl0", name="prizeImageUrl0")
+                      label(for="prizeImage0") Image
+                      .input-group
+                        label.btn.btn-default.fileInput
+                          span.glyphicon.glyphicon-cloud-upload
+                          input(type="file", id="prizeImage0" name="prizeImage0" style="display:none;", accept="image/jpeg, image/png")
+                          input(type="hidden", id="prizeImageUrl0", name="prizeImageUrl0")
+                        img.thumbnail.prizeImage.hidden(id="prizeImageThumb0", src="")
                 .row#addPrizeRow
-                  .col-md-6.col-md-offset-1
+                  .col-xs-6.col-sm-4.col-md-offset-1
                     button.btn.btn-go.btn-block(id="addPrize", type="button") Add Another Prize
             .form-group
                 p The campaign will end 60 days from creation, if created today this campaign will end on #{endDate}
             .row
               .col-xs-4
-                a.home-logout.btn.btn-industry.btn-lg( href="/imagineer/" + user.nickname ) Cancel
-              .col-xs-8
+                a.home-logout.btn.btn-industry.btn-block.btn-lg( href="/imagineer/" + user.nickname ) Cancel
+              .col-xs-4
                 if user.stripeCredentials === undefined || user.stripeCredentials.access_token === undefined
-                  button.btn.btn-go.btn-lg.btn-continue(type='submit') Continue
+                  button.btn.btn-go.btn-block.btn-lg.btn-continue(type='submit') Continue
                 else
-                  button.btn.btn-go.btn-lg.btn-continue(type='submit') Create
+                  button.btn.btn-go.btn-block.btn-lg.btn-continue(type='submit') Create
             h4 #{message}
 
   include ../../partials/js-includes.jade
@@ -68,7 +71,7 @@ html
         //It would be better to use a mixin that can be rendered on server side and returned for reuse instead of this copy/paste.
         var number = i;
         $("#addPrizeRow").before(
-          '<div class="row"><div class="col-md-6 col-md-offset-1"><div class="form-group"><label for="prizeName' +
+          '<div class="row"><div class="col-md-6 col-md-offset-1 prizeBlock"><div class="form-group"><label for="prizeName' +
           number + '">Name</label><input type="text" name="prizeName' +
           number + '" id="prizeName' + 
           number + '" placeholder="1 set of ..." maxlength="50" required="required" class="form-control"></div><div class="form-group"><label for="prizeDesc' +
@@ -78,19 +81,19 @@ html
           '<label for="prizeCost' +
           number + '">Cost</label><div class="input-group"><div class="input-group-addon">$</div><input type="number" pattern="[0-9]" name="prizeCost' +
           number + '" id="prizeCost' +
-          number + '" placeholder="25.00" required="required" class="form-control"><div class="input-group-addon">.00</div></div><div class="form-group"><label id="fileInput" class="btn btn-block btn-file btn-go"><span>Upload Prize Image</span>' +
-          '<input type="file" id="prizeImage' +
-          number + '" name="prizeImage' +
-          number + '" style="display:none;" accept="image/jpeg, image/png">' + '<input type="hidden" id="prizeImageUrl' + 
-          number + '" name="prizeImageUrl' +
-          number + '"></label></label></div></div></div>'
+          number + '" placeholder="25.00" required="required" class="form-control"><div class="input-group-addon">.00</div></div>' +
+          '<div class="form-group"><label for="prizeImage' +
+          number + '">Image</label><div class="input-group"><label class="btn btn-default fileInput"><span class="glyphicon glyphicon-cloud-upload"></span><input type="file" id="prizeImage' +
+          number + '" name="prizeImage' + number + '" style="display:none;" accept="image/jpeg, image/png"><input type="hidden" id="prizeImageUrl' +
+          number + '" name="prizeImageUrl' + number + '"></label><img id="prizeImageThumb' + number + '" src="" class="thumbnail prizeImage hidden"></div></div>' +
+          '</div>'
         );
         i++;
 
         $('#prizeImage' + number)[0].onchange = fileInputChanged;
       }
 
-      $("#fileInput [type='file']")[0].onchange = function (event) {
+      $('#prizeImage0')[0].onchange = function (event) {
         fileInputChanged(event);
       };
 
@@ -103,8 +106,11 @@ html
         if (file == null) {
           return alert('No file selected.');
         }
-        var fr = new FileReader;
 
+        $('#prizeImageThumb' + prizeNumber).attr("src", '/spinner.gif');
+        $('#prizeImageThumb' + prizeNumber).removeClass("hidden");
+
+        var fr = new FileReader;
         fr.onloadend = function () {
           // get EXIF data
           var exif = EXIF.readFromBinaryFile(this.result);
@@ -128,6 +134,8 @@ html
           if (xhr.readyState === 4) {
             if (xhr.status === 200 && (file.type == "image/jpeg" || file.type == "image/png")) {
               $('#prizeImageUrl' + prizeNumber).val(url);
+              $('#prizeImageThumb' + prizeNumber).attr("src", url);
+              $('#prizeImageThumb' + prizeNumber).removeClass("hidden");
             }
             else {
               alert('Could not upload file.');
