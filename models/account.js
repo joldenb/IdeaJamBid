@@ -18,7 +18,7 @@ var Account = new Schema({
     einsteinPoints	: {type: Number, default:0},
     einsteinHistory : [String],
     rupees			: {type: Number, default:0},
-    ideaSeeds       : [{type: Schema.Types.ObjectId, ref: 'IdeaSeed', autopopulate: true }],    
+    ideaSeeds       : [{type: Schema.Types.ObjectId, ref: 'IdeaSeed', autopopulate: true }],
     aptitudes       : [{type: Schema.Types.ObjectId, ref: 'Aptitude', autopopulate: true }],
     stripeCredentials : {type: Schema.Types.ObjectId, ref: 'StripeCredentials', autopopulate: true },
     headshots		: [{

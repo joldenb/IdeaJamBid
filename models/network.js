@@ -7,6 +7,7 @@ var Network = new Schema({
 	name : String,
 	profilePic : String,
 	description : String,
+	visibility		: { type: String, default: "private" },
 	type : String //either school, company, or city/state
 }, { autoIndex: false });
 

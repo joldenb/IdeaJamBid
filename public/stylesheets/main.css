@@ -332,7 +332,7 @@ table.suggestion-table .col-md-4 {
   padding: 2em;
 }
 
-.view-all-ideas{
+.view-all-ideas, .view-all-jams{
   max-width:100%;
   overflow: hidden;
   background-size: cover;
@@ -340,18 +340,22 @@ table.suggestion-table .col-md-4 {
   height : 100%;
 }
 
-.view-all-ideas-wrapper {
+.view-all-ideas-wrapper, .view-all-jams-wrapper {
   height: 50%;
   background-color: #a0a0a0;
 }
 
-.title-description.view-all-ideas, .title-description.inventor-block {
+.title-description.view-all-ideas, .title-description.inventor-block, .title-description.view-all-jams {
   height : 48%;
   margin-top : -40px;
   padding-left: 1em;  
 }
 
-.view-all-idea-description {
+.title-description.view-all-jams {
+  margin-top: 0;
+}
+
+.view-all-idea-description, .view-all-jam-description {
   height: 7em;
   text-overflow: ellipsis;
   word-wrap: break-word;
@@ -365,14 +369,14 @@ table.suggestion-table .col-md-4 {
   -o-text-overflow: ellipsis;
 }
 
-.footer.view-all-ideas {
+.footer.view-all-ideas, .footer.view-all-jams {
   height: 15%;
   background-color: #414142; /*dark gray */
   position: relative;
   bottom: 0px;
 }
 
-.footer.view-all-ideas .btn, .footer.inventor-block .btn {
+.footer.view-all-ideas .btn, .footer.inventor-block .btn, .footer.view-all-jams .btn {
   position: absolute;
   top: 16%;
   width: 60%;
@@ -385,6 +389,11 @@ table.suggestion-table .col-md-4 {
 }
 
 .suggestion-element.view-all-ideas-block {
+  height:36em;
+  background-color: white;
+}
+
+.jam-summary-element.view-all-jams-block {
   height:36em;
   background-color: white;
 }
@@ -408,7 +417,7 @@ table.suggestion-table .col-md-4 {
   background-color: white;
 }
 
-.idea-image.inventor-block.image-block {
+.idea-image.inventor-block.image-block, .jam-image {
   height:15em;
   background-size: cover;
   background-position: 50%;
@@ -827,7 +836,13 @@ a.plus-overlay img{
 
 /* These are the styles for the suggestion blocks on the variant creation page */
 
-.idea-image.variant-suggestion{
+.idea-image.variant-suggestion, .jam-image {
+  height: 15em;
+  background-size: cover;
+  background-position: 50%;
+}
+
+.jam-image.variant-suggestion {
   height: 15em;
   background-size: cover;
   background-position: 50%;

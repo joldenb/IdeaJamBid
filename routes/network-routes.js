@@ -346,6 +346,123 @@ router.post('/save-aptitude', csrfProtection, function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
+router.get('/view-jams', csrfProtection, function(req, res){
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
+
+  var allNetworks = [];
+  var schools = [];
+  var locations = [];
+  var companies = [];
+  var otherGroups = [];
+  var numberOfMembers = {};
+
+  /* oh, this is a find all. this should change at some point */
+  Network.find({})
+  .exec()
+  .then(function(networks){
+
+    _.each(networks, function(oneNetwork, index){
+
+      if(oneNetwork.type && oneNetwork.type === "school"){
+        schools.push(oneNetwork);
+      }
+      else if(oneNetwork.type && oneNetwork.type === "company"){
+        companies.push(oneNetwork);
+      }
+      else if(oneNetwork.type && oneNetwork.type === "location"){
+        locations.push(oneNetwork);
+      }
+      else {
+        otherGroups.push(oneNetwork);
+      }
+
+      // if( oneNetwork.visibility === "public" ){
+        allNetworks.push(oneNetwork);
+      // }
+
+    });
+
+    var listOfNetworkIDs = _.map(allNetworks, function(eachOne, index){
+      return eachOne.id;
+    })
+    return Account.find({$or : [
+        {'networks.school' :  {$in : listOfNetworkIDs}},
+        {'networks.company' :  {$in : listOfNetworkIDs}},
+        {'networks.location' :  {$in : listOfNetworkIDs}},
+        {otherNetworks :  {$in : listOfNetworkIDs}}
+      ]}).exec();
+  })
+  .then(function(accounts){
+    
+    _.each(allNetworks, function(oneNetwork, index){
+      numberOfMembers[oneNetwork.name] = 0;
+      _.each(accounts, function(account, accIndex){
+        if(account.networks['school'] == oneNetwork.id ||
+          account.networks['company'] == oneNetwork.id ||
+          account.networks['location'] == oneNetwork.id ||
+          account.otherNetworks.indexOf(oneNetwork.id) >= 0){
+          numberOfMembers[oneNetwork.name]++;
+        }
+      });
+    });
+
+    var schoolsWithMembers = [];
+    _.each(schools, function(oneSchool,index){
+      if(numberOfMembers[oneSchool.name] > 0){
+        schoolsWithMembers.push(oneSchool);
+      }
+    });
+    schools = schoolsWithMembers;
+
+    var locationsWithMembers = [];
+    _.each(locations, function(oneLocation,index){
+      if(numberOfMembers[oneLocation.name] > 0){
+        locationsWithMembers.push(oneLocation);
+      }
+    });
+    locations = locationsWithMembers;
+
+    var companiesWithMembers = [];
+    _.each(companies, function(oneCompany,index){
+      if(numberOfMembers[oneCompany.name] > 0){
+        companiesWithMembers.push(oneCompany);
+      }
+    });
+    companies = companiesWithMembers;
+
+    var otherGroupsWithMembers = [];
+    _.each(otherGroups, function(oneGroup,index){
+      if(numberOfMembers[oneGroup.name] > 0){
+        otherGroupsWithMembers.push(oneGroup);
+      }
+    });
+    otherGroups = otherGroupsWithMembers;
+
+    res.render('pages/jams', {
+      user : req.user,
+      jams : allNetworks,
+      schools : schools,
+      locations : locations,
+      companies : companies,
+      otherGroups : otherGroups,
+      numberOfMembers : numberOfMembers
+    });
+
+  });
+});
+
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for rendering the network profile page. Currently
+* this applies to schools, companies, aptitutes, etc
+******************************************************************
+******************************************************************
+*****************************************************************/
 router.get('/jam/:networkName', csrfProtection, function(req, res){
   
   //special case for denver startup week

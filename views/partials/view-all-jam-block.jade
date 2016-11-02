@@ -1,0 +1,13 @@
+.jam-summary-element.view-all-jams-block
+  .jam-image.view-all-jams.view-all-jams-wrapper
+    .jam-image.view-all-jams(style="background-image : url('" + '#{jamImage || "/jam-avatar.jpg"}' + "');" + ideaImageStyle)
+  .title-description.view-all-jams
+    h3 #{jamName || 'No Jam Name'}
+    .numberOfMembers
+      p #{memberCount} Current Members
+    .suggestion-category
+      p.view-all-jam-description #{description || "No Description Yet"}
+  .footer.view-all-jams
+    a(href="/jam/"+jamName)
+      .btn.btn-go(ontouchstart="this.style.background = '#007338';" ontouchend="this.style.background='#00A550';")
+        h4 Jam Profile
