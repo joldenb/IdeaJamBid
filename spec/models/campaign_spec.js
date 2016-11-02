@@ -12,7 +12,7 @@ describe('Campaign Model', function () {
     campaign.timeRemaining().time.should.be.within(35, 36);
     campaign = new Campaign({state: 'open', startDate: new Date(), endDate: moment().add(119, 'minutes').toDate()});
     campaign.timeRemaining().units.should.eql('minutes');
-    campaign.timeRemaining().time.should.be.within(119, 120);
+    campaign.timeRemaining().time.should.be.within(118, 119);
     campaign = new Campaign({state: 'open', startDate: new Date(), endDate: moment().add(2, 'minutes').toDate()});
     campaign.timeRemaining().units.should.eql('seconds');
     campaign.timeRemaining().time.should.be.within(119, 120);
