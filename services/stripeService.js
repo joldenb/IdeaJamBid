@@ -78,7 +78,12 @@ exports.delayedChargeCreation = function(tokenId, amount, prizeId, user, ideaNam
       throw new Error('Could not find an open campaign to create future payment for');
     }
 
-    var campaignPayment = new CampaignPayment({username: user.username, stripeCustomerId: stripeCustomer.id, amount: amount});
+    var campaignPayment = new CampaignPayment({
+      username: user.username,
+      stripeCustomerId: stripeCustomer.id,
+      amount: amount,
+      prize: prizeId
+    });
     return campaignPayment.save().then(function (campaignPayment) {
       campaign.payments.push(campaignPayment.id);
       return campaign.save().then(function() {
