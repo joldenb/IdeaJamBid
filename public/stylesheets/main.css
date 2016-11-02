@@ -1769,6 +1769,10 @@ button.suggestion-tactics, button.suggestion-targets {
   border: none;
 }
 
+.pagecontentblock {
+  padding-bottom: 10px;
+}
+
 .prizeBlock {
   border-bottom: 1px solid lightgray;
   margin-bottom: 15px;
@@ -1778,7 +1782,7 @@ button.suggestion-tactics, button.suggestion-targets {
   font-size: 24px;
 }
 
-.prizeImage {
+.prizePreviewImage {
   max-width: 100px;
   float: left;
   margin-right: 5px;
@@ -1792,4 +1796,25 @@ button.suggestion-tactics, button.suggestion-targets {
 .campaignStats {
   font-size: 50%;
   display: block;
+}
+
+.purchaseButton {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+img.prizeImage {
+  max-height: 200px;
+}
+
+.prizeHeader {
+  text-align: left;
+}
+
+.prizeDesc {
+  text-align: left;
+}
+
+.purchasePrize {
+  margin-top: 3px;
 }

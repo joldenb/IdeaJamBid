@@ -4,7 +4,8 @@ var Schema = mongoose.Schema;
 var CampaignPayment = new Schema({
 	username: String,
 	stripeCustomerId: String,
-	amount: Number //amount in cents
+	amount: Number, //amount in cents
+	prizes: {type: Schema.Types.ObjectId, ref: 'CampaignPrize'},
 }, { autoIndex: false });
 
 module.exports = mongoose.model('CampaignPayment', CampaignPayment);

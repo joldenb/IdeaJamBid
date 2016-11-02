@@ -56,7 +56,8 @@ exports.basicCharge = function(tokenId, amount) {
   });
 };
 
-exports.delayedChargeCreation = function(tokenId, amount, user, ideaName) {
+exports.delayedChargeCreation = function(tokenId, amount, prizeId, user, ideaName) {
+  console.log("Creating payment for amount " + amount + " and prizeId " + prizeId);
   var ideaQuery = IdeaSeed.findOne({"name" : ideaName}).exec();
   var createCustomerReq = stripe.customers.create({
     source: tokenId,

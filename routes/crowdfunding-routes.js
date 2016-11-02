@@ -2,10 +2,11 @@ var express = require('express');
 var router = express.Router();
 var csrf = require('csurf');
 var csrfProtection = csrf({ cookie: true });
-var stripeService = require('../services/stripeService');
-var crowdfundingService = require('../services/crowdfundingService');
+var StripeService = require('../services/stripeService');
+var CrowdfundingService = require('../services/crowdfundingService');
 var Account = require('../models/account');
 var IdeaSeed = require('../models/ideaSeed');
+var CampaignPrize = require('../models/campaignPrize');
 var moment = require('moment');
 
 router.get('/ideas/:ideaName/campaign/new', csrfProtection, function(req, res){
@@ -31,7 +32,7 @@ router.post('/ideas/:ideaName/campaign/new', csrfProtection, function(req, res){
   }
 
   Account.findOne({'username': req.user.username}).then(function (account) {
-    crowdfundingService.createCampaign(req.body, account, req.params.ideaName);
+    CrowdfundingService.createCampaign(req.body, account, req.params.ideaName);
 
     if(account.stripeCredentials === undefined || account.stripeCredentials.access_token === undefined) {
       res.redirect('/ideas/' + req.params.ideaName +'/campaign/connect');
@@ -71,7 +72,7 @@ router.get('/stripe-campaign-connect', csrfProtection, function(req, res) {
     return;
   }
 
-  var connectPromise = stripeService.connect(req.query, req.user);
+  var connectPromise = StripeService.connect(req.query, req.user);
   connectPromise.then(function(ideaName) {
       if(ideaName !== undefined && ideaName !== null) {
         res.redirect('/ideas/' + ideaName + '/campaign');
@@ -94,16 +95,18 @@ router.get('/ideas/:ideaName/campaign', csrfProtection, function(req, res){
 
   var query = IdeaSeed.findOne({"name" : req.params.ideaName});
   query.exec().then(function(idea){
-    var openCampaign = crowdfundingService.getOpenCampaign(idea);
+    var openCampaign = CrowdfundingService.getOpenCampaign(idea);
 
-    crowdfundingService.sumPayments(openCampaign).then(function (totalPayments) {
-      res.render('pages/campaign/view', {
-        csrfToken: req.csrfToken(),
-        user: req.user,
-        idea: idea,
-        campaign: openCampaign,
-        funderTotalPayments: totalPayments,
-        timeLeft: openCampaign.timeRemaining()
+    CampaignPrize.find({'_id': {$in: openCampaign.prizes}}).exec().then(function (prizes) {
+      CrowdfundingService.sumPayments(openCampaign).then(function (totalPayments) {
+        res.render('pages/campaign/view', {
+          csrfToken: req.csrfToken(),
+          user: req.user,
+          idea: idea,
+          campaign: openCampaign,
+          funderTotalPayments: totalPayments,
+          prizes: prizes
+        });
       });
     });
   });
@@ -115,8 +118,8 @@ router.post('/ideas/:ideaName/campaign/stripe-payment', csrfProtection, function
     return;
   }
 
-  stripeService
-    .delayedChargeCreation(req.body.tokenId, req.body.amount, req.user, req.params.ideaName)
+  StripeService
+    .delayedChargeCreation(req.body.tokenId, req.body.amount, req.body.prizeId, req.user, req.params.ideaName)
     .then(function (success){
       if(success) {
        res.send('success');
@@ -135,7 +138,7 @@ router.post('/ideas/:ideaName/campaign/fund', csrfProtection, function(req, res)
     return;
   }
 
-  stripeService
+  StripeService
     .fundCampaign(req.params.ideaName)
     .then(function (success){
       if(success) {
@@ -153,7 +156,7 @@ router.post('/ideas/:ideaName/campaign/fund', csrfProtection, function(req, res)
 
 router.get('/paypalTestPayment', csrfProtection, function(req, res) {
   try {
-    crowdfundingService.payContributors(['billingb@gmail.com', 'joseph.oldenburg@gmail.com'], 'test');
+    CrowdfundingService.payContributors(['billingb@gmail.com', 'joseph.oldenburg@gmail.com'], 'test');
     res.send('success');
   } catch(error) {
     res.status(500).send('Failed to pay contributors');

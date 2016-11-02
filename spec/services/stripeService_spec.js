@@ -34,7 +34,7 @@ describe('Stripe Service', function () {
 
     SpecHelper.createOrFindTestAccount('testuser@madeuptesturl.com', function(account) {
       StripeService
-        .delayedChargeCreation('mytesttoken', '15000', account, ideaName)
+        .delayedChargeCreation('mytesttoken', '15000', 'testId', account, ideaName)
         .then(function (success){
           IdeaSeed.findOne({name: ideaName}).exec(function(err, ideaSeed) {
             try {
