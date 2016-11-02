@@ -24,11 +24,11 @@ html
         h2 #{timeLeft.time}
           small.campaignStats #{timeLeft.units} left
     .row
-      .col-sm-8
+      .col-sm-offset-2.col-sm-8
         h4 Prizes
         input(type="hidden", name="_csrf", value="#{csrfToken}")
       each prize, index in prizes
-        .col-xs-12.col-sm-8
+        .col-xs-12.col-sm-8.col-sm-offset-2
           button.btn.btn-default.btn-block.purchaseButton(cost=prize.cost prizeId=prize._id data-dismiss="modal")
             div.row
               h3.col-xs-12.prizeHeader $#{prize.cost} #{prize.name}
