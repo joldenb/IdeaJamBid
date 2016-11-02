@@ -66,7 +66,7 @@ html
             ul
               each jam in generalJams
                 li
-                  a(href='/jams/' + jam)
+                  a(href='/jam/' + jam)
                     p #{jam}
           if Object.keys(user).length != 0
             form.imagineer-profile-edit(role='form', id="saveGeneralJam" action="/save-jam", method="post", style='max-width: 300px;', data-idea-doc=idea)
@@ -190,6 +190,12 @@ html
         $("#aptitudeTitle").autocomplete({
           source : majorsArray,
           appendTo : "#saveAptitude .form-group"
+        });
+
+        var allExistingJams = JSON.parse('!{allExistingJams}');
+        $("#jamName").autocomplete({
+          source : allExistingJams,
+          appendTo : "#saveGeneralJam .form-group"
         });
       });
 

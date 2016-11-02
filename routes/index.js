@@ -721,7 +721,8 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
       companyNetwork = "",
       masterLocationNetworkList = [],
       locationNetwork = "",
-      generalJams = [];
+      generalJams = [],
+      allExistingJams = [];
 
   var headshotData = ideaSeedHelpers.getUserHeadshot(req);
   var headshotURL = headshotData['headshotURL'];
@@ -769,6 +770,10 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
 
       if(req.user.otherNetworks && req.user.otherNetworks.indexOf(element.id) > -1 ){
         generalJams.push(element.name);
+      }
+
+      if(!element['type'] && generalJams.indexOf(element.name) == -1){
+        allExistingJams.push(element.name);
       }
     });
 
@@ -829,6 +834,15 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
       locationNetwork : locationNetwork,
       companyNetwork : companyNetwork,
       generalJams : generalJams,
+      allExistingJams : JSON.stringify(allExistingJams)
+                          .replace(/\\n/g, "\\n")
+                          .replace(/'/g, "\\'")
+                          .replace(/"/g, '\\"')
+                          .replace(/\\&/g, "\\&")
+                          .replace(/\\r/g, "\\r")
+                          .replace(/\\t/g, "\\t")
+                          .replace(/\\b/g, "\\b")
+                          .replace(/\\f/g, "\\f"),
       headshotIDs : imageURLs,
       headshotStyle : headshotStyle,
       headshot : headshotURL

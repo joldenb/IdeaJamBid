@@ -53,14 +53,16 @@
           img(src="/IdeaJam-prebeta.png")
       if Object.keys(user).length != 0
         li
-          span.newUserName #{user.nickname}
+          a(style="display:inline;" href='/imagineer/' + user.nickname)
+            span.newUserName #{user.nickname}
       else
         li
           span.newUserName Welcome Imagineer!      
 
       if headshot
         li
-          div(class="placeholder" style="height: 40px; width: 40px; margin-bottom: -13px; background-image : url('" + headshot + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;")
+          a(style="display:inline;" href='/imagineer/' + user.nickname)
+            div(class="placeholder" style="height: 50px; width: 50px; margin-bottom: -20px; background-image : url('" + headshot + "');  background-position: center center; background-repeat: no-repeat; background-size: cover; border-radius: 25px;")
         li
           div(class="dropdown-toggle profile-einstein-points" data-toggle="dropdown") #{user.einsteinPoints || "0"}     
           ul.einsteinHistoryDropdown.dropdown-menu.dropdown-menu-right
@@ -72,7 +74,8 @@
 
       else
         li
-          div(class="placeholder" style="height: 40px; width: 40px; margin-bottom: -13px; background-image : url('/avatar.png');  background-position: center center; background-repeat: no-repeat; background-size: cover;")
+          a(style="display:inline;" href='/imagineer/' + user.nickname)
+            div(class="placeholder" style="height: 40px; width: 40px; margin-bottom: -13px; background-image : url('/avatar.png');  background-position: center center; background-repeat: no-repeat; background-size: cover;")
         li
           div(class="dropdown-toggle profile-einstein-points" data-toggle="dropdown") #{user.einsteinPoints || "0"}
           ul.einsteinHistoryDropdown.dropdown-menu.dropdown-menu-right
