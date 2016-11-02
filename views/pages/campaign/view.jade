@@ -12,16 +12,16 @@ html
         h1 Fund #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}!
       .col-xs-12
         h3.fundSubHeader solves the <span class="problemColor">problem of #[a(href='/introduce-idea') #{idea.problem}]</span> by #[a(href='/accomplish') <span class="solutionColor">#{idea.description}]</span>
-    .row
-      .col-sm-4
-        h2 #{campaign.payments.length}
-          small funders
-      .col-sm-4
-        h2 #{funderTotalPayments}
-          small raised of $#{campaign.goal}
-      .col-sm-4
-        h2 #{daysLeft}
-          small days left
+    .row.text-center
+      .col-md-offset-3.col-md-2.col-sm-offset-2.col-sm-3.col-xs-offset-0.col-xs-3
+        h2 #{campaign.payments.length}&nbsp;
+          small.campaignStats funders
+      .col-md-2.col-sm-offset-0.col-sm-3.col-xs-offset-0.col-xs-6
+        h2 $#{funderTotalPayments}&nbsp;
+          small.campaignStats raised of $#{campaign.goal}
+      .col-md-2.col-sm-offset-0.col-sm-3.col-xs-offset-0.col-xs-3
+        h2 #{timeLeft.time}&nbsp;
+          small.campaignStats #{timeLeft.units} left
     .row
       p Rewards: $250
         input(type="hidden", name="_csrf", value="#{csrfToken}")

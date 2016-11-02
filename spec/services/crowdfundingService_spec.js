@@ -3,10 +3,12 @@ var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 chai.should();
 chai.use(sinonChai);
+var moment = require('moment');
 
 var CrowdfundingService = require('../../services/crowdfundingService');
 var CampaignPrize = require('../../models/campaignPrize');
 var CampaignPayment = require('../../models/campaignPayment');
+var Campaign = require('../../models/campaign');
 var IdeaSeed = require('../../models/ideaSeed');
 var SpecHelper = require('../specHelper');
 
@@ -37,6 +39,8 @@ describe('Crowdfunding Service', function () {
               ideaSeed.campaigns.length.should.eql(1);
               var campaign = ideaSeed.campaigns[0];
               campaign.goal.should.eql(parseInt(body.goal));
+              moment(campaign.startDate).format('YYYY-MM-DD').should.eql(moment().format('YYYY-MM-DD'));
+              moment(campaign.endDate).format('YYYY-MM-DD').should.eql(moment().add(60, 'days').format('YYYY-MM-DD'));
               campaign.prizes.length.should.eql(3);
             } catch (error) {
               done(error);

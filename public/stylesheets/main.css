@@ -1788,3 +1788,8 @@ button.suggestion-tactics, button.suggestion-targets {
 .fundSubHeader {
   margin-top: 0;
 }
+
+.campaignStats {
+  font-size: 50%;
+  display: block;
+}

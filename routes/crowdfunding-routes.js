@@ -102,7 +102,8 @@ router.get('/ideas/:ideaName/campaign', csrfProtection, function(req, res){
         user: req.user,
         idea: idea,
         campaign: openCampaign,
-        funderTotalPayments: totalPayments
+        funderTotalPayments: totalPayments,
+        timeLeft: openCampaign.timeRemaining()
       });
     });
   });

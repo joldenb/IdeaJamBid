@@ -81,7 +81,9 @@ exports.createCampaign = function(campaignData, account, ideaName) {
     var campaign = new Campaign({
       goal: campaignData.goal,
       prizes: prizeIds,
-      state: 'open'
+      state: 'open',
+      startDate: new Date(),
+      endDate: moment().add(60, 'days').toDate()
     });
     campaign.save();
 
