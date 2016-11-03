@@ -48,7 +48,7 @@ router.post('/send-variant-contract', csrfProtection, function(req, res){
     }
 
     //find the contributor who this email is being sent to and record that their response is pending
-    currentVariant['contributorsSignedOff'][req.body.contributorName] = "Pending Approval";
+    currentVariant['contributorsSignedOff'][req.body.contributorIdentifier] = "Pending Approval";
     currentVariant.markModified("contributorsSignedOff");
     idea.save();
 
@@ -56,7 +56,7 @@ router.post('/send-variant-contract', csrfProtection, function(req, res){
     var emailBody = "Greetings! " + req.body.inventor + " has sent you a request to e-sign permission"
     +" to incorporate your suggestion into their patent application.  Please contact the inventor directly, or"
     +" go to this link to approve their action of submitting the application to the USPTO.  \n\n"
-    +"http://" + req.headers.host + "/ideas/"+idea.name + "/variant/" + req.body.variantName + "/contract/" + req.body.contributorName;
+    +"http://" + req.headers.host + "/ideas/"+encodeURI(idea.name) + "/variant/" + req.body.variantName + "/contract/" + req.body.contributorIdentifier;
 
     var toEmailAddress = req.body.toEmailAddress;
     var fromEmailAddress = req.body.fromEmailAddress;
@@ -72,8 +72,6 @@ router.post('/send-variant-contract', csrfProtection, function(req, res){
       console.log(json);
       res.redirect('back');
     });
-
-
 
   });
 });

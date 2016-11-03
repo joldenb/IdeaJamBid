@@ -92,8 +92,6 @@ html
                   - compHeadshotStyle = headshotURLs[images[i + 2][1]][1]
                 include ../partials/image-block-element.jade
 
-      br
-      button.btn.btn-success#submit(type='submit') File this Variant > 
 
     br
     br
@@ -115,20 +113,20 @@ html
               h3 Status
             .col-md-3
               h3 Email
-          each value, contributor in listOfContributors
+          each contributor, index in contributors
             .row
               .col-md-3
-                h5.contributor-name= contributor
+                h5.contributor-name= contributor.nickname
               .col-md-3
-                h5= value
+                h5= listOfContributors[contributor.identifier]
               .col-md-6
                 if value != "Approved"
                   form(role='form', class="shareForm" action="/send-variant-contract", method="post", style='max-width: 300px;')
                     .form-group
-                      input#toEmailAddress.form-control(type="email", name="toEmailAddress" placeholder="To:" required data-contributorName=contributor)
-                      input#fromEmailAddress.form-control(type="email", name="fromEmailAddress" placeholder="From:" required data-contributorName=contributor)
-                      input(type="hidden", name="_csrf", value="#{csrfToken}" data-contributorName=contributor)
-                      button.btn.btn-success.emailSend(data-contributorName=contributor) Send
+                      input#toEmailAddress.form-control(type="email", name="toEmailAddress" placeholder="To:" required data-contributorName=contributor.identifier)
+                      input#fromEmailAddress.form-control(type="email", name="fromEmailAddress" placeholder="From:" required data-contributorName=contributor.identifier)
+                      input(type="hidden", name="_csrf", value="#{csrfToken}" data-contributorName=contributor.identifier)
+                      button.btn.btn-success.emailSend(data-contributorName=contributor.identifier) Send
                 else
                   a(href=contributorContracts[contributor]['location'])
                     h5 Approved - Contract
@@ -175,9 +173,9 @@ html
 
     $(".emailSend").click(function(event){
       event.preventDefault();
-      var contributorName = $(this).attr("data-contributorname");
-      var fromEmail = $("#fromEmailAddress[data-contributorname="+contributorName+"]").val();
-      var toEmail = $("#toEmailAddress[data-contributorname="+contributorName+"]").val();
+      var contributorIdentifier = $(this).attr("data-contributorname");
+      var fromEmail = $("#fromEmailAddress[data-contributorname="+contributorIdentifier+"]").val();
+      var toEmail = $("#toEmailAddress[data-contributorname="+contributorIdentifier+"]").val();
 
       $.post('/send-variant-contract',
         {
@@ -185,7 +183,7 @@ html
           toEmailAddress : fromEmail,
           fromEmailAddress : toEmail,
           inventor : "#{idea.inventorName}",
-          contributorName : contributorName,
+          contributorIdentifier : contributorIdentifier,
           variantName : "#{variantName}"
         },
         function(resp) {

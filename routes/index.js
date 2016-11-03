@@ -236,6 +236,7 @@ router.post('/register', csrfProtection, function(req, res) {
         firstname : req.body.firstname,
         lastname : req.body.lastname,
         nickname : newNickname,
+        identifier : "account" + Date.now() + Math.floor((Math.random() * 10) + 1),
         username : req.body.username,
         einsteinPoints: 0, rupees: 0,
         ideaSeeds: []
@@ -348,6 +349,7 @@ router.post('/register-nda', csrfProtection, function(req, res) {
         firstname : req.body.firstname,
         lastname : req.body.lastname,
         nickname : newNickname,
+        identifier : "account" + Date.now() + Math.floor((Math.random() * 10) + 1),
         username : req.body.username,
         einsteinPoints: 0, rupees: 0,
         ideaSeeds: []
@@ -397,6 +399,7 @@ router.post('/register-dsw', csrfProtection, function(req, res) {
         firstname : req.body.firstname,
         lastname : req.body.lastname,
         nickname : newNickname,
+        identifier : "account" + Date.now() + Math.floor((Math.random() * 10) + 1),
         username : req.body.username,
         einsteinPoints: 0, rupees: 0,
         ideaSeeds: []
@@ -529,6 +532,11 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
       return;
     } else {
       var account = accounts[0];
+    }
+
+    if(!account.identifier) {
+      account.identifier = "account" + Date.now() + Math.floor((Math.random() * 10) + 1);
+      account.save();
     }
 
     IdeaSeed.find({"collaborators" : account.username}, function(err, collaboratorIdeas){
@@ -1186,7 +1194,7 @@ router.post('/suggestion-submit', csrfProtection, function(req, res) {
       ideaSeed : req.session.idea,
       problemID : problem.id,
       date: Date.now(),
-      identifier : "comp-"+Date.now()
+      identifier : "comp-"+Date.now() + Math.floor((Math.random() * 10) + 1)
     };
 
     Account.findById( req.user.id,
@@ -1245,7 +1253,7 @@ router.post('/suggestion-submit-new', csrfProtection, function(req, res) {
       ideaSeed : ideaSeedId,
       problemID : problem.id,
       date: Date.now(),
-      identifier : "comp-"+Date.now()
+      identifier : "comp-"+Date.now() + Math.floor((Math.random() * 10) + 1)
     };
 
 
@@ -2195,23 +2203,30 @@ router.post('/incorporate-suggestions', csrfProtection, function(req, res) {
 
         newVariant.contributorsSignedOff = {};
         newVariant.contributorContracts = {};
-        _.each(suggestions, function(element,index){
-          newVariant.contributorsSignedOff[element.creator] = "No Email Sent";
-          newVariant.contributorContracts[element.creator] = "no contract yet";
-        });
-        //this tells mongoose to save the mixed field of contributors
-        // when save is called below
 
-        newVariant["components"] = incorporatedSuggestions;
-        newVariant["images"] = incorporatedImages;
+        var suggestionCreatorUsernames = _.map(suggestions, function(element, index){ return element.creator; });
+        Account.find({"username" : { $in : suggestionCreatorUsernames}}, function(err, accounts){
+          _.each(accounts, function(account, index){
+            newVariant.contributorsSignedOff[account.identifier] = "No Email Sent";
+            newVariant.contributorContracts[account.identifier] = "no contract yet";
+          })
 
-        idea.variants.set(idea.variants.length -1, newVariant);
+          //this tells mongoose to save the mixed field of contributors
+          // when save is called below
+          newVariant["components"] = incorporatedSuggestions;
+          newVariant["images"] = incorporatedImages;
 
-        idea.markModified('variants');
-
-        idea.save(function(err, data){
-          res.redirect('/ideas/' + idea.name);
-        });
+          IdeaSeed.update(
+             { _id: idea.id },
+             { $push: { variants: newVariant } },
+            function(err, data){
+              if (err){
+                console.log("error is "+ err)
+              }
+              res.redirect('/ideas/' + idea.name);
+            }
+          );      
+        })
       });
     }); //end of suggestion query
   });
@@ -3110,6 +3125,7 @@ router.get('/ideas/:ideaSeedName/variant/:variantname', csrfProtection, function
                   suggestionsList : suggestionsList,
                   variantName : req.params.variantname,
                   images : imageList,
+                  contributors : contributors,
                   variantSummary : true,
                   listOfContributors : currentVariant.contributorsSignedOff,
                   contributorContracts : currentVariant.contributorContracts,
@@ -3133,7 +3149,7 @@ router.get('/ideas/:ideaSeedName/variant/:variantname', csrfProtection, function
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/ideas/:ideaSeedName/variant/:variantname/contract/:contributorName', csrfProtection, function(req, res){
+router.get('/ideas/:ideaSeedName/variant/:variantname/contract/:contributorIdentifier', csrfProtection, function(req, res){
 
   if(!req.session.idea || !(req.user && req.user.username)){
     res.redirect('/');
@@ -3148,7 +3164,7 @@ router.get('/ideas/:ideaSeedName/variant/:variantname/contract/:contributorName'
     res.render('pages/variant-contract', { user : req.user || {},
       idea : currentIdea,
       csrfToken: req.csrfToken(),
-      contributorUsername : req.params.contributorName,
+      contributorIdentifier : req.params.contributorIdentifier,
       variantName : req.params.variantname
     });
   });
@@ -3184,9 +3200,9 @@ router.post('/sign-variant-contract', csrfProtection, function(req, res){
         }
 
         //find the contributor who this email is being sent to and record that their response is pending
-        currentVariant['contributorsSignedOff'][req.body.contributorUsername] = "Approved";
+        currentVariant['contributorsSignedOff'][req.body.contributorIdentifier] = "Approved";
         if (contractInfo['filename'] && contractInfo['location'] && currentVariant['contributorContracts']){
-          currentVariant['contributorContracts'][req.body.contributorUsername] = {
+          currentVariant['contributorContracts'][req.body.contributorIdentifier] = {
             filename : contractInfo['filename'],
             location : contractInfo['location']
           };
@@ -3426,7 +3442,7 @@ router.post('/save-component', csrfProtection, function(req, res) {
           }],
 
           ideaSeed    : req.session.idea,
-          identifier  : "comp-"+Date.now()
+          identifier  : "comp-"+Date.now() + Math.floor((Math.random() * 10) + 1)
         });
         newComp.save(function(err){
           if (err) return handleError(err);

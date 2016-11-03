@@ -263,6 +263,25 @@ IdeaSeed.statics.createVariantContract = function(signerName){
 	pObj.addText ( 'My Commission Expires:______________ ',  { font_size: 14, font_face: 'Times New Roman' } );
 
 	var contractFilename = __dirname + '/../tmp/contract-' + signerName +Date.now()+'.docx';
+
+  fs.stat(__dirname + '/../tmp', function(err, stats) {
+    //Check if error defined and the error code is "not exists"
+    if (err && err.errno === 34) {
+      //Create the directory, call the callback.
+      fs.mkdir(__dirname + '/../tmp', function(error) {  
+			  if(error) {
+			    console.log("oh no!!!", error);
+			  } else {
+			    //Carry on, all good, directory exists / created.
+			  }
+			 });
+    } else {
+      //just in case there was a different error:
+      console.log("error is " + err)
+    }
+  });	
+
+
 	var out = fs.createWriteStream ( contractFilename );
 	docx.generate ( out, {
 	  'finalize': function ( written ) {

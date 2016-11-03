@@ -113,7 +113,7 @@ html
 						_csrf : $('[name="_csrf"]').val(),
 						variantName : $("input[name='variantName']").val(),
 						contributorSignatureName : $("input[name='variantContributorName']").val(),
-						contributorUsername : "#{contributorUsername}",
+						contributorIdentifier : "#{contributorIdentifier}",
 						ideaName : "#{idea.name}"
 					},function(resp) {
 						window.location.href = '/ideas/#{idea.name}/variant/' + $("input[name='variantName']").val();

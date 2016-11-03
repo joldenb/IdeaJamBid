@@ -11,6 +11,4 @@ var Network = new Schema({
 	type : String //either school, company, or city/state
 }, { autoIndex: false });
 
-
-
 module.exports = mongoose.model('Network', Network);

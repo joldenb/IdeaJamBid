@@ -15,6 +15,7 @@ var Account = new Schema({
     nickname        : {type: String, unique: true},
     username		: {type: String, unique: true},
     password		: String,
+    identifier      : String,
     einsteinPoints	: {type: Number, default:0},
     einsteinHistory : [String],
     rupees			: {type: Number, default:0},
