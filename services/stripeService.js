@@ -1,6 +1,7 @@
 var exports = module.exports = {};
 var requestpromise = require('request-promise');
 var CrowdfundingService = require('./crowdfundingService');
+const EmailService = require('./emailService');
 var Account = require('../models/account');
 var IdeaSeed = require('../models/ideaSeed');
 var StripeCredentials = require('../models/stripeCredentials');
@@ -87,7 +88,8 @@ exports.delayedChargeCreation = function(tokenId, amount, prizeId, user, ideaNam
     return campaignPayment.save().then(function (campaignPayment) {
       campaign.payments.push(campaignPayment.id);
       return campaign.save().then(function() {
-        return true;
+        EmailService.sendPledgeConfirmation(campaignPayment, idea, user);
+        return campaignPayment;
       })
     });
   });
