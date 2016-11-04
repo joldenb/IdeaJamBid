@@ -2,9 +2,10 @@ var exports = module.exports = {};
 var Account = require('../models/account');
 var IdeaSeed = require('../models/ideaSeed');
 var StripeCredentials = require('../models/stripeCredentials');
+var Promise = require('bluebird');
 
-exports.createOrFindTestAccount = function(username, cb) {
-  Account.findOne({ 'username' : username  }, function(user) {
+exports.createOrFindTestAccount = function(username) {
+  return Account.findOne({ 'username' : username  }).exec().then(function(user) {
     if(user){
       return user;
     }
@@ -32,19 +33,12 @@ exports.createOrFindTestAccount = function(username, cb) {
       stripeCredentials: stripeCreds._id
     });
 
-    newAccount.setPassword('testpass', function(err, user) {
-      user.save();
-      cb(user);
+    return new Promise(function(fullfill) {
+      newAccount.setPassword('testpass', function(err, user) {
+        user.save();
+        fullfill(user);
+      });
     });
-
-    // Account.register(newAccount, 'testpass', function(err, account) {
-    //   if (err) {
-    //     console.log("err.message:" + err.message);
-    //     return null;
-    //   }
-    //   console.log('Register finished with ' + account.username);
-    //   return user;
-    // });
   });
 };
 

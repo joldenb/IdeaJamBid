@@ -24,6 +24,24 @@ html
         h2 #{timeLeft.time}
           small.campaignStats #{timeLeft.units} left
     .row
+      h2.component-title Components of the #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)} Campaign
+        if components.length > 0
+          each component, identifier in components
+            a.component-block-link(href='/component-profile/' + component.identifier)
+              div.row.suggestion-row.suggestion-element.variant-suggestion-block(id="#{component.identifier}")
+                .col-sm-2
+                  if component.mainImage && component.mainImage.amazonURL
+                    img.component-block-image(src=component.mainImage.amazonURL)
+                .col-sm-8.problem-row-padding
+                  if component.text
+                    h3.component-header #{component.text.charAt(0).toUpperCase() + component.text.slice(1)}
+                  else
+                    h3.component-header <i>No title yet</i>
+                  if component.descriptions && component.descriptions[0]
+                    p <b>Description:</b> #{component.descriptions[0]}
+        else
+          h4 <i>No Components Yet</i>
+    .row
       .col-sm-offset-2.col-sm-8
         h4 Prizes
         input(type="hidden", name="_csrf", value="#{csrfToken}")

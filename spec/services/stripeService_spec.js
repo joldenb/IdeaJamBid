@@ -27,7 +27,7 @@ describe('Stripe Service', function () {
       prizeDesc0: "test prize description",
       prizeCost0: "300"
     };
-    SpecHelper.createOrFindTestAccount('testuser@madeuptesturl.com', function(account) {
+    SpecHelper.createOrFindTestAccount('testuser@madeuptesturl.com').then(function(account) {
       SpecHelper.createOrFindIdeaSeed(account, ideaName, "public").then(function() {
         CrowdfundingService.createCampaign(campaignData, account, ideaName).then(function(newCampaign) {
           campaign = newCampaign;
@@ -41,7 +41,7 @@ describe('Stripe Service', function () {
     var stub = sinon.stub(stripe.customers, 'create');
     stub.returns(Promise.resolve({id: '123'}));
 
-    SpecHelper.createOrFindTestAccount('testuser@madeuptesturl.com', function(account) {
+    SpecHelper.createOrFindTestAccount('testuser@madeuptesturl.com').then(function(account) {
       StripeService
         .delayedChargeCreation('mytesttoken', '15000', campaign.prizes[0], account, ideaName)
         .then(function (success){

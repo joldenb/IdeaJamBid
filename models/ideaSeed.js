@@ -31,7 +31,7 @@ var IdeaSeed = new Schema({
 
 	variants			: [{
 		name				: String, /* should be a unique identifier */
-		components : [ String	], /* should match a suggestionID */
+		components : [ String	], /* should match a component _id */
 		images			: [ String ], // filenames of images
 		variantApplication : ObjectId, //this should be a pdf store in amazon s3
 		variantReceipt : ObjectId, // once the variant application is built and filed.

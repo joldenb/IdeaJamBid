@@ -3,6 +3,8 @@ var IdeaSeed = require('../models/ideaSeed');
 var Campaign = require('../models/campaign');
 var CampaignPrize = require('../models/campaignPrize');
 var CampaignPayment = require('../models/campaignPayment');
+var IdeaProblem = require('../models/ideaProblem');
+var Component = require('../models/component');
 var moment = require('moment');
 var paypal = require('paypal-rest-sdk');
 
@@ -68,29 +70,35 @@ exports.createCampaign = function(campaignData, account, ideaName) {
         return key.substring(9) 
       });
 
-    var prizeIds = prizeValues.map(function(val) {
+    var prizeIdPromises = prizeValues.map(function(val) {
       var prize = new CampaignPrize({
         name: campaignData['prizeName' + val],
         description: campaignData['prizeDesc' + val],
         cost: campaignData['prizeCost' + val], //amount in dollars
         imageUrl: campaignData['prizeImageUrl' + val]});
-      prize.save();
-      return prize.id;
+      return prize.save().then(function(prize) {
+        return prize.id;
+      });
     });
 
-    var campaign = new Campaign({
-      goal: campaignData.goal,
-      prizes: prizeIds,
-      state: 'open',
-      startDate: new Date(),
-      endDate: moment().add(60, 'days').toDate()
+    return Promise.all(prizeIdPromises).then(function(prizeIds) {
+      var campaign = new Campaign({
+        goal: campaignData.goal,
+        prizes: prizeIds,
+        state: 'open',
+        startDate: new Date(),
+        endDate: moment().add(60, 'days').toDate()
+      });
+      if(campaignData.variant !== undefined && campaignData.variant !== 'none') {
+        campaign.variant = campaignData.variant;
+      }
+      return campaign.save().then(function(campaign) {
+        ideaSeed.campaigns.push(campaign._id);
+        return ideaSeed.save().then(function() {
+          return campaign;
+        })
+      });
     });
-    campaign.save();
-
-    ideaSeed.campaigns.push(campaign.id);
-    return ideaSeed.save().then(function() {
-      return campaign;
-    })
   });
 };
 
@@ -123,4 +131,19 @@ exports.sumPayments = function(campaign) {
         return result[0].total;
       }
   });
+};
+
+function ideaSeedComponents(idea) {
+  return Component.find({"ideaSeed": idea._id}).exec();
+}
+
+exports.getComponents = function(campaign, idea) {
+  if(campaign.variant !== undefined) {
+    let selectedVariant = idea.variants.filter(function(variant) {
+      return variant.name === campaign.variant
+    });
+    return Component.find({'_id': {$in: selectedVariant[0].components}}).exec();
+  } else {
+    return ideaSeedComponents(idea);
+  }
 };

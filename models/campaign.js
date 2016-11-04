@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 var moment = require('moment');
 
 var Campaign = new Schema({
+  variant: String, //unique name of the variant
 	payments : [{type: Schema.Types.ObjectId, ref: 'CampaignPayment'}],
 	prizes: [{type: Schema.Types.ObjectId, ref: 'CampaignPrize'}],
 	goal: Number, //amount in dollars

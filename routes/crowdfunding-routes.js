@@ -93,23 +93,31 @@ router.get('/ideas/:ideaName/campaign', csrfProtection, function(req, res){
     return;
   }
 
-  var query = IdeaSeed.findOne({"name" : req.params.ideaName});
-  query.exec().then(function(idea){
-    var openCampaign = CrowdfundingService.getOpenCampaign(idea);
+  let idea, prizes = [], openCampaign, totalPayments, components;
 
-    CampaignPrize.find({'_id': {$in: openCampaign.prizes}}).exec().then(function (prizes) {
-      CrowdfundingService.sumPayments(openCampaign).then(function (totalPayments) {
-        res.render('pages/campaign/view', {
-          csrfToken: req.csrfToken(),
-          user: req.user,
-          idea: idea,
-          campaign: openCampaign,
-          funderTotalPayments: totalPayments,
-          prizes: prizes
-        });
-      });
+  var query = IdeaSeed.findOne({"name" : req.params.ideaName});
+  query.exec().then(function(ideaSeed) {
+    idea = ideaSeed;
+    openCampaign = CrowdfundingService.getOpenCampaign(idea);
+    return CampaignPrize.find({'_id': {$in: openCampaign.prizes}}).exec()
+  }).then(function (campaignPrizes) {
+    prizes = campaignPrizes;
+    return CrowdfundingService.sumPayments(openCampaign)
+  }).then(function (total) {
+    totalPayments = total;
+    return CrowdfundingService.getComponents(openCampaign, idea);
+  }).then(function(campaignComponents) {
+    components = campaignComponents;
+    res.render('pages/campaign/view', {
+      csrfToken: req.csrfToken(),
+      user: req.user,
+      idea: idea,
+      campaign: openCampaign,
+      funderTotalPayments: totalPayments,
+      prizes: prizes,
+      components: components
     });
-  });
+  })
 });
 
 router.post('/ideas/:ideaName/campaign/stripe-payment', csrfProtection, function(req, res){

@@ -21,6 +21,12 @@ html
                 div.input-group-addon $
                 input.form-control(type='number', pattern="[0-9]", name="goal", id="goal" placeholder='10000' required)
                 div.input-group-addon .00
+            .form-group
+              label(for="variant") Variant
+              select.form-control(id="variant", name="variant")
+                option(selected="selected" value="none") None
+                each variant in idea.variants
+                  option(value="#{variant.name}") #{variant.name}
             .form-group.row
               .col-md-12.h4 Prizes
               .col-md-12(id="prizes")
