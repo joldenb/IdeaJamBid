@@ -10,9 +10,15 @@
 		else
 			p No current Aptitudes
 		ul
-			each aptitude, index in aptitudes
-				if inventorAptitudeIds.indexOf(aptitude.id) > -1
-					li #{aptitude.title}
-	.footer.inventor-block
-		a(href='/imagineer/' + inventorName)
-			.btn.btn-go View Profile
+			each aptitude, index in inventorAptitudeIds
+				li #{aptitude.title}
+	if isPending
+		.footer.inventor-block.multiple-button
+			a(href='/imagineer/' + inventorName)
+				.btn.btn-go.btn-one View Profile
+			a(class='btn-pending' data-member=inventorName)
+				.btn.btn-go.btn-two Accept Member
+	else
+		.footer.inventor-block
+			a(href='/imagineer/' + inventorName)
+				.btn.btn-go View Profile

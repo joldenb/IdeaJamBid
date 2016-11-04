@@ -345,10 +345,15 @@ table.suggestion-table .col-md-4 {
   background-color: #a0a0a0;
 }
 
-.title-description.view-all-ideas, .title-description.inventor-block, .title-description.view-all-jams {
+.title-description.view-all-ideas, .title-description.view-all-jams, .title-description.inventor-block {
   height : 48%;
   margin-top : -40px;
   padding-left: 1em;  
+}
+
+.title-description.inventor-block {
+  margin: 0;
+  padding-top: 1em;
 }
 
 .title-description.view-all-jams {
@@ -382,6 +387,27 @@ table.suggestion-table .col-md-4 {
   width: 60%;
   left:14%;
   transform: translate(10%,0%);
+}
+
+.footer.inventor-block.multiple-button .btn-one {
+  position: absolute;
+  top: 16%;
+  width: 60%;
+  left:14%;
+  transform: translate(10%,0%);
+}
+
+.footer.inventor-block.multiple-button .btn-two {
+  position: absolute;
+  top: 60%;
+  width: 60%;
+  left:14%;
+  transform: translate(10%,0%);
+}
+
+.approved-message {
+  padding: 5em 6.5em;
+  color: white;
 }
 
 .suggestion.view-all-ideas {
@@ -857,6 +883,10 @@ a.plus-overlay img{
   height: 4em;
   background-color: #414142; /*dark gray */
   position: relative;
+}
+
+.footer.inventor-block.multiple-button{
+  height: 10em;
 }
 
 .footer.variant-suggestion .radio {

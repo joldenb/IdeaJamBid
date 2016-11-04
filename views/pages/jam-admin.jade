@@ -1,0 +1,244 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body#topSection
+    .header.navbar.navbar-default.jamTopNav
+      include ../partials/header.jade
+
+    if !networkImage
+      form(role='form', id="jamProfilePicForm" action="/add-network-profile-pic", method="post", enctype="multipart/form-data")
+        .form-group
+          h3 Upload a new Profile Picture for the #{networkName} Jam
+          |  
+          input#profilePicButton(type="file", name="picture")
+          input(type="hidden", name="networkName", value="#{networkName}")
+          input(type="hidden", name="_csrf", value="#{csrfToken}")
+          br
+    else
+      a(href="/jam/" + networkName)
+        .desktop-network-header-img(style="background-image : url('" + '#{networkImage || "/lightbulb.png"}' + "');"+ideaImageStyle)
+        img.mobile-network-header-img(src='#{networkImage}')
+
+    .container.network-profile.jam-page
+
+      a.btn.btn-industry.btn-lg(href="/jam/" + networkName) View Jam Profile
+
+      h3 Jam Leaders
+      each inventor, index in topInventors
+        - var inventorImage
+        - var inventorImageStyle
+        - var inventorName
+        - var inventorPoints
+        - var inventorAptitudeIds
+        - var aptitudes = inventorAptitudes
+        - var profileLinkURL
+        - var isPending = false
+        if index % 3 == 0 
+          .row
+            .col-md-4
+              if(topInventors[index])
+                if accountNameAndURLs[topInventors[index].username]
+                  - inventorImage = accountNameAndURLs[topInventors[index].username][0]
+                  - inventorImageStyle = accountNameAndURLs[topInventors[index].username][1]
+                - inventorName = topInventors[index].nickname
+                - inventorPoints = topInventors[index].einsteinPoints
+                - inventorAptitudeIds = topInventors[index].aptitudes
+                - isPending = topInventors[index].pendingNetworks.indexOf(networkID) > -1
+                include ../partials/inventor-block.jade
+            .col-md-4
+              if(topInventors[index + 1])
+                if accountNameAndURLs[topInventors[index + 1].username]
+                  - inventorImage = accountNameAndURLs[topInventors[index + 1].username][0]
+                  - inventorImageStyle = accountNameAndURLs[topInventors[index + 1].username][1]
+                else
+                  - inventorImage = ""
+                  - inventorImageStyle = ""
+                - inventorName = topInventors[index + 1].nickname
+                - inventorPoints = topInventors[index + 1].einsteinPoints
+                - inventorAptitudeIds = topInventors[index + 1].aptitudes
+                - isPending = topInventors[index + 1].pendingNetworks.indexOf(networkID) > -1
+                include ../partials/inventor-block.jade
+            .col-md-4
+              if(topInventors[index + 2 ])
+                if accountNameAndURLs[topInventors[index + 2].username]
+                  - inventorImage = accountNameAndURLs[topInventors[index + 2].username][0]
+                  - inventorImageStyle = accountNameAndURLs[topInventors[index + 2].username][1]
+                else 
+                  - inventorImage = ""
+                  - inventorImageStyle = ""
+                - inventorName = topInventors[index + 2].nickname
+                - inventorPoints = topInventors[index + 2].einsteinPoints
+                - inventorAptitudeIds = topInventors[index + 2].aptitudes
+                - isPending = topInventors[index + 2].pendingNetworks.indexOf(networkID) > -1
+                include ../partials/inventor-block.jade
+      input(type="hidden", name="_csrf", value="#{csrfToken}")
+
+  include ../partials/js-includes.jade
+  script(src='/exif.js')
+  script(type="text/javascript").
+    $(document).ready(function(){
+      if("!{dsw}" == "true"){
+        $('#loginModal').modal('show');
+      }
+    });
+
+    $("#ideajam-login").click(function(event){
+      $("#dsw-signup-form").hide();
+      $("#dsw-login-form").show();
+    });
+
+    $("#register-submit").click(function(event){
+      if($("input[name='nickname']").val() == ""){
+        event.preventDefault();
+        $("input[name='nickname']").after("<p> Please enter a name value.</p>");
+      }
+      if($("input[name='username']").val() == ""){
+        event.preventDefault();
+        $("input[name='username']").after("<p> Please enter an email.</p>");
+      }
+    })
+
+    if(document.getElementById("profilePicButton")){
+      document.getElementById("profilePicButton").onchange = function(event) {
+        $("<img id='spinner' src='/spinner.gif'>").insertAfter("#jamProfilePicForm");
+        const files = document.getElementById('profilePicButton').files;
+        const file = files[0];
+        if(file == null){
+          return alert('No file selected.');
+        }
+        var fr   = new FileReader;
+        
+        fr.onloadend = function() {
+          // get EXIF data
+          var exif = EXIF.readFromBinaryFile(this.result);
+
+          if(file.size < 3000000){
+            getSignedRequest(file, exif);
+          } else if (file.size > 3000000){
+            alert('Please choose an image smaller than 3 MB.')
+          } else {
+            alert('An error ocurred with this image.')
+          }
+
+        };
+
+        fr.readAsArrayBuffer(file); // read the file
+      };
+
+      function uploadFile(file, signedRequest, url, exif){
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', signedRequest);
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4){
+            if(xhr.status === 200 && (file.type=="image/jpeg" || file.type=="image/png")){
+              var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type,
+              exif : exif , "_csrf" : $('[name="_csrf"]').val(), networkName : $('[name="networkName"]').val()};
+              $.post('/add-network-profile-pic', data , function(response, status){
+                window.location.reload();
+              });
+            }
+            else{
+              alert('Could not upload file.');
+            }
+          }
+        };
+        xhr.send(file);
+      }
+
+      function getSignedRequest(file, exif){
+        const xhr = new XMLHttpRequest();
+        var filename = file.name.split(".");
+        filename[0] = filename[0] + "-" + Date.now().toString();
+        filename = filename.join(".");
+        xhr.open('GET', '/sign-s3?file-name='+ filename + '&file-type='+ file.type);
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4){
+            if(xhr.status === 200){
+              var response;
+              if(xhr.responseText == ""){
+                response = JSON.parse('{}');
+              } else {
+                response = JSON.parse(xhr.responseText);
+              }
+              uploadFile(file, response.signedRequest, response.url, exif);
+            }
+            else{
+              alert('Could not get signed URL.');
+            }
+          }
+        };
+        xhr.send();
+      }
+    }
+
+    $(document).ready(function(){
+
+      $(".upvote-imperfection").click(function(event){  
+        console.log("imperfection");    
+        event.preventDefault();
+        if(!$(this).hasClass("clicked-upvote")){
+          $(this).addClass("clicked-upvote");
+          $(this).text("Upvote " + (parseInt($(this).text().slice(7)) + 1));
+        }
+
+        $.post('/upvote-imperfection', 
+        {
+          _csrf : $('[name="_csrf"]').val(),
+          problem : $(this)[0].dataset['problemId']
+        },
+        function(data, response) {
+        });
+
+        return false;
+      });
+        
+      $(".upvote-suggestion").click(function(event){
+        event.preventDefault();
+
+        if(!$(this).hasClass("clicked-upvote")){
+          $(this).addClass("clicked-upvote");
+          $(this).text("Upvote " + (parseInt($(this).text().slice(7)) + 1));
+        }
+
+        $.post('/upvote-suggestion', 
+        {
+          _csrf : $('[name="_csrf"]').val(),
+          suggestion : $(this)[0].dataset['suggestionId']
+        },
+        function(data, response) {
+        });
+
+        return false;
+      });   
+
+
+      $("button.view-all-imperfections").click(function(event){
+        $(".hiddenImperfections").show(300)
+      });
+
+      $(".btn-pending").click(function(event){
+        if ($(this).data()['member']){
+          var newMember = $(this).data()['member'];
+        } else {
+          var newMember = ""
+        }
+        var data = {
+          acceptMember : newMember,
+          jamName : "!{networkName}",
+          _csrf : $('[name="_csrf"]').val()
+        };
+
+        $.post('/accept-jam-member', data, function(response){
+          if(response['acceptedMember']){
+            $(".btn-pending[data-member='" + response['acceptedMember'] + "']").parent().append("<h4 class='approved-message'>Approved</h4>")
+            $(".btn-pending[data-member='" + response['acceptedMember'] + "']").remove()
+          } else {
+            alert("Could not accept Member.")
+          }
+        });
+      });
+
+
+    });
+

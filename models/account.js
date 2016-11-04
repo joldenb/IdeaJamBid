@@ -34,7 +34,8 @@ var Account = new Schema({
 			company : ObjectId,
 			location	: ObjectId
     },
-    otherNetworks   : [ObjectId] //for now there's up to three, all ids for network ids
+    otherNetworks   : [ObjectId], //for now there's up to three, all ids for network ids
+    pendingNetworks : [ObjectId]
 }, { autoIndex: false });
 
 var minLength = 8;

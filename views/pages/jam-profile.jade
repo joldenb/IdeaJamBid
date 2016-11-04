@@ -6,22 +6,18 @@ html
     .header.navbar.navbar-default.jamTopNav
       include ../partials/header.jade
 
-    if !networkImage
-      form(role='form', id="jamProfilePicForm" action="/add-network-profile-pic", method="post", enctype="multipart/form-data")
-        .form-group
-          h3 Upload a new Profile Picture for the #{networkName} Jam
-          |  
-          input#profilePicButton(type="file", name="picture")
-          input(type="hidden", name="networkName", value="#{networkName}")
-          input(type="hidden", name="_csrf", value="#{csrfToken}")
-          br
-    else
+    if networkImage
       a(href="/jam/" + networkName)
         .desktop-network-header-img(style="background-image : url('" + '#{networkImage || "/lightbulb.png"}' + "');"+ideaImageStyle)
         img.mobile-network-header-img(src='#{networkImage}')
 
     .container.network-profile.jam-page
-      a.home-login.btn.btn-industry.btn-lg.btn-block( href="/view-jams" ) View All Jams
+      a.home-login.btn.btn-industry.btn-lg( href="/view-jams" ) View All Jams
+      if user && !userIsCurrentMember && !isPending
+        a#joinJamButton.home-login.btn.btn-industry.btn-lg Join This Jam
+      else if user && isPending
+        h5 Pending Membership
+
       span.jamH2
         .navbar.jamNav.desktopOnly
           .navbar-inner
@@ -363,4 +359,15 @@ html
       $("button.view-all-imperfections").click(function(event){
         $(".hiddenImperfections").show(300)
       });
+
+      $("#joinJamButton").click(function(event){
+        var data = {
+          _csrf : $('[name="_csrf"]').val(),
+          jamName : "!{networkName}"
+        }
+        $.post('/save-jam', data, function(response){
+          window.location.reload(true)
+        });
+      });
+
     });

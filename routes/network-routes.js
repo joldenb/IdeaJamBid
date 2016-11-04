@@ -27,6 +27,62 @@ var uploading = multer({
   storage: storage,
   dest: '../uploads/'
 });
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for saving a general jam
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.post('/accept-jam-member', csrfProtection, function(req, res) {
+
+  if( !(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
+  
+  req.body.jamName = req.body.jamName.trim();
+
+  Network.findOne({"name" : req.body.jamName}, function(err, jam){
+      if(err){
+        res.json({error: err});
+      }
+
+      if(jam){
+        Account.find( {"nickname" : req.body.acceptMember},
+          function (err, accounts) {
+            if(accounts.length > 0){
+              //we need to figure out a way to do this without nicknames so we dont have to worry
+              // about there being multiple
+              account = accounts[0];
+              if(account.pendingNetworks && account.pendingNetworks.length){
+                account.pendingNetworks.splice(account.pendingNetworks.indexOf(jam.id), 1);
+                if(jam.type=="school"){
+                  account.networks.school = jam.id;
+                } else if (jam.type="company"){
+                  account.networks.company = jam.id;
+                } else if (jam.type="location"){
+                  account.networks.location = jam.id;
+                } else if (account.otherNetworks) {
+                  account.otherNetworks.push(jam.id);
+                } else {
+                  account.otherNetworks = [jam.id];
+                }
+              }
+              account.save(function (err) {
+                res.json({acceptedMember : req.body.acceptMember});
+              });
+            } else {
+              res.json({denied : req.body.acceptMember});
+            }
+        });
+      }else {
+        res.json({deniedMember : req.body.acceptMember});
+      }
+  });
+});
+
 /*****************************************************************
 ******************************************************************
 ******************************************************************
@@ -50,10 +106,10 @@ router.post('/save-jam', csrfProtection, function(req, res) {
       if(jam){
         Account.findById( req.user.id,
           function (err, account) {
-            if(account.otherNetworks && account.otherNetworks.length){
-              account.otherNetworks.push(jam.id)
+            if(account.pendingNetworks && account.pendingNetworks.length){
+              account.pendingNetworks.push(jam.id);
             } else {
-              account.otherNetworks = [jam.id];
+              account.pendingNetworks = [jam.id];
             }
             account.save(function (err) {});
         });
@@ -454,6 +510,183 @@ router.get('/view-jams', csrfProtection, function(req, res){
   });
 });
 
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for rendering the admin of a network profile page. Currently
+* this applies to schools, companies, aptitutes, etc
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/jam/:networkName/admin', csrfProtection, function(req, res){
+  //special case for denver startup week
+  var dsw = false;
+  if(req.params.networkName == "dsw"){
+    if(!req.user){
+      dsw = true;
+    }
+  }
+  var headshotData = ideaSeedHelpers.getUserHeadshot(req);
+  var headshotURL = headshotData['headshotURL'];
+  var headshotStyle = headshotData['headshotStyle'];
+
+  var networkName = req.params
+    .networkName
+    .split("-")
+    .join(" ");
+
+  Network.findOne({"name" : {$regex : ".*"+networkName+".*"}}, function(err, network){
+    //if theres no matching name or logged in user
+    if(!network ){
+      return res.redirect('/');
+    }
+
+    Account.find({$or : [
+        {'networks.school' :  network['id']},
+        {'networks.company' :  network['id']},
+        {'networks.location' :  network['id']},
+        {otherNetworks :  network['id']},
+        {pendingNetworks : network['id'] }
+      ]})
+    .sort({einsteinPoints : -1})
+    .exec(function(err, accounts){
+
+      /* This chunk of code is to build the top accounts' profile blocks */
+      var topAccountsToDisplay = accounts;
+      accountHeadshotIDs = {};
+      var accountNameAndURLs = {};
+      for(var i = 0; i < topAccountsToDisplay.length; i++){
+        var accountHeadshotStyle = "";
+        if(topAccountsToDisplay[i].headshots && topAccountsToDisplay[i].headshots[0] && topAccountsToDisplay[i].headshots[0].orientation){
+          accountHeadshotStyle = ideaSeedHelpers.getImageOrientation(topAccountsToDisplay[i].headshots[0].orientation);
+        }
+        if(topAccountsToDisplay[i].headshots && topAccountsToDisplay[i].headshots[0] && topAccountsToDisplay[i].headshots[0].amazonURL){
+          accountNameAndURLs[topAccountsToDisplay[i].username] = [topAccountsToDisplay[i].headshots[0].amazonURL,accountHeadshotStyle];
+        }
+        else {
+          accountNameAndURLs[topAccountsToDisplay[i].username] = ["", ""];
+        }
+      }
+        /* First, make a list of all the aptitude IDs for everyone, then query the database for them,
+        then figure out who has what aptitudes. */
+
+          /* This chunk of code is to build the top accounts' profile blocks */
+          var allIdeas = [],
+              totalReviewList = [];
+          _.each(accounts, function(account){
+            allIdeas = allIdeas.concat(account.ideaSeeds);
+          });
+
+          allIdeas = _.map(allIdeas, function(idea){
+            return idea.id.toString();
+          });
+
+          IdeaSeed.find({$and: [{"_id" : { $in : allIdeas}}, {"name": {$ne: null}}, {"visibility" : "public"}]}, function(err, ideas){
+
+            _.each(ideas, function(idea){
+              totalReviewList = totalReviewList.concat(idea.ideaReviews);
+            });
+
+            IdeaReview.find({"_id" : {$in : totalReviewList}}, function(err, reviews){
+              /* This will be an object of idea seed id's and average review scores*/
+              var reviewScores = {};
+              _.each(reviews, function(review, index, list){
+
+                //group reviews by idea seed id, then hand each list of reviews to the
+                // idea review function to average the scores, and hand back an average
+                // for that idea seed. reviewScores will be an object with the keys being
+                // object id's and the values being a list of review objects
+                if(reviewScores[review.ideaSeedId.toString()]){
+                  reviewScores[review.ideaSeedId.toString()].push(review);
+                } else {
+                  reviewScores[review.ideaSeedId.toString()] = [review];
+                }
+              });
+
+              //each iteration, replace the list of review objects with
+              // one average review score, so we can rank them and select
+              // the top few
+              _.each(reviewScores, function(value,key, list){
+                //value should be an array of review objects
+                reviewScores[key] = IdeaReview.averageViabilityScores(value);
+              });
+
+              _.each(allIdeas, function(ideaKey, index){
+                if(Object.keys(reviewScores).indexOf(allIdeas[index]) == -1){
+                  reviewScores[allIdeas[index]] = 0;
+                }
+              });
+
+              // reviewScores is an object with idea seed ids as the keys and
+              // the average review score as the value. we need to sort them,
+              // take the highest 6 or so, then set the corresponding idea objects
+              // into the 'ideas' variable in order for the rest of the code to
+              // build the blocks to display on the page
+              var topIdeas = Array(ideas.length);
+              var allIdeaObjects = ideas; //used a little later to figure out which suggestions and imperfections go together
+              _.each(topIdeas, function(element, index, list){
+                var existingIdeaIds = _.map(topIdeas, function(idea){
+                  if (idea && idea['id']){
+                    return idea['id'];
+                  } else {
+                    return false;
+                  }
+                });
+                var highestScoreSoFar = 0;
+                var highestScoreId = 0;
+                var highScoreKey = 0;
+                _.each(reviewScores, function(scoreValue, scoreKey, scoreList){
+                  if(existingIdeaIds.indexOf(scoreKey) == -1 && scoreValue >= highestScoreSoFar){
+                    highestScoreSoFar = scoreValue;
+                    highScoreKey = scoreKey;
+                  }
+                  //find the idea object with the highScoreKey and add it to the list of ideas
+                  // to be built into blocks on the network page
+                  _.each(ideas, function(ideaObj, ideaIndex, ideaList){
+                    if(ideaObj['id'].toString() == highScoreKey.toString()){
+                      topIdeas[index] = ideaObj;
+                    }
+                  });
+                });
+              });
+
+              ideas = _.filter(topIdeas, Boolean);
+
+              var imageList = _.map(ideas, function(idea){
+                if(idea){
+                  return idea.images[0];
+                } else {
+                  return false;
+                }
+              });
+              /*
+                This builds the idea blocks from a finite list of ideas sorted by
+                the sum of values minus the sum of wastes.
+              */
+              IdeaImage.find({"_id" : { $in : imageList}}, function(err, images){
+                if(err){
+                  console.log("error is " + err);
+                }
+
+                    return res.render('pages/jam-admin', {
+                      csrfToken: req.csrfToken(),
+                      user : req.user || {},
+                      topInventors : topAccountsToDisplay,
+                      accountNameAndURLs : accountNameAndURLs,
+                      networkName : network.name,
+                      networkImage : network.profilePic,
+                      networkDescr : network.description,
+                      networkID : network.id,
+                      headshot: headshotURL
+                    });
+                  });
+            
+          });
+        });
+      });
+  });
+
+});
 
 /*****************************************************************
 ******************************************************************
@@ -475,6 +708,8 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
   var headshotData = ideaSeedHelpers.getUserHeadshot(req);
   var headshotURL = headshotData['headshotURL'];
   var headshotStyle = headshotData['headshotStyle'];
+  var userIsCurrentMember = false;
+  var isPending = false;
 
     var networkName = req.params
       .networkName
@@ -491,11 +726,23 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
 
         {'networks.school' : network['id']},
         {'networks.company' : network['id']},
-        {'networks.location' : network['id']}
+        {'networks.location' : network['id']},
+        {otherNetworks : network['id']}
 
       ]})
       .sort({einsteinPoints : -1})
       .exec(function(err, accounts){
+
+        //determine if the current user is part of the jam
+        _.each(accounts, function(account, index){
+          if (req.user.id.toString() === account.id.toString()){
+            userIsCurrentMember = true;
+          }
+        });
+
+        if(req.user.pendingNetworks.indexOf(network['id']) > -1 ){
+          isPending = true;
+        }
 
         /* This chunk of code is to build the top accounts' profile blocks */
         var topAccountsToDisplay = accounts.slice(0, 3);
@@ -835,9 +1082,12 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                                     networkName : network.name,
                                     networkImage : network.profilePic,
                                     networkDescr : network.description,
+                                    networkID : network.id,
                                     imperfections: imperfections,
                                     suggestions: suggestions,
-                                    headshot: headshotURL
+                                    headshot: headshotURL,
+                                    userIsCurrentMember : userIsCurrentMember,
+                                    isPending : isPending
                                   });
                               }); //end of account query
                             }).sort({date: -1}); //end of componet query for suggestions
@@ -853,6 +1103,186 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
       });
     });
 });
+
+
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for rendering the network profile page. Currently
+* this applies to schools, companies, aptitutes, etc
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/jam/:networkName/view-all-members', csrfProtection, function(req, res){
+  
+  //special case for denver startup week
+  var dsw = false;
+  if(req.params.networkName == "dsw"){
+    if(!req.user){
+      dsw = true;
+    }
+  }
+  var headshotData = ideaSeedHelpers.getUserHeadshot(req);
+  var headshotURL = headshotData['headshotURL'];
+  var headshotStyle = headshotData['headshotStyle'];
+
+  var networkName = req.params
+    .networkName
+    .split("-")
+    .join(" ");
+
+  Network.findOne({"name" : {$regex : ".*"+networkName+".*"}}, function(err, network){
+    //if theres no matching name or logged in user
+    if(!network ){
+      return res.redirect('/');
+    }
+
+    Account.find({ $or : [
+
+      {'networks.school' : network['id']},
+      {'networks.company' : network['id']},
+      {'networks.location' : network['id']}
+
+    ]})
+    .sort({einsteinPoints : -1})
+    .exec(function(err, accounts){
+
+      /* This chunk of code is to build the top accounts' profile blocks */
+      var topAccountsToDisplay = accounts;
+      accountHeadshotIDs = {};
+      var accountNameAndURLs = {};
+      for(var i = 0; i < topAccountsToDisplay.length; i++){
+        var accountHeadshotStyle = "";
+        if(topAccountsToDisplay[i].headshots && topAccountsToDisplay[i].headshots[0] && topAccountsToDisplay[i].headshots[0].orientation){
+          accountHeadshotStyle = ideaSeedHelpers.getImageOrientation(topAccountsToDisplay[i].headshots[0].orientation);
+        }
+        if(topAccountsToDisplay[i].headshots && topAccountsToDisplay[i].headshots[0] && topAccountsToDisplay[i].headshots[0].amazonURL){
+          accountNameAndURLs[topAccountsToDisplay[i].username] = [topAccountsToDisplay[i].headshots[0].amazonURL,accountHeadshotStyle];
+        }
+        else {
+          accountNameAndURLs[topAccountsToDisplay[i].username] = ["", ""];
+        }
+      }
+        /* First, make a list of all the aptitude IDs for everyone, then query the database for them,
+        then figure out who has what aptitudes. */
+
+          /* This chunk of code is to build the top accounts' profile blocks */
+          var allIdeas = [],
+              totalReviewList = [];
+          _.each(accounts, function(account){
+            allIdeas = allIdeas.concat(account.ideaSeeds);
+          });
+
+          allIdeas = _.map(allIdeas, function(idea){
+            return idea.id.toString();
+          });
+
+          IdeaSeed.find({$and: [{"_id" : { $in : allIdeas}}, {"name": {$ne: null}}, {"visibility" : "public"}]}, function(err, ideas){
+
+            _.each(ideas, function(idea){
+              totalReviewList = totalReviewList.concat(idea.ideaReviews);
+            });
+
+            IdeaReview.find({"_id" : {$in : totalReviewList}}, function(err, reviews){
+              /* This will be an object of idea seed id's and average review scores*/
+              var reviewScores = {};
+              _.each(reviews, function(review, index, list){
+
+                //group reviews by idea seed id, then hand each list of reviews to the
+                // idea review function to average the scores, and hand back an average
+                // for that idea seed. reviewScores will be an object with the keys being
+                // object id's and the values being a list of review objects
+                if(reviewScores[review.ideaSeedId.toString()]){
+                  reviewScores[review.ideaSeedId.toString()].push(review);
+                } else {
+                  reviewScores[review.ideaSeedId.toString()] = [review];
+                }
+              });
+
+              //each iteration, replace the list of review objects with
+              // one average review score, so we can rank them and select
+              // the top few
+              _.each(reviewScores, function(value,key, list){
+                //value should be an array of review objects
+                reviewScores[key] = IdeaReview.averageViabilityScores(value);
+              });
+
+              _.each(allIdeas, function(ideaKey, index){
+                if(Object.keys(reviewScores).indexOf(allIdeas[index]) == -1){
+                  reviewScores[allIdeas[index]] = 0;
+                }
+              });
+
+              // reviewScores is an object with idea seed ids as the keys and
+              // the average review score as the value. we need to sort them,
+              // take the highest 6 or so, then set the corresponding idea objects
+              // into the 'ideas' variable in order for the rest of the code to
+              // build the blocks to display on the page
+              var topIdeas = Array(ideas.length);
+              var allIdeaObjects = ideas; //used a little later to figure out which suggestions and imperfections go together
+              _.each(topIdeas, function(element, index, list){
+                var existingIdeaIds = _.map(topIdeas, function(idea){
+                  if (idea && idea['id']){
+                    return idea['id'];
+                  } else {
+                    return false;
+                  }
+                });
+                var highestScoreSoFar = 0;
+                var highestScoreId = 0;
+                var highScoreKey = 0;
+                _.each(reviewScores, function(scoreValue, scoreKey, scoreList){
+                  if(existingIdeaIds.indexOf(scoreKey) == -1 && scoreValue >= highestScoreSoFar){
+                    highestScoreSoFar = scoreValue;
+                    highScoreKey = scoreKey;
+                  }
+                  //find the idea object with the highScoreKey and add it to the list of ideas
+                  // to be built into blocks on the network page
+                  _.each(ideas, function(ideaObj, ideaIndex, ideaList){
+                    if(ideaObj['id'].toString() == highScoreKey.toString()){
+                      topIdeas[index] = ideaObj;
+                    }
+                  });
+                });
+              });
+
+              ideas = _.filter(topIdeas, Boolean);
+
+              var imageList = _.map(ideas, function(idea){
+                if(idea){
+                  return idea.images[0];
+                } else {
+                  return false;
+                }
+              });
+              /*
+                This builds the idea blocks from a finite list of ideas sorted by
+                the sum of values minus the sum of wastes.
+              */
+              IdeaImage.find({"_id" : { $in : imageList}}, function(err, images){
+                if(err){
+                  console.log("error is " + err);
+                }
+
+                    return res.render('pages/jam-members', {
+                      csrfToken: req.csrfToken(),
+                      user : req.user || {},
+                      topInventors : topAccountsToDisplay,
+                      accountNameAndURLs : accountNameAndURLs,
+                      networkName : network.name,
+                      networkImage : network.profilePic,
+                      networkDescr : network.description,
+                      headshot: headshotURL
+                    });
+                  });
+            
+          });
+        });
+      });
+  });
+});
+
 
 /*****************************************************************
 ******************************************************************
