@@ -13,6 +13,7 @@ html
 
     .container.network-profile.jam-page
       a.home-login.btn.btn-industry.btn-lg( href="/view-jams" ) View All Jams
+      a.home-login.btn.btn-industry.btn-lg( href="/jam/" + networkName + "/view-all-members") View All Members
       if user && !userIsCurrentMember && !isPending
         a#joinJamButton.home-login.btn.btn-industry.btn-lg Join This Jam
       else if user && isPending
