@@ -1142,7 +1142,8 @@ router.get('/jam/:networkName/view-all-members', csrfProtection, function(req, r
 
       {'networks.school' : network['id']},
       {'networks.company' : network['id']},
-      {'networks.location' : network['id']}
+      {'networks.location' : network['id']},
+      {otherNetworks : network['id']}
 
     ]})
     .sort({einsteinPoints : -1})
