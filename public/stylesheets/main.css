@@ -1861,3 +1861,16 @@ img.prizeImage {
 .purchasePrize {
   margin-top: 3px;
 }
+
+.campaignSummary {
+  padding-bottom: 20px;
+}
+
+.campaignComponent {
+  margin-left: 0;
+  margin-top: 5px;
+  border: 1px solid #00A550;
+  border-radius: 5px;
+  background-color: white;
+  color: black;
+}
