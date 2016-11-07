@@ -302,8 +302,16 @@ form {
   margin: 0 auto;
 }
 
-form.imagineer-profile-edit {
+form.imagineer-profile-edit, form#jamInvitationEmail, form.jamInvitationEmailPreview {
   margin: initial;
+}
+
+.fromEmailText, .bodyText, .subjectText {
+  display: inline;
+}
+
+.toEmailListItem {
+  font-size: 18px;
 }
 
 .view-idea-suggestions {

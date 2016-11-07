@@ -22,57 +22,93 @@ html
 
     .container.network-profile.jam-page
 
-      a.btn.btn-industry.btn-lg(href="/jam/" + networkName) View Jam Profile
+      .row
+        a.btn.btn-industry.btn-lg(href="/jam/" + networkName) View Jam Profile
 
-      h3 Jam Leaders
-      each inventor, index in topInventors
-        - var inventorImage
-        - var inventorImageStyle
-        - var inventorName
-        - var inventorPoints
-        - var inventorAptitudeIds
-        - var aptitudes = inventorAptitudes
-        - var profileLinkURL
-        - var isPending = false
-        if index % 3 == 0 
-          .row
-            .col-md-4
-              if(topInventors[index])
-                if accountNameAndURLs[topInventors[index].username]
-                  - inventorImage = accountNameAndURLs[topInventors[index].username][0]
-                  - inventorImageStyle = accountNameAndURLs[topInventors[index].username][1]
-                - inventorName = topInventors[index].nickname
-                - inventorPoints = topInventors[index].einsteinPoints
-                - inventorAptitudeIds = topInventors[index].aptitudes
-                - isPending = topInventors[index].pendingNetworks.indexOf(networkID) > -1
-                include ../partials/inventor-block.jade
-            .col-md-4
-              if(topInventors[index + 1])
-                if accountNameAndURLs[topInventors[index + 1].username]
-                  - inventorImage = accountNameAndURLs[topInventors[index + 1].username][0]
-                  - inventorImageStyle = accountNameAndURLs[topInventors[index + 1].username][1]
-                else
-                  - inventorImage = ""
-                  - inventorImageStyle = ""
-                - inventorName = topInventors[index + 1].nickname
-                - inventorPoints = topInventors[index + 1].einsteinPoints
-                - inventorAptitudeIds = topInventors[index + 1].aptitudes
-                - isPending = topInventors[index + 1].pendingNetworks.indexOf(networkID) > -1
-                include ../partials/inventor-block.jade
-            .col-md-4
-              if(topInventors[index + 2 ])
-                if accountNameAndURLs[topInventors[index + 2].username]
-                  - inventorImage = accountNameAndURLs[topInventors[index + 2].username][0]
-                  - inventorImageStyle = accountNameAndURLs[topInventors[index + 2].username][1]
-                else 
-                  - inventorImage = ""
-                  - inventorImageStyle = ""
-                - inventorName = topInventors[index + 2].nickname
-                - inventorPoints = topInventors[index + 2].einsteinPoints
-                - inventorAptitudeIds = topInventors[index + 2].aptitudes
-                - isPending = topInventors[index + 2].pendingNetworks.indexOf(networkID) > -1
-                include ../partials/inventor-block.jade
-      input(type="hidden", name="_csrf", value="#{csrfToken}")
+      .row
+        h3 Jam Leaders
+        each inventor, index in topInventors
+          - var inventorImage
+          - var inventorImageStyle
+          - var inventorName
+          - var inventorPoints
+          - var inventorAptitudeIds
+          - var aptitudes = inventorAptitudes
+          - var profileLinkURL
+          - var isPending = false
+          if index % 3 == 0 
+            .row
+              .col-md-4
+                if(topInventors[index])
+                  if accountNameAndURLs[topInventors[index].username]
+                    - inventorImage = accountNameAndURLs[topInventors[index].username][0]
+                    - inventorImageStyle = accountNameAndURLs[topInventors[index].username][1]
+                  - inventorName = topInventors[index].nickname
+                  - inventorPoints = topInventors[index].einsteinPoints
+                  - inventorAptitudeIds = topInventors[index].aptitudes
+                  - isPending = topInventors[index].pendingNetworks.indexOf(networkID) > -1
+                  include ../partials/inventor-block.jade
+              .col-md-4
+                if(topInventors[index + 1])
+                  if accountNameAndURLs[topInventors[index + 1].username]
+                    - inventorImage = accountNameAndURLs[topInventors[index + 1].username][0]
+                    - inventorImageStyle = accountNameAndURLs[topInventors[index + 1].username][1]
+                  else
+                    - inventorImage = ""
+                    - inventorImageStyle = ""
+                  - inventorName = topInventors[index + 1].nickname
+                  - inventorPoints = topInventors[index + 1].einsteinPoints
+                  - inventorAptitudeIds = topInventors[index + 1].aptitudes
+                  - isPending = topInventors[index + 1].pendingNetworks.indexOf(networkID) > -1
+                  include ../partials/inventor-block.jade
+              .col-md-4
+                if(topInventors[index + 2 ])
+                  if accountNameAndURLs[topInventors[index + 2].username]
+                    - inventorImage = accountNameAndURLs[topInventors[index + 2].username][0]
+                    - inventorImageStyle = accountNameAndURLs[topInventors[index + 2].username][1]
+                  else 
+                    - inventorImage = ""
+                    - inventorImageStyle = ""
+                  - inventorName = topInventors[index + 2].nickname
+                  - inventorPoints = topInventors[index + 2].einsteinPoints
+                  - inventorAptitudeIds = topInventors[index + 2].aptitudes
+                  - isPending = topInventors[index + 2].pendingNetworks.indexOf(networkID) > -1
+                  include ../partials/inventor-block.jade
+
+      .row
+        h3 Enter One or More Emails
+        form(role='form', class="jamInvitationEmailPreview"  method="post", style='max-width: 300px;')
+          .form-group
+            textarea#toEmailAddresses.form-control(name="toEmailAddresses" placeholder="To:" required, rows="3" )
+            a
+              h5#viewFormats Valid Formats
+            input#fromEmailAddress.form-control(type="email", name="fromEmailAddress" placeholder="From:" required )
+            input(type="hidden", name="_csrf", value="#{csrfToken}")
+            button.btn.btn-success#emailPreview() Preview Email
+
+
+
+  #previewEmailModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Preview and Send Email Invitation
+        .modal-body
+          h4 To:
+          .listOfEmailRecipients
+          h4#fromEmail From:
+          h4 Subject: 
+            p.subjectText Join a Jam on IdeaJam
+          h4 Body: 
+            p.bodyText Greetings, I'd like to invite you to join our jam on IdeaJam.  Click the link below to accept my invitation.
+          form(role='form', id="jamInvitationEmail" action="/invite-to-jam", method="post", style='max-width: 300px;')
+            .form-group
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+        .modal-footer
+          button.btn.btn-info(data-dismiss="modal") Cancel
+          button.btn.btn-success#sendJamInvitations(type='submit') Send Email
 
   include ../partials/js-includes.jade
   script(src='/exif.js')
@@ -81,6 +117,57 @@ html
       if("!{dsw}" == "true"){
         $('#loginModal').modal('show');
       }
+
+      $("#emailPreview").click(function(event){
+        event.preventDefault();
+        if($("#toEmailAddresses").val() === "" ||
+          $("#fromEmailAddress").val() === ""){
+          alert("Please enter to and from emails.")
+        } else {
+          var data = {
+            fromEmail : $("#fromEmailAddress").val(),
+            toEmails : $("#toEmailAddresses").val().replace(/[<>]/g, " "),
+            "_csrf" : $('[name="_csrf"]').val()
+          }
+          $.get("/parsed-email-list", data, function(response){
+            if(response.emailList && response.emailList.length > 0){
+              $("#previewEmailModal").modal('show');
+              $(".fromEmailParagraph").remove();
+              $(".toEmailListItem").remove();
+              for(var i = 0; i<response.emailList.length; i++){
+                if(response.emailList[i].address){
+                    $(".listOfEmailRecipients").append("<p class='toEmailListItem'>" + response.emailList[i].address + "</p>")
+                }
+              }
+              $("#fromEmail").html("From: <p class='fromEmailText'>" + response.fromEmail + "</p>");
+            } else {
+              alert("Email list not parsed correctly. Check valid formats.")
+            }
+          })
+        }
+      })
+
+      $("#sendJamInvitations").click(function(event){
+        event.preventDefault();
+        var toEmailAddresses = $(".toEmailListItem").map(function() {
+                 return $(this).text();
+        }).get();
+        var data = {
+          toEmails : toEmailAddresses,
+          fromEmail : $("#fromEmailAddress").val(),
+          networkName :  $('[name="networkName"]').val(),
+          "_csrf" : $('[name="_csrf"]').val()
+        }
+
+        $.post("/invite-to-jam", data, function(response){
+          if(response.redirectURL){
+            window.location.href= response.redirectURL;
+          } else {
+            alert("no sent correctly")
+          }
+        })
+      })
+
     });
 
     $("#ideajam-login").click(function(event){

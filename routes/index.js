@@ -2255,7 +2255,7 @@ router.post('/login', csrfProtection, function(req,res, next){
 });
 
 
-router.post('/login-dsw', csrfProtection, function(req,res, next){
+router.post('/login-jam', csrfProtection, function(req,res, next){
     passport.authenticate('local', function(err, user, info) {
       if (err) { return next(err); }
       if (!user) {
@@ -2263,7 +2263,7 @@ router.post('/login-dsw', csrfProtection, function(req,res, next){
       }
       req.logIn(user, function(err) {
         if (err) { return next(err); }
-        return res.redirect('/jam/dsw');
+        return res.redirect('/view-jams');
       });
     })(req, res, next);
 
@@ -4375,6 +4375,13 @@ router.get("/expose-idea-seed",csrfProtection, function(req, res){
       res.sendStatus(200);
     })
   });
+})
+
+router.post('/set-session-redirect', csrfProtection, function(req, res){
+  if(req.body.redirectURL) {
+    req.session.loginPath = req.body.redirectURL;
+    res.sendStatus(200);
+  }
 })
 
 router.post("/add-image-title", csrfProtection, function(req, res){

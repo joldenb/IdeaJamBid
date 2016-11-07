@@ -19,6 +19,7 @@ var fs = require('fs');
 var csrf = require('csurf');
 var csrfProtection = csrf({ cookie: true });
 var ideaSeedHelpers = require('../helpers/idea-seed-helpers');
+var addressparser = require('addressparser');
 
 var S3_BUCKET = process.env.S3_BUCKET;
 
@@ -121,6 +122,7 @@ router.post('/save-jam', csrfProtection, function(req, res) {
       } else {
         var newJam = new Network({
           name : req.body.jamName,
+          admins : [req.user.id]
         });
         newJam.save(function(err, newJam){
           Account.findById( req.user.id,
@@ -177,6 +179,7 @@ router.post('/save-school-network', csrfProtection, function(req, res) {
         var newSchool = new Network({
           name : req.body.schoolNetwork,
           type : 'school',
+          admins : [req.user.id]
         });
         newSchool.save(function(err, newSchool){
           Account.findById( req.user.id,
@@ -229,6 +232,7 @@ router.post('/save-company-network', csrfProtection, function(req, res) {
         var newCompany = new Network({
           name : req.body.companyNetwork,
           type : 'company',
+          admins : [req.user.id]
         });
         newCompany.save(function(err, newCompany){
           Account.findById( req.user.id,
@@ -280,6 +284,7 @@ router.post('/save-location-network', csrfProtection, function(req, res) {
         var newLocation = new Network({
           name : cityAndState,
           type : 'location',
+          admins : [req.user.id]
         });
         newLocation.save(function(err, newLocation){
           Account.findById( req.user.id,
@@ -336,7 +341,8 @@ router.post('/save-aptitude', csrfProtection, function(req, res) {
       } else {
         var newAptitude = new Aptitude({
           title : aptitudeTitle,
-          identifier : "aptitude-"+Date.now()
+          identifier : "aptitude-"+Date.now(),
+          admins : [req.user.id]
         });
         newAptitude.save(function(err, newSavedAptitude){
           IdeaSeed.findOne( {"name" : req.body.ideaName},
@@ -375,7 +381,8 @@ router.post('/save-aptitude', csrfProtection, function(req, res) {
       } else {
         var newAptitude = new Aptitude({
           title : aptitudeTitle,
-          identifier : "aptitude-"+Date.now()
+          identifier : "aptitude-"+Date.now(),
+          admins : [req.user.id]
         });
         newAptitude.save(function(err, newSavedAptitude){
           Account.findById( req.user.id,
@@ -518,6 +525,34 @@ router.get('/view-jams', csrfProtection, function(req, res){
 ******************************************************************
 ******************************************************************
 *****************************************************************/
+router.get('/parsed-email-list', csrfProtection, function(req, res){
+  if(!(req.user && req.user.username)){
+    res.redirect('/');
+  }
+
+  if(req.query.toEmails){
+    var parsedEmailList = addressparser(req.query.toEmails);
+
+    res.json({
+      emailList : parsedEmailList,
+      fromEmail : req.query.fromEmail
+    });
+
+  } else {
+    res.redirect('/view-jams/');
+  }
+});
+
+
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for rendering the admin of a network profile page. Currently
+* this applies to schools, companies, aptitutes, etc
+******************************************************************
+******************************************************************
+*****************************************************************/
 router.get('/jam/:networkName/admin', csrfProtection, function(req, res){
   //special case for denver startup week
   var dsw = false;
@@ -538,7 +573,21 @@ router.get('/jam/:networkName/admin', csrfProtection, function(req, res){
   Network.findOne({"name" : {$regex : ".*"+networkName+".*"}}, function(err, network){
     //if theres no matching name or logged in user
     if(!network ){
-      return res.redirect('/');
+      return res.redirect('/view-jams');
+    }
+
+    if(req.user.username == "joseph.oldenburg@gmail.com" || "jschell@rockymountainpatent.com" ||
+      "yuta@rockymountainpatent.com" || "jdoldenburg@wisc.edu" || "the.real.jeff.schell@gmail.com" ||
+      "billingb@gmail.com") {
+      if( network.admins && network.admins.indexOf(req.user.id) == -1 ){
+        network.admins.push(req.user.id);
+      } else if (!network.admins){
+        network.admins = [req.user.id];
+      }
+    }
+
+    if( network.admins.indexOf(req.user.id) == -1 ) {
+      res.redirect('/jam/' + networkName);
     }
 
     Account.find({$or : [
@@ -722,6 +771,24 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
         return res.redirect('/');
       }
 
+      
+      if(req.user){
+        //if the current user is on the list of invited members to this jam, put this jam 
+        // onto their user account and take them off the invited member list
+        if(network.invitedMembers && network.invitedMembers.indexOf(req.user.username) > -1 ){
+          network.invitedMembers.splice(network.invitedMembers.indexOf(req.user.username), 1);
+          network.save();
+          Account.findById(req.user.id,function(err, account){
+            if(network.type){
+              account.networks[network.type] = network.id;
+            } else {
+              account.otherNetworks.push(network.id);
+            }
+            account.save();
+          });
+        }
+      }
+
       Account.find({ $or : [
 
         {'networks.school' : network['id']},
@@ -735,12 +802,12 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
 
         //determine if the current user is part of the jam
         _.each(accounts, function(account, index){
-          if (req.user.id.toString() === account.id.toString()){
+          if (req.user && req.user.id.toString() === account.id.toString()){
             userIsCurrentMember = true;
           }
         });
 
-        if(req.user.pendingNetworks.indexOf(network['id']) > -1 ){
+        if(req.user && req.user.pendingNetworks.indexOf(network['id']) > -1 ){
           isPending = true;
         }
 

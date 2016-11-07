@@ -5,7 +5,8 @@ var ObjectId = mongoose.Schema.Types.ObjectId;
 
 var Aptitude = new Schema({
 	title : String,
-	identifier : String //either school, company, or city/state
+	identifier : String, //either school, company, or city/state
+	admins : [ObjectId]
 }, { autoIndex: false });
 
 

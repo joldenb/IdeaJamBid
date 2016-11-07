@@ -8,7 +8,9 @@ var Network = new Schema({
 	profilePic : String,
 	description : String,
 	visibility		: { type: String, default: "private" },
-	type : String //either school, company, or city/state
+	type : String, //either school, company, or city/state
+	admins : [ObjectId],
+	invitedMembers : [String] // emails of people who were sent email invitations
 }, { autoIndex: false });
 
 module.exports = mongoose.model('Network', Network);

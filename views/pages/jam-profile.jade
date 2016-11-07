@@ -160,14 +160,14 @@ html
           .modal-title 
             h2 Login
         .modal-body
-          form#dsw-signup-form(role='form', action="/register-dsw",method="post")
-            a(href="/auth/google",class="btn btn-danger btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';" )
+          form#jam-signup-form(role='form', action="/register-jam",method="post")
+            a.socialLink(href="/auth/google" class="btn btn-danger btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';" )
               span.fa.fa-google-plus Google
             |  
-            a(href="/auth/facebook",class="btn btn-primary btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';")
+            a.socialLink(href="/auth/facebook",class="btn btn-primary btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';")
               span.fa.fa-facebook Facebook
             |  
-            a(href="/auth/linkedin",class="btn btn-info btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';" )
+            a.socialLink(href="/auth/linkedin",class="btn btn-info btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';" )
               span.fa.fa-linkedin LinkedIn
             |  
             a#ideajam-login(class="btn btn-go btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';")
@@ -184,7 +184,7 @@ html
             |  
             a(href='/' ontouchstart="this.style.background = '#D6DE26';")
               button.btn.btn-primary.btn-lg.btn-block(type="button" style="margin-top: 5px;") Cancel
-          form#dsw-login-form(role='form', action="/login-dsw",method="post", style='max-width: 300px;display: none;')
+          form#jam-login-form(role='form', action="/login-jam",method="post", style='max-width: 300px;display: none;')
             .form-group
               input.form-control(type='email', name="username", placeholder='Email Address' required)
             .form-group
@@ -222,14 +222,20 @@ html
   script(src='/exif.js')
   script(type="text/javascript").
     $(document).ready(function(){
-      if("!{dsw}" == "true"){
+      if( "!{Object.keys(user).length > 0}" === "false" ){
         $('#loginModal').modal('show');
       }
+
+      $(".socialLink").click(function(event){
+        $.post('/set-session-redirect', {redirectURL : "/jam/!{networkName}", "_csrf" : $('[name="_csrf"]').val()}, function(response){
+          var stop;
+        });
+      });
     });
 
-    $("#ideajam-login").click(function(event){
-      $("#dsw-signup-form").hide();
-      $("#dsw-login-form").show();
+    $("#jam-login").click(function(event){
+      $("#jam-signup-form").hide();
+      $("#jam-login-form").show();
     });
 
     $("#register-submit").click(function(event){

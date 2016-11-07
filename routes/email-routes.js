@@ -111,6 +111,74 @@ router.post('/send-collaborators-nda-email', csrfProtection, function(req, res){
     res.redirect('/');
   });
 });
+
+router.post('/invite-to-jam', csrfProtection, function(req, res){
+  var networkName = req.body.networkName;
+
+  Network.findOne({"name" : {$regex : ".*"+networkName+".*"}})
+  .exec()
+  .then(function(network){
+
+    //Send the email
+    var emailBody = "Greetings! " + req.user.nickname + " has sent you an invitation"
+    + " to join " + networkName + " on IdeaJam.  Visit the Jam page below to accept your invitation.\n\n"
+    + "http://" + req.headers.host + "/jam/" + encodeURI(networkName);
+
+    var fromEmailAddress = req.body.fromEmail;
+    var emailSubject = "Join a jam on IdeaJam";
+    var sendgrid  = require('sendgrid')(process.env.SENDGRID_USERNAME, process.env.SENDGRID_PASSWORD);
+    if(typeof(req.body['toEmails[]']) === "string"){
+      sendgrid.send({
+        to:       req.body['toEmails[]'],
+        from:     fromEmailAddress,
+        subject:  emailSubject,
+        text:     emailBody
+      }, function(err, json) {
+        if (err) { return console.error(err); }
+        console.log(json);
+      });
+      //add emails to network's invited list
+      if(!network.invitedMembers){
+        network.invitedMembers = [];
+      }
+
+      if(network.invitedMembers.indexOf(req.body['toEmails[]']) == -1 ){
+        network.invitedMembers.push(req.body['toEmails[]']);
+      }
+      network.save();
+    } else {
+      _.each(req.body['toEmails[]'], function(email, index){
+        sendgrid.send({
+          to:       email,
+          from:     fromEmailAddress,
+          subject:  emailSubject,
+          text:     emailBody
+        }, function(err, json) {
+          if (err) { return console.error(err); }
+          console.log("sent to " + email + " from " + fromEmailAddress);
+        });
+        //add emails to network's invited list
+        if(!network.invitedMembers){
+          network.invitedMembers = [];
+        }
+
+        if(network.invitedMembers.indexOf(email) == -1 ){
+          network.invitedMembers.push(email);
+        }
+        network.save();
+      })
+    }
+
+    res.json({redirectURL:'/jam/' + encodeURI(networkName) + "/admin"});
+  })
+  .catch(function(err){
+    // just need one of these
+    console.log('error:', err);
+    res.redirect('/');
+  });
+});
+
+
 router.post('/request-reset-email', function(req, res){
     var toEmailAddress = req.body.toEmailAddress;
     var fromEmailAddress = "resetbot@ideajam.io";
