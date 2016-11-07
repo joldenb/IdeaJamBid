@@ -140,28 +140,6 @@ router.post('/ideas/:ideaName/campaign/stripe-payment', csrfProtection, function
     });
 });
 
-router.post('/ideas/:ideaName/campaign/fund', csrfProtection, function(req, res) {
-  if( !(req.user && req.user.username)){
-    res.redirect('/');
-    return;
-  }
-
-  StripeService
-    .fundCampaign(req.params.ideaName)
-    .then(function (success){
-      if(success) {
-        res.send('success');
-      } else {
-        res.status(400).send('Funding the campaign failed');
-      }
-    })
-    .catch(function (error) {
-      console.log("error funding campaign: " + error);
-      res.status(400).send('Funding the campaign failed');
-    });
-
-});
-
 router.get('/paypalTestPayment', csrfProtection, function(req, res) {
   try {
     CrowdfundingService.payContributors(['billingb@gmail.com', 'joseph.oldenburg@gmail.com'], 'test');

@@ -98,22 +98,17 @@ exports.delayedChargeCreation = function(tokenId, amount, prizeId, user, ideaNam
   });
 };
 
-exports.fundCampaign = function(ideaName) {
-  return IdeaSeed.findOne({"name" : ideaName}).then(function (idea){
-    return Account.findOne({'username': idea.inventorName}).then(function (account) {
-      var campaign = CrowdfundingService.getOpenCampaign(idea);
-      if(campaign === undefined) {
-        console.error('Could not find an open campaign to fund for ideaName ' + ideaName);
-        throw new Error('Could not find an open campaign to fund');
-      }
-      campaign.populate('payments.campaignpayment');
-      return CampaignPayment.find({'_id': {$in: campaign.payments}}).exec().then(function (payments) {
-        var charges = payments.map(function(campaignPayment) {
-          return campaignCharge(campaignPayment.stripeCustomerId, campaignPayment.amount, idea, account);
-        });
-        return Promise.all(charges);
-      });
+exports.fundCampaign = function(campaign, idea) {
+  campaign.populate('payments.campaignpayment');
+  var inventorAccount;
+  return Account.findOne({'username': idea.inventorName}).then(function (account) {
+    inventorAccount = account;
+    return CampaignPayment.find({'_id': {$in: campaign.payments}}).exec()
+  }).then(function (payments) {
+    var charges = payments.map(function(campaignPayment) {
+      return campaignCharge(campaignPayment.stripeCustomerId, campaignPayment.amount, idea, inventorAccount);
     });
+    return Promise.all(charges);
   });
 };
 

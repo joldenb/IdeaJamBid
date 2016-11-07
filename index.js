@@ -28,7 +28,8 @@ var csrf = require('csurf');
 var RateLimit = require('express-rate-limit');
 var enforce = require('express-sslify');
 var forceSSL = require('express-force-ssl');
-
+var CronJob = require('cron').CronJob;
+var CrowdfundingService = require('./services/crowdfundingService');
 
 require('./config/passport')(passport);
 
@@ -131,11 +132,13 @@ if(process.env.NODE_ENV == "production"){
 //  apply to all requests
 app.use(limiter);
 
-
-
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
 
+var checkCampaignsJob = new CronJob('5 */5 * * * *', function() {
+  CrowdfundingService.processCampaignClosings();
+});
+checkCampaignsJob.start();
 
 module.exports = app;

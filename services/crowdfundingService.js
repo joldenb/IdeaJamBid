@@ -9,6 +9,9 @@ var EmailService = require('./emailService');
 var moment = require('moment');
 var _ = require('underscore');
 
+const CAMPAIGN_DURATION_VALUE = 60;
+const CAMPAING_DURATION_UNITS = 'days';
+
 exports.createCampaign = function(campaignData, account, ideaName) {
   return IdeaSeed.findOne({name: ideaName}).then(function(ideaSeed) {
     var prizeValues = Object.keys(campaignData)
@@ -31,12 +34,16 @@ exports.createCampaign = function(campaignData, account, ideaName) {
     });
 
     return Promise.all(prizeIdPromises).then(function(prizeIds) {
+      //Campaigns should end on 5 minute boundaries to make post-processing easier (we just have to check every 5 minutes)
+      var endDate = moment(Math.ceil((new Date())/(moment.duration(5, 'minutes'))) * (moment.duration(5, 'minutes')))
+        .add(CAMPAIGN_DURATION_VALUE, CAMPAING_DURATION_UNITS)
+        .toDate();
       var campaign = new Campaign({
         goal: campaignData.goal,
         prizes: prizeIds,
         state: 'open',
         startDate: new Date(),
-        endDate: moment().add(60, 'days').toDate()
+        endDate: endDate
       });
       if(campaignData.variant !== undefined && campaignData.variant !== 'none') {
         campaign.variant = campaignData.variant;
@@ -125,4 +132,17 @@ exports.checkCampaignFunding = function(idea, campaign) {
       return false;
     });
   }
+};
+
+exports.processCampaignClosings = function() {
+  console.log('Checking campaigns for any that should be completed');
+  //find open campaigns that are past the end date
+
+  //move the campaign to closing state, add closing timestamp
+
+  //if goal reached
+    //fund the campaign (stripe payments, email funders)
+    //capture funding info in DB
+  //else
+    //email funders campaign was not funded
 };

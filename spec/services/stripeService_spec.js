@@ -10,6 +10,7 @@ var Promise = require('bluebird');
 
 require('../../models/aptitude');
 var IdeaSeed = require('../../models/ideaSeed');
+var Campaign = require('../../models/campaign');
 var CampaignPayment = require('../../models/campaignPayment');
 var CrowdfundingService = require('../../services/crowdfundingService');
 var StripeService = require('../../services/stripeService');
@@ -18,7 +19,7 @@ var SpecHelper = require('../specHelper');
 
 describe('Stripe Service', function () {
   const ideaName = 'payments';
-  var campaign;
+  var campaign, ideaSeed;
 
   before('setup campaign', function(done) {
     var campaignData = {
@@ -28,7 +29,8 @@ describe('Stripe Service', function () {
       prizeCost0: "300"
     };
     SpecHelper.createOrFindTestAccount('testuser@madeuptesturl.com').then(function(account) {
-      SpecHelper.createOrFindIdeaSeed(account, ideaName, "public").then(function() {
+      SpecHelper.createOrFindIdeaSeed(account, ideaName, "public").then(function(idea) {
+        ideaSeed = idea;
         CrowdfundingService.createCampaign(campaignData, account, ideaName).then(function(newCampaign) {
           campaign = newCampaign;
           done();
@@ -69,8 +71,9 @@ describe('Stripe Service', function () {
   it('should fund a campaign', function (done) {
     var stub = sinon.stub(stripe.charges, 'create');
     stub.returns(Promise.resolve(true));
-
-    StripeService.fundCampaign(ideaName).then(function (results) {
+    Campaign.findById(campaign._id).then(function(campaign) {
+      return StripeService.fundCampaign(campaign, ideaSeed);
+    }).then(function (results) {
       try {
         results[0].should.eql(true);
         done();
