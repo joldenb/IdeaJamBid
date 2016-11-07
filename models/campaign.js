@@ -9,7 +9,8 @@ var Campaign = new Schema({
 	goal: Number, //amount in dollars
 	state: String,
   startDate: Date,
-  endDate: Date
+  endDate: Date,
+  goalReached: Boolean
 }, { autoIndex: false });
 
 Campaign.methods.timeRemaining = function() {

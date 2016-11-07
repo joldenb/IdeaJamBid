@@ -15,7 +15,8 @@ const TOKEN_URI = 'https://connect.stripe.com/oauth/token';
 var stripe = require("stripe").Stripe(process.env.STRIPE_SECRET);
 
 function campaignCharge(customerId, amount, idea, hostAccount) {
-  var application_fee = Math.round(amount * 0.2);
+  var stripe_fee = (amount *.029) + .3;
+  var application_fee = Math.round(amount * 0.2) + stripe_fee; //Stripe fee comes out of application_fee
 
   try {
     return stripe.charges.create({
@@ -88,7 +89,9 @@ exports.delayedChargeCreation = function(tokenId, amount, prizeId, user, ideaNam
     return campaignPayment.save().then(function (campaignPayment) {
       campaign.payments.push(campaignPayment.id);
       return campaign.save().then(function() {
+        //We don't return the next two calls so we won't block waiting on them
         EmailService.sendPledgeConfirmation(campaignPayment, idea, user);
+        CrowdfundingService.checkCampaignFunding(idea, campaign);
         return campaignPayment;
       })
     });

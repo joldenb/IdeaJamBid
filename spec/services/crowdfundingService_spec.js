@@ -7,6 +7,7 @@ chai.use(chaiAsPromised);
 chai.should();
 var moment = require('moment');
 
+var EmailService = require('../../services/emailService');
 var CrowdfundingService = require('../../services/crowdfundingService');
 var CampaignPrize = require('../../models/campaignPrize');
 var CampaignPayment = require('../../models/campaignPayment');
@@ -54,13 +55,19 @@ describe('Crowdfunding Service', function () {
         var component = new Component({
           descriptions: [index + ' component'],
           ideaSeed: [ideaSeed],
-          creator: newAccount
+          creator: newAccount.username
         });
         return component.save();
       });
+      var componentExtra = new Component({
+        descriptions: ['extra component'],
+        ideaSeed: [ideaSeed],
+        creator: contribAccounts[0].username
+      });
+      promises.push(componentExtra.save());
       var component = new Component({
         descriptions: ['noseed component'],
-        creator: account
+        creator: account.username
       });
       promises.push(component.save());
       return Promise.all(promises);
@@ -172,22 +179,6 @@ describe('Crowdfunding Service', function () {
     });
   });
 
-  it('should pay contributors of the campaign', function (done) {
-    var stub = sinon.stub(CrowdfundingService, '_paypalPayContributors');
-    stub.returns(true);
-
-    CrowdfundingService.createCampaign(basicBody, account, ideaName).then(function () {
-      CrowdfundingService.payContributors(['billingb@gmail.com', 'joseph.oldenburg@gmail.com'], ideaName).should.be.true;
-
-      stub.should.have.been.calledWith(sinon.match(function(data) {
-        return data.items.length == 2 &&
-          data.items[0].amount.value == 1500 &&
-          data.items[0].receiver == 'billingb@gmail.com';
-      }));
-      done();
-    });
-  });
-
   describe('open campaign', function() {
     it('should compute the total raised for a campaign', function(done) {
       CrowdfundingService.createCampaign(basicBody, account, ideaName).then(function (campaign) {
@@ -217,6 +208,67 @@ describe('Crowdfunding Service', function () {
         });
       });
     });
+
+    it('should check campaign status and return false when campaign is not fully funded', function(done) {
+      CrowdfundingService.createCampaign(basicBody, account, ideaName).then(function (campaign) {
+        return CrowdfundingService.checkCampaignFunding(ideaSeed, campaign);
+      }).then(function(checkResult) {
+        checkResult.should.be.false;
+        done();
+      });
+    });
+
+    it('should check campaign status and return true when campaign is fully funded prior to this check', function(done) {
+      CrowdfundingService.createCampaign(basicBody, account, ideaName).then(function (campaign) {
+        campaign.goalReached = true;
+        return CrowdfundingService.checkCampaignFunding(ideaSeed, campaign);
+      }).then(function(checkResult) {
+        try {
+          checkResult.should.be.true;
+          done();
+        } catch(error) {
+          done(error);
+        }
+
+      });
+    });
+
+    it('should check campaign status and send emails when the campaign is fully funded', function(done) {
+      var stub = sinon.stub(EmailService, 'sendGoalReachedContributorEmails');
+      stub.returns(true);
+      var newCampaign;
+      CrowdfundingService.createCampaign(basicBody, account, ideaName).then(function (campaign) {
+        var payments = [2500, 3500, 5000].map(function (payment) {
+          var campaignPayment = new CampaignPayment({
+            username: 'testuser@fake.com',
+            stripeCustomerId: '123',
+            amount: payment
+          });
+          return campaignPayment.save().then(function (campaignPayment) {
+            campaign.payments.push(campaignPayment.id);
+            return campaign.save();
+          });
+        });
+        newCampaign = campaign;
+        return Promise.all(payments);
+      }).then(function() {
+        return CrowdfundingService.checkCampaignFunding(ideaSeed, newCampaign);
+      }).then(function(checkResult) {
+        var expectedUsernames = {
+          'testuser1@madeuptesturl.com': 2,
+          'testuser2@madeuptesturl.com': 1,
+          'testuser3@madeuptesturl.com': 1,
+          'testuser4@madeuptesturl.com': 1
+        };
+        try {
+          checkResult.should.be.true;
+          stub.should.have.been.calledWith(expectedUsernames, sinon.match({_id: ideaSeed._id}), sinon.match({_id: newCampaign._id}));
+          done();
+        } catch (error) {
+          done(error);
+        }
+      });
+    });
   });
 
   describe('campaign components', function () {
@@ -225,7 +277,7 @@ describe('Crowdfunding Service', function () {
         return CrowdfundingService.getComponents(campaign, ideaSeed);
       }).then(function(ideaComponents) {
         try {
-          var expectedComponentIds = components.slice(0, 4).map(function(c) { return c.descriptions[0]; }).sort();
+          var expectedComponentIds = components.slice(0, 5).map(function(c) { return c.descriptions[0]; }).sort();
           var ideaComponentIds = ideaComponents.map(function(c) { return c.descriptions[0]; }).sort();
           ideaComponentIds.should.eql(expectedComponentIds);
           done();
