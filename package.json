@@ -9,6 +9,7 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "addressparser": "^1.0.1",
     "aws-sdk": "^2.3.19",
     "bluebird": "^3.4.6",
     "body-parser": "^1.14.2",
