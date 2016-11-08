@@ -310,13 +310,15 @@ describe('Crowdfunding Service', function () {
 
   describe('close campaign', function() {
     var campaign;
-    var chargeStub, emailStub;
+    var chargeStub, emailStub, emailReceiptStub;
     beforeEach('setup funded campaign', function(done) {
       chargeStub = sinon.stub(stripe.charges, 'create');
       chargeStub.returns(Promise.resolve({id: 'ch_123456'}));
       StripeService._setStripe(stripe);
       emailStub = sinon.stub(EmailService, 'sendGoalNotReachedFunders');
       emailStub.returns(true);
+      emailReceiptStub = sinon.stub(EmailService, 'sendCardCharged');
+      emailReceiptStub.returns(true);
 
       CrowdfundingService.createCampaign(basicBody, account, ideaName).then(function(newCampaign) {
         newCampaign.endDate = new Date();
@@ -343,6 +345,7 @@ describe('Crowdfunding Service', function () {
     afterEach('reset stubs', function() {
       chargeStub.restore();
       emailStub.restore();
+      emailReceiptStub.restore();
     });
 
     it('processes closing on campaigns that have reach their goal and are ready to be complete', function(done) {
@@ -352,6 +355,7 @@ describe('Crowdfunding Service', function () {
         try {
           moment(c.startProcessingDate).format('YYYY-MM-DD').should.eql(moment().format('YYYY-MM-DD'));
           chargeStub.should.have.been.calledThrice;
+          emailReceiptStub.should.have.been.calledThrice;
           done();
         } catch(error) {
           done(error);

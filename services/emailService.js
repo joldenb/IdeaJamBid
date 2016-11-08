@@ -91,3 +91,20 @@ Thank you for your support!
     sendEmail({to: email, subject: subject, text:text});
   });
 };
+
+exports.sendCardCharged = function(email, idea, campaignPayment) {
+  Prize.findById(campaignPayment.prize).then(function(prize) {
+    const subject = 'Your pledge to ' + idea.name + ' has been charged!';
+    const text = `${idea.name} has been successfully funded! 
+
+Your credit card has been charged for ${campaignPayment.amount}. The prize you backed is ${prize.name}.
+
+Thank you for your support!`;
+
+    try {
+      sendEmail({to: email, subject: subject, text: text});
+    } catch (error) {
+      console.error(error);
+    }
+  });
+};

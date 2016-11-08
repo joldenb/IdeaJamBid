@@ -106,6 +106,7 @@ exports.fundCampaign = function(campaign, idea) {
   }).then(function (payments) {
     var charges = payments.map(function(campaignPayment) {
       return campaignCharge(campaignPayment.stripeCustomerId, campaignPayment.amount, idea, inventorAccount).then(function(result) {
+        EmailService.sendCardCharged(campaignPayment.username, idea, campaignPayment);
         return campaignPayment.stripeId = result.id;
       });
     });
