@@ -40,7 +40,7 @@ html
                       p #{aptitude.title}
           if Object.keys(user).length != 0 && user.id == profileAccount.id
               a.home-login.btn.btn-success.btn-lg.btn-block( href="/imagineer-picture/") Edit My Profile
-          a.home-login.btn.btn-industry.btn-lg.btn-block( href="/view-jams" ) View All Jams
+          a.home-login.btn.btn-industry.btn-lg.btn-block( href="/view-jams/#{profileAccount.nickname}") View My Jams
           
     
         .col-md-6

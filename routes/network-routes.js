@@ -409,44 +409,29 @@ router.post('/save-aptitude', csrfProtection, function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/jam-leaderboard', csrfProtection, function(req, res){
+router.get('/view-jams/:nickname', csrfProtection, function(req, res){
   if(!(req.user && req.user.username)) {
     res.redirect('/');
     return;
   }
 
   var allNetworks = [];
-  var schools = [];
-  var locations = [];
-  var companies = [];
-  var otherGroups = [];
   var numberOfMembers = {};
+  var jamLeaders = {};
 
-  /* oh, this is a find all. this should change at some point */
-  Network.find({})
-  .exec()
+  Account.findOne({"nickname" : req.params.nickname}).exec()
+  .then(function(myAccount){
+
+    return   Network.find( { $or : [
+      {"_id" : myAccount.networks.school},
+      {"_id" : myAccount.networks.company},
+      {"_id" : myAccount.networks.location},
+      {"_id" : {$in : myAccount.otherNetworks} }
+    ] } ).exec()
+  })
   .then(function(networks){
 
-    _.each(networks, function(oneNetwork, index){
-
-      if(oneNetwork.type && oneNetwork.type === "school"){
-        schools.push(oneNetwork);
-      }
-      else if(oneNetwork.type && oneNetwork.type === "company"){
-        companies.push(oneNetwork);
-      }
-      else if(oneNetwork.type && oneNetwork.type === "location"){
-        locations.push(oneNetwork);
-      }
-      else {
-        otherGroups.push(oneNetwork);
-      }
-
-      // if( oneNetwork.visibility === "public" ){
-        allNetworks.push(oneNetwork);
-      // }
-
-    });
+    allNetworks = networks;
 
     var listOfNetworkIDs = _.map(allNetworks, function(eachOne, index){
       return eachOne.id;
@@ -459,66 +444,44 @@ router.get('/jam-leaderboard', csrfProtection, function(req, res){
       ]}).exec();
   })
   .then(function(accounts){
+
     _.each(allNetworks, function(oneNetwork, index){
       numberOfMembers[oneNetwork.name] = 0;
+      jamLeaders[oneNetwork.name] = [];
       _.each(accounts, function(account, accIndex){
         if(account.networks['school'] == oneNetwork.id ||
           account.networks['company'] == oneNetwork.id ||
           account.networks['location'] == oneNetwork.id ||
           account.otherNetworks.indexOf(oneNetwork.id) >= 0){
-          
 
+          numberOfMembers[oneNetwork.name]++;
 
-
-
+          jamLeaders[oneNetwork.name].push(account);
 
         }
       });
+
+      //sort the jam leaders by einstein points
+      jamLeaders[oneNetwork.name] = _.sortBy(jamLeaders[oneNetwork.name], function(account){
+        return account.einsteinPoints * -1;
+      });
+
     });
 
-    var schoolsWithMembers = [];
-    _.each(schools, function(oneSchool,index){
-      if(numberOfMembers[oneSchool.name] > 0){
-        schoolsWithMembers.push(oneSchool);
-      }
-    });
-    schools = schoolsWithMembers;
-
-    var locationsWithMembers = [];
-    _.each(locations, function(oneLocation,index){
-      if(numberOfMembers[oneLocation.name] > 0){
-        locationsWithMembers.push(oneLocation);
-      }
-    });
-    locations = locationsWithMembers;
-
-    var companiesWithMembers = [];
-    _.each(companies, function(oneCompany,index){
-      if(numberOfMembers[oneCompany.name] > 0){
-        companiesWithMembers.push(oneCompany);
-      }
-    });
-    companies = companiesWithMembers;
-
-    var otherGroupsWithMembers = [];
-    _.each(otherGroups, function(oneGroup,index){
-      if(numberOfMembers[oneGroup.name] > 0){
-        otherGroupsWithMembers.push(oneGroup);
-      }
-    });
-    otherGroups = otherGroupsWithMembers;
-
-    res.render('pages/jam-leaderboard', {
+    res.render('pages/my-jams', {
       user : req.user,
       jams : allNetworks,
-      schools : schools,
-      locations : locations,
-      companies : companies,
-      otherGroups : otherGroups,
+      jamLeaders : jamLeaders,
       numberOfMembers : numberOfMembers
     });
 
+  })
+  .catch(function(err){
+    // just need one of these
+    console.log('error:', err);
+    res.redirect('/');
   });
+
 });
 
 
