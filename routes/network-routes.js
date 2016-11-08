@@ -584,6 +584,7 @@ router.get('/jam/:networkName/admin', csrfProtection, function(req, res){
       } else if (!network.admins){
         network.admins = [req.user.id];
       }
+      network.save()
     }
 
     if( network.admins.indexOf(req.user.id) == -1 ) {
@@ -759,6 +760,7 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
   var headshotStyle = headshotData['headshotStyle'];
   var userIsCurrentMember = false;
   var isPending = false;
+  var isAdmin = false;
 
     var networkName = req.params
       .networkName
@@ -777,7 +779,11 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
         // onto their user account and take them off the invited member list
         if(network.invitedMembers && network.invitedMembers.indexOf(req.user.username) > -1 ){
           network.invitedMembers.splice(network.invitedMembers.indexOf(req.user.username), 1);
-          network.save();
+          network.save(function(error){
+            if (error){
+              console.log(error)
+            }
+          });
           Account.findById(req.user.id,function(err, account){
             if(network.type){
               account.networks[network.type] = network.id;
@@ -787,6 +793,22 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
             account.save();
           });
         }
+
+        if(req.user.username == "joseph.oldenburg@gmail.com" || "jschell@rockymountainpatent.com" ||
+          "yuta@rockymountainpatent.com" || "jdoldenburg@wisc.edu" || "the.real.jeff.schell@gmail.com" ||
+          "billingb@gmail.com") {
+          if( network.admins && network.admins.indexOf(req.user.id) == -1 ){
+            network.admins.push(req.user.id);
+          } else if (!network.admins){
+            network.admins = [req.user.id];
+          }
+          network.save()
+        }
+
+        if( network.admins.indexOf(req.user.id) > -1 ) {
+          isAdmin = true;
+        }
+
       }
 
       Account.find({ $or : [
@@ -1154,7 +1176,8 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                                     suggestions: suggestions,
                                     headshot: headshotURL,
                                     userIsCurrentMember : userIsCurrentMember,
-                                    isPending : isPending
+                                    isPending : isPending,
+                                    isAdmin : isAdmin
                                   });
                               }); //end of account query
                             }).sort({date: -1}); //end of componet query for suggestions

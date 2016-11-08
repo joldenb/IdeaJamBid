@@ -1882,3 +1882,7 @@ img.prizeImage {
   background-color: white;
   color: black;
 }
+
+.jam-btn {
+  margin: 1em;
+}
