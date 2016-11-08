@@ -523,7 +523,6 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
 
   var generalJams = [];
 
-
   Account.find({"nickname" : {$regex : ".*"+userNickname+".*"}}, function(err, accounts){
 
     if (err || accounts.length == 0){

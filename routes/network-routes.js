@@ -418,9 +418,12 @@ router.get('/view-jams/:nickname', csrfProtection, function(req, res){
   var allNetworks = [];
   var numberOfMembers = {};
   var jamLeaders = {};
+  var userAccount;
 
   Account.findOne({"nickname" : req.params.nickname}).exec()
   .then(function(myAccount){
+
+    userAccount = myAccount;
 
     return   Network.find( { $or : [
       {"_id" : myAccount.networks.school},
@@ -472,7 +475,8 @@ router.get('/view-jams/:nickname', csrfProtection, function(req, res){
       user : req.user,
       jams : allNetworks,
       jamLeaders : jamLeaders,
-      numberOfMembers : numberOfMembers
+      numberOfMembers : numberOfMembers,
+      userAccount : userAccount
     });
 
   })

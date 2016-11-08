@@ -28,7 +28,7 @@
             div(class="profile-einstein-points") #{user.einsteinPoints || "0"}
       if Object.keys(user).length != 0
         li
-          a.home-logout.btn.btn-electric( href="/jam/Startup%20Denver%20Pitch%20Battle"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Startup Pitch Battle
+          a.home-logout.btn.btn-electric( href="/introduce-idea"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Begin a New Idea
         li
           a.home-logout.btn.btn-vision( href="/ideas"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") View All Ideas
         if user.nickname
@@ -39,8 +39,6 @@
         li
           a.home-logout.btn.btn-vision( href="/logout"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") Log Out
       else 
-        li
-          a.home-logout.btn.btn-success( href="/jam/Startup%20Denver%20Pitch%20Battle"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Startup Pitch Battle
         li
           a.home-logout.btn.btn-vision( href="/about"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") About IdeaJam
         li
@@ -93,7 +91,7 @@
         ul.dropdown-menu.dropdown-menu-right(id="test")
           if Object.keys(user).length != 0
             li
-              a.home-logout.btn.btn-vision( href="/jam/Startup%20Denver%20Pitch%20Battle"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Startup Pitch Battle
+              a.home-logout.btn.btn-electric( href="/introduce-idea"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Begin a New Idea
             li
               a.home-logout.btn.btn-vision( href="/ideas"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") View All Ideas
             if user.nickname
@@ -104,8 +102,6 @@
             li
               a.home-logout.btn.btn-vision( href="/logout"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") Log Out
           else 
-            li
-              a.home-logout.btn.btn-vision( href="/jam/Startup%20Denver%20Pitch%20Battle"  ontouchstart="this.style.background = '#D6DE26';") Startup Pitch Battle
             li
               a.home-logout.btn.btn-vision( href="/about"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") About IdeaJam
             li

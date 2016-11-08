@@ -857,7 +857,11 @@ a.plus-overlay img{
 }
 
 .profile-name {
-  line-height:90px;
+  line-height:35px;
+}
+
+.profileAptitudes a {
+  margin: 1em 1em 1em 0;
 }
 
 .einstein-point-btn-icon {
