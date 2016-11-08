@@ -1,11 +1,7 @@
 var should = require('chai').should();
 
 var sinon = require('sinon');
-const stripeLib = require('stripe');
-const stripe = stripeLib('test');
-const StripeStub = sinon.stub(stripeLib.Stripe, 'Stripe', function() {
-  return stripe;
-});
+var stripe = require('stripe')('test');
 var Promise = require('bluebird');
 
 require('../../models/aptitude');
@@ -13,6 +9,7 @@ var IdeaSeed = require('../../models/ideaSeed');
 var Campaign = require('../../models/campaign');
 var CampaignPayment = require('../../models/campaignPayment');
 var CrowdfundingService = require('../../services/crowdfundingService');
+var EmailService = require('../../services/emailService');
 var StripeService = require('../../services/stripeService');
 var SpecHelper = require('../specHelper');
 
@@ -22,6 +19,7 @@ describe('Stripe Service', function () {
   var campaign, ideaSeed;
 
   before('setup campaign', function(done) {
+    StripeService._setStripe(stripe);
     var campaignData = {
       goal: "10000",
       prizeName0: "prize name",
@@ -42,6 +40,8 @@ describe('Stripe Service', function () {
   it('should create payments on a campaign', function (done) {
     var stub = sinon.stub(stripe.customers, 'create');
     stub.returns(Promise.resolve({id: '123'}));
+    var emailStub = sinon.stub(EmailService, 'sendPledgeConfirmation');
+    emailStub.returns(true);
 
     SpecHelper.createOrFindTestAccount('testuser@madeuptesturl.com').then(function(account) {
       StripeService
@@ -55,6 +55,7 @@ describe('Stripe Service', function () {
                 try {
                   payment.amount.should.eql(15000);
                   payment.prize.should.eql(campaign.prizes[0]);
+                  emailStub.should.have.been.called;
                   done();
                 } catch (error) {
                   done(error);
@@ -70,12 +71,12 @@ describe('Stripe Service', function () {
 
   it('should fund a campaign', function (done) {
     var stub = sinon.stub(stripe.charges, 'create');
-    stub.returns(Promise.resolve(true));
+    stub.returns(Promise.resolve({id: 'ch_123456'}));
     Campaign.findById(campaign._id).then(function(campaign) {
       return StripeService.fundCampaign(campaign, ideaSeed);
     }).then(function (results) {
       try {
-        results[0].should.eql(true);
+        results[0].should.eql('ch_123456');
         done();
       } catch(error) {
         done(error);

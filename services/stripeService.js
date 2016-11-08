@@ -26,18 +26,17 @@ function campaignCharge(customerId, amount, idea, hostAccount) {
       destination: hostAccount.stripeCredentials.stripe_user_id,
       application_fee: application_fee,
       description: "Funding idea: " + idea.name
-    }).then(function () {
-      console.log('Successfully charged the card for customer ' + customerId);
-      return true;
+    }).then(function (json) {
+      return json;
     }, function (err) {
       if (err && err.type === 'StripeCardError') {
         console.error('Could not process the payment: ', err);
-        return false;
+        return {status: 'failed'};
       }
     });
   } catch (error) {
     console.log(error);
-    return false;
+    return {status: 'failed'};
   }
 }
 
@@ -106,7 +105,9 @@ exports.fundCampaign = function(campaign, idea) {
     return CampaignPayment.find({'_id': {$in: campaign.payments}}).exec()
   }).then(function (payments) {
     var charges = payments.map(function(campaignPayment) {
-      return campaignCharge(campaignPayment.stripeCustomerId, campaignPayment.amount, idea, inventorAccount);
+      return campaignCharge(campaignPayment.stripeCustomerId, campaignPayment.amount, idea, inventorAccount).then(function(result) {
+        return campaignPayment.stripeId = result.id;
+      });
     });
     return Promise.all(charges);
   });
@@ -130,7 +131,7 @@ exports.connect = function(stripeInfo, user) {
     var postResponse = values[1];
 
     if(!account){
-      console.error("When connecting accounts can't find user with username: " + account.username)
+      console.error("When connecting accounts can't find user with username: " + account.username);
       throw new Error("Can't find user with username: " + account.username);
     }
 
@@ -147,4 +148,9 @@ exports.connect = function(stripeInfo, user) {
       return null;
     });
   });
+};
+
+//To inject a mock use this method
+exports._setStripe = function(stripeObj) {
+  stripe = stripeObj;
 };

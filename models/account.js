@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+require('../models/aptitude');
 var Schema = mongoose.Schema;
 var StripeCredentials = require('../models/stripeCredentials');
 var passportLocalMongoose = require('passport-local-mongoose');

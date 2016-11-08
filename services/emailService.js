@@ -78,3 +78,16 @@ As you made ${countWord} of ${totalContributorsWord} contributor suggestions, yo
     }
   });
 };
+
+exports.sendGoalNotReachedFunders = function(emails, idea) {
+  const subject = idea.name + 'failed to reach campaign goal';
+  const text = `Thank you for supporting ${idea.name}. Unfortunately this campaign failed to meet the funding goal. 
+
+Your credit card will not be charged since this campaign failed.
+
+Thank you for your support!
+`;
+  emails.forEach(function(email) {
+    sendEmail({to: email, subject: subject, text:text});
+  });
+};

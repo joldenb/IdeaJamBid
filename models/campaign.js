@@ -7,9 +7,10 @@ var Campaign = new Schema({
 	payments : [{type: Schema.Types.ObjectId, ref: 'CampaignPayment'}],
 	prizes: [{type: Schema.Types.ObjectId, ref: 'CampaignPrize'}],
 	goal: Number, //amount in dollars
-	state: String,
+	state: { type:String, enum: ['open', 'processing_payments', 'funded', 'processing_payout', 'closed'] },
   startDate: Date,
   endDate: Date,
+  startProcessingDate: Date,
   goalReached: Boolean
 }, { autoIndex: false });
 

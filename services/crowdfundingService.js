@@ -6,6 +6,7 @@ var CampaignPayment = require('../models/campaignPayment');
 var IdeaProblem = require('../models/ideaProblem');
 var Component = require('../models/component');
 var EmailService = require('./emailService');
+var StripeService = require('./stripeService');
 var moment = require('moment');
 var _ = require('underscore');
 
@@ -134,15 +135,39 @@ exports.checkCampaignFunding = function(idea, campaign) {
   }
 };
 
+function fetchCampaignsToProcess() {
+  return Campaign.find({endDate: {"$lte": new Date()}}).exec();
+}
+
+function processCampaignClosing(campaign) {
+  campaign.startProcessingDate = new Date();
+  campaign.state = 'processing_payments';
+  return campaign.save().then(function(campaign) {
+    return hasCampaignReachedGoal(campaign);
+  }).then(function(reachedGoal){
+    return IdeaSeed.findOne({campaigns: campaign._id}).then(function(idea) {
+      if (reachedGoal) {
+        try {
+          return StripeService.fundCampaign(campaign, idea);
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        return CampaignPayment.find({'_id': {$in: campaign.payments}}).exec().then(function (payments) {
+          var usernames = payments.map(function (campaignPayment) {
+            return campaignPayment.username;
+          });
+          return EmailService.sendGoalNotReachedFunders(usernames, idea);
+        });
+      }
+    });
+  });
+}
+
 exports.processCampaignClosings = function() {
   console.log('Checking campaigns for any that should be completed');
-  //find open campaigns that are past the end date
-
-  //move the campaign to closing state, add closing timestamp
-
-  //if goal reached
-    //fund the campaign (stripe payments, email funders)
-    //capture funding info in DB
-  //else
-    //email funders campaign was not funded
+  return fetchCampaignsToProcess().then(function(campaigns) {
+    var promises = campaigns.map(processCampaignClosing);
+    return Promise.all(promises);
+  });
 };

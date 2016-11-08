@@ -6,9 +6,10 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.should();
 var moment = require('moment');
-
+var stripe = require('stripe')('test');
 var EmailService = require('../../services/emailService');
 var CrowdfundingService = require('../../services/crowdfundingService');
+var StripeService = require('../../services/stripeService');
 var CampaignPrize = require('../../models/campaignPrize');
 var CampaignPayment = require('../../models/campaignPayment');
 var Campaign = require('../../models/campaign');
@@ -299,6 +300,76 @@ describe('Crowdfunding Service', function () {
           var expectedComponentIds = components.slice(2, 4).map(function(c) { return c.descriptions[0]; }).sort();
           var ideaComponentIds = ideaComponents.map(function(c) { return c.descriptions[0]; }).sort();
           ideaComponentIds.should.eql(expectedComponentIds);
+          done();
+        } catch(error) {
+          done(error);
+        }
+      });
+    });
+  });
+
+  describe('close campaign', function() {
+    var campaign;
+    var chargeStub, emailStub;
+    beforeEach('setup funded campaign', function(done) {
+      chargeStub = sinon.stub(stripe.charges, 'create');
+      chargeStub.returns(Promise.resolve({id: 'ch_123456'}));
+      StripeService._setStripe(stripe);
+      emailStub = sinon.stub(EmailService, 'sendGoalNotReachedFunders');
+      emailStub.returns(true);
+
+      CrowdfundingService.createCampaign(basicBody, account, ideaName).then(function(newCampaign) {
+        newCampaign.endDate = new Date();
+        return newCampaign.save();
+      }).then(function (newCampaign) {
+        var payments = [2500, 3500, 5000].map(function (payment) {
+          var campaignPayment = new CampaignPayment({
+            username: 'testuser@fake.com',
+            stripeCustomerId: '123',
+            amount: payment
+          });
+          return campaignPayment.save().then(function (campaignPayment) {
+            newCampaign.payments.push(campaignPayment.id);
+            return newCampaign.save();
+          });
+        });
+        campaign = newCampaign;
+        return Promise.all(payments);
+      }).then(function() {
+        done();
+      });
+    });
+
+    afterEach('reset stubs', function() {
+      chargeStub.restore();
+      emailStub.restore();
+    });
+
+    it('processes closing on campaigns that have reach their goal and are ready to be complete', function(done) {
+      return CrowdfundingService.processCampaignClosings().then(function() {
+        return Campaign.findById(campaign._id).exec();
+      }).then(function(c) {
+        try {
+          moment(c.startProcessingDate).format('YYYY-MM-DD').should.eql(moment().format('YYYY-MM-DD'));
+          chargeStub.should.have.been.calledThrice;
+          done();
+        } catch(error) {
+          done(error);
+        }
+      });
+    });
+
+    it('processes closing on campaigns that have not reach their goal and are ready to be complete', function(done) {
+      campaign.goal = 100000;
+      campaign.save().then(function(){
+        return CrowdfundingService.processCampaignClosings();
+      }).then(function() {
+        return Campaign.findById(campaign._id).exec();
+      }).then(function() {
+        try {
+          emailStub.should.have.been.calledWith(
+            ['testuser@fake.com', 'testuser@fake.com', 'testuser@fake.com'],
+            sinon.match({_id: ideaSeed._id}));
           done();
         } catch(error) {
           done(error);
