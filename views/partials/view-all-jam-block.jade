@@ -4,9 +4,13 @@
   .title-description.view-all-jams
     h3 #{jamName || 'No Jam Name'}
     .numberOfMembers
-      p #{memberCount} Current Members
-    .suggestion-category
-      p.view-all-jam-description #{description || "No Description Yet"}
+      p #{memberCount} Total Members
+    .jamLeaders
+      each account, index in leaders
+        if index < 4
+          p <b>#{index + 1}</b> : #{account.nickname} <b>#{account.einsteinPoints} Points</b>
+    //- .suggestion-category
+    //-   p.view-all-jam-description #{description || "No Description Yet"}
   .footer.view-all-jams
     a(href="/jam/"+jamName)
       .btn.btn-go(ontouchstart="this.style.background = '#007338';" ontouchend="this.style.background='#00A550';")

@@ -17,6 +17,7 @@ html
       - var memberCount
       - var jamType
       - var jamImage
+      - var leaders
       if index % 3 == 0 
         .row
           .col-md-4.view-all-jam-block
@@ -24,6 +25,7 @@ html
               - jamName = jam.name || ""
               - description = jam.description || ""
               - memberCount = numberOfMembers[jam.name] || 0
+              - leaders = jamLeaders[jam.name] || []
               - jamType = jam.type || ""
               - jamImage = jam.profilePic || ""
               include ../partials/view-all-jam-block.jade
@@ -32,6 +34,7 @@ html
               - jamName = schools[index + 1].name || ""
               - description = schools[index + 1].description || ""
               - memberCount = numberOfMembers[schools[index + 1].name] || 0
+              - leaders = jamLeaders[schools[index + 1].name] || []
               - jamType = schools[index + 1].type || ""
               - jamImage = schools[index + 1].profilePic || ""
               include ../partials/view-all-jam-block.jade
@@ -40,6 +43,7 @@ html
               - jamName = schools[index + 2 ].name || ""
               - description = schools[index + 2 ].description || ""
               - memberCount = numberOfMembers[schools[index + 2 ].name] || 0
+              - leaders = jamLeaders[schools[index + 2].name] || []
               - jamType = schools[index + 2 ].type || ""
               - jamImage = schools[index + 2 ].profilePic || ""
               include ../partials/view-all-jam-block.jade
@@ -59,6 +63,7 @@ html
               - jamName = jam.name || ""
               - description = jam.description || ""
               - memberCount = numberOfMembers[jam.name] || 0
+              - leaders = jamLeaders[jam.name] || []
               - jamType = jam.type || ""
               - jamImage = jam.profilePic || ""
               include ../partials/view-all-jam-block.jade
@@ -67,6 +72,7 @@ html
               - jamName = locations[index + 1].name || ""
               - description = locations[index + 1].description || ""
               - memberCount = numberOfMembers[locations[index + 1].name] || 0
+              - leaders = jamLeaders[locations[index + 1].name] || []
               - jamType = locations[index + 1].type || ""
               - jamImage = locations[index + 1].profilePic || ""
               include ../partials/view-all-jam-block.jade
@@ -75,6 +81,7 @@ html
               - jamName = locations[index + 2 ].name || ""
               - description = locations[index + 2 ].description || ""
               - memberCount = numberOfMembers[locations[index + 2 ].name] || 0
+              - leaders = jamLeaders[locations[index + 2].name] || []
               - jamType = locations[index + 2 ].type || ""
               - jamImage = locations[index + 2 ].profilePic || ""
               include ../partials/view-all-jam-block.jade
@@ -94,6 +101,7 @@ html
               - jamName = jam.name || ""
               - description = jam.description || ""
               - memberCount = numberOfMembers[jam.name] || 0
+              - leaders = jamLeaders[jam.name] || []
               - jamType = jam.type || ""
               - jamImage = jam.profilePic || ""
               include ../partials/view-all-jam-block.jade
@@ -102,6 +110,7 @@ html
               - jamName = companies[index + 1].name || ""
               - description = companies[index + 1].description || ""
               - memberCount = numberOfMembers[companies[index + 1].name] || 0
+              - leaders = jamLeaders[companies[index + 1].name] || []
               - jamType = companies[index + 1].type || ""
               - jamImage = companies[index + 1].profilePic || ""
               include ../partials/view-all-jam-block.jade
@@ -110,6 +119,7 @@ html
               - jamName = companies[index + 2 ].name || ""
               - description = companies[index + 2 ].description || ""
               - memberCount = numberOfMembers[companies[index + 2 ].name] || 0
+              - leaders = jamLeaders[companies[index + 2].name] || []
               - jamType = companies[index + 2 ].type || ""
               - jamImage = companies[index + 2 ].profilePic || ""
               include ../partials/view-all-jam-block.jade
@@ -129,6 +139,7 @@ html
               - jamName = jam.name || ""
               - description = jam.description || ""
               - memberCount = numberOfMembers[jam.name] || 0
+              - leaders = jamLeaders[jam.name] || []
               - jamType = jam.type || ""
               - jamImage = jam.profilePic || ""
               include ../partials/view-all-jam-block.jade
@@ -137,6 +148,7 @@ html
               - jamName = otherGroups[index + 1].name || ""
               - description = otherGroups[index + 1].description || ""
               - memberCount = numberOfMembers[otherGroups[index + 1].name] || 0
+              - leaders = jamLeaders[otherGroups[index + 1].name] || []
               - jamType = otherGroups[index + 1].type || ""
               - jamImage = otherGroups[index + 1].profilePic || ""
               include ../partials/view-all-jam-block.jade
@@ -145,6 +157,7 @@ html
               - jamName = otherGroups[index + 2 ].name || ""
               - description = otherGroups[index + 2 ].description || ""
               - memberCount = numberOfMembers[otherGroups[index + 2 ].name] || 0
+              - leaders = jamLeaders[otherGroups[index + 2].name] || []
               - jamType = otherGroups[index + 2 ].type || ""
               - jamImage = otherGroups[index + 2 ].profilePic || ""
               include ../partials/view-all-jam-block.jade
