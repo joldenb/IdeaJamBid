@@ -3696,10 +3696,10 @@ router.get('/leaderboard', csrfProtection, function(req, res){
           account.networks['company'] == oneNetwork.id ||
           account.networks['location'] == oneNetwork.id ||
           account.otherNetworks.indexOf(oneNetwork.id) >= 0){
+
           numberOfMembers[oneNetwork.name]++;
 
           jamLeaders[oneNetwork.name].push(account);
-
         }
       });
 
@@ -3788,8 +3788,6 @@ router.get('/leaderboard', csrfProtection, function(req, res){
           reviewScores[ideas[index]] = 0;
         }
       });
-
-
 
       // reviewScores is an object with idea seed ids as the keys and
       // the average review score as the value. we need to sort them,

@@ -155,7 +155,7 @@ html
         var data = {
           toEmails : toEmailAddresses,
           fromEmail : $("#fromEmailAddress").val(),
-          networkName :  $('[name="networkName"]').val(),
+          networkName :  "!{networkName}",
           "_csrf" : $('[name="_csrf"]').val()
         }
 
