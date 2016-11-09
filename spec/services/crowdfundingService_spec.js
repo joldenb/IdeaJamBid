@@ -327,6 +327,7 @@ describe('Crowdfunding Service', function () {
         return Campaign.findById(campaign._id).exec();
       }).then(function(c) {
         try {
+          c.state.should.eql('funded');
           moment(c.startProcessingDate).format('YYYY-MM-DD').should.eql(moment().format('YYYY-MM-DD'));
           chargeStub.should.have.been.calledWith(sinon.match({amount: 2500, application_fee: 572.8}));
           chargeStub.should.have.been.calledThrice;
@@ -344,11 +345,10 @@ describe('Crowdfunding Service', function () {
         campaign = c;
       }).then(function() {
         return CrowdfundingService.processCampaignClosings()
-      }).then(function(c) {
+      }).then(function() {
         try {
           chargeStub.should.not.have.been.called;
-          chargeStub.should.not.have.been.calledThrice;
-          emailReceiptStub.should.not.have.been.calledThrice;
+          emailReceiptStub.should.not.have.been.called;
           done();
         } catch(error) {
           done(error);
@@ -366,6 +366,7 @@ describe('Crowdfunding Service', function () {
         return Campaign.findById(campaign._id).exec();
       }).then(function(c) {
         try {
+          c.state.should.eql('funded');
           moment(c.startProcessingDate).format('YYYY-MM-DD').should.eql(moment().format('YYYY-MM-DD'));
           chargeStub.should.have.been.calledWith(sinon.match({amount: 2500, application_fee: 322.8}));
           chargeStub.should.have.been.calledThrice;
@@ -383,8 +384,9 @@ describe('Crowdfunding Service', function () {
         return CrowdfundingService.processCampaignClosings();
       }).then(function() {
         return Campaign.findById(campaign._id).exec();
-      }).then(function() {
+      }).then(function(c) {
         try {
+          c.state.should.eql('unsuccessful');
           emailStub.should.have.been.calledWith(
             ['testuser@fake.com', 'testuser@fake.com', 'testuser@fake.com'],
             sinon.match({_id: ideaSeed._id}));

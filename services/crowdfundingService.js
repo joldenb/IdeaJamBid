@@ -144,6 +144,9 @@ function processCampaignClosing(campaign) {
               }
             }
             return StripeService.fundCampaign(campaign, idea, hasContributors);
+          }).then(function() {
+            campaign.state = 'funded';
+            return campaign.save();
           });
         } catch (error) {
           console.error(error);
@@ -154,6 +157,9 @@ function processCampaignClosing(campaign) {
             return campaignPayment.username;
           });
           return EmailService.sendGoalNotReachedFunders(usernames, idea);
+        }).then(function() {
+          campaign.state = 'unsuccessful';
+          return campaign.save();
         });
       }
     });
