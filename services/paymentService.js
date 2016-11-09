@@ -1,6 +1,7 @@
 var exports = module.exports = {};
 var paypal = require('paypal-rest-sdk');
 var moment = require('moment');
+var CampaignPayment = require('../models/campaignPayment');
 
 exports.contributorPaymentPercent = function(contributions, totalContributors) {
   return Math.floor((contributions/totalContributors)/10 * 10000)/100
@@ -73,4 +74,19 @@ exports.payContributors = function(contributors, ideaName) {
   var paypalMap = buildPaypalPayContributors(contributors, 3000);
   return this._paypalPayContributors(paypalMap);
 };
+
+
+function sumPayments(campaign) {
+  return CampaignPayment.aggregate([
+    {$match: {'_id': {$in: campaign.payments}}},
+    {$group: {'_id': null, total: {$sum: '$amount'}}}
+  ]).exec().then(function(result) {
+    if(result.length === 0) {
+      return 0;
+    } else {
+      return result[0].total;
+    }
+  });
+}
+exports.sumPayments = sumPayments;
 

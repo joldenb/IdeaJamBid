@@ -184,35 +184,6 @@ describe('Crowdfunding Service', function () {
   });
 
   describe('open campaign', function() {
-    it('should compute the total raised for a campaign', function(done) {
-      CrowdfundingService.createCampaign(basicBody, account, ideaName).then(function (campaign) {
-        var payments = [250, 350, 500].map(function (payment) {
-          var campaignPayment = new CampaignPayment({
-            username: 'testuser@fake.com',
-            stripeCustomerId: '123',
-            amount: payment
-          });
-          return campaignPayment.save().then(function (campaignPayment) {
-            campaign.payments.push(campaignPayment.id);
-            return campaign.save();
-          });
-        });
-        return Promise.all(payments);
-      }).then(function () {
-        IdeaSeed.findOne({name: ideaName}).exec().then(function (ideaSeed) {
-          var campaign = CrowdfundingService.getOpenCampaign(ideaSeed);
-          CrowdfundingService.sumPayments(campaign).then(function (sum) {
-            try {
-              sum.should.eql(1100);
-              done();
-            } catch (error) {
-              done(error);
-            }
-          });
-        });
-      });
-    });
-
     it('should check campaign status and return false when campaign is not fully funded', function(done) {
       CrowdfundingService.createCampaign(basicBody, account, ideaName).then(function (campaign) {
         return CrowdfundingService.checkCampaignFunding(ideaSeed, campaign);
@@ -360,6 +331,24 @@ describe('Crowdfunding Service', function () {
           chargeStub.should.have.been.calledWith(sinon.match({amount: 2500, application_fee: 572.8}));
           chargeStub.should.have.been.calledThrice;
           emailReceiptStub.should.have.been.calledThrice;
+          done();
+        } catch(error) {
+          done(error);
+        }
+      });
+    });
+
+    it('does not process campaigns that are not open', function(done) {
+      campaign.state = 'processing_payments';
+      campaign.save().then(function(c) {
+        campaign = c;
+      }).then(function() {
+        return CrowdfundingService.processCampaignClosings()
+      }).then(function(c) {
+        try {
+          chargeStub.should.not.have.been.called;
+          chargeStub.should.not.have.been.calledThrice;
+          emailReceiptStub.should.not.have.been.calledThrice;
           done();
         } catch(error) {
           done(error);

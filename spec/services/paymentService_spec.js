@@ -9,8 +9,10 @@ var moment = require('moment');
 
 var CrowdfundingService = require('../../services/crowdfundingService');
 var PaymentService = require('../../services/paymentService');
+var CampaignPayment = require('../../models/campaignPayment');
 var Campaign = require('../../models/campaign');
 var Component = require('../../models/component');
+var IdeaSeed = require('../../models/ideaSeed');
 var SpecHelper = require('../specHelper');
 
 const ideaName = 'automation';
@@ -19,7 +21,7 @@ describe('Payment Service', function () {
   var account, ideaSeed;
   var contribAccounts = [];
   var components = [];
-  var variantNames = ['test variant 1', 'test variant 2']
+  var variantNames = ['test variant 1', 'test variant 2'];
   const basicBody = {
     goal: "10000",
     prizeName0: "1 automa",
@@ -115,5 +117,34 @@ describe('Payment Service', function () {
 
   it('should calculate the contributors payment amount', function() {
     PaymentService.contributorPaymentAmount(2000, 2, 6).should.eql(666.66);
+  });
+
+  it('should compute the total raised for a campaign', function(done) {
+    CrowdfundingService.createCampaign(basicBody, account, ideaName).then(function (campaign) {
+      var payments = [250, 350, 500].map(function (payment) {
+        var campaignPayment = new CampaignPayment({
+          username: 'testuser@fake.com',
+          stripeCustomerId: '123',
+          amount: payment
+        });
+        return campaignPayment.save().then(function (campaignPayment) {
+          campaign.payments.push(campaignPayment.id);
+          return campaign.save();
+        });
+      });
+      return Promise.all(payments);
+    }).then(function () {
+      IdeaSeed.findOne({name: ideaName}).exec().then(function (ideaSeed) {
+        var campaign = CrowdfundingService.getOpenCampaign(ideaSeed);
+        PaymentService.sumPayments(campaign).then(function (sum) {
+          try {
+            sum.should.eql(1100);
+            done();
+          } catch (error) {
+            done(error);
+          }
+        });
+      });
+    });
   });
 });

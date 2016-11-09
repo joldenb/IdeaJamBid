@@ -7,6 +7,7 @@ var IdeaProblem = require('../models/ideaProblem');
 var Component = require('../models/component');
 var EmailService = require('./emailService');
 var StripeService = require('./stripeService');
+const PaymentService = require('./paymentService');
 var moment = require('moment');
 var _ = require('underscore');
 
@@ -71,20 +72,6 @@ exports.getOpenCampaign = function(ideaSeed) {
   return openCampaigns[0];
 };
 
-function sumPayments(campaign) {
-  return CampaignPayment.aggregate([
-    {$match: {'_id': {$in: campaign.payments}}},
-    {$group: {'_id': null, total: {$sum: '$amount'}}}
-  ]).exec().then(function(result) {
-    if(result.length === 0) {
-      return 0;
-    } else {
-      return result[0].total;
-    }
-  });
-}
-exports.sumPayments = sumPayments;
-
 function ideaSeedComponents(idea) {
   return Component.find({"ideaSeed": idea._id}).exec();
 }
@@ -110,7 +97,7 @@ function getContributorUsernames(campaign, idea) {
 }
 
 function hasCampaignReachedGoal(campaign) {
-  return sumPayments(campaign).then(function(sum) {
+  return PaymentService.sumPayments(campaign).then(function(sum) {
     return (sum >= campaign.goal ? true : false);
   });
 
@@ -136,7 +123,7 @@ exports.checkCampaignFunding = function(idea, campaign) {
 };
 
 function fetchCampaignsToProcess() {
-  return Campaign.find({endDate: {"$lte": new Date()}}).exec();
+  return Campaign.find({state: 'open', endDate: {"$lte": new Date()}}).exec();
 }
 
 function processCampaignClosing(campaign) {

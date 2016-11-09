@@ -4,6 +4,7 @@ var csrf = require('csurf');
 var csrfProtection = csrf({ cookie: true });
 var StripeService = require('../services/stripeService');
 var CrowdfundingService = require('../services/crowdfundingService');
+const PaymentService = require('../services/paymentService');
 var Account = require('../models/account');
 var IdeaSeed = require('../models/ideaSeed');
 var CampaignPrize = require('../models/campaignPrize');
@@ -102,7 +103,7 @@ router.get('/ideas/:ideaName/campaign', csrfProtection, function(req, res){
     return CampaignPrize.find({'_id': {$in: openCampaign.prizes}}).exec()
   }).then(function (campaignPrizes) {
     prizes = campaignPrizes;
-    return CrowdfundingService.sumPayments(openCampaign)
+    return PaymentService.sumPayments(openCampaign)
   }).then(function (total) {
     totalPayments = total;
     return CrowdfundingService.getComponents(openCampaign, idea);
