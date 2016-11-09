@@ -30,7 +30,7 @@
         li
           a.home-logout.btn.btn-electric( href="/introduce-idea"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Begin a New Idea
         li
-          a.home-logout.btn.btn-vision( href="/ideas"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") View All Ideas
+          a.home-logout.btn.btn-vision( href="/leaderboard"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") Leaderboard
         if user.nickname
           li
             a.home-logout.btn.btn-vision( href="/imagineer/" + user.nickname ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") My Profile
@@ -39,6 +39,8 @@
         li
           a.home-logout.btn.btn-vision( href="/logout"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") Log Out
       else 
+        li
+          a.home-logout.btn.btn-vision( href="/leaderboard"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") Leaderboard
         li
           a.home-logout.btn.btn-vision( href="/about"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") About IdeaJam
         li
@@ -93,7 +95,7 @@
             li
               a.home-logout.btn.btn-electric( href="/introduce-idea"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Begin a New Idea
             li
-              a.home-logout.btn.btn-vision( href="/ideas"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") View All Ideas
+              a.home-logout.btn.btn-vision( href="/leaderboard"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") Leaderboard
             if user.nickname
               li
                 a.home-logout.btn.btn-vision( href="/imagineer/" + user.nickname ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") My Profile
@@ -102,6 +104,8 @@
             li
               a.home-logout.btn.btn-vision( href="/logout"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") Log Out
           else 
+            li
+              a.home-logout.btn.btn-vision( href="/leaderboard"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") Leaderboard
             li
               a.home-logout.btn.btn-vision( href="/about"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") About IdeaJam
             li

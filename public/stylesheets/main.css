@@ -492,6 +492,13 @@ table.suggestion-table .col-md-4 {
   padding: 2.5em;
 }
 
+.leaderboard .idea-row {
+  margin-bottom:6em;
+}
+
+.leaderboard .leaderboard-jams {
+  margin: 3em 0;
+}
 .view-idea-suggestions .container .row .col-md-4, .container.network-profile .row .col-md-4 {
   padding-left: 15px;
   padding-right: 15px;

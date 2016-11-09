@@ -3599,6 +3599,359 @@ router.get('/begin-contributor-review', csrfProtection, function(req, res){
   }
 });
 
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for viewing all accounts
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/imagineers', csrfProtection, function(req, res){
+
+  var topInventors,
+      totalReviewList = [];
+
+  Account.find({}).sort({'einsteinPoints' : -1}).exec()
+  .then(function(accounts){
+
+    topInventors = accounts;
+
+    res.render('pages/imagineers', {
+      user : req.user || {},
+      topInventors : topInventors
+    });
+
+  })
+  .catch(function(err){
+    // just need one of these
+    console.log('error:', err);
+    res.redirect('/');
+  });
+});
+
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for imperfection profile
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/leaderboard', csrfProtection, function(req, res){
+
+  var topInventors,
+      totalReviewList = [];
+  var allNetworks = [];
+  var schools = [];
+  var locations = [];
+  var companies = [];
+  var otherGroups = [];
+  var numberOfMembers = {};
+  var jamLeaders = {};
+
+  /* oh, this is a find all. this should change at some point */
+  Network.find({})
+  .exec()
+  .then(function(networks){
+
+    _.each(networks, function(oneNetwork, index){
+
+      if(oneNetwork.type && oneNetwork.type === "school"){
+        schools.push(oneNetwork);
+      }
+      else if(oneNetwork.type && oneNetwork.type === "company"){
+        companies.push(oneNetwork);
+      }
+      else if(oneNetwork.type && oneNetwork.type === "location"){
+        locations.push(oneNetwork);
+      }
+      else {
+        otherGroups.push(oneNetwork);
+      }
+
+      // if( oneNetwork.visibility === "public" ){
+        allNetworks.push(oneNetwork);
+      // }
+
+    });
+
+    var listOfNetworkIDs = _.map(allNetworks, function(eachOne, index){
+      return eachOne.id;
+    })
+    return Account.find({$or : [
+        {'networks.school' :  {$in : listOfNetworkIDs}},
+        {'networks.company' :  {$in : listOfNetworkIDs}},
+        {'networks.location' :  {$in : listOfNetworkIDs}},
+        {otherNetworks :  {$in : listOfNetworkIDs}}
+      ]}).exec();
+  })
+  .then(function(accounts){
+    
+    _.each(allNetworks, function(oneNetwork, index){
+      numberOfMembers[oneNetwork.name] = 0;
+      jamLeaders[oneNetwork.name] = [];
+      _.each(accounts, function(account, accIndex){
+        if(account.networks['school'] == oneNetwork.id ||
+          account.networks['company'] == oneNetwork.id ||
+          account.networks['location'] == oneNetwork.id ||
+          account.otherNetworks.indexOf(oneNetwork.id) >= 0){
+          numberOfMembers[oneNetwork.name]++;
+
+          jamLeaders[oneNetwork.name].push(account);
+
+        }
+      });
+
+      //sort the jam leaders by einstein points
+      jamLeaders[oneNetwork.name] = _.sortBy(jamLeaders[oneNetwork.name], function(account){
+        return account.einsteinPoints * -1;
+      });
+    });
+
+    var schoolsWithMembers = [];
+    _.each(schools, function(oneSchool,index){
+      if(numberOfMembers[oneSchool.name] > 0){
+        schoolsWithMembers.push(oneSchool);
+      }
+    });
+    schools = schoolsWithMembers;
+
+    var locationsWithMembers = [];
+    _.each(locations, function(oneLocation,index){
+      if(numberOfMembers[oneLocation.name] > 0){
+        locationsWithMembers.push(oneLocation);
+      }
+    });
+    locations = locationsWithMembers;
+
+    var companiesWithMembers = [];
+    _.each(companies, function(oneCompany,index){
+      if(numberOfMembers[oneCompany.name] > 0){
+        companiesWithMembers.push(oneCompany);
+      }
+    });
+    companies = companiesWithMembers;
+
+    var otherGroupsWithMembers = [];
+    _.each(otherGroups, function(oneGroup,index){
+      if(numberOfMembers[oneGroup.name] > 0){
+        otherGroupsWithMembers.push(oneGroup);
+      }
+    });
+    otherGroups = otherGroupsWithMembers;
+    return Account.find({}).limit(6).sort({'einsteinPoints' : -1}).exec()
+  })
+  .then(function(accounts){
+
+    topInventors = accounts;
+
+    return Network.find({}).exec();
+  })
+  .then(function(networks){
+
+
+    return IdeaSeed.find({$and: [{"name": {$ne: null}}, {"visibility" : "public"}]}).exec();
+  })
+  .then(function(ideas){
+
+    _.each(ideas, function(idea){
+      totalReviewList = totalReviewList.concat(idea.ideaReviews);
+    });
+
+    IdeaReview.find({"_id" : {$in : totalReviewList}}, function(err, reviews){
+      /* This will be an object of idea seed id's and average review scores*/
+      var reviewScores = {};
+      _.each(reviews, function(review, index, list){
+        //group reviews by idea seed id, then hand each list of reviews to the
+        // idea review function to average the scores, and hand back an average
+        // for that idea seed. reviewScores will be an object with the keys being
+        // object id's and the values being a list of review objects
+        if(reviewScores[review.ideaSeedId.toString()]){
+          reviewScores[review.ideaSeedId.toString()].push(review);
+        } else {
+          reviewScores[review.ideaSeedId.toString()] = [review];
+        }
+      });
+
+      //each iteration, replace the list of review objects with
+      // one average review score, so we can rank them and select
+      // the top few
+      _.each(reviewScores, function(value,key, list){
+        //value should be an array of review objects
+        reviewScores[key] = IdeaReview.averageViabilityScores(value);
+      });
+
+
+      _.each(ideas, function(ideaKey, index){
+        if(Object.keys(reviewScores).indexOf(ideas[index]) == -1){
+          reviewScores[ideas[index]] = 0;
+        }
+      });
+
+
+
+      // reviewScores is an object with idea seed ids as the keys and
+      // the average review score as the value. we need to sort them,
+      // take the highest 6 or so, then set the corresponding idea objects
+      // into the 'ideas' variable in order for the rest of the code to
+      // build the blocks to display on the page
+      var topIdeas = Array(6);
+      var allIdeaObjects = ideas; //used a little later to figure out which suggestions and imperfections go together
+      _.each(topIdeas, function(element, index, list){
+        var existingIdeaIds = _.map(topIdeas, function(idea){
+          if (idea && idea['id']){
+            return idea['id'];
+          } else {
+            return false;
+          }
+        });
+        var highestScoreSoFar = 0;
+        var highestScoreId = 0;
+        var highScoreKey = 0;
+        _.each(reviewScores, function(scoreValue, scoreKey, scoreList){
+          if(existingIdeaIds.indexOf(scoreKey) == -1 && scoreValue >= highestScoreSoFar){
+            highestScoreSoFar = scoreValue;
+            highScoreKey = scoreKey;
+          }
+          //find the idea object with the highScoreKey and add it to the list of ideas
+          // to be built into blocks on the network page
+          _.each(ideas, function(ideaObj, ideaIndex, ideaList){
+            if(ideaObj['id'].toString() == highScoreKey.toString()){
+              topIdeas[index] = ideaObj;
+            }
+          });
+        });
+      });
+
+      ideas = _.filter(topIdeas, Boolean);
+
+      var imageList = _.map(ideas, function(idea){
+        if(idea){
+          return idea.images[0];
+        } else {
+          return false;
+        }
+      });
+      /*
+        This builds the idea blocks from a finite list of ideas sorted by
+        the sum of values minus the sum of wastes.
+      */
+      IdeaImage.find({"_id" : { $in : imageList}}, function(err, images){
+        if(err){
+          console.log("error is " + err);
+        }
+        var currentImage;
+        var currentImageStyle;
+        var ideaList = _.map(ideas, function(idea, index){
+          wasteValueScores = Math.round(reviewScores[idea.id]);
+
+          //get the image document corresponding to the first image ID
+          // for each individual idea
+          if(images){
+            for (var i = 0; i < images.length; i++){
+              if(idea.images.length > 0 &&
+                idea.images[0].toString() == images[i].id.toString()){
+                currentImage = images[i]._doc["amazonURL"] || "";
+                currentImageStyle = "";
+                currentImageStyle = ideaSeedHelpers.getImageOrientation(images[i]._doc["orientation"]);
+                break;
+              } else if (idea.images.length == 0){
+                currentImage = "";
+                currentImageStyle = "";
+                break;
+              } else {
+                currentImage = "";
+                currentImageStyle = "";
+              }
+            }
+          }
+
+          var ideaLink = "";
+          if(idea['name']) {
+            ideaLink = "/ideas/" + idea['name'];
+          } else {
+            ideaLink = "";
+          }
+
+          var blockDescription;
+          if(idea.name){
+            blockDescription = idea.name.charAt(0).toUpperCase() + idea.name.slice(1) + " solves the problem of " + idea.problem + " by " + idea.description + ".";
+          }
+
+          return [
+            idea['name'], //String
+            blockDescription || 'View profile for description', //String
+            wasteValueScores, //array of two numbers
+            idea['inventorName'],
+            currentImage || "",
+            currentImageStyle || "",
+            ideaLink
+          ];
+        });
+
+        var inventorList = _.map(ideaList, function(idea){
+          return idea[3];
+        });
+
+        Account.find({"username" : {$in : inventorList}},
+          function(err, accounts){
+            if(err){ console.log("error is " + err)}
+            //find which ideaList item is connected to the right profile picture
+            for(var j=0; j < ideaList.length; j++){
+              //find the account with the right username
+              for(var k = 0; k < accounts.length; k++){
+                if(accounts[k].username == ideaList[j][3]){
+                  //find the profile picture with the id that matches the accounts
+                  // first profile picture ID and attach it to the ideaList
+                  if(accounts[k].headshots && accounts[k].headshots[0]){
+                    ideaList[j].push(accounts[k].headshots[0]["amazonURL"]);
+                    var creatorHeadshotStyle = "";
+                    creatorHeadshotStyle = ideaSeedHelpers.getImageOrientation(accounts[k].headshots[0]["orientation"]);
+                    ideaList[j].push(creatorHeadshotStyle);
+                  } else {
+                    ideaList[j].push("") // no image url
+                    ideaList[j].push("") // no image style
+                  }
+                  //tack on the account nick name to display in the block
+                  if(accounts[k].nickname){
+                    ideaList[j].push(accounts[k].nickname);
+                  } else {
+                    ideaList[j].push("User");
+                  }
+                }
+
+              }
+            }
+
+
+          res.render('pages/leaderboard', {
+            user : req.user || {},
+            // jams : allNetworks,
+            topInventors : topInventors,
+            ideas : ideaList,
+            jams : allNetworks,
+            schools : schools,
+            locations : locations,
+            companies : companies,
+            otherGroups : otherGroups,
+            numberOfMembers : numberOfMembers,
+            jamLeaders : jamLeaders            
+          });
+        });
+      });
+    });
+
+  })
+  .catch(function(err){
+    // just need one of these
+    console.log('error:', err);
+    res.redirect('/');
+  });
+
+});
+
+
 /*****************************************************************
 ******************************************************************
 ******************************************************************

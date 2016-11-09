@@ -1,0 +1,363 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body#topSection
+    .header.navbar.navbar-default.jamTopNav
+      include ../partials/header.jade
+
+    .container.leaderboard
+      .row
+        h3 Top Inventors
+          a.jam-btn.btn.btn-industry( href="/imagineers") View All
+
+      each inventor, index in topInventors
+        - var inventorImage
+        - var inventorImageStyle
+        - var inventorName
+        - var inventorPoints
+        - var inventorAptitudeIds
+        - var aptitudes = inventorAptitudes
+        - var profileLinkURL
+        if index % 3 == 0 
+          .row
+            .col-md-4
+              if(topInventors[index])
+                if inventor.headshots && inventor.headshots[0]
+                  - inventorImage = inventor.headshots[0]['amazonURL']
+                  - inventorImageStyle = inventor.headshots[0]['orientation']
+                - inventorName = inventor.nickname
+                - inventorPoints = inventor.einsteinPoints
+                - inventorAptitudeIds = inventor.aptitudes
+                include ../partials/inventor-block.jade
+            .col-md-4
+              if(topInventors[index + 1])
+                if topInventors[index + 1].headshots && topInventors[index + 1].headshots[0]
+                  - inventorImage = topInventors[index + 1].headshots[0]['amazonURL']
+                  - inventorImageStyle = topInventors[index + 1].headshots[0]['orientation']
+                else
+                  - inventorImage = ""
+                  - inventorImageStyle = ""
+                - inventorName = topInventors[index + 1].nickname
+                - inventorPoints = topInventors[index + 1].einsteinPoints
+                - inventorAptitudeIds = topInventors[index + 1].aptitudes
+                include ../partials/inventor-block.jade
+            .col-md-4
+              if(topInventors[index + 2 ])
+                if topInventors[index + 2].headshots && topInventors[index + 2].headshots[0]
+                  - inventorImage = topInventors[index + 2].headshots[0]['amazonURL']
+                  - inventorImageStyle = topInventors[index + 2].headshots[0]['orientation']
+                else 
+                  - inventorImage = ""
+                  - inventorImageStyle = ""
+                - inventorName = topInventors[index + 2].nickname
+                - inventorPoints = topInventors[index + 2].einsteinPoints
+                - inventorAptitudeIds = topInventors[index + 2].aptitudes
+                include ../partials/inventor-block.jade
+
+      .row
+        h3#ideaSection Top Ideas
+          a.jam-btn.btn.btn-industry( href="/ideas") View All
+
+      if ideas.length > 0
+        each idea, index in ideas
+          - var ideaName
+          - var ideaLink
+          - var problemCategory
+          - var viabilityScore
+          - var ideaImage
+          - var ideaImageStyle
+          - var inventorImage
+          - var inventorImageStyle
+          - var accountNickname
+          if index % 3 == 0 
+            .row.idea-row
+              if(ideas[index])
+                .col-md-4
+                  - ideaName = ideas[index][0] || ""
+                  - ideaLink = ideas[index][6] || ""
+                  - problemCategory = ideas[index][1] || ""
+                  - viabilityScore = ideas[index][2] || ""
+                  - ideaImage = ideas[index][4] || ""
+                  - ideaImageStyle = ideas[index][5]
+                  - inventorImage = ideas[index][7] || ""
+                  - inventorImageStyle = ideas[index][8] || ""
+                  - accountNickname = ideas[index][9] || ""
+                  include ../partials/view-all-idea-block.jade
+              if(ideas[index + 1])
+                .col-md-4
+                  - ideaName = ideas[index + 1][0] || ""
+                  - ideaLink = ideas[index + 1][6] || ""
+                  - problemCategory = ideas[index + 1][1] || ""
+                  - viabilityScore = ideas[index + 1 ][2] || ""
+                  - ideaImage = ideas[index + 1][4] || ""
+                  - ideaImageStyle = ideas[index + 1][5] || ""
+                  - inventorImage = ideas[index + 1][7] || ""
+                  - inventorImageStyle = ideas[index + 1 ][8] || ""
+                  - accountNickname = ideas[index + 1][9] || ""
+                  include ../partials/view-all-idea-block.jade
+              if(ideas[index + 2 ])
+                .col-md-4
+                  - ideaName = ideas[index + 2 ][0] || ""
+                  - ideaLink = ideas[index + 2 ][6] || ""
+                  - problemCategory = ideas[index + 2 ][1] || ""
+                  - viabilityScore = ideas[index + 2][2] || ""
+                  - ideaImage = ideas[index + 2 ][4] || ""
+                  - ideaImageStyle = ideas[index + 2][5] || ""
+                  - inventorImage = ideas[index + 2 ][7] || ""
+                  - inventorImageStyle = ideas[index + 2 ][8] || ""
+                  - accountNickname = ideas[index + 2][9] || ""
+                  include ../partials/view-all-idea-block.jade
+      
+      .row
+        h1 All Public Jams
+        //- h4 Once an imagineer on IdeaJam generates an idea, he or she can expose it to the world after filing a provisional patent application and obtaining patent pending status on that idea. Then, you and the rest of the IdeaJam crowd can earn rewards by scoring ideas, adding imperfections, suggesting solutions and crowdfunding the best concepts.  
+      .row
+        h2 Schools
+      each jam, index in schools
+        - var jamName
+        - var description
+        - var memberCount
+        - var jamType
+        - var jamImage
+        - var leaders
+        if index % 3 == 0 
+          .row.leaderboard-jams
+            .col-md-4
+              if(schools[index])
+                - jamName = jam.name || ""
+                - description = jam.description || ""
+                - memberCount = numberOfMembers[jam.name] || 0
+                - leaders = jamLeaders[jam.name] || []
+                - jamType = jam.type || ""
+                - jamImage = jam.profilePic || ""
+                include ../partials/view-all-jam-block.jade
+            .col-md-4
+              if(schools[index + 1])
+                - jamName = schools[index + 1].name || ""
+                - description = schools[index + 1].description || ""
+                - memberCount = numberOfMembers[schools[index + 1].name] || 0
+                - leaders = jamLeaders[schools[index + 1].name] || []
+                - jamType = schools[index + 1].type || ""
+                - jamImage = schools[index + 1].profilePic || ""
+                include ../partials/view-all-jam-block.jade
+            .col-md-4
+              if(schools[index + 2 ])
+                - jamName = schools[index + 2 ].name || ""
+                - description = schools[index + 2 ].description || ""
+                - memberCount = numberOfMembers[schools[index + 2 ].name] || 0
+                - leaders = jamLeaders[schools[index + 2].name] || []
+                - jamType = schools[index + 2 ].type || ""
+                - jamImage = schools[index + 2 ].profilePic || ""
+                include ../partials/view-all-jam-block.jade
+      br
+      .row
+        h2 Locations
+      each jam, index in locations
+        - var jamName
+        - var description
+        - var memberCount
+        - var jamType
+        - var jamImage
+        if index % 3 == 0 
+          .row.leaderboard-jams
+            .col-md-4
+              if(locations[index])
+                - jamName = jam.name || ""
+                - description = jam.description || ""
+                - memberCount = numberOfMembers[jam.name] || 0
+                - leaders = jamLeaders[jam.name] || []
+                - jamType = jam.type || ""
+                - jamImage = jam.profilePic || ""
+                include ../partials/view-all-jam-block.jade
+            .col-md-4
+              if(locations[index + 1])
+                - jamName = locations[index + 1].name || ""
+                - description = locations[index + 1].description || ""
+                - memberCount = numberOfMembers[locations[index + 1].name] || 0
+                - leaders = jamLeaders[locations[index + 1].name] || []
+                - jamType = locations[index + 1].type || ""
+                - jamImage = locations[index + 1].profilePic || ""
+                include ../partials/view-all-jam-block.jade
+            .col-md-4
+              if(locations[index + 2 ])
+                - jamName = locations[index + 2 ].name || ""
+                - description = locations[index + 2 ].description || ""
+                - memberCount = numberOfMembers[locations[index + 2 ].name] || 0
+                - leaders = jamLeaders[locations[index + 2].name] || []
+                - jamType = locations[index + 2 ].type || ""
+                - jamImage = locations[index + 2 ].profilePic || ""
+                include ../partials/view-all-jam-block.jade
+      br
+      .row
+        h2 Companies
+      each jam, index in companies
+        - var jamName
+        - var description
+        - var memberCount
+        - var jamType
+        - var jamImage
+        if index % 3 == 0 
+          .row.leaderboard-jams
+            .col-md-4
+              if(companies[index])
+                - jamName = jam.name || ""
+                - description = jam.description || ""
+                - memberCount = numberOfMembers[jam.name] || 0
+                - leaders = jamLeaders[jam.name] || []
+                - jamType = jam.type || ""
+                - jamImage = jam.profilePic || ""
+                include ../partials/view-all-jam-block.jade
+            .col-md-4
+              if(companies[index + 1])
+                - jamName = companies[index + 1].name || ""
+                - description = companies[index + 1].description || ""
+                - memberCount = numberOfMembers[companies[index + 1].name] || 0
+                - leaders = jamLeaders[companies[index + 1].name] || []
+                - jamType = companies[index + 1].type || ""
+                - jamImage = companies[index + 1].profilePic || ""
+                include ../partials/view-all-jam-block.jade
+            .col-md-4
+              if(companies[index + 2 ])
+                - jamName = companies[index + 2 ].name || ""
+                - description = companies[index + 2 ].description || ""
+                - memberCount = numberOfMembers[companies[index + 2 ].name] || 0
+                - leaders = jamLeaders[companies[index + 2].name] || []
+                - jamType = companies[index + 2 ].type || ""
+                - jamImage = companies[index + 2 ].profilePic || ""
+                include ../partials/view-all-jam-block.jade
+      br
+      .row
+        h2 Other Groups
+      each jam, index in otherGroups
+        - var jamName
+        - var description
+        - var memberCount
+        - var jamType
+        - var jamImage
+        if index % 3 == 0 
+          .row.leaderboard-jams
+            .col-md-4
+              if(otherGroups[index])
+                - jamName = jam.name || ""
+                - description = jam.description || ""
+                - memberCount = numberOfMembers[jam.name] || 0
+                - leaders = jamLeaders[jam.name] || []
+                - jamType = jam.type || ""
+                - jamImage = jam.profilePic || ""
+                include ../partials/view-all-jam-block.jade
+            .col-md-4
+              if(otherGroups[index + 1])
+                - jamName = otherGroups[index + 1].name || ""
+                - description = otherGroups[index + 1].description || ""
+                - memberCount = numberOfMembers[otherGroups[index + 1].name] || 0
+                - leaders = jamLeaders[otherGroups[index + 1].name] || []
+                - jamType = otherGroups[index + 1].type || ""
+                - jamImage = otherGroups[index + 1].profilePic || ""
+                include ../partials/view-all-jam-block.jade
+            .col-md-4
+              if(otherGroups[index + 2 ])
+                - jamName = otherGroups[index + 2 ].name || ""
+                - description = otherGroups[index + 2 ].description || ""
+                - memberCount = numberOfMembers[otherGroups[index + 2 ].name] || 0
+                - leaders = jamLeaders[otherGroups[index + 2].name] || []
+                - jamType = otherGroups[index + 2 ].type || ""
+                - jamImage = otherGroups[index + 2 ].profilePic || ""
+                include ../partials/view-all-jam-block.jade
+      br
+
+  #loginModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          .modal-title 
+            h2 Login
+        .modal-body
+          form#jam-signup-form(role='form', action="/register-jam",method="post")
+            a.socialLink(href="/auth/google" class="btn btn-danger btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';" )
+              span.fa.fa-google-plus Google
+            |  
+            a.socialLink(href="/auth/facebook",class="btn btn-primary btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';")
+              span.fa.fa-facebook Facebook
+            |  
+            a.socialLink(href="/auth/linkedin",class="btn btn-info btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';" )
+              span.fa.fa-linkedin LinkedIn
+            |  
+            a#ideajam-login(class="btn btn-go btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';")
+              span.fa IdeaJam
+            h4 New Account:
+            .form-group
+              input.form-control(type='text', name="nickname", placeholder='Name' required)
+            .form-group
+              input.form-control(type='email', name="username", placeholder='Email Address' required)
+            .form-group
+              input.form-control(type="hidden", name="password", value='itcrashed' required)
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+            button.btn.btn-lg.btn-block.btn-go#register-submit(type='submit' ontouchstart="this.style.background = '#D6DE26';") Submit
+            |  
+            a(href='/' ontouchstart="this.style.background = '#D6DE26';")
+              button.btn.btn-primary.btn-lg.btn-block(type="button" style="margin-top: 5px;") Cancel
+          form#jam-login-form(role='form', action="/login-jam",method="post", style='max-width: 300px;display: none;')
+            .form-group
+              input.form-control(type='email', name="username", placeholder='Email Address' required)
+            .form-group
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+              input.form-control(type='password', name="password", placeholder='Password' required)
+            button.btn.btn-go(type='submit') Submit
+            |  
+            a(href='/')
+              button.btn.btn-primary(type="button") Cancel
+            |  
+            a(href="/forgot-password/")
+              h4 Forget your password?
+
+  #footer.mobileOnly
+    .col-xs-12.navbar-default.navbar-fixed-bottom.jamBottomNav
+      #bottomNav.row     
+        .col-xs-2.text-center
+          a(href='#ideaSection').glyphicon.glyphicon-flash
+            | 
+            div Ideas
+        .col-xs-4.text-center
+          a(href='#imperfectionSection').glyphicon.glyphicon-wrench
+            | 
+            div Imperfections
+        .col-xs-4.text-center
+          a(href='#suggestionSection').glyphicon.glyphicon-comment
+            | 
+            div Suggestions
+        .col-xs-2.text-center
+          a(href='#topSection').glyphicon.glyphicon-home
+            | 
+            div Home   
+
+  include ../partials/js-includes.jade
+  script(src='/exif.js')
+  script(type="text/javascript").
+    $(document).ready(function(){
+      if( "!{Object.keys(user).length > 0}" === "false" ){
+        $('#loginModal').modal('show');
+      }
+
+      $(".socialLink").click(function(event){
+        $.post('/set-session-redirect', {redirectURL : "/jam/!{networkName}", "_csrf" : $('[name="_csrf"]').val()}, function(response){
+          var stop;
+        });
+      });
+    });
+
+    $("#jam-login").click(function(event){
+      $("#jam-signup-form").hide();
+      $("#jam-login-form").show();
+    });
+
+    $("#register-submit").click(function(event){
+      if($("input[name='nickname']").val() == ""){
+        event.preventDefault();
+        $("input[name='nickname']").after("<p> Please enter a name value.</p>");
+      }
+      if($("input[name='username']").val() == ""){
+        event.preventDefault();
+        $("input[name='username']").after("<p> Please enter an email.</p>");
+      }
+    })
