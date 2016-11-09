@@ -14,9 +14,17 @@ const TOKEN_URI = 'https://connect.stripe.com/oauth/token';
 // See your keys here: https://dashboard.stripe.com/account/apikeys
 var stripe = require("stripe").Stripe(process.env.STRIPE_SECRET);
 
-function campaignCharge(customerId, amount, idea, hostAccount) {
+function campaignCharge(customerId, amount, idea, hostAccount, hasContributors) {
   var stripe_fee = (amount *.029) + .3;
-  var application_fee = Math.round(amount * 0.2) + stripe_fee; //Stripe fee comes out of application_fee
+  //Stripe fee comes out of application_fee
+  var application_fee;
+  if(hasContributors === false) {
+    application_fee = Math.round(amount * 0.1) + stripe_fee;
+  } else {
+    application_fee = Math.round(amount * 0.2) + stripe_fee;
+  }
+
+
 
   try {
     return stripe.charges.create({
@@ -35,7 +43,7 @@ function campaignCharge(customerId, amount, idea, hostAccount) {
       }
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return {status: 'failed'};
   }
 }
@@ -97,7 +105,7 @@ exports.delayedChargeCreation = function(tokenId, amount, prizeId, user, ideaNam
   });
 };
 
-exports.fundCampaign = function(campaign, idea) {
+exports.fundCampaign = function(campaign, idea, hasContributors) {
   campaign.populate('payments.campaignpayment');
   var inventorAccount;
   return Account.findOne({'username': idea.inventorName}).then(function (account) {
@@ -105,9 +113,13 @@ exports.fundCampaign = function(campaign, idea) {
     return CampaignPayment.find({'_id': {$in: campaign.payments}}).exec()
   }).then(function (payments) {
     var charges = payments.map(function(campaignPayment) {
-      return campaignCharge(campaignPayment.stripeCustomerId, campaignPayment.amount, idea, inventorAccount).then(function(result) {
-        EmailService.sendCardCharged(campaignPayment.username, idea, campaignPayment);
-        return campaignPayment.stripeId = result.id;
+      return campaignCharge(campaignPayment.stripeCustomerId, campaignPayment.amount, idea, inventorAccount, hasContributors).then(function(result) {
+        if(result.id) {
+          EmailService.sendCardCharged(campaignPayment.username, idea, campaignPayment);
+          return campaignPayment.stripeId = result.id;
+        } else {
+          console.error('Charging the credit card for ' + idea.name + ' campaignPayment failed: ' + campaignPayment);
+        }
       });
     });
     return Promise.all(charges);

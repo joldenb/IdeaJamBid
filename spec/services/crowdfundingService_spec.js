@@ -23,7 +23,7 @@ describe('Crowdfunding Service', function () {
   var account, ideaSeed;
   var contribAccounts = [];
   var components = [];
-  var variantNames = ['test variant 1', 'test variant 2']
+  var variantNames = ['test variant 1', 'test variant 2', 'test variant inventor contrib'];
   const basicBody = {
     goal: "10000",
     prizeName0: "1 automa",
@@ -81,6 +81,9 @@ describe('Crowdfunding Service', function () {
       }, {
         name: variantNames[1],
         components: [components[3]._id]
+      }, {
+        name: variantNames[2],
+        components: [components[5]._id]
       }];
       ideaSeed.variants = variants;
       return ideaSeed.save();
@@ -354,6 +357,28 @@ describe('Crowdfunding Service', function () {
       }).then(function(c) {
         try {
           moment(c.startProcessingDate).format('YYYY-MM-DD').should.eql(moment().format('YYYY-MM-DD'));
+          chargeStub.should.have.been.calledWith(sinon.match({amount: 2500, application_fee: 572.8}));
+          chargeStub.should.have.been.calledThrice;
+          emailReceiptStub.should.have.been.calledThrice;
+          done();
+        } catch(error) {
+          done(error);
+        }
+      });
+    });
+
+    it('processes closing on campaigns with no contributors paying 90%', function(done) {
+      campaign.variant = variantNames[2];
+      campaign.save().then(function(c) {
+        campaign = c;
+      }).then(function() {
+        return CrowdfundingService.processCampaignClosings()
+      }).then(function() {
+        return Campaign.findById(campaign._id).exec();
+      }).then(function(c) {
+        try {
+          moment(c.startProcessingDate).format('YYYY-MM-DD').should.eql(moment().format('YYYY-MM-DD'));
+          chargeStub.should.have.been.calledWith(sinon.match({amount: 2500, application_fee: 322.8}));
           chargeStub.should.have.been.calledThrice;
           emailReceiptStub.should.have.been.calledThrice;
           done();

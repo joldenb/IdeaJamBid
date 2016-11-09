@@ -148,7 +148,16 @@ function processCampaignClosing(campaign) {
     return IdeaSeed.findOne({campaigns: campaign._id}).then(function(idea) {
       if (reachedGoal) {
         try {
-          return StripeService.fundCampaign(campaign, idea);
+          return getContributorUsernames(campaign, idea).then(function(usernames) {
+            var hasContributors = true;
+            if(usernames.length !== 0) {
+              var uniqNames = _.uniq(usernames);
+              if(uniqNames.length === 1 && uniqNames[0] === idea.inventorName) {
+                hasContributors = false;
+              }
+            }
+            return StripeService.fundCampaign(campaign, idea, hasContributors);
+          });
         } catch (error) {
           console.error(error);
         }
