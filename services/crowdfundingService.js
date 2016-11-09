@@ -173,3 +173,19 @@ exports.processCampaignClosings = function() {
     return Promise.all(promises);
   });
 };
+
+exports.checkStuckClosings = function() {
+  console.log('Checking campaigns for any that are stuck');
+  var oneHourAgo = moment().subtract(1, 'hour').toDate();
+  return Campaign.find({state: 'processing_payments', startProcessingDate: {"$lt": oneHourAgo}}).exec().then(function(stuckCampaigns){
+    var ideaPromises = stuckCampaigns.map(function(stuckCampaign) {
+      return IdeaSeed.findOne({campaigns: stuckCampaign._id}).exec();
+    });
+    return Promise.all(ideaPromises).then(function(ideas) {
+      ideas.forEach(function(idea) {
+        console.error('Campaign for idea ' + idea.name + ' appears to be stuck in processing payments!');
+      });
+      return ideas;
+    });
+  });
+};

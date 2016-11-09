@@ -396,5 +396,33 @@ describe('Crowdfunding Service', function () {
         }
       });
     });
+
+    it('reports campaigns stuck in processing', function(done) {
+      campaign.state = 'processing_payments';
+      campaign.startProcessingDate = moment().subtract(5, 'days').toDate();
+      campaign.save().then(function(c) {
+        campaign = c;
+      }).then(function() {
+        return CrowdfundingService.checkStuckClosings();
+      }).then(function(ideas) {
+        try {
+          ideas.length.should.eql(1);
+          done();
+        } catch(error) {
+          done(error);
+        }
+      });
+    });
+
+    it('reports no campaigns stuck in processing', function(done) {
+      CrowdfundingService.checkStuckClosings().then(function(ideas) {
+        try {
+          ideas.length.should.eql(0);
+          done();
+        } catch(error) {
+          done(error);
+        }
+      });
+    });
   });
 });
