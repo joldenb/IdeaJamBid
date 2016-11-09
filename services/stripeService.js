@@ -118,6 +118,10 @@ exports.fundCampaign = function(campaign, idea, hasContributors) {
             console.error('Charging the credit card for ' + idea.name + ' campaignPayment failed: ' + campaignPayment);
           }
           return campaignPayment.save();
+        }).then(function(payment) {
+          return payment;
+        }, function (err) {
+          console.error(err);
         });
       } catch (error) {
         console.error(error);
