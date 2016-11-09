@@ -189,3 +189,13 @@ exports.checkStuckClosings = function() {
     });
   });
 };
+
+//Fill in charge information for payments
+exports.updateChargeInfo = function() {
+
+};
+
+//Find payments that have been fully processed and update them.
+exports.updatePaymentTransfers = function() {
+
+};

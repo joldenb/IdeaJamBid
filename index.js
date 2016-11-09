@@ -140,6 +140,7 @@ var checkCampaignsJob = new CronJob('5 */5 * * * *', function() {
   CrowdfundingService.processCampaignClosings();
 });
 checkCampaignsJob.start();
+
 var checkStuckCampaignsJob = new CronJob('25 25 * * * *', function() {
   CrowdfundingService.checkStuckClosings();
 });

@@ -329,7 +329,7 @@ describe('Crowdfunding Service', function () {
         try {
           c.state.should.eql('funded');
           moment(c.startProcessingDate).format('YYYY-MM-DD').should.eql(moment().format('YYYY-MM-DD'));
-          chargeStub.should.have.been.calledWith(sinon.match({amount: 2500, application_fee: 572.8}));
+          chargeStub.should.have.been.calledWith(sinon.match({amount: 250000, application_fee: 57280}));
           chargeStub.should.have.been.calledThrice;
           emailReceiptStub.should.have.been.calledThrice;
           done();
@@ -368,7 +368,7 @@ describe('Crowdfunding Service', function () {
         try {
           c.state.should.eql('funded');
           moment(c.startProcessingDate).format('YYYY-MM-DD').should.eql(moment().format('YYYY-MM-DD'));
-          chargeStub.should.have.been.calledWith(sinon.match({amount: 2500, application_fee: 322.8}));
+          chargeStub.should.have.been.calledWith(sinon.match({amount: 250000, application_fee: 32280}));
           chargeStub.should.have.been.calledThrice;
           emailReceiptStub.should.have.been.calledThrice;
           done();

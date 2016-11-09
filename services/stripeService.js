@@ -15,32 +15,30 @@ const TOKEN_URI = 'https://connect.stripe.com/oauth/token';
 var stripe = require("stripe").Stripe(process.env.STRIPE_SECRET);
 
 function campaignCharge(customerId, amount, idea, hostAccount, hasContributors) {
-  var stripe_fee = (amount *.029) + .3;
+  let amountInCents = amount * 100;
+  var stripeFeeInCents = (amountInCents *.029) + 30;
   //Stripe fee comes out of application_fee
-  var application_fee;
+  var applicationFee;
   if(hasContributors === false) {
-    application_fee = Math.round(amount * 0.1) + stripe_fee;
+    applicationFee = Math.round(amountInCents * 0.1 + stripeFeeInCents);
   } else {
-    application_fee = Math.round(amount * 0.2) + stripe_fee;
+    applicationFee = Math.round(amountInCents * 0.2 + stripeFeeInCents);
   }
-
 
 
   try {
     return stripe.charges.create({
-      amount: amount, // Amount in cents
+      amount: amountInCents, // Amount in cents
       currency: "usd",
       customer: customerId,
       destination: hostAccount.stripeCredentials.stripe_user_id,
-      application_fee: application_fee,
+      application_fee: applicationFee,
       description: "Funding idea: " + idea.name
     }).then(function (json) {
       return json;
     }, function (err) {
-      if (err && err.type === 'StripeCardError') {
-        console.error('Could not process the payment: ', err);
-        return {status: 'failed'};
-      }
+      console.error('Could not process the payment: ', err);
+      return {status: 'failed'};
     });
   } catch (error) {
     console.error(error);
@@ -55,13 +53,10 @@ exports.basicCharge = function(tokenId, amount) {
     source: tokenId,
     description: "Example charge"
   }).then(function() {
-    console.log('Successfully charged the card!');
     return true;
   }, function(err) {
-    if (err && err.type === 'StripeCardError') {
-      console.error('Could not process the payment: ', err);
-      return false;
-    }
+    console.error('Could not process the payment: ', err);
+    return false;
   });
 };
 
@@ -106,21 +101,29 @@ exports.delayedChargeCreation = function(tokenId, amount, prizeId, user, ideaNam
 };
 
 exports.fundCampaign = function(campaign, idea, hasContributors) {
-  campaign.populate('payments.campaignpayment');
   var inventorAccount;
   return Account.findOne({'username': idea.inventorName}).then(function (account) {
     inventorAccount = account;
     return CampaignPayment.find({'_id': {$in: campaign.payments}}).exec()
   }).then(function (payments) {
     var charges = payments.map(function(campaignPayment) {
-      return campaignCharge(campaignPayment.stripeCustomerId, campaignPayment.amount, idea, inventorAccount, hasContributors).then(function(result) {
-        if(result.id) {
-          EmailService.sendCardCharged(campaignPayment.username, idea, campaignPayment);
-          return campaignPayment.stripeId = result.id;
-        } else {
-          console.error('Charging the credit card for ' + idea.name + ' campaignPayment failed: ' + campaignPayment);
-        }
-      });
+      try {
+        return campaignCharge(campaignPayment.stripeCustomerId, campaignPayment.amount, idea, inventorAccount, hasContributors).then(function(result) {
+          if(result.id) {
+            EmailService.sendCardCharged(campaignPayment.username, idea, campaignPayment);
+            campaignPayment.chargeId = result.id;
+            campaignPayment.state = 'charged';
+          } else {
+            campaignPayment.state = 'failed';
+            console.error('Charging the credit card for ' + idea.name + ' campaignPayment failed: ' + campaignPayment);
+          }
+          return campaignPayment.save();
+        });
+      } catch (error) {
+        console.error(error);
+        return;
+      }
+
     });
     return Promise.all(charges);
   });

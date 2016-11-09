@@ -76,7 +76,7 @@ describe('Stripe Service', function () {
       return StripeService.fundCampaign(campaign, ideaSeed);
     }).then(function (results) {
       try {
-        results[0].should.eql('ch_123456');
+        results[0].chargeId.should.eql('ch_123456');
         done();
       } catch(error) {
         done(error);
