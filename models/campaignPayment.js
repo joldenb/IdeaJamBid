@@ -7,6 +7,7 @@ var CampaignPayment = new Schema({
 	amount: Number, //amount in cents
 	prize: {type: Schema.Types.ObjectId, ref: 'CampaignPrize'},
 	chargeId: String,
+  feeBalTxn: String,
 	state: { type:String, enum: ['captured', 'charged', 'failed', 'funds_available'] }
 }, { autoIndex: false });
 

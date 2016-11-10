@@ -71,13 +71,14 @@ describe('Stripe Service', function () {
 
   it('should fund a campaign', function (done) {
     var stub = sinon.stub(stripe.charges, 'create');
-    stub.returns(Promise.resolve({id: 'ch_123456'}));
+    stub.returns(Promise.resolve({id: 'ch_123456', application_fee: {balance_transaction: 'bln_tx_123'}}));
     Campaign.findById(campaign._id).then(function(campaign) {
       return StripeService.fundCampaign(campaign, ideaSeed);
     }).then(function (results) {
       try {
         results.length.should.eql(1);
         results[0].chargeId.should.eql('ch_123456');
+        results[0].feeBalTxn.should.eql('bln_tx_123');
         done();
       } catch(error) {
         done(error);

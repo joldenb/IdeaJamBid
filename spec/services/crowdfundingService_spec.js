@@ -287,7 +287,7 @@ describe('Crowdfunding Service', function () {
     var chargeStub, emailStub, emailReceiptStub;
     beforeEach('setup funded campaign', function(done) {
       chargeStub = sinon.stub(stripe.charges, 'create');
-      chargeStub.returns(Promise.resolve({id: 'ch_123456'}));
+      chargeStub.returns(Promise.resolve({id: 'ch_123456', application_fee: {balance_transaction: 'bln_tx_123'}}));
       StripeService._setStripe(stripe);
       emailStub = sinon.stub(EmailService, 'sendGoalNotReachedFunders');
       emailStub.returns(true);

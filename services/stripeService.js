@@ -33,7 +33,8 @@ function campaignCharge(customerId, amount, idea, hostAccount, hasContributors) 
       customer: customerId,
       destination: hostAccount.stripeCredentials.stripe_user_id,
       application_fee: applicationFee,
-      description: "Funding idea: " + idea.name
+      description: "Funding idea: " + idea.name,
+      expand: ["application_fee"]
     }).then(function (json) {
       return json;
     }, function (err) {
@@ -112,6 +113,7 @@ exports.fundCampaign = function(campaign, idea, hasContributors) {
           if(result.id) {
             EmailService.sendCardCharged(campaignPayment.username, idea, campaignPayment);
             campaignPayment.chargeId = result.id;
+            campaignPayment.feeBalTxn = result.application_fee.balance_transaction;
             campaignPayment.state = 'charged';
           } else {
             campaignPayment.state = 'failed';
