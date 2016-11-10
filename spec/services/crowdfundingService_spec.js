@@ -424,5 +424,32 @@ describe('Crowdfunding Service', function () {
         }
       });
     });
+
+    describe('payout processing', function() {
+      it('pays out contributors when all payments have been received (or failed)', function(done) {
+        return CrowdfundingService.processCampaignClosings().then(function() {
+          return CampaignPayment.update(
+            {state: "charged", '_id': {$in: campaign.payments }},
+            { $set: {state: "funds_available"}},
+            {multi: true}
+          ).exec();
+        }).then(function(update) {
+          return CrowdfundingService.payoutContributors();
+        }, function(err) {
+          console.log(err);
+        }).then(function() {
+          return Campaign.findById(campaign._id).exec();
+        }).then(function(c) {
+          campaign = c;
+          try {
+            campaign.state.should.eql('processing_payouts');
+            moment(campaign.startPayoutDate).format('YYYY-MM-DD').should.eql(moment().format('YYYY-MM-DD'));
+            done();
+          } catch(error) {
+            done(error);
+          }
+        });
+      });
+    });
   });
 });

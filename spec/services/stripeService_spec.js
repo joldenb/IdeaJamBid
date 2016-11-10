@@ -45,7 +45,7 @@ describe('Stripe Service', function () {
 
     SpecHelper.createOrFindTestAccount('testuser@madeuptesturl.com').then(function(account) {
       StripeService
-        .delayedChargeCreation('mytesttoken', '15000', campaign.prizes[0], account, ideaName)
+        .delayedChargeCreation('mytesttoken', '150', campaign.prizes[0], account, ideaName)
         .then(function (success){
           IdeaSeed.findOne({name: ideaName}).exec(function(err, ideaSeed) {
             try {
@@ -53,7 +53,7 @@ describe('Stripe Service', function () {
               campaign.payments.length.should.eql(1);
               CampaignPayment.findById(campaign.payments[0]).then(function(payment) {
                 try {
-                  payment.amount.should.eql(15000);
+                  payment.amount.should.eql(150);
                   payment.prize.should.eql(campaign.prizes[0]);
                   emailStub.should.have.been.called;
                   done();
@@ -79,6 +79,7 @@ describe('Stripe Service', function () {
         results.length.should.eql(1);
         results[0].chargeId.should.eql('ch_123456');
         results[0].feeBalTxn.should.eql('bln_tx_123');
+        results[0].collectedAppAmt.should.eql(3000);
         done();
       } catch(error) {
         done(error);

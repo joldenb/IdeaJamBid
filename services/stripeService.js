@@ -14,16 +14,17 @@ const TOKEN_URI = 'https://connect.stripe.com/oauth/token';
 // See your keys here: https://dashboard.stripe.com/account/apikeys
 var stripe = require("stripe").Stripe(process.env.STRIPE_SECRET);
 
-function campaignCharge(customerId, amount, idea, hostAccount, hasContributors) {
-  let amountInCents = amount * 100;
-  var stripeFeeInCents = (amountInCents *.029) + 30;
+function campaignCharge(customerId, amountInDollars, idea, hostAccount, hasContributors) {
+  let amountInCents = amountInDollars * 100;
+  var stripeFeeInCents = Math.round((amountInCents *.029) + 30);
   //Stripe fee comes out of application_fee
   var applicationFee;
   if(hasContributors === false) {
-    applicationFee = Math.round(amountInCents * 0.1 + stripeFeeInCents);
+    applicationFee = Math.round(amountInCents * 0.1);
   } else {
-    applicationFee = Math.round(amountInCents * 0.2 + stripeFeeInCents);
+    applicationFee = Math.round(amountInCents * 0.2);
   }
+  var totalFee = applicationFee + stripeFeeInCents;
 
 
   try {
@@ -32,10 +33,11 @@ function campaignCharge(customerId, amount, idea, hostAccount, hasContributors) 
       currency: "usd",
       customer: customerId,
       destination: hostAccount.stripeCredentials.stripe_user_id,
-      application_fee: applicationFee,
+      application_fee: totalFee,
       description: "Funding idea: " + idea.name,
       expand: ["application_fee"]
     }).then(function (json) {
+      json.collectedApplicationAmount = applicationFee;
       return json;
     }, function (err) {
       console.error('Could not process the payment: ', err);
@@ -47,9 +49,9 @@ function campaignCharge(customerId, amount, idea, hostAccount, hasContributors) 
   }
 }
 
-exports.basicCharge = function(tokenId, amount) {
+exports.basicCharge = function(tokenId, amountInCents) {
   return stripe.charges.create({
-    amount: amount, // Amount in cents
+    amount: amountInCents, // Amount in cents
     currency: "usd",
     source: tokenId,
     description: "Example charge"
@@ -114,6 +116,7 @@ exports.fundCampaign = function(campaign, idea, hasContributors) {
             EmailService.sendCardCharged(campaignPayment.username, idea, campaignPayment);
             campaignPayment.chargeId = result.id;
             campaignPayment.feeBalTxn = result.application_fee.balance_transaction;
+            campaignPayment.collectedAppAmt = result.collectedApplicationAmount;
             campaignPayment.state = 'charged';
           } else {
             campaignPayment.state = 'failed';

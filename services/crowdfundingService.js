@@ -190,12 +190,38 @@ exports.checkStuckClosings = function() {
   });
 };
 
-//Fill in charge information for payments
-exports.updateChargeInfo = function() {
+//Fill in charge information for payments by querying stripe transfers for related
+//balance transactions. This will update the status of campaign payments to funds_available
+exports.updateChargeAvailable = function() {
 
 };
 
-//Find payments that have been fully processed and update them.
-exports.updatePaymentTransfers = function() {
+function processCampaignPayout(campaign) {
+  return CampaignPayment.find({'_id': {$in: campaign.payments}}).exec().then(function (payments) {
+    let stateGroups = _.groupBy(payments, 'state');
+    let availableAndFailedCount = stateGroups.failed ? stateGroups.failed.length : 0;
+    availableAndFailedCount += stateGroups.funds_available ? stateGroups.funds_available.length : 0;
+    if(payments.length == availableAndFailedCount) {
+      campaign.startPayoutDate = new Date();
+      campaign.state = 'processing_payouts';
+      return campaign.save().then(function(c) {
+        //sum the funds_available payments
+        // return getContributorUsernames(campaign, idea).then(function(usernames) {
+        //   var usernamesWithCounts = _.countBy(usernames);
+        //   PaymentService.payContributors(contributors, idea, .5*funds_available)
+        // });
+        return c;
+      })
+    } else {
+      return campaign;
+    }
+  });
+}
 
+//Find payments that have been fully processed and update them.
+exports.payoutContributors = function() {
+  return Campaign.find({state: 'funded'}).exec().then(function(campaigns) {
+    var promises = campaigns.map(processCampaignPayout);
+    return Promise.all(promises);
+  });
 };
