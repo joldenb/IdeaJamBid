@@ -429,6 +429,24 @@ describe('Crowdfunding Service', function () {
       });
     });
 
+    it('updates charges with matching transactions to paid status', function(done) {
+      CrowdfundingService.processCampaignClosings().then(function() {
+        return CrowdfundingService.markChargesFundAvailable(['bln_tx_123', 'bln_tx_223', 'bln_tx_323'])
+      }).then(function() {
+        return CampaignPayment.find({'_id': {$in: campaign.payments}}).exec();
+      }).then(function(payments) {
+        try {
+          payments.forEach(function(payment) {
+            payment.state.should.eql('funds_available');
+          });
+          done()
+        } catch(error) {
+          done(error);
+        }
+      });
+
+    });
+
     describe('payout processing', function() {
       var payContribsStub;
       beforeEach('create stubs', function() {

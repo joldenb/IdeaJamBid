@@ -136,8 +136,8 @@ app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
 
-var checkCampaignsJob = new CronJob('*/15 * * * * *', function() {
-// var checkCampaignsJob = new CronJob('5 */5 * * * *', function() {
+// var checkCampaignsJob = new CronJob('*/15 * * * * *', function() {
+var checkCampaignsJob = new CronJob('5 */5 * * * *', function() {
   CrowdfundingService.processCampaignClosings();
 });
 checkCampaignsJob.start();
@@ -146,5 +146,16 @@ var checkStuckCampaignsJob = new CronJob('25 25 * * * *', function() {
   CrowdfundingService.checkStuckClosings();
 });
 checkStuckCampaignsJob.start();
+
+var updateAvailableFundsJob = new CronJob('45 55 */6 * * *', function() {
+    CrowdfundingService.updateChargeAvailable();
+});
+updateAvailableFundsJob.start();
+
+var payoutJob = new CronJob('5 3 */6 * * *', function() {
+  CrowdfundingService.checkStuckClosings();
+});
+payoutJob.start();
+
 
 module.exports = app;

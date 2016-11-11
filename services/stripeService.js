@@ -111,9 +111,7 @@ exports.fundCampaign = function(campaign, idea, hasContributors) {
   }).then(function (payments) {
     var charges = payments.map(function(campaignPayment) {
       try {
-        console.log('Calling campaign charge with amount ' + campaignPayment.amount);
         return campaignCharge(campaignPayment.stripeCustomerId, campaignPayment.amount, idea, inventorAccount, hasContributors).then(function(result) {
-          console.log('campaign charge with result ' + result.collectedApplicationAmount);
           if(result.id) {
             EmailService.sendCardCharged(campaignPayment.username, idea, campaignPayment);
             campaignPayment.chargeId = result.id;
@@ -176,6 +174,47 @@ exports.connect = function(stripeInfo, user) {
     });
   });
 };
+
+function fetchTransactionsInTransfer(transferId, transactionIds, starting_after) {
+  let opts = {
+    limit: 100,
+    transfer: transferId
+  };
+  if(starting_after) {
+    opts.starting_after = starting_after;
+  }
+
+  return stripe.balance.listTransactions(opts).then(function(transactions) {
+    if(!transactionIds) {
+      transactionIds = [];
+    }
+    let ids = transactions.data.map(function(transaction) { return transaction.id });
+    transactionIds = transactionIds.concat(ids);
+
+    if(transactions.has_more) {
+      return fetchTransactionsInTransfer(transferId,
+        transactionIds,
+        transactions.data[transactions.data.length - 1].id);
+    } else {
+      return CrowdfundingService.markChargesFundAvailable(transactionIds);
+    }
+  });
+}
+
+function fetchTransfers(momentStartDate) {
+  return stripe.transfers.list({
+    limit: 100,
+    destination: 'ba_19ENKeH0NILBfKLbN8jFxClJ',
+    date: {gte: momentStartDate.unix()}
+  }).then(function(transfers) {
+    let transactionPromsises = transfers.data.forEach(function(transfer) {
+      fetchTransactionsInTransfer(transfer.id);
+    });
+    return Promise.all(transactionPromsises);
+  });
+};
+
+exports.fetchTransactions = fetchTransfers;
 
 //To inject a mock use this method
 exports._setStripe = function(stripeObj) {

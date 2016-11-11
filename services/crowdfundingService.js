@@ -122,6 +122,13 @@ exports.checkCampaignFunding = function(idea, campaign) {
   }
 };
 
+exports.markChargesFundAvailable = function(transactionIds) {
+  return CampaignPayment.update(
+    { 'feeBalTxn': {$in: transactionIds } },
+    { $set: {state: "funds_available"} },
+    { multi: true} ).exec();
+};
+
 function fetchCampaignsToProcess() {
   return Campaign.find({state: 'open', endDate: {"$lte": new Date()}}).exec();
 }
@@ -190,10 +197,9 @@ exports.checkStuckClosings = function() {
   });
 };
 
-//Fill in charge information for payments by querying stripe transfers for related
-//balance transactions. This will update the status of campaign payments to funds_available
 exports.updateChargeAvailable = function() {
-
+  console.log('Updating charge availability');
+  StripeService.fetchTransactions(moment().subtract(7, 'days'));
 };
 
 function processCampaignPayout(campaign) {
@@ -227,6 +233,7 @@ function processCampaignPayout(campaign) {
 
 //Find payments that have been fully processed and update them.
 exports.payoutContributors = function() {
+  console.log('Checking for campaigns to payout');
   return Campaign.find({state: 'funded'}).exec().then(function(campaigns) {
     var promises = campaigns.map(processCampaignPayout);
     return Promise.all(promises);
