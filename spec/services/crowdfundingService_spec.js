@@ -10,12 +10,14 @@ var stripe = require('stripe')('test');
 var EmailService = require('../../services/emailService');
 var CrowdfundingService = require('../../services/crowdfundingService');
 var StripeService = require('../../services/stripeService');
+var PaymentService = require('../../services/paymentService');
 var CampaignPrize = require('../../models/campaignPrize');
 var CampaignPayment = require('../../models/campaignPayment');
 var Campaign = require('../../models/campaign');
 var IdeaSeed = require('../../models/ideaSeed');
 var Component = require('../../models/component');
 var SpecHelper = require('../specHelper');
+var _ = require('underscore');
 
 const ideaName = 'automation';
 
@@ -287,7 +289,9 @@ describe('Crowdfunding Service', function () {
     var chargeStub, emailStub, emailReceiptStub;
     beforeEach('setup funded campaign', function(done) {
       chargeStub = sinon.stub(stripe.charges, 'create');
-      chargeStub.returns(Promise.resolve({id: 'ch_123456', application_fee: {balance_transaction: 'bln_tx_123'}}));
+      chargeStub.onFirstCall().returns(Promise.resolve({id: 'ch_123456', application_fee: {balance_transaction: 'bln_tx_123'}}));
+      chargeStub.onSecondCall().returns(Promise.resolve({id: 'ch_223456', application_fee: {balance_transaction: 'bln_tx_223'}}));
+      chargeStub.returns(Promise.resolve({id: 'ch_323456', application_fee: {balance_transaction: 'bln_tx_323'}}));
       StripeService._setStripe(stripe);
       emailStub = sinon.stub(EmailService, 'sendGoalNotReachedFunders');
       emailStub.returns(true);
@@ -426,14 +430,30 @@ describe('Crowdfunding Service', function () {
     });
 
     describe('payout processing', function() {
+      var payContribsStub;
+      beforeEach('create stubs', function() {
+        payContribsStub = sinon.stub(PaymentService, '_paypalPayContributors');
+        payContribsStub.returns(true);
+      });
+
+      afterEach('reset stubs', function() {
+        payContribsStub.restore();
+      });
+
       it('pays out contributors when all payments have been received (or failed)', function(done) {
         return CrowdfundingService.processCampaignClosings().then(function() {
+          return CampaignPayment.update(
+            {state: "charged", '_id': {$in: campaign.payments }},
+            { $set: {state: "failed"}},
+            {multi: false}
+          ).exec();
+        }).then(function() {
           return CampaignPayment.update(
             {state: "charged", '_id': {$in: campaign.payments }},
             { $set: {state: "funds_available"}},
             {multi: true}
           ).exec();
-        }).then(function(update) {
+        }).then(function() {
           return CrowdfundingService.payoutContributors();
         }, function(err) {
           console.log(err);
@@ -444,6 +464,14 @@ describe('Crowdfunding Service', function () {
           try {
             campaign.state.should.eql('processing_payouts');
             moment(campaign.startPayoutDate).format('YYYY-MM-DD').should.eql(moment().format('YYYY-MM-DD'));
+            payContribsStub.should.have.been.calledOnce;
+            payContribsStub.should.have.been.calledWith(sinon.match(function(data) {
+              let user1 = _.where(data.items, {receiver: 'testuser1@madeuptesturl.com'});
+              let user2 = _.where(data.items, {receiver: 'testuser2@madeuptesturl.com'});
+              return data.items.length == 4 &&
+                user1[0].amount.value == 340 &&
+                user2[0].amount.value == 170;
+            }));
             done();
           } catch(error) {
             done(error);

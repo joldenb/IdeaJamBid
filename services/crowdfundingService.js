@@ -197,7 +197,11 @@ exports.updateChargeAvailable = function() {
 };
 
 function processCampaignPayout(campaign) {
-  return CampaignPayment.find({'_id': {$in: campaign.payments}}).exec().then(function (payments) {
+  var idea;
+  return IdeaSeed.findOne({campaigns: campaign._id}).then(function(ideaSeed) {
+    idea = ideaSeed;
+    return CampaignPayment.find({'_id': {$in: campaign.payments}}).exec()
+  }).then(function (payments) {
     let stateGroups = _.groupBy(payments, 'state');
     let availableAndFailedCount = stateGroups.failed ? stateGroups.failed.length : 0;
     availableAndFailedCount += stateGroups.funds_available ? stateGroups.funds_available.length : 0;
@@ -205,11 +209,14 @@ function processCampaignPayout(campaign) {
       campaign.startPayoutDate = new Date();
       campaign.state = 'processing_payouts';
       return campaign.save().then(function(c) {
-        //sum the funds_available payments
-        // return getContributorUsernames(campaign, idea).then(function(usernames) {
-        //   var usernamesWithCounts = _.countBy(usernames);
-        //   PaymentService.payContributors(contributors, idea, .5*funds_available)
-        // });
+        let totalAppCollected = _.reduce(stateGroups.funds_available, function(sum, payment) {
+          return sum + payment.collectedAppAmt;
+        }, 0);
+        let contributorFundsInDollars = Math.floor(totalAppCollected/2)/100;
+        return getContributorUsernames(campaign, idea).then(function(usernames) {
+          var usernamesWithCounts = _.countBy(usernames);
+          PaymentService.payContributors(usernamesWithCounts, contributorFundsInDollars)
+        });
         return c;
       })
     } else {

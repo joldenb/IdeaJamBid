@@ -111,7 +111,9 @@ exports.fundCampaign = function(campaign, idea, hasContributors) {
   }).then(function (payments) {
     var charges = payments.map(function(campaignPayment) {
       try {
+        console.log('Calling campaign charge with amount ' + campaignPayment.amount);
         return campaignCharge(campaignPayment.stripeCustomerId, campaignPayment.amount, idea, inventorAccount, hasContributors).then(function(result) {
+          console.log('campaign charge with result ' + result.collectedApplicationAmount);
           if(result.id) {
             EmailService.sendCardCharged(campaignPayment.username, idea, campaignPayment);
             campaignPayment.chargeId = result.id;

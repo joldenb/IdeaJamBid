@@ -100,14 +100,24 @@ describe('Payment Service', function () {
     stub.returns(true);
 
     CrowdfundingService.createCampaign(basicBody, account, ideaName).then(function () {
-      PaymentService.payContributors(['billingb@gmail.com', 'joseph.oldenburg@gmail.com'], ideaName).should.be.true;
+      let contributorsWithCounts = {
+        "testuser1@madeuptesturl.com": 1,
+        "testuser2@madeuptesturl.com": 2
+      };
+      try {
+        PaymentService.payContributors(contributorsWithCounts, 3000).should.be.true;
 
-      stub.should.have.been.calledWith(sinon.match(function(data) {
-        return data.items.length == 2 &&
-          data.items[0].amount.value == 1500 &&
-          data.items[0].receiver == 'billingb@gmail.com';
-      }));
-      done();
+        stub.should.have.been.calledWith(sinon.match(function (data) {
+          return data.items.length == 2 &&
+            data.items[0].amount.value == 1000 &&
+            data.items[0].receiver == 'testuser1@madeuptesturl.com' &&
+            data.items[1].amount.value == 2000 &&
+            data.items[1].receiver == 'testuser2@madeuptesturl.com';
+        }));
+        done();
+      } catch (error) {
+        done(error);
+      }
     });
   });
 

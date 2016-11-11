@@ -2,6 +2,7 @@ var exports = module.exports = {};
 var paypal = require('paypal-rest-sdk');
 var moment = require('moment');
 var CampaignPayment = require('../models/campaignPayment');
+var _ = require('underscore');
 
 exports.contributorPaymentPercent = function(contributions, totalContributors) {
   return Math.floor((contributions/totalContributors)/10 * 10000)/100
@@ -13,11 +14,7 @@ function contributorPaymentAmount(contributorsTotalPoolAmount, contributions, to
 }
 exports.contributorPaymentAmount = contributorPaymentAmount;
 
-function ContributorPortionOfTotal(total) {
-
-};
-
-function buildPaypalPayContributors(contributors, totalPayment) {
+function buildPaypalPayContributors(contributorsWithCounts, totalPayment) {
   var sender_batch_id = moment.now();
 
   var payout = {
@@ -26,11 +23,10 @@ function buildPaypalPayContributors(contributors, totalPayment) {
       "email_subject": "IdeaJam payment"
     }
   };
+  var totalContributions = _.reduce(_.values(contributorsWithCounts), function(sum, val) { return sum+val}, 0);
 
-  //Round down, for instance 2000 total payment and 3 contributors will give payment of 666.66
-  payment = contributorPaymentAmount(totalPayment, 1, contributors.length);
-
-  var paymentItems = contributors.map(function(contributor) {
+  var paymentItems = _.map(contributorsWithCounts, function(contributions, contributor) {
+    let payment = contributorPaymentAmount(totalPayment, contributions, totalContributions);
     return {
       "recipient_type":  "EMAIL",
       "amount": {
@@ -69,12 +65,10 @@ exports._paypalPayContributors = function(data) {
   });
 };
 
-//TODO: this function needs to compute the amount to pay for each contributor in the future
-exports.payContributors = function(contributors, ideaName) {
-  var paypalMap = buildPaypalPayContributors(contributors, 3000);
+exports.payContributors = function(contributorsWithCounts, totalContribPayment) {
+  var paypalMap = buildPaypalPayContributors(contributorsWithCounts, totalContribPayment);
   return this._paypalPayContributors(paypalMap);
 };
-
 
 function sumPayments(campaign) {
   return CampaignPayment.aggregate([
