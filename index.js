@@ -153,7 +153,7 @@ var updateAvailableFundsJob = new CronJob('45 55 */6 * * *', function() {
 updateAvailableFundsJob.start();
 
 var payoutJob = new CronJob('5 3 */6 * * *', function() {
-  CrowdfundingService.checkStuckClosings();
+  CrowdfundingService.payoutContributors();
 });
 payoutJob.start();
 
