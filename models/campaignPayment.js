@@ -9,7 +9,8 @@ var CampaignPayment = new Schema({
 	prize: {type: Schema.Types.ObjectId, ref: 'CampaignPrize'},
 	chargeId: String,
   feeBalTxn: String,
-	state: { type:String, enum: ['captured', 'charged', 'failed', 'funds_available'] }
+	state: { type:String, enum: ['captured', 'charged', 'failed', 'funds_available'] },
+	chargedOnDate: Date
 }, { autoIndex: false });
 
 module.exports = mongoose.model('CampaignPayment', CampaignPayment);

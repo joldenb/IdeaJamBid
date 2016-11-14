@@ -119,6 +119,7 @@ exports.fundCampaign = function(campaign, idea, hasContributors) {
           if(result.id) {
             EmailService.sendCardCharged(campaignPayment.username, idea, campaignPayment);
             campaignPayment.chargeId = result.id;
+            campaignPayment.chargedOnDate = new Date();
             campaignPayment.feeBalTxn = result.application_fee.balance_transaction;
             campaignPayment.collectedAppAmt = result.collectedApplicationAmount;
             campaignPayment.state = 'charged';

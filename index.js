@@ -147,10 +147,16 @@ var checkStuckCampaignsJob = new CronJob('25 25 * * * *', function() {
 });
 checkStuckCampaignsJob.start();
 
-var updateAvailableFundsJob = new CronJob('45 55 */6 * * *', function() {
+var updateAvailableFundsJob = new CronJob('45 53 */6 * * *', function() {
     CrowdfundingService.updateChargeAvailable();
 });
 updateAvailableFundsJob.start();
+
+var checkFundsUnavailableJob = new CronJob('30 59 */6 * * *', function() {
+  CrowdfundingService.checkUnavailableFunds();
+});
+checkFundsUnavailableJob.start();
+
 
 var payoutJob = new CronJob('5 3 */6 * * *', function() {
   CrowdfundingService.payoutContributors();

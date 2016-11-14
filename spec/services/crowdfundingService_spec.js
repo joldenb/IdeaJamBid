@@ -487,6 +487,40 @@ describe('Crowdfunding Service', function () {
           }
         });
       });
+
+      it('Does not report campaignPayments with unavailable funds that have not reached threshold for being unavailable', function(done) {
+        CrowdfundingService.processCampaignClosings().then(function() {
+        }).then(function() {
+          return CrowdfundingService.checkUnavailableFunds();
+        }).then(function(payments) {
+          try {
+            payments.length.should.eql(0);
+            done();
+          } catch(error) {
+            done(error);
+          }
+        });
+      });
+
+      it('Reports campaignPayments with funds that are not becoming available', function(done) {
+        CrowdfundingService.processCampaignClosings().then(function() {
+          let chargedDate = moment().subtract(15, 'days').toDate();
+          return CampaignPayment.update(
+            {state: "charged", '_id': {$in: campaign.payments }},
+            { $set: {chargedOnDate: chargedDate}},
+            {multi: true}
+          ).exec();
+        }).then(function() {
+          return CrowdfundingService.checkUnavailableFunds();
+        }).then(function(payments) {
+          try {
+            payments.length.should.eql(3);
+            done();
+          } catch(error) {
+            done(error);
+          }
+        });
+      });
     });
 
     describe('payout processing', function() {

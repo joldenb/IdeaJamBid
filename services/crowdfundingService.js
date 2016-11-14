@@ -181,22 +181,6 @@ exports.processCampaignClosings = function() {
   });
 };
 
-exports.checkStuckClosings = function() {
-  console.log('Checking campaigns for any that are stuck');
-  var oneHourAgo = moment().subtract(1, 'hour').toDate();
-  return Campaign.find({state: 'processing_payments', startProcessingDate: {"$lt": oneHourAgo}}).exec().then(function(stuckCampaigns){
-    var ideaPromises = stuckCampaigns.map(function(stuckCampaign) {
-      return IdeaSeed.findOne({campaigns: stuckCampaign._id}).exec();
-    });
-    return Promise.all(ideaPromises).then(function(ideas) {
-      ideas.forEach(function(idea) {
-        console.error('Campaign for idea ' + idea.name + ' appears to be stuck in processing payments!');
-      });
-      return ideas;
-    });
-  });
-};
-
 exports.updateChargeAvailable = function() {
   console.log('Updating charge availability');
   return StripeService.fetchTransactions(moment().subtract(7, 'days'));
@@ -237,5 +221,32 @@ exports.payoutContributors = function() {
   return Campaign.find({state: 'funded'}).exec().then(function(campaigns) {
     var promises = campaigns.map(processCampaignPayout);
     return Promise.all(promises);
+  });
+};
+
+exports.checkStuckClosings = function() {
+  console.log('Checking campaigns for any that are stuck');
+  var oneHourAgo = moment().subtract(1, 'hour').toDate();
+  return Campaign.find({state: 'processing_payments', startProcessingDate: {"$lt": oneHourAgo}}).exec().then(function(stuckCampaigns){
+    var ideaPromises = stuckCampaigns.map(function(stuckCampaign) {
+      return IdeaSeed.findOne({campaigns: stuckCampaign._id}).exec();
+    });
+    return Promise.all(ideaPromises).then(function(ideas) {
+      ideas.forEach(function(idea) {
+        console.error('Campaign for idea ' + idea.name + ' appears to be stuck in processing payments!');
+      });
+      return ideas;
+    });
+  });
+};
+
+exports.checkUnavailableFunds = function() {
+  console.log('Checking for funds that have not become available after 14 days.');
+  let oldChargeDate = moment().subtract(14, 'days').toDate();
+  return CampaignPayment.find({state: 'charged', chargedOnDate: {"$lt": oldChargeDate}}).exec().then(function (payments) {
+    payments.forEach(function(payment) {
+      console.error('Campaign payment ' + payment.id + ' charged on ' + payment.chargedOnDate + ' still does not have funds available!');
+    });
+    return payments;
   });
 };
