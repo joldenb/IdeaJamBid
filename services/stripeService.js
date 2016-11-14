@@ -126,6 +126,7 @@ exports.fundCampaign = function(campaign, idea, hasContributors) {
           } else {
             campaignPayment.state = 'failed';
             console.error('Charging the credit card for ' + idea.name + ' campaignPayment failed: ' + campaignPayment);
+            EmailService.sendCardFailed(campaignPayment.username, idea, campaignPayment);
           }
           return campaignPayment.save();
         }).then(function(payment) {

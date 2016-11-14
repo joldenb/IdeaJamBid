@@ -108,3 +108,18 @@ Thank you for your support!`;
     }
   });
 };
+
+exports.sendCardFailed = function(email, idea, campaignPayment) {
+  Prize.findById(campaignPayment.prize).then(function(prize) {
+    const subject = 'Your pledge to ' + idea.name + ' failed to process';
+    const text = `${idea.name} has been successfully funded! 
+
+Unfortunately you credit card failed when we tried to process your payment.
+`;
+    try {
+      sendEmail({to: email, subject: subject, text: text});
+    } catch (error) {
+      console.error(error);
+    }
+  });
+};

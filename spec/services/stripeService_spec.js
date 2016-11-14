@@ -17,7 +17,7 @@ var SpecHelper = require('../specHelper');
 describe('Stripe Service', function () {
   const ideaName = 'payments';
   var campaign, ideaSeed;
-  let customersCreateStub, emailStub, chargesStub;
+  let customersCreateStub, emailStub, chargesStub, emailCardFailedStub;
 
   before('setup campaign', function(done) {
     StripeService._setStripe(stripe);
@@ -43,6 +43,8 @@ describe('Stripe Service', function () {
     customersCreateStub.returns(Promise.resolve({id: '123'}));
     emailStub = sinon.stub(EmailService, 'sendPledgeConfirmation');
     emailStub.returns(true);
+    emailCardFailedStub = sinon.stub(EmailService, 'sendCardFailed');
+    emailCardFailedStub.returns(true);
     chargesStub = sinon.stub(stripe.charges, 'create');
     chargesStub.returns(Promise.resolve({id: 'ch_123456', application_fee: {balance_transaction: 'bln_tx_123'}}));
   });
@@ -50,6 +52,7 @@ describe('Stripe Service', function () {
   afterEach('restore stubs', function () {
     customersCreateStub.restore();
     emailStub.restore();
+    emailCardFailedStub.restore();
     chargesStub.restore();
   });
 
@@ -57,7 +60,7 @@ describe('Stripe Service', function () {
     SpecHelper.createOrFindTestAccount('testuser@madeuptesturl.com').then(function(account) {
       StripeService
         .delayedChargeCreation('mytesttoken', '150', campaign.prizes[0], account, ideaName)
-        .then(function (success){
+        .then(function (){
           IdeaSeed.findOne({name: ideaName}).exec(function(err, ideaSeed) {
             try {
               var campaign = ideaSeed.campaigns[0];
@@ -77,6 +80,20 @@ describe('Stripe Service', function () {
             }
           });
         });
+    });
+  });
+
+  it('sends an email when a charge fails', function (done) {
+    chargesStub.returns(Promise.reject('Card denied'));
+    Campaign.findById(campaign._id).then(function(campaign) {
+      return StripeService.fundCampaign(campaign, ideaSeed);
+    }).then(function () {
+      try {
+        emailCardFailedStub.should.have.been.called;
+        done();
+      } catch(error) {
+        done(error);
+      }
     });
   });
 
