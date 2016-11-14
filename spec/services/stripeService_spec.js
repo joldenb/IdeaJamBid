@@ -17,6 +17,7 @@ var SpecHelper = require('../specHelper');
 describe('Stripe Service', function () {
   const ideaName = 'payments';
   var campaign, ideaSeed;
+  let customersCreateStub, emailStub, chargesStub;
 
   before('setup campaign', function(done) {
     StripeService._setStripe(stripe);
@@ -37,12 +38,22 @@ describe('Stripe Service', function () {
     });
   });
 
-  it('should create payments on a campaign', function (done) {
-    var stub = sinon.stub(stripe.customers, 'create');
-    stub.returns(Promise.resolve({id: '123'}));
-    var emailStub = sinon.stub(EmailService, 'sendPledgeConfirmation');
+  beforeEach('setup stubs', function() {
+    customersCreateStub = sinon.stub(stripe.customers, 'create');
+    customersCreateStub.returns(Promise.resolve({id: '123'}));
+    emailStub = sinon.stub(EmailService, 'sendPledgeConfirmation');
     emailStub.returns(true);
+    chargesStub = sinon.stub(stripe.charges, 'create');
+    chargesStub.returns(Promise.resolve({id: 'ch_123456', application_fee: {balance_transaction: 'bln_tx_123'}}));
+  });
 
+  afterEach('restore stubs', function () {
+    customersCreateStub.restore();
+    emailStub.restore();
+    chargesStub.restore();
+  });
+
+  it('should create payments on a campaign', function (done) {
     SpecHelper.createOrFindTestAccount('testuser@madeuptesturl.com').then(function(account) {
       StripeService
         .delayedChargeCreation('mytesttoken', '150', campaign.prizes[0], account, ideaName)
@@ -70,8 +81,6 @@ describe('Stripe Service', function () {
   });
 
   it('should fund a campaign', function (done) {
-    var stub = sinon.stub(stripe.charges, 'create');
-    stub.returns(Promise.resolve({id: 'ch_123456', application_fee: {balance_transaction: 'bln_tx_123'}}));
     Campaign.findById(campaign._id).then(function(campaign) {
       return StripeService.fundCampaign(campaign, ideaSeed);
     }).then(function (results) {
@@ -80,6 +89,19 @@ describe('Stripe Service', function () {
         results[0].chargeId.should.eql('ch_123456');
         results[0].feeBalTxn.should.eql('bln_tx_123');
         results[0].collectedAppAmt.should.eql(3000);
+        done();
+      } catch(error) {
+        done(error);
+      }
+    });
+  });
+
+  it('should not double charge a card when funding a campaign', function (done) {
+    Campaign.findById(campaign._id).then(function(campaign) {
+      return StripeService.fundCampaign(campaign, ideaSeed);
+    }).then(function () {
+      try {
+        chargesStub.should.not.have.been.called;
         done();
       } catch(error) {
         done(error);

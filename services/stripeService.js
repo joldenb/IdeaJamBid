@@ -111,6 +111,10 @@ exports.fundCampaign = function(campaign, idea, hasContributors) {
   }).then(function (payments) {
     var charges = payments.map(function(campaignPayment) {
       try {
+        if(campaignPayment.chargeId) {
+          console.error('The payment with id ' + campaignPayment.id + ' has been charged previously, skipping charging it again!');
+          return campaignPayment;
+        }
         return campaignCharge(campaignPayment.stripeCustomerId, campaignPayment.amount, idea, inventorAccount, hasContributors).then(function(result) {
           if(result.id) {
             EmailService.sendCardCharged(campaignPayment.username, idea, campaignPayment);
