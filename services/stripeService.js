@@ -207,10 +207,10 @@ function fetchTransfers(momentStartDate) {
     destination: 'ba_19ENKeH0NILBfKLbN8jFxClJ',
     date: {gte: momentStartDate.unix()}
   }).then(function(transfers) {
-    let transactionPromsises = transfers.data.forEach(function(transfer) {
-      fetchTransactionsInTransfer(transfer.id);
+    let transactionPromises = transfers.data.map(function(transfer) {
+      return fetchTransactionsInTransfer(transfer.id);
     });
-    return Promise.all(transactionPromsises);
+    return Promise.all(transactionPromises);
   });
 };
 

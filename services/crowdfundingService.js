@@ -199,7 +199,7 @@ exports.checkStuckClosings = function() {
 
 exports.updateChargeAvailable = function() {
   console.log('Updating charge availability');
-  StripeService.fetchTransactions(moment().subtract(7, 'days'));
+  return StripeService.fetchTransactions(moment().subtract(7, 'days'));
 };
 
 function processCampaignPayout(campaign) {

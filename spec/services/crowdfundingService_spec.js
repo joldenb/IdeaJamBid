@@ -429,22 +429,64 @@ describe('Crowdfunding Service', function () {
       });
     });
 
-    it('updates charges with matching transactions to paid status', function(done) {
-      CrowdfundingService.processCampaignClosings().then(function() {
-        return CrowdfundingService.markChargesFundAvailable(['bln_tx_123', 'bln_tx_223', 'bln_tx_323'])
-      }).then(function() {
-        return CampaignPayment.find({'_id': {$in: campaign.payments}}).exec();
-      }).then(function(payments) {
-        try {
-          payments.forEach(function(payment) {
-            payment.state.should.eql('funds_available');
-          });
-          done()
-        } catch(error) {
-          done(error);
-        }
+    describe('Updating charge fund availability', function() {
+      let transfersListStub, balanceHistoryStub;
+
+      beforeEach('transfer and bal history stubs', function() {
+        transfersListStub = sinon.stub(stripe.transfers, 'list');
+        transfersListStub.returns(Promise.resolve({data: [{id: 'tr_123'}]}));
+
+        balanceHistoryStub = sinon.stub(stripe.balance, 'listTransactions');
+        balanceHistoryStub.onFirstCall().returns(Promise.resolve({
+          "object": "list",
+          data: [{id: "bln_tx_123"}, {id: "bln_tx_223"}],
+          has_more: true
+        }));
+        balanceHistoryStub.returns(Promise.resolve({
+          "object": "list",
+          data: [{id: "bln_tx_223"}, {id: "bln_tx_323"}],
+          has_more: false
+        }));
       });
 
+      afterEach('restore stubs', function() {
+        transfersListStub.restore();
+        balanceHistoryStub.restore();
+      });
+
+      it('updates charges with matching transactions to paid status', function(done) {
+        CrowdfundingService.processCampaignClosings().then(function() {
+          return CrowdfundingService.markChargesFundAvailable(['bln_tx_123', 'bln_tx_223', 'bln_tx_323'])
+        }).then(function() {
+          return CampaignPayment.find({'_id': {$in: campaign.payments}}).exec();
+        }).then(function(payments) {
+          try {
+            payments.forEach(function(payment) {
+              payment.state.should.eql('funds_available');
+            });
+            done()
+          } catch(error) {
+            done(error);
+          }
+        });
+      });
+
+      it('fetches transfer metadata and updates funds available for charges that have associated fees transferred to bank account', function (done) {
+        CrowdfundingService.processCampaignClosings().then(function() {
+          return CrowdfundingService.updateChargeAvailable();
+        }).then(function() {
+          return CampaignPayment.find({'_id': {$in: campaign.payments}}).exec();
+        }).then(function(payments) {
+          try {
+            payments.forEach(function(payment) {
+              payment.state.should.eql('funds_available');
+            });
+            done()
+          } catch(error) {
+            done(error);
+          }
+        });
+      });
     });
 
     describe('payout processing', function() {
