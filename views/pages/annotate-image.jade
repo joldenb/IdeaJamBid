@@ -30,9 +30,9 @@ html
 
   .container-fluid.annotate-image-container
     .row
-      h2 Tag this image with components of idea.name:
-      h3 You should tag as many components of idea.name as you can because your tags will explain what idea.name is to the world.  Also, you will earn 10 einstein points for each tag.
-      h4 Click on the image to tag components of your idea.name, then click "Save Tagged Components" when finished:
+      h2 Tag this image with components of #{idea.name}:
+      h3 You should tag as many components of #{idea.name} as you can because your tags will explain what #{idea.name} is to the world.  Also, you will earn 10 einstein points for each tag.
+      h4 Click on the image to tag components of your #{idea.name}, then click "Save Tagged Components" when finished:
 
       // For Joe to Fix - before the components the idea.name should appear, but it won't come through here.  Also the above language should come through differently to the inventor ("your tags will appear as components in the idea.name profile") and to third party viewers ("your tags will appear as suggestions to the inventor of idea.name")
 
@@ -58,7 +58,7 @@ html
                 h4 #{value.number}. #{value.text}
           br
           br
-          a#save-annotations.btn.btn-success( href="/image-upload" ) Save Tagged Components
+          a#save-annotations.btn.btn-success( href="/ideas/#{idea.name}/edit#annotate-images-row") Save Tagged Components
           h4 Click on your image to describe the components of your invention:
           .checkbox
       .col-md-10

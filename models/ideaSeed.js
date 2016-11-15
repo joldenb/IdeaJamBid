@@ -24,6 +24,7 @@ var IdeaSeed = new Schema({
 	secondFeature	: String,
 	thirdFeature	: String,
   aptitudes       : [ObjectId],
+  visibleEditingSections : [String],
 
   collaborators : [String], //this will be a username
 

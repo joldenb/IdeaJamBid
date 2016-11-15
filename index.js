@@ -22,6 +22,7 @@ var crowdfundingRoutes = require('./routes/crowdfunding-routes');
 var networkRoutes = require('./routes/network-routes');
 var valueWasteRoutes = require('./routes/value-waste-routes');
 var valueWasteMobileRoutes = require('./routes/value-waste-mobile-routes');
+var valueWasteDiscreteValueRoutes = require('./routes/value-waste-discrete-value-routes');
 var ideaDataRoutes = require('./routes/idea-data-routes');
 var Account = require('./models/account');
 var csrf = require('csurf');
@@ -83,7 +84,7 @@ app.use('/', crowdfundingRoutes);
 app.use('/', valueWasteRoutes);
 app.use('/', valueWasteMobileRoutes);
 app.use('/', ideaDataRoutes);
-
+app.use('/', valueWasteDiscreteValueRoutes);
 
 // passport config
 passport.use(new LocalStrategy(Account.authenticate()));

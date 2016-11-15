@@ -28,7 +28,7 @@
             div(class="profile-einstein-points") #{user.einsteinPoints || "0"}
       if Object.keys(user).length != 0
         li
-          a.home-logout.btn.btn-electric( href="/introduce-idea"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Begin a New Idea
+          a.home-logout.btn.btn-electric( href="/introduce-idea/new"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Begin a New Idea
         li
           a.home-logout.btn.btn-vision( href="/leaderboard"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") Leaderboard
         if user.nickname
@@ -93,7 +93,7 @@
         ul.dropdown-menu.dropdown-menu-right(id="test")
           if Object.keys(user).length != 0
             li
-              a.home-logout.btn.btn-electric( href="/introduce-idea"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Begin a New Idea
+              a.home-logout.btn.btn-electric( href="/introduce-idea/new"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Begin a New Idea
             li
               a.home-logout.btn.btn-vision( href="/leaderboard"  ontouchstart="this.style.background = '#D6DE26';" ontouchend="this.style.background = '#337ab7';") Leaderboard
             if user.nickname

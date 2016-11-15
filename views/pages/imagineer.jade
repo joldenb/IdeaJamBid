@@ -65,7 +65,7 @@ html
               each val, index in accountIdeaSeeds
                 if val.name && (val.visibility == "public" || val.inventorName == user.username)
                   li
-                    a(href="/ideas/" + val.name)
+                    a(href="/ideas/" + val.name + "/edit")
                       h4.idea-text-name= val.name
                     span.idea-text-date= val['creationDate']
 

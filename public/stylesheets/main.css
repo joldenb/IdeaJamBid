@@ -547,7 +547,7 @@ img.summary-image {
 }
 
 .imagesList .btn {
-  margin: 1em;
+
 }
 
 .suggestion-table tr{
@@ -564,6 +564,10 @@ img.summary-image {
 
 .imageListItems {
   width: 100%;
+}
+
+.idea-summary-edit .imageListItems {
+  max-height:15em;
 }
 
 .half-column {
@@ -922,6 +926,65 @@ a.plus-overlay img{
   width: 90%;
 }
 
+.component-element, .idea-edit-problem-element {
+  height:auto;
+  background-color: white;
+  margin: 1em auto;
+  width: 90%;
+}
+
+.scoring-stars img {
+  width:100%;
+  height:100%;
+}
+
+.scoring-stars img.scored {
+  width:100%;
+  height:100%;
+  background: #dedf26; border-radius: 50%; -moz-border-radius: 50%; -webkit-border-radius: 50%; 
+}
+
+
+.viability-next-row {
+  min-height: 8em;
+  position: relative;
+}
+
+#add-viability-scores-row {
+  min-height: 40em;
+}
+
+.odd-row {
+  background-color: white;
+}
+
+#add-viability-scores-row > .col-xs-1, #add-viability-scores-row .col-xs-10{
+  height : 100%;
+  position: absolute;
+}
+
+#add-viability-scores-row > .col-xs-1 img {
+  width:100%;
+}
+
+#add-viability-scores-row > .col-xs-1 a {
+  position: absolute;
+  top: 40%;
+  width: 5em;
+}
+
+#add-viability-scores-row .col-xs-10 {
+  left: 8.3%;
+}
+
+#add-viability-scores-row .scoring-stars {
+  margin-top:10em;
+}
+
+.viabilty-slider-right-arrow-column {
+  left:91.7%;
+}
+
 .suggestion-element.variant-suggestion-block:hover {
 /* background-color: #AFDDD1; 
 */}
@@ -1205,6 +1268,15 @@ button.suggestion-tactics, button.suggestion-targets {
 .component-block-link .problem-row-padding {
   color: #414142;
 }
+
+.component-block-link .component-add-description {
+  margin-top: 1em;
+}
+
+.list-all-components {
+  margin-bottom: 6em;
+}
+
 @media (max-width: 768px) { 
   .navbar-toggle {
       display: block;
@@ -1353,10 +1425,66 @@ button.suggestion-tactics, button.suggestion-targets {
   padding:0;
 }
 
+.problem-slide { 
+  display: none;
+}
+
+.problem-slide .row form {
+  margin-top: 1em;
+  padding: 0 2em;
+}
+
+.problemStatement {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.exampleText {
+  text-align: center;
+}
+
+.score-slide {
+  display: inline-block;
+}
+
+.viability-slide-wrapper > div {
+  height: 40em;  
+  float: left;
+  margin: 0 15px;  
+}
+
+.viability-slide-wrapper {
+  width: 10000em;
+  max-height:40em;
+}
+
+
 .row.slider-row {
   margin-top:1em;
 }
 
+.viability-icons img {
+  width:6.5%;
+  -webkit-filter: grayscale(1);
+  filter: grayscale(1);
+}
+
+.row.viability-icons img.scored {
+  -webkit-filter: initial;
+  filter: initial;
+}
+
+.row.viability-labels h3 {
+  text-align: center;
+}
+
+.row.viability-labels.hidden {
+  display: none;
+}
+
+.idea-edit-row.hidden, .viability-next-row.hidden, .viability-icons.hidden {
+  display: none;
+}
 
 .jamH2 {
   font-family: Roboto Slab, serif;
@@ -1616,8 +1744,42 @@ button.suggestion-tactics, button.suggestion-targets {
   color: #EAE7DE;
 }
 
-.component-title {
-  margin-top: 0;
+
+#addIdeaComponent, #saveAptitude, #addIdeaProblem {
+  width:80%;
+}
+
+.idea-edit-row {
+  min-height: 30em;
+  position: relative;
+  margin:3em;
+  border: 3px solid #337ab7;
+  border-radius: 5px;
+}
+
+.viability-scoring-intro-slide .row {
+  margin-top:8em;
+}
+
+.idea-seed-imperfections {
+  margin-bottom: 6em;
+}
+
+#add-viability-scores-row {
+  min-height: 40em;
+  position: relative;
+  /*background-color: #a5ffd1;*/
+}
+
+.idea-edit-row .slide-content, #add-viability-scores-row .slide-content {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+
+.next-step, .complete-idea-editing {
+  position: absolute;
+  bottom: 2em;
 }
 
 @media screen and (min-width: 800px) {

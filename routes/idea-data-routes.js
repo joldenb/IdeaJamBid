@@ -177,6 +177,7 @@ router.post('/add-idea-component', csrfProtection, function(req, res) {
                     account.save(function (err) {});
                 });
 
+
                 res.json(newComponent);
               });
             }

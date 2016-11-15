@@ -1,26 +1,31 @@
 a.component-block-link(href='/component-profile/'+ component.document.identifier)
-  div.row.suggestion-row.suggestion-element.variant-suggestion-block(id="#{component.document.identifier}")
-    .col-sm-2
-      if component.document.mainImage && component.document.mainImage.amazonURL
+  div.row.suggestion-row.component-element(id="#{component.document.identifier}")
+    if component.document.mainImage && component.document.mainImage.amazonURL
+      .col-sm-2
         img.component-block-image(src=component.document.mainImage.amazonURL)
-      else
-        div.glyphicon.glyphicon-cloud-upload.edit-component-icon
-        button.edit-component-button(type="button" class="btn btn-industry") Edit Component
-
-
-    .col-sm-8.problem-row-padding
-      if component.document.text
-        h3.component-header #{component.document.text.charAt(0).toUpperCase() + component.document.text.slice(1)}
-      else
-        h3.component-header <i>No title yet</i>
-      if component.document.descriptions && component.document.descriptions[0]
-        p <b>Description:</b> #{component.document.descriptions[0]}
-      else
-        button(type="button" class="btn btn-industry") Add Description
-      div By: 
-        span #{component.creatorNickname}
-        img(src="/avatar.png" height="15" width="15")
-
-    .col-sm-2.upvote
-      img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
-      .btn.btn-electric.btn-block.full-width-mobile.btn-lg(class="upvote-suggestion" id="upvote-#{component.document.identifier}" data-suggestion-id="#{component.document.id}" ontouchstart="this.style.background = '#69847d';") Upvote #{component.document.upvotes.length || 0} 
+      .col-sm-4.problem-row-padding
+        if component.document.text
+          h3.component-header #{component.document.text.charAt(0).toUpperCase() + component.document.text.slice(1)}
+        else
+          h3.component-header <i>No title yet</i>
+        if component.document.descriptions && component.document.descriptions[0]
+          p <b>Description:</b> #{component.document.descriptions[0]}
+        div By: 
+          span #{component.creatorNickname}
+          img(src="/avatar.png" height="15" width="15")
+    else
+      .col-sm-6.problem-row-padding
+        if component.document.text
+          h3.component-header #{component.document.text.charAt(0).toUpperCase() + component.document.text.slice(1)}
+        else
+          h3.component-header <i>No title yet</i>
+        if component.document.descriptions && component.document.descriptions[0]
+          p <b>Description:</b> #{component.document.descriptions[0]}
+        div By: 
+          span #{component.creatorNickname}
+          img(src="/avatar.png" height="15" width="15")
+    .col-sm-6
+      button.component-add-description(type="button" class="btn btn-industry btn-lg btn-block") Add Component Details
+    //- .col-sm-2.upvote
+    //-   img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
+    //-   .btn.btn-electric.btn-block.full-width-mobile.btn-lg(class="upvote-suggestion" id="upvote-#{component.document.identifier}" data-suggestion-id="#{component.document.id}" ontouchstart="this.style.background = '#69847d';") Upvote #{component.document.upvotes.length || 0} 

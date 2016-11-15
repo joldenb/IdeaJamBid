@@ -1,4 +1,4 @@
-div.row.problem-row.suggestion-element.variant-suggestion-block(id="#{problem.identifier}")
+div.row.problem-row.idea-edit-problem-element(id="#{problem.identifier}")
   .col-sm-6.problem-row-padding.click-row
     if problem['text']
 
@@ -17,11 +17,11 @@ div.row.problem-row.suggestion-element.variant-suggestion-block(id="#{problem.id
             span.suggestionStyle #{problem.wholeCreator.nickname}
             img(src="/avatar.png" height="15" width="15")
 
-  .col-sm-3
-    img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
-    a.btn.btn-vision.btn-block.full-width-mobile.btn-lg(class="upvote-imperfection" id="upvote-#{problem.identifier}" data-problem-id="#{problem.id}"  ontouchstart="this.style.background = '#69847d';" ontouchend="this.style.background='#337ab7';") Upvote #{problem.upvotes.length || 0}
+  //- .col-sm-3
+  //-   img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
+  //-   a.btn.btn-vision.btn-block.full-width-mobile.btn-lg(class="upvote-imperfection" id="upvote-#{problem.identifier}" data-problem-id="#{problem.id}"  ontouchstart="this.style.background = '#69847d';" ontouchend="this.style.background='#337ab7';") Upvote #{problem.upvotes.length || 0}
 
-  .col-sm-3.right-jam-col
+  .col-sm-6.right-jam-col
     img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
     a.btn.btn-electric.btn-block.full-width-mobile.btn-lg(href='/imperfection-profile/' + "#{problem.identifier}") Solve This!
 

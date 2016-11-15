@@ -1,0 +1,161 @@
+doctype html
+html
+  head
+    include ../../partials/head.jade
+  body
+    .container-fluid.scoreIdea.dangerous-slide
+      .row.top-row
+        .col-xs-10
+          h3.top-row-header Dangerousness Score
+        .col-xs-2
+          a.close-viability(href="/ideas/#{idea.name}")
+            img(src="/close_button.png" height="30" width="30")
+      .row.scoring-stars
+        .col-xs-1
+        .col-xs-2
+          img#star-one.dangerous-star(src="/empty-star.png")
+        .col-xs-2
+          img#star-two.dangerous-star(src="/empty-star.png")
+        .col-xs-2
+          img#star-three.dangerous-star(src="/empty-star.png")
+        .col-xs-2
+          img#star-four.dangerous-star(src="/empty-star.png")
+        .col-xs-2
+          img#star-five.dangerous-star(src="/empty-star.png")
+        .col-xs-1
+          input(type="hidden", name="_csrf", value="#{csrfToken}")
+      .row
+        .col-xs-1
+        .col-xs-2
+          h3 Harmless
+        .col-xs-2
+        .col-xs-2
+        .col-xs-2
+        .col-xs-2
+          h3 Hazardous
+        .col-xs-1
+
+  
+  include ../../partials/js-includes.jade
+  script(type="text/javascript").
+    $(document).ready(function(){
+
+      if( "!{currentReview && currentReview.performOne}" !== ""){
+        switch ("!{currentReview && currentReview.performOne}") {
+          case "20" :
+            $("img#star-one").addClass("scored");
+            break;
+          case "40" :
+            $("img#star-one").addClass("scored");
+            $("img#star-two").addClass("scored");
+            break;
+          case "60" :
+            $("img#star-one").addClass("scored");
+            $("img#star-two").addClass("scored");
+            $("img#star-three").addClass("scored");
+            break;
+          case "80" :
+            $("img#star-one").addClass("scored");
+            $("img#star-two").addClass("scored");
+            $("img#star-three").addClass("scored");
+            $("img#star-four").addClass("scored");
+            break;
+          case "100" :
+            $("img#star-one").addClass("scored");
+            $("img#star-two").addClass("scored");
+            $("img#star-three").addClass("scored");
+            $("img#star-four").addClass("scored");
+            $("img#star-five").addClass("scored");
+            break;
+        }
+      }
+
+      $(".scoring-stars img").click(function(event){
+        switch( $(this).attr("id") ){
+          case "star-one" :
+            $("img#star-one").addClass("scored");
+            $("img#star-two").removeClass("scored");
+            $("img#star-three").removeClass("scored");
+            $("img#star-four").removeClass("scored");
+            $("img#star-five").removeClass("scored");
+            break;
+          case "star-two" :
+            $("img#star-one").addClass("scored");
+            $("img#star-two").addClass("scored");
+            $("img#star-three").removeClass("scored");
+            $("img#star-four").removeClass("scored");
+            $("img#star-five").removeClass("scored");
+            break;
+          case "star-three" :
+            $("img#star-one").addClass("scored");
+            $("img#star-two").addClass("scored");
+            $("img#star-three").addClass("scored");
+            $("img#star-four").removeClass("scored");
+            $("img#star-five").removeClass("scored");
+            break;
+          case "star-four" :
+            $("img#star-one").addClass("scored");
+            $("img#star-two").addClass("scored");
+            $("img#star-three").addClass("scored");
+            $("img#star-four").addClass("scored");
+            $("img#star-five").removeClass("scored");
+            break;
+          case "star-five" :
+            $("img#star-one").addClass("scored");
+            $("img#star-two").addClass("scored");
+            $("img#star-three").addClass("scored");
+            $("img#star-four").addClass("scored");
+            $("img#star-five").addClass("scored");
+            break;
+        }
+      });
+
+      $(".submit-button .btn").click(function(event){
+        if($(".scoring-stars img.scored").length > 0){
+          if ( $("img#star-five.scored").length > 0 ) {
+            var data = {
+              "_csrf" : $('[name="_csrf"]').val(),
+              overallScore : 100
+            };
+            $.post("/save-all-viability-scores", data, function(response){
+              window.location.href= "/ideas/!{idea.name}";
+            })
+          } else if ( $("img#star-four.scored").length > 0 ) {
+            var data = {
+              "_csrf" : $('[name="_csrf"]').val(),
+              overallScore : 80
+            };
+            $.post("/save-all-viability-scores", data, function(response){
+              window.location.href= "/ideas/!{idea.name}";
+            })
+          } else if ( $("img#star-three.scored").length > 0 ) {
+            var data = {
+              "_csrf" : $('[name="_csrf"]').val(),
+              overallScore : 60
+            };
+            $.post("/save-all-viability-scores", data, function(response){
+              window.location.href= "/ideas/!{idea.name}";
+            })
+          } else if ( $("img#star-two.scored").length > 0 ) {
+            var data = {
+              "_csrf" : $('[name="_csrf"]').val(),
+              overallScore : 40
+            };
+            $.post("/save-all-viability-scores", data, function(response){
+              window.location.href= "/ideas/!{idea.name}";
+            })
+          } else if ( $("img#star-one.scored").length > 0 ) {
+            var data = {
+              "_csrf" : $('[name="_csrf"]').val(),
+              overallScore : 20
+            };
+            $.post("/save-all-viability-scores", data, function(response){
+              window.location.href= "/ideas/!{idea.name}";
+            })
+          }
+        } else {
+          window.location.href= "/ideas/!{idea.name}";
+        }
+      });
+
+    });
