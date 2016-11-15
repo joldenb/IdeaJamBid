@@ -26,6 +26,33 @@ html
               a.btn.btn-go.btn-lg.btn-block#file-patent(data-toggle="modal" data-target="#filePatentModal") Generate Patent Application
             else
               a.btn.btn-go.btn-lg.btn-block#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal") Next Steps
+
+    .row.sticky-edit-header.hidden
+      if listOfVisibleSections.indexOf('annotate-images-row') == -1
+        .col-xs-2.editing-progress
+          h5 1/6 Complete
+        .col-xs-10.remaining-progress
+      else if listOfVisibleSections.indexOf('add-components-row') == -1
+        .col-xs-4.editing-progress
+          h5 1/3 Complete
+        .col-xs-8.remaining-progress
+      else if listOfVisibleSections.indexOf('add-aptitudes-row') == -1
+        .col-xs-6.editing-progress
+          h5 1/2 Complete
+        .col-xs-6.remaining-progress
+      else if listOfVisibleSections.indexOf('add-viability-scores-row') == -1
+        .col-xs-8.editing-progress
+          h5 2/3 Complete
+        .col-xs-4.remaining-progress
+      else if listOfVisibleSections.indexOf('add-imperfections-row') == -1
+        .col-xs-10.editing-progress
+          h5 5/6 Complete
+        .col-xs-2.remaining-progress
+      else
+        .col-xs-12.editing-progress
+          h5 All Idea Editing Sections Visible
+
+
     .row#upload-images-row.idea-edit-row.odd-row 
       if listOfVisibleSections.indexOf('add-components-row') == -1
         .col-md-12
@@ -2111,3 +2138,20 @@ html
     $("#beginScoring").click(function(event){
       $(".viabilty-slider-right-arrow").click();
     })
+
+    $(window).on('scroll',function(){
+      // we round here to reduce a little workload
+      var stop = Math.round($(window).scrollTop());
+      if (stop > 100) {
+          $('.sticky-edit-header').removeClass('hidden');
+      } else {
+          $('.sticky-edit-header').addClass('hidden');
+      }
+    });
+
+    var stop = Math.round($(window).scrollTop());
+    if (stop > 100) {
+        $('.sticky-edit-header').removeClass('hidden');
+    } else {
+        $('.sticky-edit-header').addClass('hidden');
+    }
