@@ -9,12 +9,14 @@ html
   .container-fluid.idea-summary.idea-summary-edit
     .row(class="visibility-row-#{idea.visibility}")
       .col-sm-4
+        if idea.name
+          h2 #{idea.name}
         if idea.visibility == "private"
           a#visibilityLink
-            h3 Visibility : #{idea.visibility.charAt(0).toUpperCase() + idea.visibility.slice(1)}
+            h4 Visibility : #{idea.visibility.charAt(0).toUpperCase() + idea.visibility.slice(1)}
               span.glyphicon.glyphicon-pencil
         else
-          h3 Visibility : #{idea.visibility.charAt(0).toUpperCase() + idea.visibility.slice(1)}
+          h4 Visibility : #{idea.visibility.charAt(0).toUpperCase() + idea.visibility.slice(1)}
       if inventorName == user.username
         .col-sm-8.patent-strength-row
           .app-strength-bar.col-md-8
@@ -1295,49 +1297,49 @@ html
       });
 
       $("a.slide-icon-one").click(function(event){
-        $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 0}, 400);
-      })
-      $("a.slide-icon-two").click(function(event){
         $('#add-viability-scores-row .slide-content').animate( { scrollLeft: viabilitySliderWidth}, 400);
       })
-      $("a.slide-icon-three").click(function(event){
+      $("a.slide-icon-two").click(function(event){
         $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 2 * viabilitySliderWidth}, 400);
       })
-      $("a.slide-icon-four").click(function(event){
+      $("a.slide-icon-three").click(function(event){
         $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 3 * viabilitySliderWidth}, 400);
       })
-      $("a.slide-icon-five").click(function(event){
+      $("a.slide-icon-four").click(function(event){
         $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 4 * viabilitySliderWidth}, 400);
       })
-      $("a.slide-icon-six").click(function(event){
+      $("a.slide-icon-five").click(function(event){
         $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 5 * viabilitySliderWidth}, 400);
       })
-      $("a.slide-icon-seven").click(function(event){
+      $("a.slide-icon-six").click(function(event){
         $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 6 * viabilitySliderWidth}, 400);
       })
-      $("a.slide-icon-eight").click(function(event){
+      $("a.slide-icon-seven").click(function(event){
         $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 7 * viabilitySliderWidth}, 400);
+      })
+      $("a.slide-icon-eight").click(function(event){
+        $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 8 * viabilitySliderWidth}, 400);
       })
       $("a.slide-icon-nine").click(function(event){
         $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 8 * viabilitySliderWidth}, 400);
       })
       $("a.slide-icon-ten").click(function(event){
-        $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 9 * viabilitySliderWidth}, 400);
-      })
-      $("a.slide-icon-eleven").click(function(event){
         $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 10 * viabilitySliderWidth}, 400);
       })
-      $("a.slide-icon-twelve").click(function(event){
+      $("a.slide-icon-eleven").click(function(event){
         $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 11 * viabilitySliderWidth}, 400);
       })
-      $("a.slide-icon-thirteen").click(function(event){
+      $("a.slide-icon-twelve").click(function(event){
         $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 12 * viabilitySliderWidth}, 400);
       })
-      $("a.slide-icon-fourteen").click(function(event){
+      $("a.slide-icon-thirteen").click(function(event){
         $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 13 * viabilitySliderWidth}, 400);
       })
-      $("a.slide-icon-fifteen").click(function(event){
+      $("a.slide-icon-fourteen").click(function(event){
         $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 14 * viabilitySliderWidth}, 400);
+      })
+      $("a.slide-icon-fifteen").click(function(event){
+        $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 15 * viabilitySliderWidth}, 400);
       })
 
     });
