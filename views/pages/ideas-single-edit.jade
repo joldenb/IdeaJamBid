@@ -111,7 +111,7 @@ html
       .col-xs-12
         if idea.name
           h2 Components
-          h4 Add any other components that you haven't included in your images yet
+          h4 Add any other components weren't already included in an image
         form(role='form', id="addIdeaComponent" action="/add-idea-component", method="post" data-idea-doc=idea)
           .form-group
             h4 Name the component:
@@ -142,9 +142,8 @@ html
       .col-xs-12
         #idea-summary-aptitudes.aptitudeList
           .profileAptitudes
-            if aptitudes && aptitudes.length > 0 && idea.name
-              h2 Aptitude Areas
-              h4 Add some areas of focus that relate directly to your invention, e.g. plumbing equipment
+            h2 Aptitude Areas
+            h4 Add some areas of focus that relate directly to your invention, e.g. plumbing equipment
             if inventorName == user.username
               form(role='form', id="saveAptitude" action="/save-aptitude", method="post", data-idea-doc=idea)
                 .form-group
@@ -804,6 +803,14 @@ html
                     button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
                       //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
                     button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+          .viability-scoring-outro-slide.score-slide
+            .row
+              .col-xs-4
+              .col-xs-4
+                h2 Great job!
+                h4 You're almost done. Think of any other areas of improvement for #{idea.name} and view your idea profile.
+                a#add-viability-next-btn.btn.btn-go.btn-lg.btn-block(href="#add-imperfections-row") Next Step
+              .col-xs-4
 
       .col-xs-1.viabilty-slider-right-arrow-column
         a.viabilty-slider-right-arrow
@@ -842,11 +849,7 @@ html
         a.slide-icon-fifteen
           img.skills-icon(src="/skillsIcon.png")
       .col-xs-1
-    if listOfVisibleSections.indexOf('add-imperfections-row') == -1
-      div(class="viability-next-row row #{listOfVisibleSections.indexOf('add-viability-scores-row') > -1 ? '' : 'hidden'}")
-        .col-xs-12.next-step
-          a#add-viability-next-btn.btn.btn-go.btn-lg.btn-block(href="#add-imperfections-row") Next Step
-
+    
     #add-imperfections-row(class="odd-row #{listOfVisibleSections.indexOf('add-imperfections-row') > -1 ? 'idea-edit-row row' : 'hidden idea-edit-row row'}")
       .col-md-12.idea-seed-imperfections
         h2#imperfections-header Imperfections
