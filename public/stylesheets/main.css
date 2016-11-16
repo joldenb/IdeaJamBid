@@ -1853,6 +1853,33 @@ button.suggestion-tactics, button.suggestion-targets {
 
 }
 
+
+.clipped-corner {
+  width: 12.5em;
+  border-top: 2.5em solid #337ab7;
+  border-right: 2.5em solid rgba(0, 0, 0, 0);
+  height: 0;
+  top: 0em;
+  left:4em;
+  position: absolute;
+}
+
+.visibility-header-column {
+  background-color: #337ab7;
+  color: white;
+  position: absolute;
+  z-index: 10;
+  top: 0em;
+  left:4em;
+  width: 15em;
+  padding: 0 2em;
+}
+
+.ideaseed-image-thumbnails {
+  overflow: hidden;
+  margin-top:1em;
+}
+
 .navbar-brand img{
   display: inline;
 }
@@ -2081,4 +2108,31 @@ img.prizeImage {
 
 .jam-btn {
   margin: 1em;
+}
+
+.score-wrapper {
+  text-align: center;
+}
+
+.average-score-number {
+  text-align: center;
+  background-color: #dedf26;
+  display: inline-block;
+  padding: 1em;
+  border: 3px solid #337ab7;
+  border-radius: 5px;
+}
+
+.improve-idea-row {
+  min-height:30em;
+  margin-top:3em;
+}
+
+.improve-idea-row .tab-pane {
+  padding:1em;
+  background-color: white;
+}
+
+.share-idea-row .sharing-icons {
+  text-align: center;
 }

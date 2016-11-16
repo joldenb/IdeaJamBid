@@ -1,0 +1,1482 @@
+doctype html
+html
+  head
+    include ../partials/head.jade
+  body
+  .header.navbar.navbar-default
+    include ../partials/header.jade
+
+  .container-fluid.idea-summary
+    .row(class="visibility-row-#{idea.visibility}")
+      .col-sm-4
+        if idea.visibility == "private"
+          a#visibilityLink
+            h3 Visibility : #{idea.visibility.charAt(0).toUpperCase() + idea.visibility.slice(1)}
+              span.glyphicon.glyphicon-pencil
+        else
+          h3 Visibility : #{idea.visibility.charAt(0).toUpperCase() + idea.visibility.slice(1)}
+      if inventorName == user.username
+        .col-sm-8.patent-strength-row
+          .app-strength-bar.col-md-8
+            .app-strength(class="#{appStrengthClass}") #{appStrengthText}
+          .col-md-4.app-strength-button
+            if appStrengthClass == "yes col-md-12" || idea.visibility == "public"
+              a.btn.btn-go.btn-lg.btn-block#file-patent(data-toggle="modal" data-target="#filePatentModal") Generate Patent Application
+            else
+              a.btn.btn-go.btn-lg.btn-block#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal") Next Steps
+    .row.idea-seed-profile
+      .col-sm-4
+        if(imageURLs.length > 0)
+          .imagesList
+            each imageURL, index in imageURLs
+              if index == 0
+                .image-summary-image
+                  div(id='#{imageURL[0]}' style="height: 300px; max-width: 400px; background-image : url('" + '#{imageURL[1] || "/avatar.png"}' + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + "#{imageURL[2]}")
+              if index < 3 && index > 0
+                img.ideaSeedThumbnails(src=imageURL[1]  style=imageURL[2])
+          .view-all-images-btn
+            a.btn.secondary-btn.btn-go.btn-lg.btn-block( href="/image-upload" ) More Photos
+        else
+          a(href="/image-upload")
+            .upload-image-div
+              span.glyphicon.glyphicon-cloud-upload.big-upload-icon
+
+        if idea.name
+          h1 #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
+        if idea.name && inventorName == user.username
+          h4 Your <b>#{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}</b> solves the <span class="problemColor">problem of #[a(href='/introduce-idea') #{idea.problem}]</span> by #[a(href='/accomplish') <span class="solutionColor">#{idea.description}]</span>.
+        else if idea.name 
+          h4 <b>#{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}</b> solves the <span class="problemColor">problem of #{idea.problem}</span> by <span class="solutionColor">#{idea.description}</span>.
+        if (inventorName == user.username) && idea.visibility == "private" && idea.collaborators.length < 6
+          .row
+            .col-xs-12
+              a.btn.btn-electric.btn-lg.btn-block#inviteCollaboratorsButton(type="button" data-toggle="modal" data-target="#inviteCollaboratorsModal") Invite Collaborators
+        .row
+          .col-xs-12
+          if openCampaign !== undefined
+            a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign' ontouchstart="this.style.background = '#007338';") Fund This Idea
+          else if inventorName === user.username && idea.visibility === "public"
+            a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign/new' ontouchstart="this.style.background = '#007338';") Crowdfund
+
+          .col-xs-12
+            #idea-summary-aptitudes.aptitudeList
+              .profileAptitudes
+                if aptitudes && aptitudes.length > 0 && idea.name
+                  h4 #{idea.name}'s Aptitudes
+                  ul
+                    each aptitude, aptIndex in aptitudes
+                      li(data-apt-id="#{aptitude.identifier}") 
+                        p #{aptIndex + 1} : #{aptitude.title}
+                if inventorName == user.username
+                  if !aptitudes || aptitudes.length == 0
+                    h4 Aptitudes
+                  form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
+                    .form-group
+                      |  
+                      input(type="hidden", name="_csrf", value="#{csrfToken}")
+                      input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
+                    .modal-footer
+                      button.btn.btn-go.btn-lg#aptitudeSubmit(type='submit') Save
+
+      .col-sm-8.desktop-component-section
+        if idea.name
+          h2.component-title Components of the #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
+          if components.length > 0
+            each component, identifier in wholeSuggestionBlockInfo
+              include ../partials/component-summary-element.jade
+          else
+            h4 <i>No Components Yet</i>
+        else
+          <i>No components yet</i>
+        if inventorName == user.username
+          .row.idea-sumamart-buttons
+            .col-xs-12
+                button(type="button" id="componentModalButton"  class="btn btn-go btn-block btn-lg" data-toggle="modal" data-target="#addComponentModal") Add Component
+        .row.idea-sumamart-buttons
+          if components.length > 0
+            .col-xs-12
+              a(href='/ideas/' + idea.name + '/view-all-components')
+                button(type="button"  class="btn btn-industry btn-lg btn-block") View All Components
+
+      .col-sm-8.mobile-component-section
+        a#components-expand-link
+          h3 Components
+            span#components-expand-icon.glyphicon.glyphicon-collapse-down
+        .expandable-components-section(style="display:none;")
+          if components.length > 0
+              each component, identifier in wholeSuggestionBlockInfo
+                include ../partials/component-summary-element.jade
+            else
+              h4 <i>No Components Yet</i>
+
+        .row.mobile-only
+          if inventorName != user.username
+            .idea-summary-data#idea-summary-waste-values
+              if(Object.keys(review).length > 0)
+                .row
+                  .col-xs-8
+                    h4 Your current score for #{idea.name}: 
+                  .col-xs-3
+                    h3.average-score-number #{averageScore}
+                img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
+                a.btn(type="button"  class="btn btn-go" href="/view-single-overall-score" ontouchstart="this.style.background = '#007338';"  ontouchend="this.style.background = '#00A550';") Keep Scoring
+              else
+                img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")                
+                a.btn(type="button"  class="btn btn-go" href="/view-single-overall-score" ontouchstart="this.style.background = '#007338';" ontouchend="this.style.background = '#00A550';") Score Now
+              br
+          else
+            .idea-summary-data#idea-summary-waste-values
+              h4 You can only score someone else's ideas (right now)
+
+    .row.idea-seed-feedback
+      .col-xs-12
+        a#feedback-expand-link
+          h2 Feedback for #{idea.name}
+            span#feedback-expand-icon.glyphicon.glyphicon-collapse-down
+
+    .row.idea-seed-all-feedback-areas
+      .col-md-4.score-idea-row
+        h2#imperfections-header Viability Score
+          a.btn.btn-go.btn-lg.btn-block.viabilityModalButton( type="button"  class="btn btn-go" data-toggle="modal" data-target="#viabilityModal") Score Viability Categories
+      .col-md-4.idea-seed-imperfections
+        h2#imperfections-header Imperfections
+        each problem, index in problems
+          if(index < 3 && problem.text && problem['identifier'])
+            include ../partials/problem-summary-element.jade
+        button(type="button" id="problemModalButton"  class="btn btn-go btn-lg btn-block" data-toggle="modal" data-target="#addProblemModal" ontouchstart="this.style.background = '#007338';") Add New Imperfection
+        a(href='/ideas/' + idea.name + '/view-all-imperfections')
+          button(type="button"  class="btn btn-industry btn-lg btn-block") View All Imperfections
+
+      .col-md-4.idea-seed-suggestions
+        h2 Suggestions to Imperfections
+        .view-all-components-wrapper
+          a.btn.btn-electric.btn-lg.btn-block#componentsViewAllLink(type="button" href='/ideas/' + idea.name + '/view-all-suggestions') View All Suggestions
+
+
+  .pagefooter
+    include ../partials/footer.jade
+
+  #titleModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          .modal-title 
+            if user.firstname
+              h2 #{user.nickname}, name Your Idea
+            else
+              h2 Name Your Idea
+            p Give your idea a short, descriptive, memorable name:
+        .modal-body
+          form(role='form', id="saveIdeaName" action="/save-idea-name", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            .form-group
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+              input.form-control(type="text", name="inventionName", value='My idea is called the ')
+              p (Example: "My idea is called the DeLorean Time Machine")
+              p.charactersRemaining
+            .modal-footer
+              button.btn.btn-success#titleSubmit(type='submit') Save
+                img.einstein-point-btn-icon(src="/single-einstein-point.png")
+          .row
+            .col-xs-12
+              .hint Hint: Choose a concise, catchy and descriptive name for your idea.
+
+  #viewAllImperfections.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 All Imperfections
+        .modal-body
+          .row 
+            .idea-summary-data#idea-summary-problems
+              ul.idea-summary-problem-list
+                each problem, index in problems
+                  if(problem.text && problem['identifier'])
+                    li
+                      include ../partials/problem-summary-element.jade
+
+              button.btn-lg.btn-block(type="button" id="problemModalButton"  class="btn btn-go" data-toggle="modal" data-target="#addProblemModal") Add a Problem
+        .modal-footer
+          button.btn.btn-info.btn-lg.btn-block(data-dismiss="modal") Ok
+
+  #whatsLeftModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            if idea.name
+              h3 #{user.firstname}, add more details to complete your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} profile, because more details will generate a better patent application.
+        .modal-body
+          ul
+            if idea.name
+              each object, key in strengthResponse
+                case key
+                  when "description"
+                    if object == ""
+                      li Add a brief description of your #{idea.name}
+                        a.whats-left-button.btn.btn-go( href="/accomplish" ) Go
+                  when "problem"
+                    if object == ""
+                      li Add the main problem that your #{idea.name} is addressing
+                      li Add a brief description of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
+                        a.whats-left-button.btn.btn-go( href="/accomplish" ) Go 
+                  when "problem"
+                    if object == ""
+                      li Add the problem that your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} Solves
+                        a.whats-left-button.btn.btn-go( href="/introduce-idea" ) Go
+                  when "name"
+                    if object == ""
+                      li Give your idea a name
+                        a.whats-left-button.btn.btn-go#openTitleModal() Go
+                  when "images"
+                    if object.length < 2
+                      li Add more sketch drawings or photos of your #{idea.name}
+                        a.whats-left-button.btn.btn-go( href="/image-upload" ) Go
+                  when "issues"
+                    if object.length < 4
+                      li Add more imperfections of your #{idea.name} remaining to be solved
+                        a.whats-left-button.btn.btn-go#openAddProblemModal() Go
+                  when "viabilityScores"
+                    if appStrengthText == "NOT YET..." && object.length < 4
+                      li Finish rating your #{idea.name} to complete its viability score
+                        a.whats-left-button.btn.btn-go#openViabilityModal() Go
+                    else if appStrengthText == "ALMOST..." && object.length < 15
+                      li Finish rating your #{idea.name} to give it a viability score
+                        a.whats-left-button.btn.btn-go#openViabilityModal() Go
+                  when "imagesWithAnnotations"
+                    if object.length < strengthResponse['images'].length 
+                      li Add at least one tag to every #{idea.name} image
+                        a.whats-left-button.btn.btn-go( href="/image-upload" ) Go
+                  when "problemsWithSuggestions"
+                    if object.length < strengthResponse['issues'].length
+                      li Suggest at least one solution for each #{idea.name} imperfection
+                        a.whats-left-button.btn.btn-go( href="/suggestion-summary" ) Go
+                  when "compsWithRelationships"
+                    if object.length < strengthResponse['allComponents'].length
+                      li Explain how each component of #{idea.name} is related to at least one other component
+                        a.whats-left-button.btn.btn-go#viewComponentsTab() Go
+        .modal-footer
+          button.btn.btn-success(data-dismiss="modal") Return to the #{idea.name} profile
+
+  #viabilityModal.modal.fade(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title
+            if idea.name
+              h2 Score #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
+            else 
+              h2 Score this idea
+        .modal-body
+          .view-all-viabilities
+              include ../partials/viability-overview-modal.jade
+          .view-specific-viability
+        .modal-footer.view-all-button
+            button.btn.btn-info.modal-view-all View All
+            span.viabilityStatus 1/4
+            button.btn.btn-success#viabilitySubmit(data-viability-category="view-all") Next
+
+  #addProblemModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            if idea.name
+              h3 New Imperfection
+        .modal-body
+          form(role='form', id="addIdeaProblem" action="/add-idea-problem", method="post", style='max-width: 450px;', data-idea-doc=idea)
+            .form-group
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+              input#problemStatement.form-control(type="text", name="problemStatement", value='The problem is ')
+              p (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+              //- p.charactersRemaining
+              h4 Imperfection Category:
+              select.form-control#problemArea(required)
+                each value in problemAreas
+                  option(value=value) #{value}
+              //- h4 Describe an aptitude needed to solve this imperfection:
+              //- input#aptitudeStatement.form-control(type="text", name="aptitudeStatement", value='The aptitude of ')
+              //- p (Example: "The aptitude of nuclear engineering.")
+            .modal-footer
+              button.btn.btn-go.btn-block.btn-lg#problemSubmit(type='submit') Save Imperfection
+                //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+              button.btn.btn-info.btn-block.btn-lg(data-dismiss="modal") Cancel
+
+  #addComponentModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            if idea.name
+              h2 #{user.nickname}, add a new #{idea.name} component
+            else
+              h2 #{user.nickname}, add a new component
+        .modal-body
+          form(role='form', id="addIdeaComponent" action="/add-idea-component", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            .form-group
+              if idea.name
+                h4 What is this new component of your #{idea.name} called?
+              else
+                h4 What is this new component called?
+              input#componentName.form-control(type="text", name="componentName", value='The ...')
+              p (Example: "The Flux Capacitor")
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+              p.compNameCharRemaining
+              if idea.name
+                h4 How do you describe this component of your #{idea.name}?
+              else
+                h4 How do you describe this component?
+              input#componentDescription.form-control(type="text", name="componentDescription", value='This component is described as ')
+              p (Example: "This component is described as a power channeling device that processes 1.21 gigawatts to make time travel possible.")
+              p.compDescrCharRemaining
+            .modal-footer
+              button.btn.btn-go.btn-block.btn-lg#componentSubmit(type='submit') Save Component
+                img.einstein-point-btn-icon(src="/single-einstein-point.png")
+              button.btn.btn-info.btn-block.btn-lg(data-dismiss="modal") Cancel
+
+  #filePatentModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            if idea.name
+              h3 Visibility status of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
+              h4 Protect yourself against others who might see and steal ideas from your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}.
+              h4 IdeaJam can create a provisional patent application template for your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}.  Filing a patent application before making your ideas visible will provide you with patent pending status over #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} earning you potential rights over anyone who later makes or sells the same idea.
+            else
+              h3 #{user.nickname}, name your idea before starting the process of generating a provisional patent application template.
+        .modal-body
+            if appStrengthClass == "yes col-md-12" || idea.visibility == "public"
+              a.btn.btn-go#create-application-button( href="/create-application" ) Download Application
+              br
+              if !receipt
+                form(role='form', id="prelimReceiptUpload" action="/receipt-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
+                  .form-group
+                    input(type="hidden", name="_csrf", value="#{csrfToken}")
+                    input#receiptInput(type="file", name="receipt")
+              else
+                a(href=receipt.amazonURL download)
+                  p Receipt uploaded.
+                h4 Variants
+                each variantDate in variantDates
+                  .row
+                    a(href="/ideas/#{idea.name}/variant/"+variantDate[1]) #{variantDate[0]}
+
+                a.btn.btn-go( href="/create-new-variant" ) Create a New Variant
+                br
+            else if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
+              if idea.name
+                h4 Strong patent applications generally have more descriptions of the invention and its components.   To strengthen the provisional patent application template for your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}, you should enter more information about the concept.
+              else
+                h3 Name your idea before starting the process of generating a provisional patent application template.
+            br
+
+          .modal-footer
+            button#enterMoreInformation.btn.btn-info(data-dismiss="modal") Enter More Information
+            a.btn.btn-go#bypass-application-button(data-toggle="modal" data-target="#confirmExposeIdeaModal") Expose Idea Now
+
+  #confirmExposeIdeaModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Are you sure?
+        .modal-body
+          h5 If you expose this idea publicly prior to filing a patent application, you may lose your right to patent the idea. We recommend that you file a patent application before disclosing. Are you sure you want to make this idea public before obtaining patent pending status?
+          .modal-footer
+            button.btn.btn-industry(data-dismiss="modal") Cancel
+            button#exposeIdeaNow.btn.btn-go Yes, Expose Now!
+
+
+  button(type="button" id="titleModalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#titleModal") Go Win Fight
+
+  #shareModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Share Your Idea
+        .modal-body
+          form(role='form', id="shareForm" action="/share-idea", method="post", style='max-width: 300px;')
+            .form-group
+              input#toEmailAddress.form-control(type="email", name="toEmailAddress" placeholder="To:" required)
+              input#fromEmailAddress.form-control(type="email", name="fromEmailAddress" placeholder="From:" required)
+              input#emailSubject.form-control(type="text", name="emailSubject" placeholder="Subject:" required)
+              textarea#emailBody.form-control(type="text", name="emailBody" placeholder="Body: (Include a link here!)" required)
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+              button.btn.btn-info(data-dismiss="modal") Cancel
+              button.btn.btn-success#emailSend(type='submit') Send
+                img.einstein-point-btn-icon(src="/single-einstein-point.png")
+
+
+  #inviteCollaboratorsModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Invite up to 6 Collaborators
+        .modal-body
+          form(role='form', id="inviteForm" action="/invite-collaborators", method="post")
+            .form-group
+              h3 Accepted Non-disclosure Agreement
+              each collaborator, index in idea.collaborators
+                .row
+                  .col-xs-12 
+                    h4 #{index + 1} : #{collaborator}
+              - for (var i = 0; i < 6 - idea.collaborators.length; ++i) {
+                .row
+                  .col-xs-12 
+                    input.form-control.collaboratorEmail(type="text" name="#{i}" placeholder="To:")
+              - }
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+              button.btn.btn-success.btn-lg.btn-block#inviteCollaboratorSend(type='submit') Send
+              button.btn.btn-info.btn-lg.btn-block(data-dismiss="modal") Cancel
+
+
+  button(type="button" id="titleModalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#titleModal") Go Win Fight
+
+  include ../partials/js-includes.jade
+  script(src='/exif.js')
+  script(type="text/javascript").
+    
+    function initializeAllSliders(idea){
+      var labelArr = _.range(101).map(function(number){
+        return number.toString();
+      });
+      var initialValue, min=1, max=100, valueEntered = false;
+      var viabilitySliders = [
+        "#perf",
+        "#afford",
+        "#feature",
+        "#deliver",
+        "#useability",
+        "#maintain",
+        "#danger",
+        "#durability",
+        "#image",
+        "#complex",
+        "#precision",
+        "#variability",
+        "#sensitivity",
+        "#immature",
+        "#skills"
+      ]
+
+      
+      for(var i = 0; i < viabilitySliders.length; i++){      
+        valueEntered = false;
+        switch (viabilitySliders[i]){
+          case "#perf" : 
+            initialValue = idea.performOne || 50;
+            if(idea.performOne){
+              valueEntered = true;
+            } else { valueEntered = false; }
+            break;
+          case "#afford" : 
+            initialValue = idea.affordOne || 50;
+            if(idea.affordOne){
+              valueEntered = true;
+            } else { valueEntered = false; }
+            break;
+          case "#feature" : 
+            initialValue = idea.featureOne || 50;
+            if(idea.featureOne){
+              valueEntered = true;
+            } else { valueEntered = false; }
+            break;
+          case "#deliver" : 
+            initialValue = idea.deliverOne || 50;
+            if(idea.deliverOne){
+              valueEntered = true;
+            } else { valueEntered = false; }
+            break;
+          case "#useability" : 
+            initialValue = idea.useabilityOne || 50;
+            if(idea.useabilityOne){
+              valueEntered = true;
+            } else { valueEntered = false; }
+            break;
+          case "#maintain" : 
+            initialValue = idea.maintainOne || 50;
+            if(idea.maintainOne){
+              valueEntered = true;
+            } else { valueEntered = false; }
+            break;
+          case "#danger" : 
+            initialValue = idea.dangerOne || 50;
+            if(idea.dangerOne){
+              valueEntered = true;
+            } else { valueEntered = false; }
+            break;
+          case "#durability" : 
+            initialValue = idea.durabilityOne || 50;
+            if(idea.durabilityOne){
+              valueEntered = true;
+            } else { valueEntered = false; }
+            break;
+          case "#image" : 
+            initialValue = idea.imageOne || 50;
+            if(idea.imageOne){
+              valueEntered = true;
+            } else { valueEntered = false; }
+            break;
+          case "#complex" : 
+            initialValue = idea.complexOne || 50;
+            if(idea.complexOne){
+              valueEntered = true;
+            } else { valueEntered = false; }
+            break;
+          case "#precision" : 
+            initialValue = idea.precisionOne || 50;
+            if(idea.precisionOne){
+              valueEntered = true;
+            } else { valueEntered = false; }
+            break;
+          case "#variability" : 
+            initialValue = idea.variabilityOne || 50;
+            if(idea.variabilityOne){
+              valueEntered = true;
+            } else { valueEntered = false; }
+            break;
+          case "#sensitivity" : 
+            initialValue = idea.sensitivityOne || 50;
+            if(idea.sensitivityOne){
+              valueEntered = true;
+            } else { valueEntered = false; }
+            break;
+          case "#immature" : 
+            initialValue = idea.immatureOne || 50;
+            if(idea.immatureOne){
+              valueEntered = true;
+            } else { valueEntered = false; }
+            break;
+          case "#skills" : 
+            initialValue = idea.skillsOne || 50;
+            if(idea.skillsOne){
+              valueEntered = true;
+            } else { valueEntered = false; }
+            break;
+        }
+
+        ////////////////////////////////////////////
+        // SET UP SLIDER ONE
+        ////////////////////////////////////////////
+        
+        $(viabilitySliders[i]+ "Slider").slider({
+          value:initialValue,
+          min: min,
+          orientation : "horizontal",
+          range : "min",
+          max: max,
+          step: 1,
+          slide: function( event, ui ) {
+              valueEntered = true;
+              $(this).addClass("value-entered");
+          }
+        });
+
+        if(valueEntered){
+          $(viabilitySliders[i]+ "Slider").addClass("value-entered");
+        }
+
+      }
+
+      //kind of a hack because I couldnt get the previous click event handlers
+      // to detach from the submit button between viability categories
+      // as the user went through more than one in a row. I tried the jquery unbind and off
+      // functions
+      $("#viabilitySubmit").remove();
+      $("<button class='btn btn-success' id='viabilitySubmit'>Next</button>")
+      .appendTo("#viabilityModal .modal-footer.view-all-button")
+      .click(function(event){
+
+        var data = {_csrf : $('[name="_csrf"]').val()};
+        $(".ui-slider").each(function(index, element){
+          switch ($(this).attr("id")){
+            case "perfSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["performOne"] = $(element).slider("value");
+              }
+              break;
+            case "affordSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["affordOne"] = $(element).slider("value");
+              }
+              break;
+            case "featureSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["featureOne"] = $(element).slider("value");
+              }
+              break;
+            case "deliverSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["deliverOne"] = $(element).slider("value");
+              }
+              break;
+            case "useabilitySlider" : 
+              if($(element).hasClass("value-entered")){
+                data["useabilityOne"] = $(element).slider("value");
+              }
+              break;
+            case "maintainSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["maintainOne"] = $(element).slider("value");
+              }
+              break;
+            case "dangerSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["dangerOne"] = $(element).slider("value");
+              }
+              break;
+            case "durabilitySlider" : 
+              if($(element).hasClass("value-entered")){
+                data["durabilityOne"] = $(element).slider("value");
+              }
+              break;
+            case "imageSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["imageOne"] = $(element).slider("value");
+              }
+              break;
+            case "complexSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["complexOne"] = $(element).slider("value");
+              }
+              break;
+            case "precisionSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["precisionOne"] = $(element).slider("value");
+              }
+              break;
+            case "variabilitySlider" : 
+              if($(element).hasClass("value-entered")){
+                data["variabilityOne"] = $(element).slider("value");
+              }
+              break;
+            case "sensitivitySlider" : 
+              if($(element).hasClass("value-entered")){
+                data["sensitivityOne"] = $(element).slider("value");
+              }
+              break;
+            case "immatureSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["immatureOne"] = $(element).slider("value");
+              }
+              break;
+            case "skillsSlider" : 
+              if($(element).hasClass("value-entered")){
+                data["skillsOne"] = $(element).slider("value");
+              }
+              break;
+          }
+        });
+        $.post('/update-all-viabilities', data, function(returnData, status){
+          if(status=="success"){
+            if($(".first-four-viabilities").is(":visible")){
+              $(".first-four-viabilities").hide();
+              $(".second-four-viabilities").show();
+              $(".viabilityStatus").text("2/4");
+            } else if($(".second-four-viabilities").is(":visible")){
+              $(".second-four-viabilities").hide();
+              $(".third-four-viabilities").show();
+              $(".viabilityStatus").text("3/4");
+            } else if($(".third-four-viabilities").is(":visible")){
+              $(".third-four-viabilities").hide();
+              $(".fourth-four-viabilities").show();
+              $(".viabilityStatus").text("4/4");
+            } else if($(".fourth-four-viabilities").is(":visible")){
+              $(".fourth-four-viabilities").hide();
+              window.location.reload(true);
+            } else {
+              $(".first-four-viabilities").show();
+            }
+          } else {
+            window.location.reload(true);
+          }
+        });
+      });
+
+    } // end of initialize all sliders function
+
+    //actually invoke this method. it will be used later when some one hits the 
+    // view all button
+    //initializeAllSliders('#{idea}');
+
+    function getNextSliderConfig(categoryName, valueEntered, value){
+        switch (categoryName) {
+          case "performability" :
+            var initialValue =  value || 50;
+            
+            initiateSlider("perfSliderOne", "perfLabelOne",
+              "formPerformability", initialValue, "performability",
+              "performProblem", "affordability", valueEntered)
+            break;
+
+          case "affordability" :
+            var initialValue = value || 50;
+
+            initiateSlider("affordSliderOne", "affordLabelOne",
+              "formAffordability", initialValue, "affordability",
+              "affordProblem", "featurability", valueEntered)
+            break;
+          case "featurability" :
+            var initialValue = value || 50;
+
+            initiateSlider("featureSliderOne", "featureLabelOne",
+              "formFeaturability", initialValue, "featurability",
+              "featureProblem", "deliverability", valueEntered)
+            break;
+          case "deliverability" :
+            var initialValue = value || 50;
+
+            initiateSlider("deliverSliderOne", "deliverLabelOne",
+              "formDeliverability", initialValue, "deliverability",
+              "deliverProblem", "useability", valueEntered)
+            break;
+          case "useability" : 
+            var initialValue = value || 50;
+
+            initiateSlider("useabilitySliderOne", "useabilityLabelOne",
+              "formUseability", initialValue, "useability",
+              "useabilityProblem", "maintainability", valueEntered)
+            break;
+          case "maintainability" : 
+            var initialValue = value || 50;
+
+            initiateSlider("maintainabilitySliderOne", "maintainabilityLabelOne",
+              "formMaintainability", initialValue, "maintainability",
+              "maintainProblem", "durability", valueEntered)
+            break;
+          case "durability" : 
+            var initialValue = value || 50;
+
+            initiateSlider("durabilitySliderOne", "durabilityLabelOne",
+              "formDurability", initialValue, "durability",
+              "durabilityProblem", "imageability", valueEntered)
+            break;
+          case "imageability" : 
+            var initialValue = value || 50;
+
+            initiateSlider("imageabilitySliderOne", "imageabilityLabelOne",
+              "formImageability", initialValue, "imageability",
+              "imageProblem", "complexity", valueEntered)
+            break;
+          case "complexity" : 
+            var initialValue = value || 50;
+
+            initiateSlider("complexitySliderOne", "complexityLabelOne",
+              "formComplexity", initialValue, "complexity",
+              "complexProblem", "precision", valueEntered)
+            break;
+          case "precision" : 
+            var initialValue = value || 50;
+
+            initiateSlider("precisionSliderOne", "precisionLabelOne",
+              "formPrecision", initialValue, "precision",
+              "precisionProblem", "variability", valueEntered)
+            break;
+          case "variability" : 
+            var initialValue = value || 50;
+
+            initiateSlider("variabilitySliderOne", "variabilityLabelOne",
+              "formVariability", initialValue, "variability",
+              "variabilityProblem", "sensitivity", valueEntered)
+            break;
+          case "sensitivity" : 
+            var initialValue = value || 50;
+
+            initiateSlider("sensitivitySliderOne", "sensitivityLabelOne",
+              "formSensitivity", initialValue, "sensitivity",
+              "sensitivityProblem", "immaturity", valueEntered)
+            break;
+          case "immaturity" : 
+            var initialValue = value || 50;
+
+            initiateSlider("immaturitySliderOne", "immaturityLabelOne",
+              "formImmaturity", initialValue, "immaturity",
+              "immatureProblem", "dangerous", valueEntered)
+            break;
+          case "dangerous" : 
+            var initialValue = value || 50;
+
+            initiateSlider("dangerousSliderOne", "dangerousLabelOne",
+              "formDangerous", initialValue, "dangerous",
+              "dangerProblem", "skills", valueEntered)
+            break;
+          case "skills" : 
+            var initialValue = value || 50;
+
+            initiateSlider("skillsSliderOne", "skillsLabelOne",
+              "formSkills", initialValue, "skills",
+              "skillsProblem", "view-all")
+            break;
+        }
+
+    }
+
+    function initiateSlider(sliderName, labelName, formName, initialValue, postPath, problemName, nextCategory, valueEntered){
+      var labelArr = _.range(101).map(function(number){
+        return number.toString();
+      });
+      var min=1, max=100, uiValue;
+      
+
+      $("#"+ sliderName).slider({
+        value:initialValue,
+        orientation : "horizontal",
+        range : "min",
+        min: min,
+        max: max,
+        step: 1,
+        slide: function( event, ui ) {
+            valueEntered = true;
+            uiValue = ui.value;
+            $(this).addClass("value-entered");
+            $("#" + labelName).text(labelArr[ui.value]);
+            $("#" + labelName).css("margin-left", (ui.value-min)/(max-min)*100+"%");
+            $("#" + labelName).css("left", "-50px");
+        }
+      });
+      if(valueEntered){
+        $("#"+ sliderName).addClass("value-entered");
+      }
+      $("#" + labelName).text(labelArr[initialValue]);
+      $("#" + labelName ).css("margin-left", (initialValue -1)/(max-min)*100+"%");
+      $("#" + labelName).css("left", "-50px");
+
+      
+      //kind of a hack because I couldnt get the previous click event handlers
+      // to detach from the submit button between viability categories
+      // as the user went through more than one in a row. I tried the jquery unbind and off
+      // functions
+      $("#viabilitySubmit").remove();
+      $("<button class='btn btn-success' id='viabilitySubmit'>Save</button>")
+      .appendTo("#viabilityModal .modal-footer.view-all-button")
+      .click(function(event){
+        var data = {_csrf : $('[name="_csrf"]').val()};
+        if(valueEntered){
+          data[sliderName+"Value"] = uiValue;
+          
+        } 
+        if($("#"+formName + " textarea").val() != "The problem of "){
+          data[problemName] = $("#"+formName + " textarea").val();
+        }
+        $.post('/' + postPath, data, function(returnData, status){          
+          $("#viabilityModal .modal-view-all").click();
+        });
+
+      });
+    }
+
+    $(".viabilityLink").click(function(event){
+      var data = {
+        "isModal" : true
+      };
+      var pathname = $(this)[0].getAttribute("href");
+      var valueEntered = false;
+      $("button.btn.btn-info.modal-expand-collapse").hide();        
+      $("button.btn.btn-info.modal-view-all").show();
+
+      $.get(pathname, data, function(returnData, status){
+        $("#viabilityModal .view-all-viabilities").hide();
+        //$("#viabilitySubmit").attr("data-viability-category", pathname.slice(1));
+        $("#viabilityModal .modal-body .view-specific-viability").html(returnData);
+        $("#viabilityModal .modal-title h2").text(pathname.slice(1).charAt(0).toUpperCase() + pathname.slice(1).slice(1));
+        $.get('/get-all-viability-scores', function(sliderData, status){
+          //get the correct value out of sliderData
+          $("#viabilityModal .modal-title img").remove();
+          switch(pathname.slice(1)) {
+          case "performability" : 
+            sliderVal = sliderData['performOne'];
+            $("<img src='/perfIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
+            break;
+          case "affordability" : 
+            sliderVal = sliderData['affordOne'];
+            $("<img src='/affordIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
+            break;
+          case "featurability" : 
+            sliderVal = sliderData['featureOne'];
+            $("<img src='/perfIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
+            break;
+          case "deliverability" : 
+            sliderVal = sliderData['deliverOne'];
+            $("<img src='/deliverabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
+            break;
+          case "useability" : 
+            sliderVal = sliderData['useabilityOne'];
+            $("<img src='/perfIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
+            break;
+          case "maintainability" : 
+            sliderVal = sliderData['maintainOne'];
+            $("<img src='/maintainabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
+            break;
+          case "durability" : 
+            sliderVal = sliderData['durabilityOne'];
+            $("<img src='/durabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
+            break;
+          case "imageability" : 
+            sliderVal = sliderData['imageOne'];
+            $("<img src='/imageabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
+            break;
+          case "complexity" : 
+            sliderVal = sliderData['complexOne'];
+            $("<img src='/complexityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
+            break;
+          case "precision" : 
+            sliderVal = sliderData['precisionOne'];
+            $("<img src='/precisionIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
+            break;
+          case "variability" : 
+            sliderVal = sliderData['variabilityOne'];
+            $("<img src='/variabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
+            break;
+          case "sensitivity" : 
+            sliderVal = sliderData['sensitivityOne'];
+            $("<img src='/sensitivityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
+            break;
+          case "immaturity" : 
+            sliderVal = sliderData['immatureOne'];
+            $("<img src='/immaturityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
+            break;
+          case "dangerous" : 
+            sliderVal = sliderData['dangerOne'];
+            $("<img src='/dangerIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
+            break;
+          case "skills" : 
+            sliderVal = sliderData['skillsOne'];
+            $("<img src='/skillsIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
+            break;
+          }
+          if(sliderVal){
+            valueEntered = true;
+          }
+          getNextSliderConfig(pathname.slice(1), valueEntered, sliderVal);
+        });
+
+      });
+    });
+
+    $("#viabilityModal .modal-expand-collapse").click(function(eventView){
+      //if view all viabilities is not visible, remove contents and show 
+      // the view-all view
+      if($(".additional-viabilities").is(":visible")){
+        $(".additional-viabilities").hide();
+        $("button.btn.btn-info.modal-expand-collapse").text("Expand")
+      } else {
+        $(".additional-viabilities").show();
+        $("button.btn.btn-info.modal-expand-collapse").text("Collapse")
+      }
+    });
+
+    $("#viabilityModal .modal-view-all").click(function(eventView){
+      //if view all viabilities is not visible, remove contents and show 
+      // the view-all view
+      if(!$(".view-all-viabilities").is(":visible")){
+        $("button.btn.btn-info.modal-expand-collapse").show();        
+        $("button.btn.btn-info.modal-view-all").hide();       
+        $("#viabilityModal .modal-body .view-specific-viability").html("")
+        //$("#viabilitySubmit").attr("data-viability-category", "view-all");
+        $("#viabilityModal .view-all-viabilities").show();
+        $("#viabilityModal .modal-title h2").text("Score Areas");
+        $("#viabilityModal .modal-title img").remove();
+        
+        $.get('/get-all-viability-scores', function(returnData, status){
+          $("#perfSlider").slider("destroy");
+          $("#affordSlider").slider("destroy");
+          $("#featureSlider").slider("destroy");
+          $("#deliverSlider").slider("destroy");
+          $("#useabilitySlider").slider("destroy");
+          $("#maintainSlider").slider("destroy");
+          $("#dangerSlider").slider("destroy");
+          $("#durabilitySlider").slider("destroy");
+          $("#imageSlider").slider("destroy");
+          $("#complexSlider").slider("destroy");
+          $("#precisionSlider").slider("destroy");
+          $("#variabilitySlider").slider("destroy");
+          $("#sensitivitySlider").slider("destroy");
+          $("#immatureSlider").slider("destroy");
+          $("#skillsSlider").slider("destroy");
+          $(".view-all-viabilities .ui-slider").html("");
+          initializeAllSliders(returnData);   
+        });
+      }
+    });
+
+    $(document).ready(function(){
+        if("!{idea.name}" == ""){
+          $('#titleModal').modal('show');
+        }
+        if("!{idea.description}" == ""){
+          $("#idea-summary-accomplish")
+            .addClass("incomplete-data");
+          $("#idea-summary-accomplish a")
+            .before("<h4><i>No data entered</i></h4>");
+        }
+        if("!{idea.problem}" == ""){
+          $("#idea-summary-challenge")
+            .addClass("incomplete-data");
+          $("#idea-summary-challenge a")
+            .before("<h4><i>No data entered</i></h4>");
+        }
+
+        $("#enterMoreInformation").click(function(event){
+          $("#whatsLeftModal").modal('show');
+        })
+
+        $("#openTitleModal").click(function(event){
+          $("#whatsLeftModal").modal('hide');
+          $('#titleModal').modal('show');
+        })
+
+        $("#openAddProblemModal").click(function(event){
+          $("#whatsLeftModal").modal('hide');
+          $('#addProblemModal').modal('show');
+        })
+
+        $("#openViabilityModal").click(function(event){
+          $("#whatsLeftModal").modal('hide');
+          $('.viabilityModalButton').click();
+        })
+
+        $("#viewComponentsTab").click(function(event){
+          $("#whatsLeftModal").modal('hide');
+          $('a').filter(function(index) { return $(this).text() === "Components"; }).click();
+        })
+    
+        $(".viabilityModalButton").click(function(event){
+          $.get('/get-all-viability-scores', function(returnData, status){
+            $(".view-all-viabilities .ui-slider").html("");
+            initializeAllSliders(returnData);
+            if(status != "success"){
+              alert("review not created correctly");
+            }
+          });
+        });
+
+
+        $(".upvote-imperfection").click(function(event){
+          event.preventDefault();
+          if(!$(this).hasClass("clicked-upvote")){
+            $(this).addClass("clicked-upvote");
+            $(this).text("Upvote " + (parseInt($(this).text().slice(7)) + 1));
+          }
+
+            $.post('/upvote-imperfection', 
+            {
+              _csrf : $('[name="_csrf"]').val(),
+              problem : $(this)[0].dataset['problemId']
+            },
+            function(data, response) {
+            });
+          
+
+          return false;
+        });
+
+        $(".upvote-suggestion").click(function(event){
+          event.preventDefault();
+          if(!$(this).hasClass("clicked-upvote")){
+            $(this).addClass("clicked-upvote");
+            $(this).text("Upvote " + (parseInt($(this).text().slice(7)) + 1));
+          }
+
+          $.post('/upvote-suggestion', 
+          {
+            _csrf : $('[name="_csrf"]').val(),
+            suggestion : $(this)[0].dataset['suggestionId']
+          },
+          function(data, response) {
+          });
+
+          return false;
+        });   
+
+
+    });
+
+
+    $("#viabilityModal .cancel-button").click(function(event){
+        $("#perfSlider").slider("destroy");
+        $("#affordSlider").slider("destroy");
+        $("#featureSlider").slider("destroy");
+        $("#deliverSlider").slider("destroy");
+        $("#useabilitySlider").slider("destroy");
+        $("#maintainSlider").slider("destroy");
+        $("#dangerSlider").slider("destroy");
+        $("#durabilitySlider").slider("destroy");
+        $("#imageSlider").slider("destroy");
+        $("#complexSlider").slider("destroy");
+        $("#precisionSlider").slider("destroy");
+        $("#variabilitySlider").slider("destroy");
+        $("#sensitivitySlider").slider("destroy");
+        $("#immatureSlider").slider("destroy");
+        $("#skillsSlider").slider("destroy");
+    });
+
+
+    $("#imperfections-header").click(function(event){
+      $('#viewAllImperfections').modal('show');
+    })
+
+    $("#problemSubmit").click(function(event){
+      event.preventDefault();
+      if($("#problemStatement").val() == "The problem is "){
+        $("#addProblemModal").modal('hide');
+      } else if ($("#problemStatement").val().length > 15){
+        $("#addProblemModal").modal('hide');
+        var newProblemStatement = $("#problemStatement").val().trim();
+        $.post('/add-idea-problem', 
+          {
+            _csrf : $('[name="_csrf"]').val(),
+            problemStatement : newProblemStatement.slice(15),
+            problemArea : $("#problemArea option:selected").text(),
+          },
+          function(resp) {
+            if(resp['problemIdentifier']){
+              window.location.href="/imperfection-profile/"+resp['problemIdentifier'];
+            } else {
+              window.location.reload(true);
+            }
+          });
+      } else {
+        $("#addProblemModal").modal('hide');
+      }
+    });
+
+    $("#titleSubmit").click(function(event){
+      event.preventDefault();
+      if($("#saveIdeaName input[name='inventionName']").val() == "My idea is called the "){
+        if($("#titleRequiredMessage").length == 0){
+          $("<p id='titleRequiredMessage'>A title is required</p>").insertBefore("#saveIdeaName input[name='inventionName']");
+        }
+      } else {
+        $.post('/save-idea-name', 
+          {
+            _csrf : $('[name="_csrf"]').val(),
+            inventionName : $("#saveIdeaName input[name='inventionName']").val().trim(),
+          },
+          function(resp) {
+            if(resp['newUrl']){
+              window.location = resp['newUrl'];
+            } else {
+              window.location.reload(true);
+            }
+          });
+      }
+    })
+
+    $("#componentSubmit").click(function(event){
+      event.preventDefault();
+
+      if($("#componentName").val() == "The ..." || $("#componentName").val() == "The "){
+        $("#addComponentModal").modal('hide');
+      } else {
+        var newComponentName = $("#componentName").val().trim();
+        var newComponentDescr;
+
+        var data = {
+            _csrf : $('[name="_csrf"]').val(),
+            componentName : newComponentName.slice(4)
+        };
+
+        if($("#componentDescription").val().length > "This component is described as ".length){
+          newComponentDescr = $("#componentDescription").val().trim();
+          data['componentDescription'] = newComponentDescr.slice("This component is described as ".length)
+        }
+
+        if($("#subComponentCheckbox").is(":checked")){
+          data['subComponent'] = "on";
+          data['componentParent'] = $("#parentComponentDropdown option:selected").val()
+        }
+
+        $.post('/add-idea-component', 
+          data,
+          function(data, response) {
+            $("#idea-summary-components ul")
+              .append("<li><a href='/component-profile/"+ data['identifier'] +"'><h4>"+ data['number'] + " : " + data['text'] + "</h4></a></li>");
+            $("#componentName").val('');
+            $("#componentDescription").val('');
+            $("#addComponentModal").modal('hide');
+            window.location.reload(true);
+          });      
+      }
+
+    });
+
+    $("#subComponentCheckbox").click(function(event){
+      $("#parentComponentDropdown").show(400);
+    });
+
+    // This is for the idea name
+    var inputName = $("#saveIdeaName input")[1];
+    var requiredNameText = "My idea is called the "
+    $("#saveIdeaName .charactersRemaining").text((30) + " characters remaining");
+    inputName.addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredNameText) == -1 || String($(this).val()) == "My idea is called the ") {
+            $(this).val(requiredNameText);
+      }
+      if (this.selectionStart < requiredNameText.length) {
+        this.selectionStart = requiredNameText.length;
+      }
+    }, false);
+
+    inputName.addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredNameText) == -1) {
+            $(this).val(requiredNameText);
+      }
+      if (this.selectionStart < requiredNameText.length) {
+        this.selectionStart = requiredNameText.length;
+      }
+      $("#saveIdeaName input").keyup(function(){
+        $("#saveIdeaName .charactersRemaining").text((30 + requiredNameText.length - $(this).val().length) + " characters remaining");
+      });
+    }, false);
+
+    // This is for the problem input
+    var inputProb = $("#addIdeaProblem input")[1];
+    var requiredProbText = "The problem is "
+    $("#addIdeaProblem .charactersRemaining").text((200) + " characters remaining");
+    inputProb.addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredProbText) == -1) {
+            $(this).val(requiredProbText);
+      }
+      if (this.selectionStart < 15) {
+        this.selectionStart = 15;
+      }
+    }, false);
+
+    inputProb.addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredProbText) == -1) {
+            $(this).val(requiredProbText);
+      }
+      if (this.selectionStart < 15) {
+        this.selectionStart = 15;
+      }
+      $("#addIdeaProblem input").keyup(function(){
+        $("#addIdeaProblem .charactersRemaining").text((200 + requiredProbText.length - $(this).val().length) + " characters remaining");
+      });
+    }, false);
+
+    // This is for the first text input field in the add component modal
+    var inputOne = $("#addIdeaComponent input#componentName")[0];
+    var requiredCompTextOne = "The "
+    $("#addIdeaComponent .compNameCharRemaining").text((200) + " characters remaining");
+    inputOne.addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredCompTextOne) == -1 || String($(this).val()) == "The ...") {
+            $(this).val(requiredCompTextOne);
+      }
+      if (this.selectionStart < requiredCompTextOne.length) {
+        this.selectionStart = requiredCompTextOne.length;
+      }
+    }, false);
+
+    inputOne.addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredCompTextOne) == -1 || String($(this).val()) == "The ...") {
+            $(this).val(requiredCompTextOne);
+      }
+      if (this.selectionStart < requiredCompTextOne.length) {
+        this.selectionStart = requiredCompTextOne.length;
+      }
+      $("#addIdeaComponent input#componentName").keyup(function(){
+        $("#addIdeaComponent .compNameCharRemaining").text((200 + requiredCompTextOne.length - $(this).val().length) + " characters remaining");
+      });
+    }, false);
+
+    // This is for the second text input field in the add component modal
+    var inputTwo = $("#addIdeaComponent input#componentDescription")[0];
+    var requiredCompTextTwo = "This component is described as "
+    $("#addIdeaComponent .compDescrCharRemaining").text((200) + " characters remaining");
+    inputTwo.addEventListener ("mousedown", function () {
+      if (String($(this).val()).indexOf(requiredCompTextTwo) == -1) {
+            $(this).val(requiredCompTextTwo);
+      }
+      if (this.selectionStart < "This component is described as ".length) {
+        this.selectionStart = "This component is described as ".length;
+      }
+    }, false);
+
+    inputTwo.addEventListener ("keydown", function () {
+      if (String($(this).val()).indexOf(requiredCompTextTwo) == -1) {
+            $(this).val(requiredCompTextTwo);
+      }
+      if (this.selectionStart < "This component is described as ".length) {
+        this.selectionStart = "This component is described as ".length;
+      }
+      $("#addIdeaComponent input#componentDescription").keyup(function(){
+        $("#addIdeaComponent .compDescrCharRemaining").text((200 + requiredCompTextTwo.length - $(this).val().length) + " characters remaining");
+      });
+    }, false);
+
+    $("#aptitudeSubmit").click(function(event){
+      event.preventDefault();
+      if($("#aptitudeTitle").val() != ""){
+        var newAptitude = $("#aptitudeTitle").val().trim();
+        $.post('/save-aptitude', 
+          {
+            _csrf : $('[name="_csrf"]').val(),
+            ideaName : "!{idea.name}",
+            aptitudeTitle : newAptitude
+          },
+          function(resp) {
+            window.location.reload(true);
+          });
+      } else {
+        alert("Please enter a valid aptitude.");
+      }
+    });
+
+    if(document.getElementById("receiptInput")){
+      document.getElementById("receiptInput").onchange = function(event) {
+        $("<img id='spinner' src='/spinner.gif'>").insertAfter("#prelimReceiptUpload");
+        const files = document.getElementById('receiptInput').files;
+        const file = files[0];
+        const csrf = $("input[name='_csrf']").val();
+        if(file == null){
+          return alert('No file selected.');
+        }
+        var fr   = new FileReader;
+        
+        fr.onloadend = function() {
+          var exif = EXIF.readFromBinaryFile(this.result);
+          if(file.size < 3000000){
+            getSignedRequest(file, csrf, exif);
+          } else if (file.size > 3000000){
+            alert('Please choose an image smaller than 3 MB.')
+          } else {
+            alert('An error ocurred with this image.')
+          }
+
+        };
+
+        fr.readAsArrayBuffer(file); // read the file
+
+
+      };
+
+      function uploadFile(file, signedRequest, url, csrf, exif){
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', signedRequest);
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4){
+            if(xhr.status === 200 && (file.type=="application/pdf")){
+              var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type,
+                "_csrf" : csrf, exif : exif };
+              $.post('/receipt-upload', data , function(response, status){
+                if(status == 200){
+                  window.location.reload();
+                } else {
+                  alert('An error ocurred while uploading receipt.')
+                }
+              });
+            }
+            else{
+              alert('Please upload PDF.');
+            }
+          }
+        };
+        xhr.send(file);
+      }
+
+      function getSignedRequest(file, csrf,exif){
+        const xhr = new XMLHttpRequest();
+        var filename = file.name.split(".");
+        filename[0] = filename[0] + "-" + Date.now().toString();
+        filename = filename.join(".");
+        xhr.open('GET', '/sign-s3?file-name='+ filename + '&file-type='+ file.type);
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4){
+            if(xhr.status === 200){
+              var response;
+              if(xhr.responseText == ""){
+                response = JSON.parse('{}');
+              } else {
+                response = JSON.parse(xhr.responseText);
+              }
+              uploadFile(file, response.signedRequest, response.url, csrf, exif);
+            }
+            else{
+              alert('Could not get signed URL.');
+            }
+          } 
+          
+        };
+        xhr.send();
+      }
+    }
+
+    $("#emailSend").click(function(event){
+      event.preventDefault();
+        $.post('/share-idea', 
+          {
+            _csrf : $('[name="_csrf"]').val(),
+            toEmailAddress : $("#toEmailAddress").val(),
+            fromEmailAddress : $("#fromEmailAddress").val(),
+            emailSubject : $("#emailSubject").val(),
+            emailBody : $("#emailBody").val()
+          },
+          function(resp) {
+            window.location.reload(true);
+          });
+    });
+
+    $("#inviteCollaboratorSend").click(function(event){
+      //if there are no collaborator emails entered, just close the modal or something
+
+      event.preventDefault();
+
+      $("#inviteCollaboratorsModal").modal('hide')
+
+      var data = {
+          _csrf : $('[name="_csrf"]').val()
+      };
+
+      $(".collaboratorEmail").each(function(index){
+        data['collaborator-email-' + index] = $(this).val();
+      });
+
+      $.post('/send-collaborators-nda-email', data,
+        function(resp) {
+          window.location.reload(true);
+        });
+    })
+
+    $("#exposeIdeaNow").click(function(event){
+      $.get("/expose-idea-seed", function(err, response){
+        window.location.reload(true);
+      });
+    })
+
+    $("#feedback-expand-link").click(function(event){
+      if($(".row.idea-seed-all-feedback-areas").is(":visible")){
+        $(".row.idea-seed-all-feedback-areas").hide(400)
+        $("#feedback-expand-icon").removeClass("glyphicon-collapse-up").addClass("glyphicon-collapse-down")
+      } else {
+        $(".row.idea-seed-all-feedback-areas").show(400)
+        $("#feedback-expand-icon").removeClass("glyphicon-collapse-down").addClass("glyphicon-collapse-up")
+      }
+    })
+
+    $("#components-expand-link").click(function(event){
+      if($(".expandable-components-section").is(":visible")){
+        $(".expandable-components-section").hide(400)
+        $("#components-expand-icon").removeClass("glyphicon-collapse-up").addClass("glyphicon-collapse-down")
+      } else {
+        $(".expandable-components-section").show(400)
+        $("#components-expand-icon").removeClass("glyphicon-collapse-down").addClass("glyphicon-collapse-up")
+      }
+    })
+
+
+    $("#visibilityLink").click(function(event){
+      $("#filePatentModal").modal('show');
+    })
+

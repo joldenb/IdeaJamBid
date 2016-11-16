@@ -2317,6 +2317,276 @@ router.post('/login-nda', csrfProtection, function(req,res, next){
 ******************************************************************
 *****************************************************************/
 router.get('/ideas/:ideaName', csrfProtection, function(req, res){
+  if(!(req.user && req.user.username)) {
+    console.log("not logged in")
+    res.redirect('/');
+    return;
+  }
+
+  function shuffle(a) {
+      var j, x, i;
+      for (i = a.length; i; i--) {
+          j = Math.floor(Math.random() * i);
+          x = a[i - 1];
+          a[i - 1] = a[j];
+          a[j] = x;
+      }
+  }
+
+  shuffle(viabilities);
+
+  for (var via in viabilities) {
+    if (!viabilities[via]['iconId']) {
+      viabilities[via]['iconId'] = viabilities[via].prefix + "Icon";      
+    }
+    if (!viabilities[via]['sliderId']) {
+      viabilities[via]['sliderId'] = viabilities[via].prefix + "Slider";
+    }
+    if (!viabilities[via]['labelId']) {
+      viabilities[via]['labelId'] = viabilities[via].prefix + "Label";
+    }
+    viabilities[via]['link'] = viabilities[via].link || viabilities[via].name;
+    viabilities[via]['name'] = viabilities[via].name.charAt(0).toUpperCase() + viabilities[via].name.slice(1);
+  }  
+
+  // potentially fragile logic here. all ideas should have
+  // a name after the initial visit to this path. but on the first
+  // visit, we'll rely on the session to grab the idea id that was
+  // created on the introductory ideaseed creation pages, coming
+  // from the image upload page
+
+  if(req.params && req.params.ideaName && (req.params.ideaName != "yet-to-be-named")){
+    var query = IdeaSeed.findOne({"name" : req.params.ideaName});
+  } else {
+    var query = IdeaSeed.findById(req.session.idea);
+  }
+  var headshotData, headshotURL, headshotStyle, currentIdea;
+  var variantDates = [],
+      sortedProblems = [];
+  var imageURLs = [];
+  var problems, components;
+  var componentsList = [];
+  var listOfProblems = [];
+  var typeOfProblem, rankingOfProblem;
+  var wholeSuggestionBlockInfo = {};
+  var averageScore = 0;
+  var filename;
+  var imageStyle;
+  var currentReceipt = "";
+  var currentAppStrength;
+  var problemAreas = [
+    "Area : Performability",
+    "Area : Affordability",
+    "Area : Featurability",
+    "Area : Deliverability",
+    "Area : Useability",
+    "Area : Maintainability",
+    "Area : Durability",
+    "Area : Imageability",
+    "Area : Complexity",
+    "Area : Precision",
+    "Area : Variability",
+    "Area : Sensitivity",
+    "Area : Immaturity",
+    "Area : Danger",
+    "Area : Skills"
+  ];
+  var ideaAptitudes;
+  var openCampaign;
+
+  query.exec()
+  .then(function(idea){
+    req.session.idea = idea.id;
+    currentIdea = idea._doc;
+
+    headshotData = ideaSeedHelpers.getUserHeadshot(req);
+    // headshotURL = headshotData['headshotURL'];
+    headshotStyle = headshotData['headshotStyle'];
+
+    return IdeaSeed.findById(req.session.idea).exec()
+  })
+  .then(function(idea){
+    currentIdea = idea._doc;
+
+    //check permissions
+    if(!((currentIdea.visibility == "private" && currentIdea.inventorName == req.user.username) ||
+      currentIdea.visibility == "public" ||
+      (currentIdea.collaborators.indexOf(req.user.username) > -1))){
+      console.log("visibility mode does not permit this user to view this idea");
+      throw new Error('abort promise chain');
+      return;
+    }
+
+    openCampaign = CrowdfundingService.getOpenCampaign(idea);
+
+    return ideaSeedHelpers.getApplicationStrength(idea.id)
+  })
+  .then(function(strengthResponse){
+    currentAppStrength = strengthResponse;
+    return IdeaProblem.find({"ideaSeed" : currentIdea._id, date : {$exists : true}})
+      .sort('-date')
+      .exec()
+  })
+  .then(function(currentProblems){
+    problems = currentProblems;
+    _.each(problems, function(value, key, list){
+        Account.findOne({"username": value.creator}, function(err, user) {
+          value.wholeCreator = user;
+          if (user.headshots[0]) {
+            value.headshot = {};
+            value.headshot.url = user.headshots[0].amazonURL;
+            var imageStyle;
+            imageStyle = ideaSeedHelpers.getImageOrientation(user.headshots[0]["orientation"]);
+            value.headshot.style = imageStyle;
+          }
+        });
+    });
+
+    return Component.find({"ideaSeed" : currentIdea._id});
+  })
+  .then(function(currentComponents){
+    components = currentComponents;
+    var componentsNameList = _.map(components, function(eachOne) { return eachOne.creator;})
+
+    return Account.find({"username" : {$in : componentsNameList}});
+  })
+  .then(function(componentCreators){
+    var suggestorHeadshotIdList = _.map(componentCreators, function(eachOne) { 
+      if(eachOne.headshots){
+        return eachOne.headshots[0];
+      } else {
+        return null;
+      }
+    });
+
+    components = _.filter(components, function(item){return item['text'] || item.inventorApproved;});
+    var newCompOrder = [];
+    _.each(components, function(oneComp, index){
+      if( !oneComp.text ){
+        newCompOrder.unshift(oneComp);  
+      } else {
+        newCompOrder.push(oneComp);
+      }
+    });
+
+    components = newCompOrder;
+    
+
+    // Figure out which account and headshot go with with suggestion
+    _.each(components, function(component, index){
+      
+      wholeSuggestionBlockInfo[component.identifier] = {'document' : component};
+      
+      wholeSuggestionBlockInfo[component.identifier]['ideaName'] = currentIdea.name;
+
+      _.each(componentCreators, function(componentCreator, suggIndex){
+        if(componentCreator.username == component.creator){
+          //now we've found the right suggestor to go with the suggestion, so we put the 
+          // nickname and suggestor profile picture into the whole block object;
+          wholeSuggestionBlockInfo[component.identifier]['creatorNickname'] = componentCreator.nickname;
+          if(componentCreator.headshots && componentCreator.headshots[0]){
+            wholeSuggestionBlockInfo[component.identifier]['creatorProfilePic'] = componentCreator.headshots[0].amazonURL;
+            var imageStyle;
+            imageStyle = ideaSeedHelpers.getImageOrientation(componentCreator.headshots[0]["orientation"]);
+            wholeSuggestionBlockInfo[component.identifier]['profilePicOrientation'] = imageStyle;
+          }
+        }
+      })
+    });
+    componentsList = _.map(components, function(item){return "Component : "+item['text'];});
+    componentsList = componentsList.filter(function(item){
+      if(item == "Component : undefined"){
+        return false;
+      } else {
+        return true;
+      }
+    });
+    listOfProblems = IdeaSeed.getListOfInventorProblems(currentIdea) || [];
+    for(var i = 0; i < listOfProblems.length; i++){
+      typeOfProblem = _.invert(currentIdea)[listOfProblems[i][1]];
+      rankingOfProblem = idea[typeOfProblem.slice(0, -7) + "Priority"];
+      listOfProblems[i].push(rankingOfProblem);
+    }
+    listOfProblems = _.sortBy(listOfProblems, function(array){ return array[2];});
+    if(currentIdea.variants.length > 0){
+      for(var i = 0; i < currentIdea.variants.length; i++){
+        variantDates.push([
+          new Date(parseInt(currentIdea.variants[i].name.substr(-13))).toString(),
+          currentIdea.variants[i].name
+        ]);
+      }
+    }
+    return IdeaReview.find({"reviewer" : req.user.username, "ideaSeedId" : currentIdea._id})
+  })
+  .then(function(review){
+    if(review.length > 0){
+      req.session.ideaReview = review[0];
+      averageScore = Math.round(IdeaReview.averageViabilityScores(review));
+    }
+    return Aptitude.find({"_id" : {$in : currentIdea.aptitudes}})
+  })
+  .then(function(myAptitudes){
+    ideaAptitudes = myAptitudes;
+    return IdeaImage.findOne({"_id" : currentIdea.applicationReceipt})
+  })
+  .then(function(receipt){
+    currentReceipt = receipt;
+    return IdeaImage.find({"_id" : {$in : currentIdea.images}}).exec()
+  })
+  .then(function(images){
+    _.each(images,function(thisImage, index){
+      if(thisImage && thisImage.amazonURL){
+        filename = thisImage["filename"];
+        imageStyle = "";
+        imageStyle = ideaSeedHelpers.getImageOrientation(thisImage["orientation"]);
+        imageURLs.push([
+          filename,
+          thisImage["amazonURL"],
+          imageStyle
+        ]);
+      }
+    });
+    res.render('pages/ideas-single', { user : req.user || {}, idea : currentIdea,
+      review : req.session.ideaReview || {},
+      averageScore : averageScore,
+      csrfToken: req.csrfToken(),
+      wholeSuggestionBlockInfo : wholeSuggestionBlockInfo,
+      variantDates : variantDates,
+      receipt : currentReceipt,
+      strengthResponse : currentAppStrength,
+      appStrengthText : currentAppStrength['appStrengthText'] || "" ,
+      appStrengthClass : currentAppStrength['appStrengthClass'] || "" ,
+      problemAreas  : problemAreas,
+      aptitudes : ideaAptitudes,
+      headshot : headshotURL,
+      headshotStyle : headshotStyle,
+      imageURLs : imageURLs,
+      inventorName : currentIdea.inventorName,
+      problems : problems,
+      components : components,
+      viabilities : viabilities,
+      listOfProblems : listOfProblems,
+      openCampaign: openCampaign
+    });
+  
+  })
+  .catch(function(err){
+    // just need one of these
+    console.log('error:', err);
+    res.redirect('/');
+  });
+
+});
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for saving session info for an idea seed, then redirecting
+* to the /ideas pathname
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/ideas/:ideaName/redesign', csrfProtection, function(req, res){
 
   if(!(req.user && req.user.username)) {
     console.log("not logged in")
@@ -2547,7 +2817,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
         ]);
       }
     });
-    res.render('pages/ideas-single', { user : req.user || {}, idea : currentIdea,
+    res.render('pages/idea-single-redesign', { user : req.user || {}, idea : currentIdea,
       review : req.session.ideaReview || {},
       averageScore : averageScore,
       csrfToken: req.csrfToken(),
@@ -2577,6 +2847,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
     res.redirect('/');
   });
 });
+
 
 /*****************************************************************
 ******************************************************************

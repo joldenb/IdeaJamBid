@@ -5,42 +5,33 @@ html
   body
   .header.navbar.navbar-default
     include ../partials/header.jade
-
   .container-fluid.idea-summary
-    .row(class="visibility-row-#{idea.visibility}")
-      .col-sm-4
-        if idea.visibility == "private"
-          a#visibilityLink
-            h3 Visibility : #{idea.visibility.charAt(0).toUpperCase() + idea.visibility.slice(1)}
-              span.glyphicon.glyphicon-pencil
-        else
-          h3 Visibility : #{idea.visibility.charAt(0).toUpperCase() + idea.visibility.slice(1)}
-      if inventorName == user.username
-        .col-sm-8.patent-strength-row
-          .app-strength-bar.col-md-8
-            .app-strength(class="#{appStrengthClass}") #{appStrengthText}
-          .col-md-4.app-strength-button
-            if appStrengthClass == "yes col-md-12" || idea.visibility == "public"
-              a.btn.btn-go.btn-lg.btn-block#file-patent(data-toggle="modal" data-target="#filePatentModal") Generate Patent Application
-            else
-              a.btn.btn-go.btn-lg.btn-block#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal") Next Steps
     .row.idea-seed-profile
-      .col-sm-4
+      .col-sm-8
         if(imageURLs.length > 0)
           .imagesList
-            each imageURL, index in imageURLs
-              if index == 0
-                .image-summary-image
-                  div(id='#{imageURL[0]}' style="height: 300px; max-width: 400px; background-image : url('" + '#{imageURL[1] || "/avatar.png"}' + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + "#{imageURL[2]}")
-              if index < 3 && index > 0
-                img.ideaSeedThumbnails(src=imageURL[1]  style=imageURL[2])
-          .view-all-images-btn
-            a.btn.secondary-btn.btn-go.btn-lg.btn-block( href="/image-upload" ) More Photos
+            if imageURLs[0]
+              .image-summary-image
+                .visibility-header-column
+                  if idea.visibility == "private"
+                    a#visibilityLink
+                      h5 Visibility : #{idea.visibility.charAt(0).toUpperCase() + idea.visibility.slice(1)}
+                        span.glyphicon.glyphicon-pencil
+                  else
+                    h5 Visibility : #{idea.visibility.charAt(0).toUpperCase() + idea.visibility.slice(1)}
+                .clipped-corner
+                div(id='#{imageURLs[0][0]}' style="height: 400px; margin: 0 auto; width: 90%; background-image : url('" + '#{imageURLs[0][1] || "/avatar.png"}' + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + "#{imageURLs[0][2]}")
+            .ideaseed-image-thumbnails
+              each imageURL, index in imageURLs
+                if index < 3 && index > 0
+                  img.ideaSeedThumbnails(src=imageURL[1]  style=imageURL[2])
         else
           a(href="/image-upload")
             .upload-image-div
               span.glyphicon.glyphicon-cloud-upload.big-upload-icon
-
+      .col-sm-4.desktop-component-section
+        .score-wrapper
+          h3.average-score-number Viability Score: #{averageScore}
         if idea.name
           h1 #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
         if idea.name && inventorName == user.username
@@ -52,11 +43,13 @@ html
             .col-xs-12
               a.btn.btn-electric.btn-lg.btn-block#inviteCollaboratorsButton(type="button" data-toggle="modal" data-target="#inviteCollaboratorsModal") Invite Collaborators
         .row
-          .col-xs-12
-          if openCampaign !== undefined
-            a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign' ontouchstart="this.style.background = '#007338';") Fund This Idea
-          else if inventorName === user.username && idea.visibility === "public"
-            a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign/new' ontouchstart="this.style.background = '#007338';") Crowdfund
+          .col-sm-6
+            a#score-now-button.btn(type="button"  class="btn btn-go btn-lg btn-block" ontouchstart="this.style.background = '#007338';" href="#add-viability-scores-row") Score
+          .col-sm-6
+            if openCampaign !== undefined
+              a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign' ontouchstart="this.style.background = '#007338';" disabled) Fund This Idea
+            else if inventorName === user.username && idea.visibility === "public"
+              a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign/new' ontouchstart="this.style.background = '#007338';" disabled) Crowdfund
 
           .col-xs-12
             #idea-summary-aptitudes.aptitudeList
@@ -66,21 +59,11 @@ html
                   ul
                     each aptitude, aptIndex in aptitudes
                       li(data-apt-id="#{aptitude.identifier}") 
-                        p #{aptIndex + 1} : #{aptitude.title}
-                if inventorName == user.username
-                  if !aptitudes || aptitudes.length == 0
-                    h4 Aptitudes
-                  form(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
-                    .form-group
-                      |  
-                      input(type="hidden", name="_csrf", value="#{csrfToken}")
-                      input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
-                    .modal-footer
-                      button.btn.btn-go.btn-lg#aptitudeSubmit(type='submit') Save
-
-      .col-sm-8.desktop-component-section
+                        p #{aptitude.title}
+    .row
+      .col-sm-12.desktop-component-section
         if idea.name
-          h2.component-title Components of the #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
+          h2.component-title Components
           if components.length > 0
             each component, identifier in wholeSuggestionBlockInfo
               include ../partials/component-summary-element.jade
@@ -88,26 +71,6 @@ html
             h4 <i>No Components Yet</i>
         else
           <i>No components yet</i>
-        if inventorName == user.username
-          .row.idea-sumamart-buttons
-            .col-xs-12
-                button(type="button" id="componentModalButton"  class="btn btn-go btn-block btn-lg" data-toggle="modal" data-target="#addComponentModal") Add Component
-        .row.idea-sumamart-buttons
-          if components.length > 0
-            .col-xs-12
-              a(href='/ideas/' + idea.name + '/view-all-components')
-                button(type="button"  class="btn btn-industry btn-lg btn-block") View All Components
-
-      .col-sm-8.mobile-component-section
-        a#components-expand-link
-          h3 Components
-            span#components-expand-icon.glyphicon.glyphicon-collapse-down
-        .expandable-components-section(style="display:none;")
-          if components.length > 0
-              each component, identifier in wholeSuggestionBlockInfo
-                include ../partials/component-summary-element.jade
-            else
-              h4 <i>No Components Yet</i>
 
         .row.mobile-only
           if inventorName != user.username
@@ -127,35 +90,730 @@ html
           else
             .idea-summary-data#idea-summary-waste-values
               h4 You can only score someone else's ideas (right now)
+    #add-viability-scores-row(class="row")
+      .col-xs-1
+        a.viabilty-slider-left-arrow
+          img(src="/left-arrow.png")
+      .col-xs-10.slide-content
+        .viability-slide-wrapper
+          .viability-scoring-intro-slide.score-slide
+            .row
+              .col-xs-4
+              .col-xs-4
+                h2 Score #{idea.name}
+                h4 Give your invention an honest evaluation based on the following categories and it will help identify areas of improvement
+                button.btn.btn-go.btn-lg.btn-block#beginScoring(type='submit') Go
+              .col-xs-4
+          .performability-slide.score-slide
+            .row.top-row.scoreIdea
+              .col-xs-12
+                h2.top-row-header Score #{idea.name}'s Performability
+                h3 Will the #{idea.name} effectively work to solve the problem of #{idea.problem}?
+            .row.scoring-stars
+              .col-xs-1
+              .col-xs-2
+                img.star-one.performability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-two.performability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-three.performability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-four.performability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-five.performability-star(src="/empty-star.png")
+              .col-xs-1
+            .row.viability-labels
+              .col-xs-1
+              .col-xs-2
+                h3 Incapable
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+                h3 Effective
+              .col-xs-1
+            .problem-slide
+              .row
+                h3 Is there a specific reason for this low score?
+                form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                  .form-group
+                    input(type="hidden", name="_csrf", value="#{csrfToken}")
+                    input.problemArea(type="hidden", value="Area : Performability" )
+                    textarea.problemStatement(class="form-control" rows="3")
+                      | The problem is
+                    p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                    button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                      //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                    button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
 
-    .row.idea-seed-feedback
+          .affordability-slide.score-slide
+            .row.top-row.scoreIdea
+              .col-xs-12
+                h2.top-row-header Score #{idea.name}'s Affordability
+                h3 Will #{idea.name} stay within reasonable cost expectations when solving the problem of #{idea.problem}?
+            .row.scoring-stars
+              .col-xs-1
+              .col-xs-2
+                img.star-one.affordability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-two.affordability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-three.affordability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-four.affordability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-five.affordability-star(src="/empty-star.png")
+              .col-xs-1
+            .row.viability-labels
+              .col-xs-1
+              .col-xs-2
+                h3 Expensive
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+                h3 Economical
+              .col-xs-1
+            .problem-slide
+              .row
+                h3 Why the low score?
+                form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                  .form-group
+                    input(type="hidden", name="_csrf", value="#{csrfToken}")
+                    input.problemArea(type="hidden", value="Area : Affordability")
+                    textarea.problemStatement(class="form-control" rows="3")
+                      | The problem is
+                    p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                    button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                      //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                    button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+          .featurability-slide.score-slide
+            .row.top-row.scoreIdea
+              .col-xs-12
+                h2.top-row-header Score #{idea.name}'s Featurability
+                h3 Will #{idea.name} provide enough added benefits to solve the problem of #{idea.problem}?
+            .row.scoring-stars
+              .col-xs-1
+              .col-xs-2
+                img.star-one.featurability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-two.featurability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-three.featurability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-four.featurability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-five.featurability-star(src="/empty-star.png")
+              .col-xs-1
+            .row.viability-labels
+              .col-xs-1
+              .col-xs-2
+                h3 Bland
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+                h3 Multifaceted
+              .col-xs-1
+            .problem-slide
+              .row
+                h3 Why the low score?
+                form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                  .form-group
+                    input(type="hidden", name="_csrf", value="#{csrfToken}")
+                    input.problemArea(type="hidden", value="Area : Featurability")
+                    textarea.problemStatement(class="form-control" rows="3")
+                      | The problem is
+                    p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                    button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                      //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                    button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+
+          .deliverability-slide.score-slide
+            .row.top-row.scoreIdea
+              .col-xs-12
+                h2.top-row-header Score #{idea.name}'s Deliverability
+                h3 Will #{idea.name} be ready on demand when and where the user wants it to solve the problem of #{idea.problem}?
+            .row.scoring-stars
+              .col-xs-1
+              .col-xs-2
+                img.star-one.deliverability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-two.deliverability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-three.deliverability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-four.deliverability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-five.deliverability-star(src="/empty-star.png")
+              .col-xs-1
+            .row.viability-labels
+              .col-xs-1
+              .col-xs-2
+                h3 Unaccessible
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+                h3 Available
+              .col-xs-1
+            .problem-slide
+              .row
+                h3 Why the low score?
+                form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                  .form-group
+                    input(type="hidden", name="_csrf", value="#{csrfToken}")
+                    input.problemArea(type="hidden", value="Area : Deliverability")
+                    textarea.problemStatement(class="form-control" rows="3")
+                      | The problem is
+                    p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                    button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                      //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                    button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+          .useability-slide.score-slide
+            .row.top-row.scoreIdea
+              .col-xs-12
+                h2.top-row-header Score #{idea.name}'s Useability
+                h3 Will #{idea.name} be quickly and easily learned and implemented when solving the problem of #{idea.problem}?
+            .row.scoring-stars
+              .col-xs-1
+              .col-xs-2
+                img.star-one.useability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-two.useability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-three.useability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-four.useability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-five.useability-star(src="/empty-star.png")
+              .col-xs-1
+            .row.viability-labels
+              .col-xs-1
+              .col-xs-2
+                h3 Impractical
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+                h3 Pragmatic
+              .col-xs-1
+            .problem-slide
+              .row
+                h3 Why the low score?
+                form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                  .form-group
+                    input(type="hidden", name="_csrf", value="#{csrfToken}")
+                    input.problemArea(type="hidden", value="Area : Useability")
+                    textarea.problemStatement(class="form-control" rows="3")
+                      | The problem is
+                    p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                    button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                      //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                    button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+          .maintainability-slide.score-slide
+            .row.top-row.scoreIdea
+              .col-xs-12
+                h2.top-row-header Score #{idea.name}'s Maintainability
+                h3 How easy will #{idea.name} be to keep in service when solving the problem of #{idea.problem}?
+            .row.scoring-stars
+              .col-xs-1
+              .col-xs-2
+                img.star-one.maintainability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-two.maintainability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-three.maintainability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-four.maintainability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-five.maintainability-star(src="/empty-star.png")
+              .col-xs-1
+            .row.viability-labels
+              .col-xs-1
+              .col-xs-2
+                h3 Untenable
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+                h3 Sustainable
+              .col-xs-1
+            .problem-slide
+              .row
+                h3 Why the low score?
+                form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                  .form-group
+                    input(type="hidden", name="_csrf", value="#{csrfToken}")
+                    input.problemArea(type="hidden", value="Area : Maintainability")
+                    textarea.problemStatement(class="form-control" rows="3")
+                      | The problem is
+                    p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                    button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                      //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                    button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+          .durability-slide.score-slide
+            .row.top-row.scoreIdea
+              .col-xs-12
+                h2.top-row-header Score #{idea.name}'s Durability
+                h3 Is #{idea.name} robust enough to withstand abuse when solving the problem of #{idea.problem}? 
+            .row.scoring-stars
+              .col-xs-1
+              .col-xs-2
+                img.star-one.durability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-two.durability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-three.durability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-four.durability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-five.durability-star(src="/empty-star.png")
+              .col-xs-1
+            .row.viability-labels
+              .col-xs-1
+              .col-xs-2
+                h3 Unreliable
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+                h3 Enduring
+              .col-xs-1
+            .problem-slide
+              .row
+                h3 Why the low score?
+                form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                  .form-group
+                    input(type="hidden", name="_csrf", value="#{csrfToken}")
+                    input.problemArea(type="hidden", value="Area : Durability")
+                    textarea.problemStatement(class="form-control" rows="3")
+                      | The problem is
+                    p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                    button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                      //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                    button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+          .imageability-slide.score-slide
+            .row.top-row.scoreIdea
+              .col-xs-12
+                h2.top-row-header Score #{idea.name}'s Imageability
+                h3 Will #{idea.name} convey an image of quality and prestige when solving the problem of #{idea.problem}?
+            .row.scoring-stars
+              .col-xs-1
+              .col-xs-2
+                img.star-one.imageability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-two.imageability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-three.imageability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-four.imageability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-five.imageability-star(src="/empty-star.png")
+              .col-xs-1
+            .row.viability-labels
+              .col-xs-1
+              .col-xs-2
+                h3 Undesirable
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+                h3 Appealing
+              .col-xs-1
+            .problem-slide
+              .row
+                h3 Why the low score?
+                form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                  .form-group
+                    input(type="hidden", name="_csrf", value="#{csrfToken}")
+                    input.problemArea(type="hidden", value="Area : Imageability")
+                    textarea.problemStatement(class="form-control" rows="3")
+                      | The problem is
+                    p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                    button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                      //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                    button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+          .complexity-slide.score-slide
+            .row.top-row.scoreIdea
+              .col-xs-12
+                h2.top-row-header Score #{idea.name}'s Complexity
+                h3 Will #{idea.name} require a large number of steps to produce, assemble, ship or use to solve the problem of #{idea.problem}?
+            .row.scoring-stars
+              .col-xs-1
+              .col-xs-2
+                img.star-one.complexity-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-two.complexity-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-three.complexity-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-four.complexity-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-five.complexity-star(src="/empty-star.png")
+              .col-xs-1
+            .row.viability-labels
+              .col-xs-1
+              .col-xs-2
+                h3 Simple
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+                h3 Complicated
+              .col-xs-1
+            .problem-slide
+              .row
+                h3 Why the low score?
+                form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                  .form-group
+                    input(type="hidden", name="_csrf", value="#{csrfToken}")
+                    input.problemArea(type="hidden", value="Area : Complexity")
+                    textarea.problemStatement(class="form-control" rows="3")
+                      | The problem is
+                    p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                    button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                      //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                    button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+          .precision-slide.score-slide
+            .row.top-row.scoreIdea
+              .col-xs-12
+                h2.top-row-header Score #{idea.name}'s Precision
+                h3 Will #{idea.name} require specific timing, precise sequence or much practice to solve the problem of #{idea.problem}?
+            .row.scoring-stars
+              .col-xs-1
+              .col-xs-2
+                img.star-one.precision-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-two.precision-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-three.precision-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-four.precision-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-five.precision-star(src="/empty-star.png")
+              .col-xs-1
+            .row.viability-labels
+              .col-xs-1
+              .col-xs-2
+                h3 Lenient
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+                h3 Fussy
+              .col-xs-1
+            .problem-slide
+              .row
+                h3 Why the low score?
+                form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                  .form-group
+                    input(type="hidden", name="_csrf", value="#{csrfToken}")
+                    input.problemArea(type="hidden", value="Area : Precision")
+                    textarea.problemStatement(class="form-control" rows="3")
+                      | The problem is
+                    p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                    button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                      //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                    button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+
+          .variability-slide.score-slide
+            .row.top-row.scoreIdea
+              .col-xs-12
+                h2.top-row-header Score #{idea.name}'s Variability
+                h3 Will use or production of #{idea.name} change based upon specific scenarios or circumstances when solving the problem of #{idea.problem}?
+            .row.scoring-stars
+              .col-xs-1
+              .col-xs-2
+                img.star-one.variability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-two.variability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-three.variability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-four.variability-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-five.variability-star(src="/empty-star.png")
+              .col-xs-1
+            .row.viability-labels
+              .col-xs-1
+              .col-xs-2
+                h3 Consistent
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+                h3 Erratic
+              .col-xs-1
+            .problem-slide
+              .row
+                h3 Why the low score?
+                form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                  .form-group
+                    input(type="hidden", name="_csrf", value="#{csrfToken}")
+                    input.problemArea(type="hidden", value="Area : Variability")
+                    textarea.problemStatement(class="form-control" rows="3")
+                      | The problem is
+                    p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                    button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                      //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                    button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+
+          .sensitivity-slide.score-slide
+            .row.top-row.scoreIdea
+              .col-xs-12
+                h2.top-row-header Score #{idea.name}'s Sensitivity
+                h3 Will usage or the environment easily disturb or damage #{idea.name} while solving the problem of #{idea.problem}?
+            .row.scoring-stars
+              .col-xs-1
+              .col-xs-2
+                img.star-one.sensitivity-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-two.sensitivity-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-three.sensitivity-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-four.sensitivity-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-five.sensitivity-star(src="/empty-star.png")
+              .col-xs-1
+            .row.viability-labels
+              .col-xs-1
+              .col-xs-2
+                h3 Reliable
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+                h3 Fragile
+              .col-xs-1
+            .problem-slide
+              .row
+                h3 Why the low score?
+                form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                  .form-group
+                    input(type="hidden", name="_csrf", value="#{csrfToken}")
+                    input.problemArea(type="hidden", value="Area : Sensitivity")
+                    textarea.problemStatement(class="form-control" rows="3")
+                      | The problem is
+                    p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                    button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                      //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                    button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+
+          .immaturity-slide.score-slide
+            .row.top-row.scoreIdea
+              .col-xs-12
+                h2.top-row-header Score #{idea.name}'s Immaturity
+                h3 Will the design, manufacture, or production of #{idea.name} require new or unproven technology, processes or materials to solve the problem of #{idea.problem}?
+            .row.scoring-stars
+              .col-xs-1
+              .col-xs-2
+                img.star-one.immaturity-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-two.immaturity-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-three.immaturity-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-four.immaturity-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-five.immaturity-star(src="/empty-star.png")
+              .col-xs-1
+            .row.viability-labels
+              .col-xs-1
+              .col-xs-2
+                h3 Developed
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+                h3 Raw
+              .col-xs-1
+            .problem-slide
+              .row
+                h3 Why the low score?
+                form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                  .form-group
+                    input(type="hidden", name="_csrf", value="#{csrfToken}")
+                    input.problemArea(type="hidden", value="Area : Immaturity")
+                    textarea.problemStatement(class="form-control" rows="3")
+                      | The problem is
+                    p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                    button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                      //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                    button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+
+          .dangerous-slide.score-slide
+            .row.top-row.scoreIdea
+              .col-xs-12
+                h2.top-row-header Score #{idea.name}'s Dangerousness
+                h3 Will #{idea.name} require human or environmental protections to reduce potential harm?
+            .row.scoring-stars
+              .col-xs-1
+              .col-xs-2
+                img.star-one.dangerous-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-two.dangerous-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-three.dangerous-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-four.dangerous-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-five.dangerous-star(src="/empty-star.png")
+              .col-xs-1
+            .row.viability-labels
+              .col-xs-1
+              .col-xs-2
+                h3 Harmless
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+                h3 Hazardous
+              .col-xs-1
+            .problem-slide
+              .row
+                h3 Why the low score?
+                form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                  .form-group
+                    input(type="hidden", name="_csrf", value="#{csrfToken}")
+                    input.problemArea(type="hidden", value="Area : Danger")
+                    textarea.problemStatement(class="form-control" rows="3")
+                      | The problem is
+                    p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                    button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                      //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                    button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+
+          .skills-slide.score-slide
+            .row.top-row.scoreIdea
+              .col-xs-12
+                h2.top-row-header Score #{idea.name}'s Level of Skills to Operate
+                h3 Will #{idea.name} require many specific skills to solve the problem of #{idea.problem}?
+            .row.scoring-stars
+              .col-xs-1
+              .col-xs-2
+                img.star-one.skills-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-two.skills-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-three.skills-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-four.skills-star(src="/empty-star.png")
+              .col-xs-2
+                img.star-five.skills-star(src="/empty-star.png")
+              .col-xs-1
+            .row.viability-labels
+              .col-xs-1
+              .col-xs-2
+                h3 Easy
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+              .col-xs-2
+                h3 Onerous
+              .col-xs-1
+            .problem-slide
+              .row
+                h3 Why the low score?
+                form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                  .form-group
+                    input(type="hidden", name="_csrf", value="#{csrfToken}")
+                    input.problemArea(type="hidden", value="Area : Skills")
+                    textarea.problemStatement(class="form-control" rows="3")
+                      | The problem is
+                    p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                    button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                      //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                    button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+          .viability-scoring-outro-slide.score-slide
+            .row
+              .col-xs-4
+              .col-xs-4
+                h2 Great job!
+                h4 You're almost done. Think of any other areas of improvement for #{idea.name} and view your idea profile.
+                a#add-viability-next-btn.btn.btn-go.btn-lg.btn-block(href="#add-imperfections-row") Next Step
+              .col-xs-4
+
+      .col-xs-1.viabilty-slider-right-arrow-column
+        a.viabilty-slider-right-arrow
+          img(src="/right-arrow.png")
+    div(class="viability-icons row")
+      .col-xs-1
+      .col-xs-10
+        a.slide-icon-one
+          img.performability-icon(src="/perfIcon.png")
+        a.slide-icon-two
+          img.affordability-icon(src="/affordIcon.png")
+        a.slide-icon-three
+          img.featurability-icon(src="/perfIcon.png")
+        a.slide-icon-four
+          img.deliverability-icon(src="/deliverabilityIcon.png")
+        a.slide-icon-five
+          img.useability-icon(src="/useabilityIcon.png")
+        a.slide-icon-six
+          img.maintainability-icon(src="/maintainabilityIcon.png")
+        a.slide-icon-seven
+          img.durability-icon(src="/durabilityIcon.png")
+        a.slide-icon-eight
+          img.imageability-icon(src="/imageabilityIcon.png")
+        a.slide-icon-nine
+          img.complexity-icon(src="/complexityIcon.png")
+        a.slide-icon-ten
+          img.precision-icon(src="/precisionIcon.png")
+        a.slide-icon-eleven
+          img.variability-icon(src="/variabilityIcon.png")
+        a.slide-icon-twelve
+          img.sensitivity-icon(src="/sensitivityIcon.png")
+        a.slide-icon-thirteen
+          img.immaturity-icon(src="/immaturityIcon.png")
+        a.slide-icon-fourteen
+          img.dangerous-icon(src="/dangerIcon.png")
+        a.slide-icon-fifteen
+          img.skills-icon(src="/skillsIcon.png")
+      .col-xs-1
+    .row.improve-idea-row
       .col-xs-12
-        a#feedback-expand-link
-          h2 Feedback for #{idea.name}
-            span#feedback-expand-icon.glyphicon.glyphicon-collapse-down
-
-    .row.idea-seed-all-feedback-areas
-      .col-md-4.score-idea-row
-        h2#imperfections-header Viability Score
-          a.btn.btn-go.btn-lg.btn-block.viabilityModalButton( type="button"  class="btn btn-go" data-toggle="modal" data-target="#viabilityModal") Score Viability Categories
-      .col-md-4.idea-seed-imperfections
-        h2#imperfections-header Imperfections
-        each problem, index in problems
-          if(index < 3 && problem.text && problem['identifier'])
-            include ../partials/problem-summary-element.jade
-        button(type="button" id="problemModalButton"  class="btn btn-go btn-lg btn-block" data-toggle="modal" data-target="#addProblemModal" ontouchstart="this.style.background = '#007338';") Add New Imperfection
-        a(href='/ideas/' + idea.name + '/view-all-imperfections')
-          button(type="button"  class="btn btn-industry btn-lg btn-block") View All Imperfections
-
-      .col-md-4.idea-seed-suggestions
-        h2 Suggestions to Imperfections
-        .view-all-components-wrapper
-          a.btn.btn-electric.btn-lg.btn-block#componentsViewAllLink(type="button" href='/ideas/' + idea.name + '/view-all-suggestions') View All Suggestions
-
+        ul.nav.nav-tabs(role="tablist")
+          li(class="active" role="presentation")
+            a(href="#imperfections" aria-controls="#imperfections" role="tab" data-toggle="tab")
+              h3 Imperfections
+          li(role="presentation")
+            a(href="#suggestions" aria-controls="#suggestions" role="tab" data-toggle="tab") 
+              h3 Suggestions
+        .tab-content
+          .tab-pane.active#imperfections(role="tabpanel")
+            - var inventor = inventorName
+            - var currentUser = user.username
+            each problem, index in problems
+              if(problem.text && problem['identifier'])
+                include ../partials/problem-summary-element.jade
+            button(type="button" id="problemModalButton"  class="btn btn-go btn-lg btn-block" data-toggle="modal" data-target="#addProblemModal" ontouchstart="this.style.background = '#007338';") Add New Imperfection
+            a(href='/ideas/' + idea.name + '/view-all-imperfections')
+              button(type="button"  class="btn btn-industry btn-lg btn-block") View All Imperfections
+          .tab-pane#suggestions(role="tabpanel")
+            .view-all-components-wrapper
+              a.btn.btn-electric.btn-lg.btn-block#componentsViewAllLink(type="button" href='/ideas/' + idea.name + '/view-all-suggestions') View All Suggestions
+            each suggestion, identifier in wholeSuggestionBlockInfo
+              if suggestion.document.inventorApproved !== false && suggestion.document.descriptions && suggestion.document.descriptions[0]
+                include ../partials/suggestion-summary-element.jade
+    .row.share-idea-row
+      .col-md-3
+      .col-md-6.sharing-icons
+        h2 Share #{idea.name}
+        br
+        a(class="btn btn-danger btn-lg") 
+          span.fa.fa-google-plus Google
+        |  
+        a(class="btn btn-primary btn-lg") 
+          span.fa.fa-facebook Facebook
+        |  
+        a(class="btn btn-info btn-lg") 
+          span.fa.fa-linkedin LinkedIn
+      .col-md-3
 
   .pagefooter
     include ../partials/footer.jade
-
   #titleModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
       .modal-content
@@ -179,7 +837,6 @@ html
           .row
             .col-xs-12
               .hint Hint: Choose a concise, catchy and descriptive name for your idea.
-
   #viewAllImperfections.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
       .modal-content
@@ -199,7 +856,6 @@ html
               button.btn-lg.btn-block(type="button" id="problemModalButton"  class="btn btn-go" data-toggle="modal" data-target="#addProblemModal") Add a Problem
         .modal-footer
           button.btn.btn-info.btn-lg.btn-block(data-dismiss="modal") Ok
-
   #whatsLeftModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
       .modal-content
@@ -376,7 +1032,6 @@ html
               else
                 h3 Name your idea before starting the process of generating a provisional patent application template.
             br
-
           .modal-footer
             button#enterMoreInformation.btn.btn-info(data-dismiss="modal") Enter More Information
             a.btn.btn-go#bypass-application-button(data-toggle="modal" data-target="#confirmExposeIdeaModal") Expose Idea Now
@@ -393,8 +1048,6 @@ html
           .modal-footer
             button.btn.btn-industry(data-dismiss="modal") Cancel
             button#exposeIdeaNow.btn.btn-go Yes, Expose Now!
-
-
   button(type="button" id="titleModalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#titleModal") Go Win Fight
 
   #shareModal.modal.fade.annotate-modal(role="dialog")
@@ -415,8 +1068,6 @@ html
               button.btn.btn-info(data-dismiss="modal") Cancel
               button.btn.btn-success#emailSend(type='submit') Send
                 img.einstein-point-btn-icon(src="/single-einstein-point.png")
-
-
   #inviteCollaboratorsModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
       .modal-content
@@ -440,700 +1091,88 @@ html
               input(type="hidden", name="_csrf", value="#{csrfToken}")
               button.btn.btn-success.btn-lg.btn-block#inviteCollaboratorSend(type='submit') Send
               button.btn.btn-info.btn-lg.btn-block(data-dismiss="modal") Cancel
-
-
   button(type="button" id="titleModalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#titleModal") Go Win Fight
 
   include ../partials/js-includes.jade
   script(src='/exif.js')
   script(type="text/javascript").
-    
-    function initializeAllSliders(idea){
-      var labelArr = _.range(101).map(function(number){
-        return number.toString();
+    var viabilitySliderWidth = $(".slide-content").width();
+    $(".viability-slide-wrapper > div").attr("style", "width:" + viabilitySliderWidth + "px;");
+    //twice the left-right margin on desktop size sliders
+    viabilitySliderWidth += 30;
+    $(".viabilty-slider-right-arrow").click(function(event){
+      $.each($(".problem-slide").filter(":visible"),function(index, element){
+        $(element).siblings(".scoring-stars").animate({
+          "marginTop" : "+=10em",
+          "width" : "100%"
+        }, 500)
+        $(element).siblings(".viability-labels").removeClass("hidden");
+        $(element).hide()
       });
-      var initialValue, min=1, max=100, valueEntered = false;
-      var viabilitySliders = [
-        "#perf",
-        "#afford",
-        "#feature",
-        "#deliver",
-        "#useability",
-        "#maintain",
-        "#danger",
-        "#durability",
-        "#image",
-        "#complex",
-        "#precision",
-        "#variability",
-        "#sensitivity",
-        "#immature",
-        "#skills"
-      ]
-
-      
-      for(var i = 0; i < viabilitySliders.length; i++){      
-        valueEntered = false;
-        switch (viabilitySliders[i]){
-          case "#perf" : 
-            initialValue = idea.performOne || 50;
-            if(idea.performOne){
-              valueEntered = true;
-            } else { valueEntered = false; }
-            break;
-          case "#afford" : 
-            initialValue = idea.affordOne || 50;
-            if(idea.affordOne){
-              valueEntered = true;
-            } else { valueEntered = false; }
-            break;
-          case "#feature" : 
-            initialValue = idea.featureOne || 50;
-            if(idea.featureOne){
-              valueEntered = true;
-            } else { valueEntered = false; }
-            break;
-          case "#deliver" : 
-            initialValue = idea.deliverOne || 50;
-            if(idea.deliverOne){
-              valueEntered = true;
-            } else { valueEntered = false; }
-            break;
-          case "#useability" : 
-            initialValue = idea.useabilityOne || 50;
-            if(idea.useabilityOne){
-              valueEntered = true;
-            } else { valueEntered = false; }
-            break;
-          case "#maintain" : 
-            initialValue = idea.maintainOne || 50;
-            if(idea.maintainOne){
-              valueEntered = true;
-            } else { valueEntered = false; }
-            break;
-          case "#danger" : 
-            initialValue = idea.dangerOne || 50;
-            if(idea.dangerOne){
-              valueEntered = true;
-            } else { valueEntered = false; }
-            break;
-          case "#durability" : 
-            initialValue = idea.durabilityOne || 50;
-            if(idea.durabilityOne){
-              valueEntered = true;
-            } else { valueEntered = false; }
-            break;
-          case "#image" : 
-            initialValue = idea.imageOne || 50;
-            if(idea.imageOne){
-              valueEntered = true;
-            } else { valueEntered = false; }
-            break;
-          case "#complex" : 
-            initialValue = idea.complexOne || 50;
-            if(idea.complexOne){
-              valueEntered = true;
-            } else { valueEntered = false; }
-            break;
-          case "#precision" : 
-            initialValue = idea.precisionOne || 50;
-            if(idea.precisionOne){
-              valueEntered = true;
-            } else { valueEntered = false; }
-            break;
-          case "#variability" : 
-            initialValue = idea.variabilityOne || 50;
-            if(idea.variabilityOne){
-              valueEntered = true;
-            } else { valueEntered = false; }
-            break;
-          case "#sensitivity" : 
-            initialValue = idea.sensitivityOne || 50;
-            if(idea.sensitivityOne){
-              valueEntered = true;
-            } else { valueEntered = false; }
-            break;
-          case "#immature" : 
-            initialValue = idea.immatureOne || 50;
-            if(idea.immatureOne){
-              valueEntered = true;
-            } else { valueEntered = false; }
-            break;
-          case "#skills" : 
-            initialValue = idea.skillsOne || 50;
-            if(idea.skillsOne){
-              valueEntered = true;
-            } else { valueEntered = false; }
-            break;
-        }
-
-        ////////////////////////////////////////////
-        // SET UP SLIDER ONE
-        ////////////////////////////////////////////
-        
-        $(viabilitySliders[i]+ "Slider").slider({
-          value:initialValue,
-          min: min,
-          orientation : "horizontal",
-          range : "min",
-          max: max,
-          step: 1,
-          slide: function( event, ui ) {
-              valueEntered = true;
-              $(this).addClass("value-entered");
-          }
-        });
-
-        if(valueEntered){
-          $(viabilitySliders[i]+ "Slider").addClass("value-entered");
-        }
-
-      }
-
-      //kind of a hack because I couldnt get the previous click event handlers
-      // to detach from the submit button between viability categories
-      // as the user went through more than one in a row. I tried the jquery unbind and off
-      // functions
-      $("#viabilitySubmit").remove();
-      $("<button class='btn btn-success' id='viabilitySubmit'>Next</button>")
-      .appendTo("#viabilityModal .modal-footer.view-all-button")
-      .click(function(event){
-
-        var data = {_csrf : $('[name="_csrf"]').val()};
-        $(".ui-slider").each(function(index, element){
-          switch ($(this).attr("id")){
-            case "perfSlider" : 
-              if($(element).hasClass("value-entered")){
-                data["performOne"] = $(element).slider("value");
-              }
-              break;
-            case "affordSlider" : 
-              if($(element).hasClass("value-entered")){
-                data["affordOne"] = $(element).slider("value");
-              }
-              break;
-            case "featureSlider" : 
-              if($(element).hasClass("value-entered")){
-                data["featureOne"] = $(element).slider("value");
-              }
-              break;
-            case "deliverSlider" : 
-              if($(element).hasClass("value-entered")){
-                data["deliverOne"] = $(element).slider("value");
-              }
-              break;
-            case "useabilitySlider" : 
-              if($(element).hasClass("value-entered")){
-                data["useabilityOne"] = $(element).slider("value");
-              }
-              break;
-            case "maintainSlider" : 
-              if($(element).hasClass("value-entered")){
-                data["maintainOne"] = $(element).slider("value");
-              }
-              break;
-            case "dangerSlider" : 
-              if($(element).hasClass("value-entered")){
-                data["dangerOne"] = $(element).slider("value");
-              }
-              break;
-            case "durabilitySlider" : 
-              if($(element).hasClass("value-entered")){
-                data["durabilityOne"] = $(element).slider("value");
-              }
-              break;
-            case "imageSlider" : 
-              if($(element).hasClass("value-entered")){
-                data["imageOne"] = $(element).slider("value");
-              }
-              break;
-            case "complexSlider" : 
-              if($(element).hasClass("value-entered")){
-                data["complexOne"] = $(element).slider("value");
-              }
-              break;
-            case "precisionSlider" : 
-              if($(element).hasClass("value-entered")){
-                data["precisionOne"] = $(element).slider("value");
-              }
-              break;
-            case "variabilitySlider" : 
-              if($(element).hasClass("value-entered")){
-                data["variabilityOne"] = $(element).slider("value");
-              }
-              break;
-            case "sensitivitySlider" : 
-              if($(element).hasClass("value-entered")){
-                data["sensitivityOne"] = $(element).slider("value");
-              }
-              break;
-            case "immatureSlider" : 
-              if($(element).hasClass("value-entered")){
-                data["immatureOne"] = $(element).slider("value");
-              }
-              break;
-            case "skillsSlider" : 
-              if($(element).hasClass("value-entered")){
-                data["skillsOne"] = $(element).slider("value");
-              }
-              break;
-          }
-        });
-        $.post('/update-all-viabilities', data, function(returnData, status){
-          if(status=="success"){
-            if($(".first-four-viabilities").is(":visible")){
-              $(".first-four-viabilities").hide();
-              $(".second-four-viabilities").show();
-              $(".viabilityStatus").text("2/4");
-            } else if($(".second-four-viabilities").is(":visible")){
-              $(".second-four-viabilities").hide();
-              $(".third-four-viabilities").show();
-              $(".viabilityStatus").text("3/4");
-            } else if($(".third-four-viabilities").is(":visible")){
-              $(".third-four-viabilities").hide();
-              $(".fourth-four-viabilities").show();
-              $(".viabilityStatus").text("4/4");
-            } else if($(".fourth-four-viabilities").is(":visible")){
-              $(".fourth-four-viabilities").hide();
-              window.location.reload(true);
-            } else {
-              $(".first-four-viabilities").show();
-            }
-          } else {
-            window.location.reload(true);
-          }
-        });
-      });
-
-    } // end of initialize all sliders function
-
-    //actually invoke this method. it will be used later when some one hits the 
-    // view all button
-    //initializeAllSliders('#{idea}');
-
-    function getNextSliderConfig(categoryName, valueEntered, value){
-        switch (categoryName) {
-          case "performability" :
-            var initialValue =  value || 50;
-            
-            initiateSlider("perfSliderOne", "perfLabelOne",
-              "formPerformability", initialValue, "performability",
-              "performProblem", "affordability", valueEntered)
-            break;
-
-          case "affordability" :
-            var initialValue = value || 50;
-
-            initiateSlider("affordSliderOne", "affordLabelOne",
-              "formAffordability", initialValue, "affordability",
-              "affordProblem", "featurability", valueEntered)
-            break;
-          case "featurability" :
-            var initialValue = value || 50;
-
-            initiateSlider("featureSliderOne", "featureLabelOne",
-              "formFeaturability", initialValue, "featurability",
-              "featureProblem", "deliverability", valueEntered)
-            break;
-          case "deliverability" :
-            var initialValue = value || 50;
-
-            initiateSlider("deliverSliderOne", "deliverLabelOne",
-              "formDeliverability", initialValue, "deliverability",
-              "deliverProblem", "useability", valueEntered)
-            break;
-          case "useability" : 
-            var initialValue = value || 50;
-
-            initiateSlider("useabilitySliderOne", "useabilityLabelOne",
-              "formUseability", initialValue, "useability",
-              "useabilityProblem", "maintainability", valueEntered)
-            break;
-          case "maintainability" : 
-            var initialValue = value || 50;
-
-            initiateSlider("maintainabilitySliderOne", "maintainabilityLabelOne",
-              "formMaintainability", initialValue, "maintainability",
-              "maintainProblem", "durability", valueEntered)
-            break;
-          case "durability" : 
-            var initialValue = value || 50;
-
-            initiateSlider("durabilitySliderOne", "durabilityLabelOne",
-              "formDurability", initialValue, "durability",
-              "durabilityProblem", "imageability", valueEntered)
-            break;
-          case "imageability" : 
-            var initialValue = value || 50;
-
-            initiateSlider("imageabilitySliderOne", "imageabilityLabelOne",
-              "formImageability", initialValue, "imageability",
-              "imageProblem", "complexity", valueEntered)
-            break;
-          case "complexity" : 
-            var initialValue = value || 50;
-
-            initiateSlider("complexitySliderOne", "complexityLabelOne",
-              "formComplexity", initialValue, "complexity",
-              "complexProblem", "precision", valueEntered)
-            break;
-          case "precision" : 
-            var initialValue = value || 50;
-
-            initiateSlider("precisionSliderOne", "precisionLabelOne",
-              "formPrecision", initialValue, "precision",
-              "precisionProblem", "variability", valueEntered)
-            break;
-          case "variability" : 
-            var initialValue = value || 50;
-
-            initiateSlider("variabilitySliderOne", "variabilityLabelOne",
-              "formVariability", initialValue, "variability",
-              "variabilityProblem", "sensitivity", valueEntered)
-            break;
-          case "sensitivity" : 
-            var initialValue = value || 50;
-
-            initiateSlider("sensitivitySliderOne", "sensitivityLabelOne",
-              "formSensitivity", initialValue, "sensitivity",
-              "sensitivityProblem", "immaturity", valueEntered)
-            break;
-          case "immaturity" : 
-            var initialValue = value || 50;
-
-            initiateSlider("immaturitySliderOne", "immaturityLabelOne",
-              "formImmaturity", initialValue, "immaturity",
-              "immatureProblem", "dangerous", valueEntered)
-            break;
-          case "dangerous" : 
-            var initialValue = value || 50;
-
-            initiateSlider("dangerousSliderOne", "dangerousLabelOne",
-              "formDangerous", initialValue, "dangerous",
-              "dangerProblem", "skills", valueEntered)
-            break;
-          case "skills" : 
-            var initialValue = value || 50;
-
-            initiateSlider("skillsSliderOne", "skillsLabelOne",
-              "formSkills", initialValue, "skills",
-              "skillsProblem", "view-all")
-            break;
-        }
-
-    }
-
-    function initiateSlider(sliderName, labelName, formName, initialValue, postPath, problemName, nextCategory, valueEntered){
-      var labelArr = _.range(101).map(function(number){
-        return number.toString();
-      });
-      var min=1, max=100, uiValue;
-      
-
-      $("#"+ sliderName).slider({
-        value:initialValue,
-        orientation : "horizontal",
-        range : "min",
-        min: min,
-        max: max,
-        step: 1,
-        slide: function( event, ui ) {
-            valueEntered = true;
-            uiValue = ui.value;
-            $(this).addClass("value-entered");
-            $("#" + labelName).text(labelArr[ui.value]);
-            $("#" + labelName).css("margin-left", (ui.value-min)/(max-min)*100+"%");
-            $("#" + labelName).css("left", "-50px");
-        }
-      });
-      if(valueEntered){
-        $("#"+ sliderName).addClass("value-entered");
-      }
-      $("#" + labelName).text(labelArr[initialValue]);
-      $("#" + labelName ).css("margin-left", (initialValue -1)/(max-min)*100+"%");
-      $("#" + labelName).css("left", "-50px");
-
-      
-      //kind of a hack because I couldnt get the previous click event handlers
-      // to detach from the submit button between viability categories
-      // as the user went through more than one in a row. I tried the jquery unbind and off
-      // functions
-      $("#viabilitySubmit").remove();
-      $("<button class='btn btn-success' id='viabilitySubmit'>Save</button>")
-      .appendTo("#viabilityModal .modal-footer.view-all-button")
-      .click(function(event){
-        var data = {_csrf : $('[name="_csrf"]').val()};
-        if(valueEntered){
-          data[sliderName+"Value"] = uiValue;
-          
-        } 
-        if($("#"+formName + " textarea").val() != "The problem of "){
-          data[problemName] = $("#"+formName + " textarea").val();
-        }
-        $.post('/' + postPath, data, function(returnData, status){          
-          $("#viabilityModal .modal-view-all").click();
-        });
-
-      });
-    }
-
-    $(".viabilityLink").click(function(event){
-      var data = {
-        "isModal" : true
-      };
-      var pathname = $(this)[0].getAttribute("href");
-      var valueEntered = false;
-      $("button.btn.btn-info.modal-expand-collapse").hide();        
-      $("button.btn.btn-info.modal-view-all").show();
-
-      $.get(pathname, data, function(returnData, status){
-        $("#viabilityModal .view-all-viabilities").hide();
-        //$("#viabilitySubmit").attr("data-viability-category", pathname.slice(1));
-        $("#viabilityModal .modal-body .view-specific-viability").html(returnData);
-        $("#viabilityModal .modal-title h2").text(pathname.slice(1).charAt(0).toUpperCase() + pathname.slice(1).slice(1));
-        $.get('/get-all-viability-scores', function(sliderData, status){
-          //get the correct value out of sliderData
-          $("#viabilityModal .modal-title img").remove();
-          switch(pathname.slice(1)) {
-          case "performability" : 
-            sliderVal = sliderData['performOne'];
-            $("<img src='/perfIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-            break;
-          case "affordability" : 
-            sliderVal = sliderData['affordOne'];
-            $("<img src='/affordIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-            break;
-          case "featurability" : 
-            sliderVal = sliderData['featureOne'];
-            $("<img src='/perfIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-            break;
-          case "deliverability" : 
-            sliderVal = sliderData['deliverOne'];
-            $("<img src='/deliverabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-            break;
-          case "useability" : 
-            sliderVal = sliderData['useabilityOne'];
-            $("<img src='/perfIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-            break;
-          case "maintainability" : 
-            sliderVal = sliderData['maintainOne'];
-            $("<img src='/maintainabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-            break;
-          case "durability" : 
-            sliderVal = sliderData['durabilityOne'];
-            $("<img src='/durabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-            break;
-          case "imageability" : 
-            sliderVal = sliderData['imageOne'];
-            $("<img src='/imageabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-            break;
-          case "complexity" : 
-            sliderVal = sliderData['complexOne'];
-            $("<img src='/complexityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-            break;
-          case "precision" : 
-            sliderVal = sliderData['precisionOne'];
-            $("<img src='/precisionIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-            break;
-          case "variability" : 
-            sliderVal = sliderData['variabilityOne'];
-            $("<img src='/variabilityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-            break;
-          case "sensitivity" : 
-            sliderVal = sliderData['sensitivityOne'];
-            $("<img src='/sensitivityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-            break;
-          case "immaturity" : 
-            sliderVal = sliderData['immatureOne'];
-            $("<img src='/immaturityIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-            break;
-          case "dangerous" : 
-            sliderVal = sliderData['dangerOne'];
-            $("<img src='/dangerIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-            break;
-          case "skills" : 
-            sliderVal = sliderData['skillsOne'];
-            $("<img src='/skillsIcon.png' class='viabilityIcon'>").insertBefore("#viabilityModal .modal-title h2");
-            break;
-          }
-          if(sliderVal){
-            valueEntered = true;
-          }
-          getNextSliderConfig(pathname.slice(1), valueEntered, sliderVal);
-        });
-
-      });
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: '+=' + viabilitySliderWidth}, 400);
     });
 
-    $("#viabilityModal .modal-expand-collapse").click(function(eventView){
-      //if view all viabilities is not visible, remove contents and show 
-      // the view-all view
-      if($(".additional-viabilities").is(":visible")){
-        $(".additional-viabilities").hide();
-        $("button.btn.btn-info.modal-expand-collapse").text("Expand")
-      } else {
-        $(".additional-viabilities").show();
-        $("button.btn.btn-info.modal-expand-collapse").text("Collapse")
-      }
+    $(".viabilty-slider-left-arrow").click(function(event){
+      $.each($(".problem-slide").filter(":visible"),function(index, element){
+        $(element).siblings(".scoring-stars").animate({
+          "marginTop" : "+=10em;",
+          "width" : "100%"
+        }, 500)
+        $(element).siblings(".viability-labels").removeClass("hidden");
+        $(element).hide()
+      });
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: '-=' + viabilitySliderWidth}, 400);
     });
 
-    $("#viabilityModal .modal-view-all").click(function(eventView){
-      //if view all viabilities is not visible, remove contents and show 
-      // the view-all view
-      if(!$(".view-all-viabilities").is(":visible")){
-        $("button.btn.btn-info.modal-expand-collapse").show();        
-        $("button.btn.btn-info.modal-view-all").hide();       
-        $("#viabilityModal .modal-body .view-specific-viability").html("")
-        //$("#viabilitySubmit").attr("data-viability-category", "view-all");
-        $("#viabilityModal .view-all-viabilities").show();
-        $("#viabilityModal .modal-title h2").text("Score Areas");
-        $("#viabilityModal .modal-title img").remove();
-        
-        $.get('/get-all-viability-scores', function(returnData, status){
-          $("#perfSlider").slider("destroy");
-          $("#affordSlider").slider("destroy");
-          $("#featureSlider").slider("destroy");
-          $("#deliverSlider").slider("destroy");
-          $("#useabilitySlider").slider("destroy");
-          $("#maintainSlider").slider("destroy");
-          $("#dangerSlider").slider("destroy");
-          $("#durabilitySlider").slider("destroy");
-          $("#imageSlider").slider("destroy");
-          $("#complexSlider").slider("destroy");
-          $("#precisionSlider").slider("destroy");
-          $("#variabilitySlider").slider("destroy");
-          $("#sensitivitySlider").slider("destroy");
-          $("#immatureSlider").slider("destroy");
-          $("#skillsSlider").slider("destroy");
-          $(".view-all-viabilities .ui-slider").html("");
-          initializeAllSliders(returnData);   
-        });
-      }
-    });
-
-    $(document).ready(function(){
-        if("!{idea.name}" == ""){
-          $('#titleModal').modal('show');
-        }
-        if("!{idea.description}" == ""){
-          $("#idea-summary-accomplish")
-            .addClass("incomplete-data");
-          $("#idea-summary-accomplish a")
-            .before("<h4><i>No data entered</i></h4>");
-        }
-        if("!{idea.problem}" == ""){
-          $("#idea-summary-challenge")
-            .addClass("incomplete-data");
-          $("#idea-summary-challenge a")
-            .before("<h4><i>No data entered</i></h4>");
-        }
-
-        $("#enterMoreInformation").click(function(event){
-          $("#whatsLeftModal").modal('show');
-        })
-
-        $("#openTitleModal").click(function(event){
-          $("#whatsLeftModal").modal('hide');
-          $('#titleModal').modal('show');
-        })
-
-        $("#openAddProblemModal").click(function(event){
-          $("#whatsLeftModal").modal('hide');
-          $('#addProblemModal').modal('show');
-        })
-
-        $("#openViabilityModal").click(function(event){
-          $("#whatsLeftModal").modal('hide');
-          $('.viabilityModalButton').click();
-        })
-
-        $("#viewComponentsTab").click(function(event){
-          $("#whatsLeftModal").modal('hide');
-          $('a').filter(function(index) { return $(this).text() === "Components"; }).click();
-        })
-    
-        $(".viabilityModalButton").click(function(event){
-          $.get('/get-all-viability-scores', function(returnData, status){
-            $(".view-all-viabilities .ui-slider").html("");
-            initializeAllSliders(returnData);
-            if(status != "success"){
-              alert("review not created correctly");
-            }
-          });
-        });
-
-
-        $(".upvote-imperfection").click(function(event){
-          event.preventDefault();
-          if(!$(this).hasClass("clicked-upvote")){
-            $(this).addClass("clicked-upvote");
-            $(this).text("Upvote " + (parseInt($(this).text().slice(7)) + 1));
-          }
-
-            $.post('/upvote-imperfection', 
-            {
-              _csrf : $('[name="_csrf"]').val(),
-              problem : $(this)[0].dataset['problemId']
-            },
-            function(data, response) {
-            });
-          
-
-          return false;
-        });
-
-        $(".upvote-suggestion").click(function(event){
-          event.preventDefault();
-          if(!$(this).hasClass("clicked-upvote")){
-            $(this).addClass("clicked-upvote");
-            $(this).text("Upvote " + (parseInt($(this).text().slice(7)) + 1));
-          }
-
-          $.post('/upvote-suggestion', 
-          {
-            _csrf : $('[name="_csrf"]').val(),
-            suggestion : $(this)[0].dataset['suggestionId']
-          },
-          function(data, response) {
-          });
-
-          return false;
-        });   
-
-
-    });
-
-
-    $("#viabilityModal .cancel-button").click(function(event){
-        $("#perfSlider").slider("destroy");
-        $("#affordSlider").slider("destroy");
-        $("#featureSlider").slider("destroy");
-        $("#deliverSlider").slider("destroy");
-        $("#useabilitySlider").slider("destroy");
-        $("#maintainSlider").slider("destroy");
-        $("#dangerSlider").slider("destroy");
-        $("#durabilitySlider").slider("destroy");
-        $("#imageSlider").slider("destroy");
-        $("#complexSlider").slider("destroy");
-        $("#precisionSlider").slider("destroy");
-        $("#variabilitySlider").slider("destroy");
-        $("#sensitivitySlider").slider("destroy");
-        $("#immatureSlider").slider("destroy");
-        $("#skillsSlider").slider("destroy");
-    });
-
-
-    $("#imperfections-header").click(function(event){
-      $('#viewAllImperfections').modal('show');
+    $("a.slide-icon-one").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: viabilitySliderWidth}, 400);
     })
-
-    $("#problemSubmit").click(function(event){
+    $("a.slide-icon-two").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 2 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-three").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 3 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-four").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 4 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-five").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 5 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-six").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 6 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-seven").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 7 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-eight").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 8 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-nine").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 8 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-ten").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 10 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-eleven").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 11 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-twelve").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 12 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-thirteen").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 13 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-fourteen").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 14 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-fifteen").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 15 * viabilitySliderWidth}, 400);
+    })
+    $(".individualProblemSubmit").click(function(event){
       event.preventDefault();
-      if($("#problemStatement").val() == "The problem is "){
-        $("#addProblemModal").modal('hide');
-      } else if ($("#problemStatement").val().length > 15){
-        $("#addProblemModal").modal('hide');
-        var newProblemStatement = $("#problemStatement").val().trim();
+      if ($(this).siblings(".problemStatement").val().length > 15){
+        var newProblemStatement = $(this).siblings(".problemStatement").val().trim();
         $.post('/add-idea-problem', 
           {
             _csrf : $('[name="_csrf"]').val(),
@@ -1141,39 +1180,42 @@ html
             problemArea : $("#problemArea option:selected").text(),
           },
           function(resp) {
-            if(resp['problemIdentifier']){
-              window.location.href="/imperfection-profile/"+resp['problemIdentifier'];
-            } else {
-              window.location.reload(true);
-            }
+            window.location.href= "/ideas/!{idea.name}/edit?r="+(new Date())+"#add-imperfections-row";
+          });
+      }
+    });
+    $(".problemSubmit").click(function(event){
+      event.preventDefault();
+
+      var problemText = $(this).siblings("textarea").val();
+
+      if(problemText == "The problem is "){
+        $(".viabilty-slider-right-arrow").click();
+      } else if (problemText.length > 15){
+        var newProblemStatement = problemText.trim();
+        $.post('/add-idea-problem', 
+          {
+            _csrf : $('[name="_csrf"]').val(),
+            problemStatement : newProblemStatement.slice(15),
+            problemArea : $(this).siblings("input.problemArea").val()
+          },
+          function(resp) {
+            $(".viabilty-slider-right-arrow").click();
           });
       } else {
-        $("#addProblemModal").modal('hide');
+        $(".viabilty-slider-right-arrow").click();
       }
     });
 
-    $("#titleSubmit").click(function(event){
+    $(".problemContinue").click(function(event){
       event.preventDefault();
-      if($("#saveIdeaName input[name='inventionName']").val() == "My idea is called the "){
-        if($("#titleRequiredMessage").length == 0){
-          $("<p id='titleRequiredMessage'>A title is required</p>").insertBefore("#saveIdeaName input[name='inventionName']");
-        }
-      } else {
-        $.post('/save-idea-name', 
-          {
-            _csrf : $('[name="_csrf"]').val(),
-            inventionName : $("#saveIdeaName input[name='inventionName']").val().trim(),
-          },
-          function(resp) {
-            if(resp['newUrl']){
-              window.location = resp['newUrl'];
-            } else {
-              window.location.reload(true);
-            }
-          });
-      }
-    })
+      $(".problem-slide").filter(":visible").each(function(){
+        $(this).siblings(".scoring-stars").animate({"marginTop": "+=10em", "width" : "100%"}, 500) 
+        $(this).siblings(".viability-labels").removeClass("hidden");
+        $(this).hide(500);
+      })
 
+    })
     $("#componentSubmit").click(function(event){
       event.preventDefault();
 
@@ -1193,78 +1235,35 @@ html
           data['componentDescription'] = newComponentDescr.slice("This component is described as ".length)
         }
 
-        if($("#subComponentCheckbox").is(":checked")){
-          data['subComponent'] = "on";
-          data['componentParent'] = $("#parentComponentDropdown option:selected").val()
-        }
-
         $.post('/add-idea-component', 
           data,
           function(data, response) {
-            $("#idea-summary-components ul")
-              .append("<li><a href='/component-profile/"+ data['identifier'] +"'><h4>"+ data['number'] + " : " + data['text'] + "</h4></a></li>");
-            $("#componentName").val('');
-            $("#componentDescription").val('');
-            $("#addComponentModal").modal('hide');
-            window.location.reload(true);
+            window.location.href= "/ideas/!{idea.name}/edit?r="+(new Date())+"#add-components-row";
           });      
       }
-
     });
-
-    $("#subComponentCheckbox").click(function(event){
-      $("#parentComponentDropdown").show(400);
-    });
-
-    // This is for the idea name
-    var inputName = $("#saveIdeaName input")[1];
-    var requiredNameText = "My idea is called the "
-    $("#saveIdeaName .charactersRemaining").text((30) + " characters remaining");
-    inputName.addEventListener ("mousedown", function () {
-      if (String($(this).val()).indexOf(requiredNameText) == -1 || String($(this).val()) == "My idea is called the ") {
-            $(this).val(requiredNameText);
-      }
-      if (this.selectionStart < requiredNameText.length) {
-        this.selectionStart = requiredNameText.length;
-      }
-    }, false);
-
-    inputName.addEventListener ("keydown", function () {
-      if (String($(this).val()).indexOf(requiredNameText) == -1) {
-            $(this).val(requiredNameText);
-      }
-      if (this.selectionStart < requiredNameText.length) {
-        this.selectionStart = requiredNameText.length;
-      }
-      $("#saveIdeaName input").keyup(function(){
-        $("#saveIdeaName .charactersRemaining").text((30 + requiredNameText.length - $(this).val().length) + " characters remaining");
-      });
-    }, false);
-
     // This is for the problem input
-    var inputProb = $("#addIdeaProblem input")[1];
-    var requiredProbText = "The problem is "
-    $("#addIdeaProblem .charactersRemaining").text((200) + " characters remaining");
-    inputProb.addEventListener ("mousedown", function () {
-      if (String($(this).val()).indexOf(requiredProbText) == -1) {
-            $(this).val(requiredProbText);
-      }
-      if (this.selectionStart < 15) {
-        this.selectionStart = 15;
-      }
-    }, false);
+    var inputProb = $(".problem-slide form textarea");
+    var requiredProbText = "The problem is ";
+    $.each(inputProb, function(index, value){
+      value.addEventListener ("mousedown", function () {
+        if (String($(this).val()).indexOf(requiredProbText) == -1) {
+              $(this).val(requiredProbText);
+        }
+        if (this.selectionStart < 15) {
+          this.selectionStart = 15;
+        }
+      }, false);
 
-    inputProb.addEventListener ("keydown", function () {
-      if (String($(this).val()).indexOf(requiredProbText) == -1) {
-            $(this).val(requiredProbText);
-      }
-      if (this.selectionStart < 15) {
-        this.selectionStart = 15;
-      }
-      $("#addIdeaProblem input").keyup(function(){
-        $("#addIdeaProblem .charactersRemaining").text((200 + requiredProbText.length - $(this).val().length) + " characters remaining");
-      });
-    }, false);
+      value.addEventListener ("keydown", function () {
+        if (String($(this).val()).indexOf(requiredProbText) == -1) {
+              $(this).val(requiredProbText);
+        }
+        if (this.selectionStart < 15) {
+          this.selectionStart = 15;
+        }
+      }, false);
+    })
 
     // This is for the first text input field in the add component modal
     var inputOne = $("#addIdeaComponent input#componentName")[0];
@@ -1316,166 +1315,315 @@ html
       });
     }, false);
 
-    $("#aptitudeSubmit").click(function(event){
-      event.preventDefault();
-      if($("#aptitudeTitle").val() != ""){
-        var newAptitude = $("#aptitudeTitle").val().trim();
-        $.post('/save-aptitude', 
-          {
-            _csrf : $('[name="_csrf"]').val(),
-            ideaName : "!{idea.name}",
-            aptitudeTitle : newAptitude
-          },
-          function(resp) {
-            window.location.reload(true);
-          });
-      } else {
-        alert("Please enter a valid aptitude.");
-      }
+    $(document).on('click', '.next-step a', function(event){
+        event.preventDefault();
+
+        $('html, body').animate({
+            scrollTop: $( $.attr(this, 'href') ).offset().top
+        }, 500);
     });
 
-    if(document.getElementById("receiptInput")){
-      document.getElementById("receiptInput").onchange = function(event) {
-        $("<img id='spinner' src='/spinner.gif'>").insertAfter("#prelimReceiptUpload");
-        const files = document.getElementById('receiptInput').files;
-        const file = files[0];
-        const csrf = $("input[name='_csrf']").val();
-        if(file == null){
-          return alert('No file selected.');
-        }
-        var fr   = new FileReader;
-        
-        fr.onloadend = function() {
-          var exif = EXIF.readFromBinaryFile(this.result);
-          if(file.size < 3000000){
-            getSignedRequest(file, csrf, exif);
-          } else if (file.size > 3000000){
-            alert('Please choose an image smaller than 3 MB.')
-          } else {
-            alert('An error ocurred with this image.')
-          }
+    $(document).on('click', '#score-now-button', function(event){
+        event.preventDefault();
 
-        };
-
-        fr.readAsArrayBuffer(file); // read the file
-
-
-      };
-
-      function uploadFile(file, signedRequest, url, csrf, exif){
-        const xhr = new XMLHttpRequest();
-        xhr.open('PUT', signedRequest);
-        xhr.onreadystatechange = function() {
-          if(xhr.readyState === 4){
-            if(xhr.status === 200 && (file.type=="application/pdf")){
-              var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type,
-                "_csrf" : csrf, exif : exif };
-              $.post('/receipt-upload', data , function(response, status){
-                if(status == 200){
-                  window.location.reload();
-                } else {
-                  alert('An error ocurred while uploading receipt.')
-                }
-              });
-            }
-            else{
-              alert('Please upload PDF.');
-            }
-          }
-        };
-        xhr.send(file);
-      }
-
-      function getSignedRequest(file, csrf,exif){
-        const xhr = new XMLHttpRequest();
-        var filename = file.name.split(".");
-        filename[0] = filename[0] + "-" + Date.now().toString();
-        filename = filename.join(".");
-        xhr.open('GET', '/sign-s3?file-name='+ filename + '&file-type='+ file.type);
-        xhr.onreadystatechange = function() {
-          if(xhr.readyState === 4){
-            if(xhr.status === 200){
-              var response;
-              if(xhr.responseText == ""){
-                response = JSON.parse('{}');
-              } else {
-                response = JSON.parse(xhr.responseText);
-              }
-              uploadFile(file, response.signedRequest, response.url, csrf, exif);
-            }
-            else{
-              alert('Could not get signed URL.');
-            }
-          } 
-          
-        };
-        xhr.send();
-      }
-    }
-
-    $("#emailSend").click(function(event){
-      event.preventDefault();
-        $.post('/share-idea', 
-          {
-            _csrf : $('[name="_csrf"]').val(),
-            toEmailAddress : $("#toEmailAddress").val(),
-            fromEmailAddress : $("#fromEmailAddress").val(),
-            emailSubject : $("#emailSubject").val(),
-            emailBody : $("#emailBody").val()
-          },
-          function(resp) {
-            window.location.reload(true);
-          });
+        $('html, body').animate({
+            scrollTop: $( $.attr(this, 'href') ).offset().top
+        }, 500);
     });
 
-    $("#inviteCollaboratorSend").click(function(event){
-      //if there are no collaborator emails entered, just close the modal or something
+    $(".scoring-stars img").click(function(event){
+      var scoreClass = "",
+          saveScoreRoute = "",
+          scoreName = "",
+          problemName = "",
+          iconClass = "",
+          slideClass = "";
 
+      if($(this).hasClass("performability-star")){
+        scoreClass = "performability-star";
+        saveScoreRoute = "/performability-mobile";
+        scoreName = "performOne";
+        problemName = "performProblem";
+        iconClass = "performability-icon";
+        slideClass = "performability-slide";
+
+      } else if($(this).hasClass("affordability-star")){
+        scoreClass = "affordability-star";
+        saveScoreRoute = "/affordability-mobile";
+        scoreName = "affordOne";
+        problemName = "affordProblem";
+        iconClass = "affordability-icon";
+        slideClass = "affordability-slide";
+
+      } else if($(this).hasClass("featurability-star")){
+        scoreClass = "featurability-star";
+        saveScoreRoute = "/featurability-mobile";
+        scoreName = "featureOne";
+        problemName = "featureProblem";
+        iconClass = "featurability-icon";
+        slideClass = "featurability-slide";
+
+      } else if($(this).hasClass("deliverability-star")){
+        scoreClass = "deliverability-star";
+        saveScoreRoute = "/deliverability-mobile";
+        scoreName = "deliverOne";
+        problemName = "deliverProblem";
+        iconClass = "deliverability-icon";
+        slideClass = "deliverability-slide";
+
+      } else if($(this).hasClass("useability-star")){
+        scoreClass = "useability-star";
+        saveScoreRoute = "/useability-mobile";
+        scoreName = "useabilityOne";
+        problemName = "useabilityOne";
+        iconClass = "useability-icon";
+        slideClass = "useability-slide";
+
+      } else if($(this).hasClass("maintainability-star")){
+        scoreClass = "maintainability-star";
+        saveScoreRoute = "/maintainability-mobile";
+        scoreName = "maintainOne";
+        problemName = "maintainOne";
+        iconClass = "maintainability-icon";
+        slideClass = "maintainability-slide";
+
+      } else if($(this).hasClass("durability-star")){
+        scoreClass = "durability-star";
+        saveScoreRoute = "/durability-mobile";
+        scoreName = "durabilityOne";
+        problemName = "durabilityOne";
+        iconClass = "durability-icon";
+        slideClass = "durability-slide";
+
+      } else if($(this).hasClass("imageability-star")){
+        scoreClass = "imageability-star";
+        saveScoreRoute = "/imageability-mobile";
+        scoreName = "imageOne";
+        problemName = "imageProblem";
+        iconClass = "imageability-icon";
+        slideClass = "imageability-slide";
+
+      } else if($(this).hasClass("complexity-star")){
+        scoreClass = "complexity-star";
+        saveScoreRoute = "/complexity-mobile";
+        scoreName = "complexOne";
+        problemName = "complexProblem";
+        iconClass = "complexity-icon";
+        slideClass = "complexity-slide";
+
+      } else if($(this).hasClass("precision-star")){
+        scoreClass = "precision-star";
+        saveScoreRoute = "/precision-mobile";
+        scoreName = "precisionOne";
+        problemName = "precisionProblem";
+        iconClass = "precision-icon";
+        slideClass = "precision-slide";
+
+      } else if($(this).hasClass("variability-star")){
+        scoreClass = "variability-star";
+        saveScoreRoute = "/variability-mobile";
+        scoreName = "variabilityOne";
+        problemName = "variabilityProblem";
+        iconClass = "variability-icon";
+        slideClass = "variability-slide";
+
+      } else if($(this).hasClass("sensitivity-star")){
+        scoreClass = "sensitivity-star";
+        saveScoreRoute = "/sensitivity-mobile";
+        scoreName = "sensitivityOne";
+        problemName = "sensitivityProblem";
+        iconClass = "sensitivity-icon";
+        slideClass = "sensitivity-slide";
+
+      } else if($(this).hasClass("immaturity-star")){
+        scoreClass = "immaturity-star";
+        saveScoreRoute = "/immaturity-mobile";
+        scoreName = "immatureOne";
+        problemName = "immatureProblem";
+        iconClass = "immaturity-icon";
+        slideClass = "immaturity-slide";
+
+      } else if($(this).hasClass("dangerous-star")){
+        scoreClass = "dangerous-star";
+        saveScoreRoute = "/dangerous-mobile";
+        scoreName = "dangerOne";
+        problemName = "dangerProblem";
+        iconClass = "dangerous-icon";
+        slideClass = "dangerous-slide";
+
+      } else if($(this).hasClass("skills-star")){
+        scoreClass = "skills-star";
+        saveScoreRoute = "/skills-mobile";
+        scoreName = "skillsOne";
+        problemName = "skillsProblem";
+        iconClass = "skills-icon";
+        slideClass = "skills-slide";
+
+      }
+
+      if( $(this).hasClass("star-one") ){
+        $("img.star-one." + scoreClass).addClass("scored");
+        $("img.star-two." + scoreClass).removeClass("scored");
+        $("img.star-three." + scoreClass).removeClass("scored");
+        $("img.star-four." + scoreClass).removeClass("scored");
+        $("img.star-five." + scoreClass).removeClass("scored");
+
+        $("." + iconClass).addClass("scored");
+
+        var data = {_csrf : $('[name="_csrf"]').val()};
+        data[scoreName] = 20;
+        data[problemName] = "";
+
+        $.post(saveScoreRoute, data);
+
+        $(this).parent().parent().animate({"marginTop": "-=10em", "width" : "40%"}, 500)
+        $(this).parent().parent().siblings(".viability-labels").addClass("hidden");
+        $(this).parent().parent().siblings($(".problem-slide")).show(500);
+
+      } else if ($(this).hasClass("star-two") ){
+        $("img.star-one." + scoreClass).addClass("scored");
+        $("img.star-two." + scoreClass).addClass("scored");
+        $("img.star-three." + scoreClass).removeClass("scored");
+        $("img.star-four." + scoreClass).removeClass("scored");
+        $("img.star-five." + scoreClass).removeClass("scored");
+
+        $("." + iconClass).addClass("scored");
+
+        var data = {_csrf : $('[name="_csrf"]').val()};
+        data[scoreName] = 40;
+        data[problemName] = "";
+
+        $.post(saveScoreRoute, data);
+
+        $(".viabilty-slider-right-arrow").click();
+
+      } else if ($(this).hasClass("star-three") ){
+        $("img.star-one." + scoreClass).addClass("scored");
+        $("img.star-two." + scoreClass).addClass("scored");
+        $("img.star-three." + scoreClass).addClass("scored");
+        $("img.star-four." + scoreClass).removeClass("scored");
+        $("img.star-five." + scoreClass).removeClass("scored");
+
+        $("." + iconClass).addClass("scored");
+
+        var data = {_csrf : $('[name="_csrf"]').val()};
+        data[scoreName] = 60;
+        data[problemName] = "";
+
+        $.post(saveScoreRoute, data);
+
+        $(".viabilty-slider-right-arrow").click();
+
+      } else if ($(this).hasClass("star-four") ){
+        $("img.star-one." + scoreClass).addClass("scored");
+        $("img.star-two." + scoreClass).addClass("scored");
+        $("img.star-three." + scoreClass).addClass("scored");
+        $("img.star-four." + scoreClass).addClass("scored");
+        $("img.star-five." + scoreClass).removeClass("scored");
+
+        $("." + iconClass).addClass("scored");
+
+        var data = {_csrf : $('[name="_csrf"]').val()};
+        data[scoreName] = 80;
+        data[problemName] = "";
+
+        $.post(saveScoreRoute, data);
+
+        $(".viabilty-slider-right-arrow").click();
+
+      } else if ($(this).hasClass("star-five") ){
+        $("img.star-one." + scoreClass).addClass("scored");
+        $("img.star-two." + scoreClass).addClass("scored");
+        $("img.star-three." + scoreClass).addClass("scored");
+        $("img.star-four." + scoreClass).addClass("scored");
+        $("img.star-five." + scoreClass).addClass("scored");
+
+        $("." + iconClass).addClass("scored");
+
+        var data = {_csrf : $('[name="_csrf"]').val()};
+        data[scoreName] = 100;
+        data[problemName] = "";
+
+        $.post(saveScoreRoute, data);
+
+        $(".viabilty-slider-right-arrow").click();
+
+      }
+
+    });
+
+    $("#upload-image-next-btn").click(function(event){
       event.preventDefault();
-
-      $("#inviteCollaboratorsModal").modal('hide')
 
       var data = {
-          _csrf : $('[name="_csrf"]').val()
-      };
+        _csrf : $('[name="_csrf"]').val(),
+        newEditingSection : "annotate-images-row",
+        ideaName : "!{idea.name}"
+      }
 
-      $(".collaboratorEmail").each(function(index){
-        data['collaborator-email-' + index] = $(this).val();
+      $.post("/add-idea-editing-section", data, function(data, response){
+        window.location.href= "/ideas/!{idea.name}/edit?r="+(new Date())+"#annotate-images-row";
       });
 
-      $.post('/send-collaborators-nda-email', data,
-        function(resp) {
-          window.location.reload(true);
-        });
-    })
+    });
 
-    $("#exposeIdeaNow").click(function(event){
-      $.get("/expose-idea-seed", function(err, response){
-        window.location.reload(true);
+    $("#annotate-image-next-btn").click(function(event){
+      event.preventDefault();
+
+      var data = {
+        _csrf : $('[name="_csrf"]').val(),
+        newEditingSection : "add-components-row",
+        ideaName : "!{idea.name}"
+      }
+
+      $.post("/add-idea-editing-section", data, function(data, response){
+        window.location.href= "/ideas/!{idea.name}/edit?r="+(new Date())+"#add-components-row";
       });
-    })
+    });    
 
-    $("#feedback-expand-link").click(function(event){
-      if($(".row.idea-seed-all-feedback-areas").is(":visible")){
-        $(".row.idea-seed-all-feedback-areas").hide(400)
-        $("#feedback-expand-icon").removeClass("glyphicon-collapse-up").addClass("glyphicon-collapse-down")
-      } else {
-        $(".row.idea-seed-all-feedback-areas").show(400)
-        $("#feedback-expand-icon").removeClass("glyphicon-collapse-down").addClass("glyphicon-collapse-up")
+    $("#add-components-next-btn").click(function(event){
+      event.preventDefault();
+
+      var data = {
+        _csrf : $('[name="_csrf"]').val(),
+        newEditingSection : "add-aptitudes-row",
+        ideaName : "!{idea.name}"
       }
-    })
 
-    $("#components-expand-link").click(function(event){
-      if($(".expandable-components-section").is(":visible")){
-        $(".expandable-components-section").hide(400)
-        $("#components-expand-icon").removeClass("glyphicon-collapse-up").addClass("glyphicon-collapse-down")
-      } else {
-        $(".expandable-components-section").show(400)
-        $("#components-expand-icon").removeClass("glyphicon-collapse-down").addClass("glyphicon-collapse-up")
+      $.post("/add-idea-editing-section", data, function(data, response){
+        window.location.href= "/ideas/!{idea.name}/edit?r="+(new Date())+"#add-aptitudes-row";
+      });
+    });    
+
+    $("#add-aptitudes-next-btn").click(function(event){
+      event.preventDefault();
+
+      var data = {
+        _csrf : $('[name="_csrf"]').val(),
+        newEditingSection : "add-viability-scores-row",
+        ideaName : "!{idea.name}"
       }
-    })
+
+      $.post("/add-idea-editing-section", data, function(data, response){
+        window.location.href= "/ideas/!{idea.name}/edit?r="+(new Date())+"#add-viability-scores-row";
+      });
+    });    
+
+    $("#add-viability-next-btn").click(function(event){
+      event.preventDefault();
+
+      var data = {
+        _csrf : $('[name="_csrf"]').val(),
+        newEditingSection : "add-imperfections-row",
+        ideaName : "!{idea.name}"
+      }
+
+      $.post("/add-idea-editing-section", data, function(data, response){
+        window.location.href= "/ideas/!{idea.name}/edit?r="+(new Date())+"#add-imperfections-row";
+      });
+    });    
 
 
-    $("#visibilityLink").click(function(event){
-      $("#filePatentModal").modal('show');
-    })
+    $("#beginScoring").click(function(event){
+      $(".viabilty-slider-right-arrow").click();
+    });    

@@ -167,7 +167,7 @@ html
       //-   a(href='/ideas/' + idea.name + '/view-all-components')
       //-     button(type="button"  class="btn btn-industry btn-lg btn-block") View All Components
 
-    #add-aptitudes-row(class="odd-row idea-edit-row row #{listOfVisibleSections.indexOf('add-aptitudes-row') > -1 ? '' : 'hidden'}")
+    #add-aptitudes-row(class="odd-row idea-edit-row row ")
       .col-xs-12
         #idea-summary-aptitudes.aptitudeList
           .profileAptitudes
@@ -903,91 +903,6 @@ html
       .col-xs-12.complete-idea-editing
         a#complete-button.btn.btn-go.btn-lg.btn-block(href="/ideas/#{idea.name}") Complete
 
-    .row(style="display:none;")
-      if idea.name
-        h1 #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
-      if idea.name && inventorName == user.username
-        h4 Your <b>#{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}</b> solves the <span class="problemColor">problem of #[a(href='/introduce-idea') #{idea.problem}]</span> by #[a(href='/accomplish') <span class="solutionColor">#{idea.description}]</span>.
-      else if idea.name 
-        h4 <b>#{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}</b> solves the <span class="problemColor">problem of #{idea.problem}</span> by <span class="solutionColor">#{idea.description}</span>.
-      if (inventorName == user.username) && idea.visibility == "private" && idea.collaborators.length < 6
-        .row
-          .col-xs-12
-            a.btn.btn-electric.btn-lg.btn-block#inviteCollaboratorsButton(type="button" data-toggle="modal" data-target="#inviteCollaboratorsModal") Invite Collaborators
-      .row
-        .col-xs-12
-        if openCampaign !== undefined
-          a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign' ontouchstart="this.style.background = '#007338';") Fund This Idea
-        else if inventorName === user.username && idea.visibility === "public"
-          a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign/new' ontouchstart="this.style.background = '#007338';") Crowdfund
-
-    .row(style="display:none;")
-      .col-md-12
-        if idea.name
-          h2.component-title Components of the #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
-          if components.length > 0
-            each component, identifier in wholeSuggestionBlockInfo
-              include ../partials/component-summary-element.jade
-          else
-            h4 <i>No Components Yet</i>
-        else
-          <i>No components yet</i>
-        if inventorName == user.username
-          .row.idea-sumamart-buttons
-            .col-xs-12
-                button(type="button" id="componentModalButton"  class="btn btn-go btn-block btn-lg" data-toggle="modal" data-target="#addComponentModal") Add Component
-        .row.idea-sumamart-buttons
-          if components.length > 0
-            .col-xs-12
-              a(href='/ideas/' + idea.name + '/view-all-components')
-                button(type="button"  class="btn btn-industry btn-lg btn-block") View All Components
-
-      .col-sm-8.mobile-component-section
-        a#components-expand-link
-          h3 Components
-            span#components-expand-icon.glyphicon.glyphicon-collapse-down
-        .expandable-components-section(style="display:none;")
-          if components.length > 0
-              each component, identifier in wholeSuggestionBlockInfo
-                include ../partials/component-summary-element.jade
-            else
-              h4 <i>No Components Yet</i>
-
-        .row.mobile-only
-          if inventorName != user.username
-            .idea-summary-data#idea-summary-waste-values
-              if(Object.keys(review).length > 0)
-                .row
-                  .col-xs-8
-                    h4 Your current score for #{idea.name}: 
-                  .col-xs-3
-                    h3.average-score-number #{averageScore}
-                img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")
-                a.btn(type="button"  class="btn btn-go" href="/view-single-overall-score" ontouchstart="this.style.background = '#007338';"  ontouchend="this.style.background = '#00A550';") Keep Scoring
-              else
-                img.ideajam-spinner(src="/IdeaJam-logo.gif" style="display:none;")                
-                a.btn(type="button"  class="btn btn-go" href="/view-single-overall-score" ontouchstart="this.style.background = '#007338';" ontouchend="this.style.background = '#00A550';") Score Now
-              br
-          else
-            .idea-summary-data#idea-summary-waste-values
-              h4 You can only score someone else's ideas (right now)
-
-    .row.idea-seed-feedback(style="display:none;")
-      .col-xs-12
-        a#feedback-expand-link
-          h2 Feedback for #{idea.name}
-            span#feedback-expand-icon.glyphicon.glyphicon-collapse-down
-
-    .row.idea-seed-all-feedback-areas(style="display:none;")
-      .col-md-4.score-idea-row
-        h2#imperfections-header Viability Score
-          a.btn.btn-go.btn-lg.btn-block.viabilityModalButton( type="button"  class="btn btn-go" data-toggle="modal" data-target="#viabilityModal") Score Viability Categories
-
-      .col-md-4.idea-seed-suggestions
-        h2 Suggestions to Imperfections
-        .view-all-components-wrapper
-          a.btn.btn-electric.btn-lg.btn-block#componentsViewAllLink(type="button" href='/ideas/' + idea.name + '/view-all-suggestions') View All Suggestions
-
 
   .pagefooter
     include ../partials/footer.jade
@@ -1017,85 +932,6 @@ html
               .hint Hint: Choose a concise, catchy and descriptive name for your idea.
 
 
-
-  #whatsLeftModal.modal.fade.annotate-modal(role="dialog")
-    .modal-dialog
-      .modal-content
-        .modal-header
-          button(type="button", class="close" data-dismiss="modal") &times;
-          .modal-title 
-            if idea.name
-              h3 #{user.firstname}, add more details to complete your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} profile, because more details will generate a better patent application.
-        .modal-body
-          ul
-            if idea.name
-              each object, key in strengthResponse
-                case key
-                  when "description"
-                    if object == ""
-                      li Add a brief description of your #{idea.name}
-                        a.whats-left-button.btn.btn-go( href="/accomplish" ) Go
-                  when "problem"
-                    if object == ""
-                      li Add the main problem that your #{idea.name} is addressing
-                      li Add a brief description of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
-                        a.whats-left-button.btn.btn-go( href="/accomplish" ) Go 
-                  when "problem"
-                    if object == ""
-                      li Add the problem that your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} Solves
-                        a.whats-left-button.btn.btn-go( href="/introduce-idea" ) Go
-                  when "name"
-                    if object == ""
-                      li Give your idea a name
-                        a.whats-left-button.btn.btn-go#openTitleModal() Go
-                  when "images"
-                    if object.length < 2
-                      li Add more sketch drawings or photos of your #{idea.name}
-                        a.whats-left-button.btn.btn-go( href="/image-upload" ) Go
-                  when "issues"
-                    if object.length < 4
-                      li Add more imperfections of your #{idea.name} remaining to be solved
-                        a.whats-left-button.btn.btn-go#openAddProblemModal() Go
-                  when "viabilityScores"
-                    if appStrengthText == "NOT YET..." && object.length < 4
-                      li Finish rating your #{idea.name} to complete its viability score
-                        a.whats-left-button.btn.btn-go#openViabilityModal() Go
-                    else if appStrengthText == "ALMOST..." && object.length < 15
-                      li Finish rating your #{idea.name} to give it a viability score
-                        a.whats-left-button.btn.btn-go#openViabilityModal() Go
-                  when "imagesWithAnnotations"
-                    if object.length < strengthResponse['images'].length 
-                      li Add at least one tag to every #{idea.name} image
-                        a.whats-left-button.btn.btn-go( href="/image-upload" ) Go
-                  when "problemsWithSuggestions"
-                    if object.length < strengthResponse['issues'].length
-                      li Suggest at least one solution for each #{idea.name} imperfection
-                        a.whats-left-button.btn.btn-go( href="/suggestion-summary" ) Go
-                  when "compsWithRelationships"
-                    if object.length < strengthResponse['allComponents'].length
-                      li Explain how each component of #{idea.name} is related to at least one other component
-                        a.whats-left-button.btn.btn-go#viewComponentsTab() Go
-        .modal-footer
-          button.btn.btn-success(data-dismiss="modal") Return to the #{idea.name} profile
-
-  #viabilityModal.modal.fade(role="dialog")
-    .modal-dialog
-      .modal-content
-        .modal-header
-          button(type="button", class="close" data-dismiss="modal") &times;
-          .modal-title
-            if idea.name
-              h2 Score #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
-            else 
-              h2 Score this idea
-        .modal-body
-          .view-all-viabilities
-              include ../partials/viability-overview-modal.jade
-          .view-specific-viability
-        .modal-footer.view-all-button
-            button.btn.btn-info.modal-view-all View All
-            span.viabilityStatus 1/4
-            button.btn.btn-success#viabilitySubmit(data-viability-category="view-all") Next
 
   #filePatentModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -1155,144 +991,48 @@ html
 
   button(type="button" id="titleModalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#titleModal") Go Win Fight
 
-  #shareModal.modal.fade.annotate-modal(role="dialog")
-    .modal-dialog
-      .modal-content
-        .modal-header
-          button(type="button", class="close" data-dismiss="modal") &times;
-          .modal-title 
-            h2 Share Your Idea
-        .modal-body
-          form(role='form', id="shareForm" action="/share-idea", method="post", style='max-width: 300px;')
-            .form-group
-              input#toEmailAddress.form-control(type="email", name="toEmailAddress" placeholder="To:" required)
-              input#fromEmailAddress.form-control(type="email", name="fromEmailAddress" placeholder="From:" required)
-              input#emailSubject.form-control(type="text", name="emailSubject" placeholder="Subject:" required)
-              textarea#emailBody.form-control(type="text", name="emailBody" placeholder="Body: (Include a link here!)" required)
-              input(type="hidden", name="_csrf", value="#{csrfToken}")
-              button.btn.btn-info(data-dismiss="modal") Cancel
-              button.btn.btn-success#emailSend(type='submit') Send
-                img.einstein-point-btn-icon(src="/single-einstein-point.png")
 
 
-  #inviteCollaboratorsModal.modal.fade.annotate-modal(role="dialog")
-    .modal-dialog
-      .modal-content
-        .modal-header
-          button(type="button", class="close" data-dismiss="modal") &times;
-          .modal-title 
-            h2 Invite up to 6 Collaborators
-        .modal-body
-          form(role='form', id="inviteForm" action="/invite-collaborators", method="post")
-            .form-group
-              h3 Accepted Non-disclosure Agreement
-              each collaborator, index in idea.collaborators
-                .row
-                  .col-xs-12 
-                    h4 #{index + 1} : #{collaborator}
-              - for (var i = 0; i < 6 - idea.collaborators.length; ++i) {
-                .row
-                  .col-xs-12 
-                    input.form-control.collaboratorEmail(type="text" name="#{i}" placeholder="To:")
-              - }
-              input(type="hidden", name="_csrf", value="#{csrfToken}")
-              button.btn.btn-success.btn-lg.btn-block#inviteCollaboratorSend(type='submit') Send
-              button.btn.btn-info.btn-lg.btn-block(data-dismiss="modal") Cancel
-
-
-  button(type="button" id="titleModalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#titleModal") Go Win Fight
 
   include ../partials/js-includes.jade
   script(src='/exif.js')
   script(type="text/javascript").
     $(document).ready(function(){
-        if("!{idea.name}" == ""){
-          $('#titleModal').modal('show');
-        }
-        if("!{idea.description}" == ""){
-          $("#idea-summary-accomplish")
-            .addClass("incomplete-data");
-          $("#idea-summary-accomplish a")
-            .before("<h4><i>No data entered</i></h4>");
-        }
-        if("!{idea.problem}" == ""){
-          $("#idea-summary-challenge")
-            .addClass("incomplete-data");
-          $("#idea-summary-challenge a")
-            .before("<h4><i>No data entered</i></h4>");
-        }
+      if("!{idea.name}" == ""){
+        $('#titleModal').modal('show');
+      }
+      if("!{idea.description}" == ""){
+        $("#idea-summary-accomplish")
+          .addClass("incomplete-data");
+        $("#idea-summary-accomplish a")
+          .before("<h4><i>No data entered</i></h4>");
+      }
+      if("!{idea.problem}" == ""){
+        $("#idea-summary-challenge")
+          .addClass("incomplete-data");
+        $("#idea-summary-challenge a")
+          .before("<h4><i>No data entered</i></h4>");
+      }
 
-        $("#enterMoreInformation").click(function(event){
-          $("#whatsLeftModal").modal('show');
-        })
+      $("#enterMoreInformation").click(function(event){
+        $("#whatsLeftModal").modal('show');
+      })
 
-        $("#openTitleModal").click(function(event){
-          $("#whatsLeftModal").modal('hide');
-          $('#titleModal').modal('show');
-        })
+      $("#openTitleModal").click(function(event){
+        $("#whatsLeftModal").modal('hide');
+        $('#titleModal').modal('show');
+      })
 
-        $("#openAddProblemModal").click(function(event){
-          $("#whatsLeftModal").modal('hide');
-          $('#addProblemModal').modal('show');
-        })
+      $("#openAddProblemModal").click(function(event){
+        $("#whatsLeftModal").modal('hide');
+        $('#addProblemModal').modal('show');
+      })
 
-        $("#openViabilityModal").click(function(event){
-          $("#whatsLeftModal").modal('hide');
-          $('.viabilityModalButton').click();
-        })
-
-        $("#viewComponentsTab").click(function(event){
-          $("#whatsLeftModal").modal('hide');
-          $('a').filter(function(index) { return $(this).text() === "Components"; }).click();
-        })
+      $("#viewComponentsTab").click(function(event){
+        $("#whatsLeftModal").modal('hide');
+        $('a').filter(function(index) { return $(this).text() === "Components"; }).click();
+      })
     
-        $(".viabilityModalButton").click(function(event){
-          $.get('/get-all-viability-scores', function(returnData, status){
-            $(".view-all-viabilities .ui-slider").html("");
-            initializeAllSliders(returnData);
-            if(status != "success"){
-              alert("review not created correctly");
-            }
-          });
-        });
-
-
-        $(".upvote-imperfection").click(function(event){
-          event.preventDefault();
-          if(!$(this).hasClass("clicked-upvote")){
-            $(this).addClass("clicked-upvote");
-            $(this).text("Upvote " + (parseInt($(this).text().slice(7)) + 1));
-          }
-
-            $.post('/upvote-imperfection', 
-            {
-              _csrf : $('[name="_csrf"]').val(),
-              problem : $(this)[0].dataset['problemId']
-            },
-            function(data, response) {
-            });
-          
-
-          return false;
-        });
-
-        $(".upvote-suggestion").click(function(event){
-          event.preventDefault();
-          if(!$(this).hasClass("clicked-upvote")){
-            $(this).addClass("clicked-upvote");
-            $(this).text("Upvote " + (parseInt($(this).text().slice(7)) + 1));
-          }
-
-          $.post('/upvote-suggestion', 
-          {
-            _csrf : $('[name="_csrf"]').val(),
-            suggestion : $(this)[0].dataset['suggestionId']
-          },
-          function(data, response) {
-          });
-
-          return false;
-        });   
       var viabilitySliderWidth = $(".slide-content").width();
       $(".viability-slide-wrapper > div").attr("style", "width:" + viabilitySliderWidth + "px;");
 
@@ -1614,145 +1354,10 @@ html
       }
     });
 
-    if(document.getElementById("receiptInput")){
-      document.getElementById("receiptInput").onchange = function(event) {
-        $("<img id='spinner' src='/spinner.gif'>").insertAfter("#prelimReceiptUpload");
-        const files = document.getElementById('receiptInput').files;
-        const file = files[0];
-        const csrf = $("input[name='_csrf']").val();
-        if(file == null){
-          return alert('No file selected.');
-        }
-        var fr   = new FileReader;
-        
-        fr.onloadend = function() {
-          var exif = EXIF.readFromBinaryFile(this.result);
-          if(file.size < 3000000){
-            getSignedRequest(file, csrf, exif);
-          } else if (file.size > 3000000){
-            alert('Please choose an image smaller than 3 MB.')
-          } else {
-            alert('An error ocurred with this image.')
-          }
-
-        };
-
-        fr.readAsArrayBuffer(file); // read the file
-
-
-      };
-
-      function uploadFile(file, signedRequest, url, csrf, exif){
-        const xhr = new XMLHttpRequest();
-        xhr.open('PUT', signedRequest);
-        xhr.onreadystatechange = function() {
-          if(xhr.readyState === 4){
-            if(xhr.status === 200 && (file.type=="application/pdf")){
-              var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type,
-                "_csrf" : csrf, exif : exif };
-              $.post('/receipt-upload', data , function(response, status){
-                if(status == 200){
-                  window.location.reload();
-                } else {
-                  alert('An error ocurred while uploading receipt.')
-                }
-              });
-            }
-            else{
-              alert('Please upload PDF.');
-            }
-          }
-        };
-        xhr.send(file);
-      }
-
-      function getSignedRequest(file, csrf,exif){
-        const xhr = new XMLHttpRequest();
-        var filename = file.name.split(".");
-        filename[0] = filename[0] + "-" + Date.now().toString();
-        filename = filename.join(".");
-        xhr.open('GET', '/sign-s3?file-name='+ filename + '&file-type='+ file.type);
-        xhr.onreadystatechange = function() {
-          if(xhr.readyState === 4){
-            if(xhr.status === 200){
-              var response;
-              if(xhr.responseText == ""){
-                response = JSON.parse('{}');
-              } else {
-                response = JSON.parse(xhr.responseText);
-              }
-              uploadFile(file, response.signedRequest, response.url, csrf, exif);
-            }
-            else{
-              alert('Could not get signed URL.');
-            }
-          } 
-          
-        };
-        xhr.send();
-      }
-    }
-
-    $("#emailSend").click(function(event){
-      event.preventDefault();
-        $.post('/share-idea', 
-          {
-            _csrf : $('[name="_csrf"]').val(),
-            toEmailAddress : $("#toEmailAddress").val(),
-            fromEmailAddress : $("#fromEmailAddress").val(),
-            emailSubject : $("#emailSubject").val(),
-            emailBody : $("#emailBody").val()
-          },
-          function(resp) {
-            window.location.reload(true);
-          });
-    });
-
-    $("#inviteCollaboratorSend").click(function(event){
-      //if there are no collaborator emails entered, just close the modal or something
-
-      event.preventDefault();
-
-      $("#inviteCollaboratorsModal").modal('hide')
-
-      var data = {
-          _csrf : $('[name="_csrf"]').val()
-      };
-
-      $(".collaboratorEmail").each(function(index){
-        data['collaborator-email-' + index] = $(this).val();
-      });
-
-      $.post('/send-collaborators-nda-email', data,
-        function(resp) {
-          window.location.reload(true);
-        });
-    })
-
     $("#exposeIdeaNow").click(function(event){
       $.get("/expose-idea-seed", function(err, response){
         window.location.reload(true);
       });
-    })
-
-    $("#feedback-expand-link").click(function(event){
-      if($(".row.idea-seed-all-feedback-areas").is(":visible")){
-        $(".row.idea-seed-all-feedback-areas").hide(400)
-        $("#feedback-expand-icon").removeClass("glyphicon-collapse-up").addClass("glyphicon-collapse-down")
-      } else {
-        $(".row.idea-seed-all-feedback-areas").show(400)
-        $("#feedback-expand-icon").removeClass("glyphicon-collapse-down").addClass("glyphicon-collapse-up")
-      }
-    })
-
-    $("#components-expand-link").click(function(event){
-      if($(".expandable-components-section").is(":visible")){
-        $(".expandable-components-section").hide(400)
-        $("#components-expand-icon").removeClass("glyphicon-collapse-up").addClass("glyphicon-collapse-down")
-      } else {
-        $(".expandable-components-section").show(400)
-        $("#components-expand-icon").removeClass("glyphicon-collapse-down").addClass("glyphicon-collapse-up")
-      }
     })
 
 
