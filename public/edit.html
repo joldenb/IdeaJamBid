@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)http://localhost:5000/ideas/Inkerator/edit -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title></title><meta name="viewport" content="width=device-width, initial-scale=1.0"><link href="./edit_files/bootstrap.min.css" rel="stylesheet" media="screen"><link rel="stylesheet" href="./edit_files/jquery-ui.css"><link rel="stylesheet" href="./edit_files/main.css"><link rel="stylesheet" href="./edit_files/mobile.css"><link rel="stylesheet" href="./edit_files/mobile-viabilities.css"><link rel="stylesheet" href="./edit_files/custom-checkboxes.css"><link rel="stylesheet" href="./edit_files/bootstrap-toggle.min.css"><link href="./edit_files/css" rel="stylesheet" type="text/css"><link href="./edit_files/css(1)" rel="stylesheet" type="text/css"><script src="./edit_files/jquery.min.js"> </script></head><body><div class="header navbar navbar-default"><div class="container-fluid custom-header"><div class="navbar-header"><button type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" class="navbar-toggle collapsed"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a href="http://localhost:5000/" class="navbar-brand"><img src="./edit_files/IdeaJam-prebeta.png"></a></div><div id="bs-example-navbar-collapse-1" class="collapse navbar-collapse"><ul class="nav navbar-nav navbar-right"><li><span class="userName">Joe Oldenburg</span></li><li class="profile-headshot-list-item"><div class="profile-headshot"><div style="height: 40px; width: 40px; background-image : url(&#39;/avatar.png&#39;);  background-position: center center; background-repeat: no-repeat; background-size: cover;" class="placeholder"></div><div class="profile-einstein-points">5440</div></div></li><li><a href="http://localhost:5000/introduce-idea/new" ontouchstart="this.style.background = &#39;#337ab7&#39;;" ontouchend="this.style.background = &#39;#D6DE26&#39;;" class="home-logout btn btn-electric">Begin a New Idea</a></li><li><a href="http://localhost:5000/leaderboard" ontouchstart="this.style.background = &#39;#D6DE26&#39;;" ontouchend="this.style.background = &#39;#337ab7&#39;;" class="home-logout btn btn-vision">Leaderboard</a></li><li><a href="http://localhost:5000/imagineer/Joe%20Oldenburg" ontouchstart="this.style.background = &#39;#D6DE26&#39;;" ontouchend="this.style.background = &#39;#337ab7&#39;;" class="home-logout btn btn-vision">My Profile</a></li><li><a href="http://localhost:5000/about" ontouchstart="this.style.background = &#39;#D6DE26&#39;;" ontouchend="this.style.background = &#39;#337ab7&#39;;" class="home-logout btn btn-vision">About IdeaJam</a></li><li><a href="http://localhost:5000/logout" ontouchstart="this.style.background = &#39;#D6DE26&#39;;" ontouchend="this.style.background = &#39;#337ab7&#39;;" class="home-logout btn btn-vision">Log Out</a></li></ul></div><div class="dropdown custom-nav"><ul class="nav navbar-nav"><li><a href="http://localhost:5000/" class="navbar-brand"><img src="./edit_files/IdeaJam-prebeta.png"></a></li><li><a style="display:inline;" href="http://localhost:5000/imagineer/Joe%20Oldenburg"><span class="newUserName">Joe Oldenburg</span></a></li><li><a style="display:inline;" href="http://localhost:5000/imagineer/Joe%20Oldenburg"><div style="height: 40px; width: 40px; margin-bottom: -13px; background-image : url(&#39;/avatar.png&#39;);  background-position: center center; background-repeat: no-repeat; background-size: cover;" class="placeholder"></div></a></li><li><div data-toggle="dropdown" class="dropdown-toggle profile-einstein-points">5440</div><ul class="einsteinHistoryDropdown dropdown-menu dropdown-menu-right"><li class="first">You earned 15 Einstein Points on 11/15/2016 by adding an imperfection to an idea.</li><li>You earned 15 Einstein Points on 11/15/2016 by adding an imperfection to an idea.</li><li>You earned 25 Einstein Points on 11/15/2016 by adding an image to your idea.</li><li>You earned 15 Einstein Points on 11/14/2016 by adding an imperfection to an idea.</li><li>You earned 15 Einstein Points on 11/14/2016 by adding an imperfection to an idea.</li><li>You earned 10 Einstein Points on 11/14/2016 by adding a component to an idea.</li></ul></li><li><button type="button" data-toggle="dropdown" class="navbar-toggle desktop dropdown-toggle"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><ul id="test" class="dropdown-menu dropdown-menu-right"><li><a href="http://localhost:5000/introduce-idea/new" ontouchstart="this.style.background = &#39;#337ab7&#39;;" ontouchend="this.style.background = &#39;#D6DE26&#39;;" class="home-logout btn btn-electric">Begin a New Idea</a></li><li><a href="http://localhost:5000/leaderboard" ontouchstart="this.style.background = &#39;#D6DE26&#39;;" ontouchend="this.style.background = &#39;#337ab7&#39;;" class="home-logout btn btn-vision">Leaderboard</a></li><li><a href="http://localhost:5000/imagineer/Joe%20Oldenburg" ontouchstart="this.style.background = &#39;#D6DE26&#39;;" ontouchend="this.style.background = &#39;#337ab7&#39;;" class="home-logout btn btn-vision">My Profile</a></li><li><a href="http://localhost:5000/about" ontouchstart="this.style.background = &#39;#D6DE26&#39;;" ontouchend="this.style.background = &#39;#337ab7&#39;;" class="home-logout btn btn-vision">About IdeaJam</a></li><li><a href="http://localhost:5000/logout" ontouchstart="this.style.background = &#39;#D6DE26&#39;;" ontouchend="this.style.background = &#39;#337ab7&#39;;" class="home-logout btn btn-vision">Log Out</a></li></ul></li></ul><include> <script type="text/javascript"></script></include></div></div></div><div class="container-fluid idea-summary idea-summary-edit"><div class="row visibility-row-public"><div class="col-sm-4"><h2>Inkerator</h2><h4>Visibility : Public</h4></div><div class="col-sm-8 patent-strength-row"><div class="app-strength-bar col-md-8"><div class="app-strength not-yet col-md-4">NOT YET...</div></div><div class="col-md-4 app-strength-button"><a id="file-patent" data-toggle="modal" data-target="#filePatentModal" class="btn btn-go btn-lg btn-block">Generate Patent Application</a></div></div></div><div class="row sticky-edit-header"><div class="col-xs-2 editing-progress"><h5>1/6 Complete</h5></div><div class="col-xs-10 remaining-progress"></div></div><div id="upload-images-row" class="row idea-edit-row odd-row"> <div class="col-md-12"><h2>Upload Images</h2></div><div class="imagesList"><div class="row"><div class="col-md-3"><form role="form" id="formImageUpload" action="http://localhost:5000/image-upload" method="post" data-idea-doc="{&quot;visibility&quot;:&quot;public&quot;,&quot;images&quot;:[],&quot;aptitudes&quot;:[&quot;57c99df8abccc6820608bb7e&quot;],&quot;visibleEditingSections&quot;:[],&quot;collaborators&quot;:[],&quot;campaigns&quot;:[],&quot;variants&quot;:[],&quot;ideaReviews&quot;:[],&quot;problemPriorities&quot;:[&quot;58014f5dc73d763bbc93b296&quot;],&quot;performPriority&quot;:1,&quot;affordPriority&quot;:2,&quot;featurePriority&quot;:3,&quot;deliverPriority&quot;:4,&quot;useabilityPriority&quot;:5,&quot;maintainPriority&quot;:6,&quot;durabilityPriority&quot;:7,&quot;imagePriority&quot;:8,&quot;complexPriority&quot;:9,&quot;precisionPriority&quot;:10,&quot;variabilityPriority&quot;:11,&quot;sensitivityPriority&quot;:12,&quot;immaturePriority&quot;:13,&quot;dangerPriority&quot;:14,&quot;skillsPriority&quot;:15,&quot;name&quot;:&quot;Inkerator&quot;,&quot;description&quot;:&quot;happy knees&quot;,&quot;problem&quot;:&quot;sad knees&quot;,&quot;__v&quot;:2,&quot;inventorName&quot;:&quot;joseph.oldenburg@gmail.com&quot;,&quot;_id&quot;:&quot;57d495601c845f9e2fd9b903&quot;}" enctype="multipart/form-data"><div class="form-group"><input type="hidden" name="_csrf" value="VitHykcq-0_ogsIoDD_FsJHJgUVqC_1mUFf8"><label id="fileInput" class="btn btn-block btn-file"><div class="upload-image-div"><span class="glyphicon glyphicon-cloud-upload big-upload-icon"></span></div><input type="file" name="picture" style="display:none;"></label></div></form></div></div></div><div class="col-xs-12 next-step"><a id="upload-image-next-btn" href="http://localhost:5000/ideas/Inkerator/edit#annotate-images-row" class="btn btn-go btn-lg btn-block">Next Step</a></div></div><div id="annotate-images-row" class="odd-row idea-edit-row row hidden"><div class="col-md-12"><h2>Add Components to your Images</h2><h4>Click an image to annotate</h4></div><div class="imagesList"><div class="row"></div></div><div class="col-xs-12 next-step"><a id="annotate-image-next-btn" href="http://localhost:5000/ideas/Inkerator/edit#add-components-row" class="btn btn-go btn-lg btn-block">Next Step</a></div></div><div id="add-components-row" class="odd-row idea-edit-row row hidden"><div class="col-xs-12"><h2>Components</h2><h4>Add any other components weren't already included in an image</h4><form role="form" id="addIdeaComponent" action="http://localhost:5000/add-idea-component" method="post" data-idea-doc="{&quot;visibility&quot;:&quot;public&quot;,&quot;images&quot;:[],&quot;aptitudes&quot;:[&quot;57c99df8abccc6820608bb7e&quot;],&quot;visibleEditingSections&quot;:[],&quot;collaborators&quot;:[],&quot;campaigns&quot;:[],&quot;variants&quot;:[],&quot;ideaReviews&quot;:[],&quot;problemPriorities&quot;:[&quot;58014f5dc73d763bbc93b296&quot;],&quot;performPriority&quot;:1,&quot;affordPriority&quot;:2,&quot;featurePriority&quot;:3,&quot;deliverPriority&quot;:4,&quot;useabilityPriority&quot;:5,&quot;maintainPriority&quot;:6,&quot;durabilityPriority&quot;:7,&quot;imagePriority&quot;:8,&quot;complexPriority&quot;:9,&quot;precisionPriority&quot;:10,&quot;variabilityPriority&quot;:11,&quot;sensitivityPriority&quot;:12,&quot;immaturePriority&quot;:13,&quot;dangerPriority&quot;:14,&quot;skillsPriority&quot;:15,&quot;name&quot;:&quot;Inkerator&quot;,&quot;description&quot;:&quot;happy knees&quot;,&quot;problem&quot;:&quot;sad knees&quot;,&quot;__v&quot;:2,&quot;inventorName&quot;:&quot;joseph.oldenburg@gmail.com&quot;,&quot;_id&quot;:&quot;57d495601c845f9e2fd9b903&quot;}"><div class="form-group"><h4>Name the component:</h4><input id="componentName" type="text" name="componentName" value="The ..." class="form-control"><input type="hidden" name="_csrf" value="VitHykcq-0_ogsIoDD_FsJHJgUVqC_1mUFf8"><h4>Describe the component:</h4><input id="componentDescription" type="text" name="componentDescription" value="This component is described as " class="form-control"><br><button id="componentSubmit" type="submit" class="btn btn-industry btn-lg">Save</button></div></form></div><div class="col-md-12 list-all-components"><a href="http://localhost:5000/component-profile/comp-1473550379580" class="component-block-link"><div id="comp-1473550379580" class="row suggestion-row component-element"><div class="col-sm-6 problem-row-padding"><h3 class="component-header">Another handle</h3><p><b>Description:</b> just holds it up</p><div>By: <span>Joe Oldenburg</span><img src="./edit_files/avatar.png" height="15" width="15"></div></div><div class="col-sm-6"><button type="button" class="component-add-description btn btn-industry btn-lg btn-block">Add Component Details</button></div></div></a><a href="http://localhost:5000/component-profile/comp-1473549923568" class="component-block-link"><div id="comp-1473549923568" class="row suggestion-row component-element"><div class="col-sm-6 problem-row-padding"><h3 class="component-header">The huge button</h3><p><b>Description:</b> pressing it makes it work</p><div>By: <span>Joe Oldenburg</span><img src="./edit_files/avatar.png" height="15" width="15"></div></div><div class="col-sm-6"><button type="button" class="component-add-description btn btn-industry btn-lg btn-block">Add Component Details</button></div></div></a></div><div class="col-xs-12 next-step"><a id="add-components-next-btn" href="http://localhost:5000/ideas/Inkerator/edit#add-aptitudes-row" class="btn btn-go btn-lg btn-block">Next Step</a></div></div><div id="add-aptitudes-row" class="odd-row idea-edit-row row "><div class="col-xs-12"><div id="idea-summary-aptitudes" class="aptitudeList"><div class="profileAptitudes"><h2>Aptitude Areas</h2><h4>Add some areas of focus that relate directly to your invention, e.g. plumbing equipment</h4><form role="form" id="saveAptitude" action="http://localhost:5000/save-aptitude" method="post" data-idea-doc="{&quot;visibility&quot;:&quot;public&quot;,&quot;images&quot;:[],&quot;aptitudes&quot;:[&quot;57c99df8abccc6820608bb7e&quot;],&quot;visibleEditingSections&quot;:[],&quot;collaborators&quot;:[],&quot;campaigns&quot;:[],&quot;variants&quot;:[],&quot;ideaReviews&quot;:[],&quot;problemPriorities&quot;:[&quot;58014f5dc73d763bbc93b296&quot;],&quot;performPriority&quot;:1,&quot;affordPriority&quot;:2,&quot;featurePriority&quot;:3,&quot;deliverPriority&quot;:4,&quot;useabilityPriority&quot;:5,&quot;maintainPriority&quot;:6,&quot;durabilityPriority&quot;:7,&quot;imagePriority&quot;:8,&quot;complexPriority&quot;:9,&quot;precisionPriority&quot;:10,&quot;variabilityPriority&quot;:11,&quot;sensitivityPriority&quot;:12,&quot;immaturePriority&quot;:13,&quot;dangerPriority&quot;:14,&quot;skillsPriority&quot;:15,&quot;name&quot;:&quot;Inkerator&quot;,&quot;description&quot;:&quot;happy knees&quot;,&quot;problem&quot;:&quot;sad knees&quot;,&quot;__v&quot;:2,&quot;inventorName&quot;:&quot;joseph.oldenburg@gmail.com&quot;,&quot;_id&quot;:&quot;57d495601c845f9e2fd9b903&quot;}"><div class="form-group"> <input type="hidden" name="_csrf" value="VitHykcq-0_ogsIoDD_FsJHJgUVqC_1mUFf8"><input type="text" id="aptitudeTitle" name="aptitudeTitle" placeholder="New Aptitude.." autocomplete="off" class="form-control ui-front ui-autocomplete-input"><br><button id="aptitudeSubmit" type="submit" class="btn btn-industry btn-lg">Save</button><ul class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content" id="ui-id-1" tabindex="0" style="display: none;"></ul></div></form><ul><li data-apt-id="aptitude-1472830968364"> <h4>Hairdoing</h4></li></ul></div></div></div><div class="col-xs-12 next-step"><a id="add-aptitudes-next-btn" href="http://localhost:5000/ideas/Inkerator/edit#add-viability-scores-row" class="btn btn-go btn-lg btn-block">Next Step</a></div></div><div id="add-viability-scores-row" class="hidden row"><div class="col-xs-1"><a class="viabilty-slider-left-arrow"><img src="./edit_files/left-arrow.png"></a></div><div class="col-xs-10 slide-content"><div class="viability-slide-wrapper"><div class="viability-scoring-intro-slide score-slide" style="width:83.3333px;"><div class="row"><div class="col-xs-4"></div><div class="col-xs-4"><h2>Score Inkerator</h2><h4>Give your invention an honest evaluation based on the following categories and it will help identify areas of improvement</h4><button id="beginScoring" type="submit" class="btn btn-go btn-lg btn-block">Go</button></div><div class="col-xs-4"></div></div></div><div class="performability-slide score-slide" style="width:83.3333px;"><div class="row top-row scoreIdea"><div class="col-xs-12"><h2 class="top-row-header">Score Inkerator's Performability</h2><h3>Will the Inkerator effectively work to solve the problem of sad knees?</h3></div></div><div class="row scoring-stars"><div class="col-xs-1"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-one performability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-two performability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-three performability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-four performability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-five performability-star"></div><div class="col-xs-1"></div></div><div class="row viability-labels"><div class="col-xs-1"></div><div class="col-xs-2"><h3>Incapable</h3></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"><h3>Effective</h3></div><div class="col-xs-1"></div></div><div class="problem-slide"><div class="row"><h3>Is there a specific reason for this low score?</h3><form role="form" action="http://localhost:5000/add-idea-problem" method="post" data-idea-doc="{&quot;visibility&quot;:&quot;public&quot;,&quot;images&quot;:[],&quot;aptitudes&quot;:[&quot;57c99df8abccc6820608bb7e&quot;],&quot;visibleEditingSections&quot;:[],&quot;collaborators&quot;:[],&quot;campaigns&quot;:[],&quot;variants&quot;:[],&quot;ideaReviews&quot;:[],&quot;problemPriorities&quot;:[&quot;58014f5dc73d763bbc93b296&quot;],&quot;performPriority&quot;:1,&quot;affordPriority&quot;:2,&quot;featurePriority&quot;:3,&quot;deliverPriority&quot;:4,&quot;useabilityPriority&quot;:5,&quot;maintainPriority&quot;:6,&quot;durabilityPriority&quot;:7,&quot;imagePriority&quot;:8,&quot;complexPriority&quot;:9,&quot;precisionPriority&quot;:10,&quot;variabilityPriority&quot;:11,&quot;sensitivityPriority&quot;:12,&quot;immaturePriority&quot;:13,&quot;dangerPriority&quot;:14,&quot;skillsPriority&quot;:15,&quot;name&quot;:&quot;Inkerator&quot;,&quot;description&quot;:&quot;happy knees&quot;,&quot;problem&quot;:&quot;sad knees&quot;,&quot;__v&quot;:2,&quot;inventorName&quot;:&quot;joseph.oldenburg@gmail.com&quot;,&quot;_id&quot;:&quot;57d495601c845f9e2fd9b903&quot;}"><div class="form-group"><input type="hidden" name="_csrf" value="VitHykcq-0_ogsIoDD_FsJHJgUVqC_1mUFf8"><input type="hidden" value="Area : Performability" class="problemArea"><textarea rows="3" class="problemStatement form-control">The problem is</textarea><p class="exampleText">(Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")</p><button type="submit" class="btn btn-go btn-block btn-lg problemSubmit">Save &amp; Continue</button><button class="btn btn-info btn-block btn-lg problemContinue">Cancel</button></div></form></div></div></div><div class="affordability-slide score-slide" style="width:83.3333px;"><div class="row top-row scoreIdea"><div class="col-xs-12"><h2 class="top-row-header">Score Inkerator's Affordability</h2><h3>Will Inkerator stay within reasonable cost expectations when solving the problem of sad knees?</h3></div></div><div class="row scoring-stars"><div class="col-xs-1"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-one affordability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-two affordability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-three affordability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-four affordability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-five affordability-star"></div><div class="col-xs-1"></div></div><div class="row viability-labels"><div class="col-xs-1"></div><div class="col-xs-2"><h3>Expensive</h3></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"><h3>Economical</h3></div><div class="col-xs-1"></div></div><div class="problem-slide"><div class="row"><h3>Why the low score?</h3><form role="form" action="http://localhost:5000/add-idea-problem" method="post" data-idea-doc="{&quot;visibility&quot;:&quot;public&quot;,&quot;images&quot;:[],&quot;aptitudes&quot;:[&quot;57c99df8abccc6820608bb7e&quot;],&quot;visibleEditingSections&quot;:[],&quot;collaborators&quot;:[],&quot;campaigns&quot;:[],&quot;variants&quot;:[],&quot;ideaReviews&quot;:[],&quot;problemPriorities&quot;:[&quot;58014f5dc73d763bbc93b296&quot;],&quot;performPriority&quot;:1,&quot;affordPriority&quot;:2,&quot;featurePriority&quot;:3,&quot;deliverPriority&quot;:4,&quot;useabilityPriority&quot;:5,&quot;maintainPriority&quot;:6,&quot;durabilityPriority&quot;:7,&quot;imagePriority&quot;:8,&quot;complexPriority&quot;:9,&quot;precisionPriority&quot;:10,&quot;variabilityPriority&quot;:11,&quot;sensitivityPriority&quot;:12,&quot;immaturePriority&quot;:13,&quot;dangerPriority&quot;:14,&quot;skillsPriority&quot;:15,&quot;name&quot;:&quot;Inkerator&quot;,&quot;description&quot;:&quot;happy knees&quot;,&quot;problem&quot;:&quot;sad knees&quot;,&quot;__v&quot;:2,&quot;inventorName&quot;:&quot;joseph.oldenburg@gmail.com&quot;,&quot;_id&quot;:&quot;57d495601c845f9e2fd9b903&quot;}"><div class="form-group"><input type="hidden" name="_csrf" value="VitHykcq-0_ogsIoDD_FsJHJgUVqC_1mUFf8"><input type="hidden" value="Area : Affordability" class="problemArea"><textarea rows="3" class="problemStatement form-control">The problem is</textarea><p class="exampleText">(Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")</p><button type="submit" class="btn btn-go btn-block btn-lg problemSubmit">Save &amp; Continue</button><button class="btn btn-info btn-block btn-lg problemContinue">Cancel</button></div></form></div></div></div><div class="featurability-slide score-slide" style="width:83.3333px;"><div class="row top-row scoreIdea"><div class="col-xs-12"><h2 class="top-row-header">Score Inkerator's Featurability</h2><h3>Will Inkerator provide enough added benefits to solve the problem of sad knees?</h3></div></div><div class="row scoring-stars"><div class="col-xs-1"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-one featurability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-two featurability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-three featurability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-four featurability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-five featurability-star"></div><div class="col-xs-1"></div></div><div class="row viability-labels"><div class="col-xs-1"></div><div class="col-xs-2"><h3>Bland</h3></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"><h3>Multifaceted</h3></div><div class="col-xs-1"></div></div><div class="problem-slide"><div class="row"><h3>Why the low score?</h3><form role="form" action="http://localhost:5000/add-idea-problem" method="post" data-idea-doc="{&quot;visibility&quot;:&quot;public&quot;,&quot;images&quot;:[],&quot;aptitudes&quot;:[&quot;57c99df8abccc6820608bb7e&quot;],&quot;visibleEditingSections&quot;:[],&quot;collaborators&quot;:[],&quot;campaigns&quot;:[],&quot;variants&quot;:[],&quot;ideaReviews&quot;:[],&quot;problemPriorities&quot;:[&quot;58014f5dc73d763bbc93b296&quot;],&quot;performPriority&quot;:1,&quot;affordPriority&quot;:2,&quot;featurePriority&quot;:3,&quot;deliverPriority&quot;:4,&quot;useabilityPriority&quot;:5,&quot;maintainPriority&quot;:6,&quot;durabilityPriority&quot;:7,&quot;imagePriority&quot;:8,&quot;complexPriority&quot;:9,&quot;precisionPriority&quot;:10,&quot;variabilityPriority&quot;:11,&quot;sensitivityPriority&quot;:12,&quot;immaturePriority&quot;:13,&quot;dangerPriority&quot;:14,&quot;skillsPriority&quot;:15,&quot;name&quot;:&quot;Inkerator&quot;,&quot;description&quot;:&quot;happy knees&quot;,&quot;problem&quot;:&quot;sad knees&quot;,&quot;__v&quot;:2,&quot;inventorName&quot;:&quot;joseph.oldenburg@gmail.com&quot;,&quot;_id&quot;:&quot;57d495601c845f9e2fd9b903&quot;}"><div class="form-group"><input type="hidden" name="_csrf" value="VitHykcq-0_ogsIoDD_FsJHJgUVqC_1mUFf8"><input type="hidden" value="Area : Featurability" class="problemArea"><textarea rows="3" class="problemStatement form-control">The problem is</textarea><p class="exampleText">(Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")</p><button type="submit" class="btn btn-go btn-block btn-lg problemSubmit">Save &amp; Continue</button><button class="btn btn-info btn-block btn-lg problemContinue">Cancel</button></div></form></div></div></div><div class="deliverability-slide score-slide" style="width:83.3333px;"><div class="row top-row scoreIdea"><div class="col-xs-12"><h2 class="top-row-header">Score Inkerator's Deliverability</h2><h3>Will Inkerator be ready on demand when and where the user wants it to solve the problem of sad knees?</h3></div></div><div class="row scoring-stars"><div class="col-xs-1"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-one deliverability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-two deliverability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-three deliverability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-four deliverability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-five deliverability-star"></div><div class="col-xs-1"></div></div><div class="row viability-labels"><div class="col-xs-1"></div><div class="col-xs-2"><h3>Unaccessible</h3></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"><h3>Available</h3></div><div class="col-xs-1"></div></div><div class="problem-slide"><div class="row"><h3>Why the low score?</h3><form role="form" action="http://localhost:5000/add-idea-problem" method="post" data-idea-doc="{&quot;visibility&quot;:&quot;public&quot;,&quot;images&quot;:[],&quot;aptitudes&quot;:[&quot;57c99df8abccc6820608bb7e&quot;],&quot;visibleEditingSections&quot;:[],&quot;collaborators&quot;:[],&quot;campaigns&quot;:[],&quot;variants&quot;:[],&quot;ideaReviews&quot;:[],&quot;problemPriorities&quot;:[&quot;58014f5dc73d763bbc93b296&quot;],&quot;performPriority&quot;:1,&quot;affordPriority&quot;:2,&quot;featurePriority&quot;:3,&quot;deliverPriority&quot;:4,&quot;useabilityPriority&quot;:5,&quot;maintainPriority&quot;:6,&quot;durabilityPriority&quot;:7,&quot;imagePriority&quot;:8,&quot;complexPriority&quot;:9,&quot;precisionPriority&quot;:10,&quot;variabilityPriority&quot;:11,&quot;sensitivityPriority&quot;:12,&quot;immaturePriority&quot;:13,&quot;dangerPriority&quot;:14,&quot;skillsPriority&quot;:15,&quot;name&quot;:&quot;Inkerator&quot;,&quot;description&quot;:&quot;happy knees&quot;,&quot;problem&quot;:&quot;sad knees&quot;,&quot;__v&quot;:2,&quot;inventorName&quot;:&quot;joseph.oldenburg@gmail.com&quot;,&quot;_id&quot;:&quot;57d495601c845f9e2fd9b903&quot;}"><div class="form-group"><input type="hidden" name="_csrf" value="VitHykcq-0_ogsIoDD_FsJHJgUVqC_1mUFf8"><input type="hidden" value="Area : Deliverability" class="problemArea"><textarea rows="3" class="problemStatement form-control">The problem is</textarea><p class="exampleText">(Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")</p><button type="submit" class="btn btn-go btn-block btn-lg problemSubmit">Save &amp; Continue</button><button class="btn btn-info btn-block btn-lg problemContinue">Cancel</button></div></form></div></div></div><div class="useability-slide score-slide" style="width:83.3333px;"><div class="row top-row scoreIdea"><div class="col-xs-12"><h2 class="top-row-header">Score Inkerator's Useability</h2><h3>Will Inkerator be quickly and easily learned and implemented when solving the problem of sad knees?</h3></div></div><div class="row scoring-stars"><div class="col-xs-1"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-one useability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-two useability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-three useability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-four useability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-five useability-star"></div><div class="col-xs-1"></div></div><div class="row viability-labels"><div class="col-xs-1"></div><div class="col-xs-2"><h3>Impractical</h3></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"><h3>Pragmatic</h3></div><div class="col-xs-1"></div></div><div class="problem-slide"><div class="row"><h3>Why the low score?</h3><form role="form" action="http://localhost:5000/add-idea-problem" method="post" data-idea-doc="{&quot;visibility&quot;:&quot;public&quot;,&quot;images&quot;:[],&quot;aptitudes&quot;:[&quot;57c99df8abccc6820608bb7e&quot;],&quot;visibleEditingSections&quot;:[],&quot;collaborators&quot;:[],&quot;campaigns&quot;:[],&quot;variants&quot;:[],&quot;ideaReviews&quot;:[],&quot;problemPriorities&quot;:[&quot;58014f5dc73d763bbc93b296&quot;],&quot;performPriority&quot;:1,&quot;affordPriority&quot;:2,&quot;featurePriority&quot;:3,&quot;deliverPriority&quot;:4,&quot;useabilityPriority&quot;:5,&quot;maintainPriority&quot;:6,&quot;durabilityPriority&quot;:7,&quot;imagePriority&quot;:8,&quot;complexPriority&quot;:9,&quot;precisionPriority&quot;:10,&quot;variabilityPriority&quot;:11,&quot;sensitivityPriority&quot;:12,&quot;immaturePriority&quot;:13,&quot;dangerPriority&quot;:14,&quot;skillsPriority&quot;:15,&quot;name&quot;:&quot;Inkerator&quot;,&quot;description&quot;:&quot;happy knees&quot;,&quot;problem&quot;:&quot;sad knees&quot;,&quot;__v&quot;:2,&quot;inventorName&quot;:&quot;joseph.oldenburg@gmail.com&quot;,&quot;_id&quot;:&quot;57d495601c845f9e2fd9b903&quot;}"><div class="form-group"><input type="hidden" name="_csrf" value="VitHykcq-0_ogsIoDD_FsJHJgUVqC_1mUFf8"><input type="hidden" value="Area : Useability" class="problemArea"><textarea rows="3" class="problemStatement form-control">The problem is</textarea><p class="exampleText">(Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")</p><button type="submit" class="btn btn-go btn-block btn-lg problemSubmit">Save &amp; Continue</button><button class="btn btn-info btn-block btn-lg problemContinue">Cancel</button></div></form></div></div></div><div class="maintainability-slide score-slide" style="width:83.3333px;"><div class="row top-row scoreIdea"><div class="col-xs-12"><h2 class="top-row-header">Score Inkerator's Maintainability</h2><h3>How easy will Inkerator be to keep in service when solving the problem of sad knees?</h3></div></div><div class="row scoring-stars"><div class="col-xs-1"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-one maintainability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-two maintainability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-three maintainability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-four maintainability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-five maintainability-star"></div><div class="col-xs-1"></div></div><div class="row viability-labels"><div class="col-xs-1"></div><div class="col-xs-2"><h3>Untenable</h3></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"><h3>Sustainable</h3></div><div class="col-xs-1"></div></div><div class="problem-slide"><div class="row"><h3>Why the low score?</h3><form role="form" action="http://localhost:5000/add-idea-problem" method="post" data-idea-doc="{&quot;visibility&quot;:&quot;public&quot;,&quot;images&quot;:[],&quot;aptitudes&quot;:[&quot;57c99df8abccc6820608bb7e&quot;],&quot;visibleEditingSections&quot;:[],&quot;collaborators&quot;:[],&quot;campaigns&quot;:[],&quot;variants&quot;:[],&quot;ideaReviews&quot;:[],&quot;problemPriorities&quot;:[&quot;58014f5dc73d763bbc93b296&quot;],&quot;performPriority&quot;:1,&quot;affordPriority&quot;:2,&quot;featurePriority&quot;:3,&quot;deliverPriority&quot;:4,&quot;useabilityPriority&quot;:5,&quot;maintainPriority&quot;:6,&quot;durabilityPriority&quot;:7,&quot;imagePriority&quot;:8,&quot;complexPriority&quot;:9,&quot;precisionPriority&quot;:10,&quot;variabilityPriority&quot;:11,&quot;sensitivityPriority&quot;:12,&quot;immaturePriority&quot;:13,&quot;dangerPriority&quot;:14,&quot;skillsPriority&quot;:15,&quot;name&quot;:&quot;Inkerator&quot;,&quot;description&quot;:&quot;happy knees&quot;,&quot;problem&quot;:&quot;sad knees&quot;,&quot;__v&quot;:2,&quot;inventorName&quot;:&quot;joseph.oldenburg@gmail.com&quot;,&quot;_id&quot;:&quot;57d495601c845f9e2fd9b903&quot;}"><div class="form-group"><input type="hidden" name="_csrf" value="VitHykcq-0_ogsIoDD_FsJHJgUVqC_1mUFf8"><input type="hidden" value="Area : Maintainability" class="problemArea"><textarea rows="3" class="problemStatement form-control">The problem is</textarea><p class="exampleText">(Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")</p><button type="submit" class="btn btn-go btn-block btn-lg problemSubmit">Save &amp; Continue</button><button class="btn btn-info btn-block btn-lg problemContinue">Cancel</button></div></form></div></div></div><div class="durability-slide score-slide" style="width:83.3333px;"><div class="row top-row scoreIdea"><div class="col-xs-12"><h2 class="top-row-header">Score Inkerator's Durability</h2><h3>Is Inkerator robust enough to withstand abuse when solving the problem of sad knees? </h3></div></div><div class="row scoring-stars"><div class="col-xs-1"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-one durability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-two durability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-three durability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-four durability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-five durability-star"></div><div class="col-xs-1"></div></div><div class="row viability-labels"><div class="col-xs-1"></div><div class="col-xs-2"><h3>Unreliable</h3></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"><h3>Enduring</h3></div><div class="col-xs-1"></div></div><div class="problem-slide"><div class="row"><h3>Why the low score?</h3><form role="form" action="http://localhost:5000/add-idea-problem" method="post" data-idea-doc="{&quot;visibility&quot;:&quot;public&quot;,&quot;images&quot;:[],&quot;aptitudes&quot;:[&quot;57c99df8abccc6820608bb7e&quot;],&quot;visibleEditingSections&quot;:[],&quot;collaborators&quot;:[],&quot;campaigns&quot;:[],&quot;variants&quot;:[],&quot;ideaReviews&quot;:[],&quot;problemPriorities&quot;:[&quot;58014f5dc73d763bbc93b296&quot;],&quot;performPriority&quot;:1,&quot;affordPriority&quot;:2,&quot;featurePriority&quot;:3,&quot;deliverPriority&quot;:4,&quot;useabilityPriority&quot;:5,&quot;maintainPriority&quot;:6,&quot;durabilityPriority&quot;:7,&quot;imagePriority&quot;:8,&quot;complexPriority&quot;:9,&quot;precisionPriority&quot;:10,&quot;variabilityPriority&quot;:11,&quot;sensitivityPriority&quot;:12,&quot;immaturePriority&quot;:13,&quot;dangerPriority&quot;:14,&quot;skillsPriority&quot;:15,&quot;name&quot;:&quot;Inkerator&quot;,&quot;description&quot;:&quot;happy knees&quot;,&quot;problem&quot;:&quot;sad knees&quot;,&quot;__v&quot;:2,&quot;inventorName&quot;:&quot;joseph.oldenburg@gmail.com&quot;,&quot;_id&quot;:&quot;57d495601c845f9e2fd9b903&quot;}"><div class="form-group"><input type="hidden" name="_csrf" value="VitHykcq-0_ogsIoDD_FsJHJgUVqC_1mUFf8"><input type="hidden" value="Area : Durability" class="problemArea"><textarea rows="3" class="problemStatement form-control">The problem is</textarea><p class="exampleText">(Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")</p><button type="submit" class="btn btn-go btn-block btn-lg problemSubmit">Save &amp; Continue</button><button class="btn btn-info btn-block btn-lg problemContinue">Cancel</button></div></form></div></div></div><div class="imageability-slide score-slide" style="width:83.3333px;"><div class="row top-row scoreIdea"><div class="col-xs-12"><h2 class="top-row-header">Score Inkerator's Imageability</h2><h3>Will Inkerator convey an image of quality and prestige when solving the problem of sad knees?</h3></div></div><div class="row scoring-stars"><div class="col-xs-1"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-one imageability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-two imageability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-three imageability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-four imageability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-five imageability-star"></div><div class="col-xs-1"></div></div><div class="row viability-labels"><div class="col-xs-1"></div><div class="col-xs-2"><h3>Undesirable</h3></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"><h3>Appealing</h3></div><div class="col-xs-1"></div></div><div class="problem-slide"><div class="row"><h3>Why the low score?</h3><form role="form" action="http://localhost:5000/add-idea-problem" method="post" data-idea-doc="{&quot;visibility&quot;:&quot;public&quot;,&quot;images&quot;:[],&quot;aptitudes&quot;:[&quot;57c99df8abccc6820608bb7e&quot;],&quot;visibleEditingSections&quot;:[],&quot;collaborators&quot;:[],&quot;campaigns&quot;:[],&quot;variants&quot;:[],&quot;ideaReviews&quot;:[],&quot;problemPriorities&quot;:[&quot;58014f5dc73d763bbc93b296&quot;],&quot;performPriority&quot;:1,&quot;affordPriority&quot;:2,&quot;featurePriority&quot;:3,&quot;deliverPriority&quot;:4,&quot;useabilityPriority&quot;:5,&quot;maintainPriority&quot;:6,&quot;durabilityPriority&quot;:7,&quot;imagePriority&quot;:8,&quot;complexPriority&quot;:9,&quot;precisionPriority&quot;:10,&quot;variabilityPriority&quot;:11,&quot;sensitivityPriority&quot;:12,&quot;immaturePriority&quot;:13,&quot;dangerPriority&quot;:14,&quot;skillsPriority&quot;:15,&quot;name&quot;:&quot;Inkerator&quot;,&quot;description&quot;:&quot;happy knees&quot;,&quot;problem&quot;:&quot;sad knees&quot;,&quot;__v&quot;:2,&quot;inventorName&quot;:&quot;joseph.oldenburg@gmail.com&quot;,&quot;_id&quot;:&quot;57d495601c845f9e2fd9b903&quot;}"><div class="form-group"><input type="hidden" name="_csrf" value="VitHykcq-0_ogsIoDD_FsJHJgUVqC_1mUFf8"><input type="hidden" value="Area : Imageability" class="problemArea"><textarea rows="3" class="problemStatement form-control">The problem is</textarea><p class="exampleText">(Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")</p><button type="submit" class="btn btn-go btn-block btn-lg problemSubmit">Save &amp; Continue</button><button class="btn btn-info btn-block btn-lg problemContinue">Cancel</button></div></form></div></div></div><div class="complexity-slide score-slide" style="width:83.3333px;"><div class="row top-row scoreIdea"><div class="col-xs-12"><h2 class="top-row-header">Score Inkerator's Complexity</h2><h3>Will Inkerator require a large number of steps to produce, assemble, ship or use to solve the problem of sad knees?</h3></div></div><div class="row scoring-stars"><div class="col-xs-1"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-one complexity-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-two complexity-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-three complexity-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-four complexity-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-five complexity-star"></div><div class="col-xs-1"></div></div><div class="row viability-labels"><div class="col-xs-1"></div><div class="col-xs-2"><h3>Simple</h3></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"><h3>Complicated</h3></div><div class="col-xs-1"></div></div><div class="problem-slide"><div class="row"><h3>Why the low score?</h3><form role="form" action="http://localhost:5000/add-idea-problem" method="post" data-idea-doc="{&quot;visibility&quot;:&quot;public&quot;,&quot;images&quot;:[],&quot;aptitudes&quot;:[&quot;57c99df8abccc6820608bb7e&quot;],&quot;visibleEditingSections&quot;:[],&quot;collaborators&quot;:[],&quot;campaigns&quot;:[],&quot;variants&quot;:[],&quot;ideaReviews&quot;:[],&quot;problemPriorities&quot;:[&quot;58014f5dc73d763bbc93b296&quot;],&quot;performPriority&quot;:1,&quot;affordPriority&quot;:2,&quot;featurePriority&quot;:3,&quot;deliverPriority&quot;:4,&quot;useabilityPriority&quot;:5,&quot;maintainPriority&quot;:6,&quot;durabilityPriority&quot;:7,&quot;imagePriority&quot;:8,&quot;complexPriority&quot;:9,&quot;precisionPriority&quot;:10,&quot;variabilityPriority&quot;:11,&quot;sensitivityPriority&quot;:12,&quot;immaturePriority&quot;:13,&quot;dangerPriority&quot;:14,&quot;skillsPriority&quot;:15,&quot;name&quot;:&quot;Inkerator&quot;,&quot;description&quot;:&quot;happy knees&quot;,&quot;problem&quot;:&quot;sad knees&quot;,&quot;__v&quot;:2,&quot;inventorName&quot;:&quot;joseph.oldenburg@gmail.com&quot;,&quot;_id&quot;:&quot;57d495601c845f9e2fd9b903&quot;}"><div class="form-group"><input type="hidden" name="_csrf" value="VitHykcq-0_ogsIoDD_FsJHJgUVqC_1mUFf8"><input type="hidden" value="Area : Complexity" class="problemArea"><textarea rows="3" class="problemStatement form-control">The problem is</textarea><p class="exampleText">(Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")</p><button type="submit" class="btn btn-go btn-block btn-lg problemSubmit">Save &amp; Continue</button><button class="btn btn-info btn-block btn-lg problemContinue">Cancel</button></div></form></div></div></div><div class="precision-slide score-slide" style="width:83.3333px;"><div class="row top-row scoreIdea"><div class="col-xs-12"><h2 class="top-row-header">Score Inkerator's Precision</h2><h3>Will Inkerator require specific timing, precise sequence or much practice to solve the problem of sad knees?</h3></div></div><div class="row scoring-stars"><div class="col-xs-1"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-one precision-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-two precision-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-three precision-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-four precision-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-five precision-star"></div><div class="col-xs-1"></div></div><div class="row viability-labels"><div class="col-xs-1"></div><div class="col-xs-2"><h3>Lenient</h3></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"><h3>Fussy</h3></div><div class="col-xs-1"></div></div><div class="problem-slide"><div class="row"><h3>Why the low score?</h3><form role="form" action="http://localhost:5000/add-idea-problem" method="post" data-idea-doc="{&quot;visibility&quot;:&quot;public&quot;,&quot;images&quot;:[],&quot;aptitudes&quot;:[&quot;57c99df8abccc6820608bb7e&quot;],&quot;visibleEditingSections&quot;:[],&quot;collaborators&quot;:[],&quot;campaigns&quot;:[],&quot;variants&quot;:[],&quot;ideaReviews&quot;:[],&quot;problemPriorities&quot;:[&quot;58014f5dc73d763bbc93b296&quot;],&quot;performPriority&quot;:1,&quot;affordPriority&quot;:2,&quot;featurePriority&quot;:3,&quot;deliverPriority&quot;:4,&quot;useabilityPriority&quot;:5,&quot;maintainPriority&quot;:6,&quot;durabilityPriority&quot;:7,&quot;imagePriority&quot;:8,&quot;complexPriority&quot;:9,&quot;precisionPriority&quot;:10,&quot;variabilityPriority&quot;:11,&quot;sensitivityPriority&quot;:12,&quot;immaturePriority&quot;:13,&quot;dangerPriority&quot;:14,&quot;skillsPriority&quot;:15,&quot;name&quot;:&quot;Inkerator&quot;,&quot;description&quot;:&quot;happy knees&quot;,&quot;problem&quot;:&quot;sad knees&quot;,&quot;__v&quot;:2,&quot;inventorName&quot;:&quot;joseph.oldenburg@gmail.com&quot;,&quot;_id&quot;:&quot;57d495601c845f9e2fd9b903&quot;}"><div class="form-group"><input type="hidden" name="_csrf" value="VitHykcq-0_ogsIoDD_FsJHJgUVqC_1mUFf8"><input type="hidden" value="Area : Precision" class="problemArea"><textarea rows="3" class="problemStatement form-control">The problem is</textarea><p class="exampleText">(Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")</p><button type="submit" class="btn btn-go btn-block btn-lg problemSubmit">Save &amp; Continue</button><button class="btn btn-info btn-block btn-lg problemContinue">Cancel</button></div></form></div></div></div><div class="variability-slide score-slide" style="width:83.3333px;"><div class="row top-row scoreIdea"><div class="col-xs-12"><h2 class="top-row-header">Score Inkerator's Variability</h2><h3>Will use or production of Inkerator change based upon specific scenarios or circumstances when solving the problem of sad knees?</h3></div></div><div class="row scoring-stars"><div class="col-xs-1"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-one variability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-two variability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-three variability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-four variability-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-five variability-star"></div><div class="col-xs-1"></div></div><div class="row viability-labels"><div class="col-xs-1"></div><div class="col-xs-2"><h3>Consistent</h3></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"><h3>Erratic</h3></div><div class="col-xs-1"></div></div><div class="problem-slide"><div class="row"><h3>Why the low score?</h3><form role="form" action="http://localhost:5000/add-idea-problem" method="post" data-idea-doc="{&quot;visibility&quot;:&quot;public&quot;,&quot;images&quot;:[],&quot;aptitudes&quot;:[&quot;57c99df8abccc6820608bb7e&quot;],&quot;visibleEditingSections&quot;:[],&quot;collaborators&quot;:[],&quot;campaigns&quot;:[],&quot;variants&quot;:[],&quot;ideaReviews&quot;:[],&quot;problemPriorities&quot;:[&quot;58014f5dc73d763bbc93b296&quot;],&quot;performPriority&quot;:1,&quot;affordPriority&quot;:2,&quot;featurePriority&quot;:3,&quot;deliverPriority&quot;:4,&quot;useabilityPriority&quot;:5,&quot;maintainPriority&quot;:6,&quot;durabilityPriority&quot;:7,&quot;imagePriority&quot;:8,&quot;complexPriority&quot;:9,&quot;precisionPriority&quot;:10,&quot;variabilityPriority&quot;:11,&quot;sensitivityPriority&quot;:12,&quot;immaturePriority&quot;:13,&quot;dangerPriority&quot;:14,&quot;skillsPriority&quot;:15,&quot;name&quot;:&quot;Inkerator&quot;,&quot;description&quot;:&quot;happy knees&quot;,&quot;problem&quot;:&quot;sad knees&quot;,&quot;__v&quot;:2,&quot;inventorName&quot;:&quot;joseph.oldenburg@gmail.com&quot;,&quot;_id&quot;:&quot;57d495601c845f9e2fd9b903&quot;}"><div class="form-group"><input type="hidden" name="_csrf" value="VitHykcq-0_ogsIoDD_FsJHJgUVqC_1mUFf8"><input type="hidden" value="Area : Variability" class="problemArea"><textarea rows="3" class="problemStatement form-control">The problem is</textarea><p class="exampleText">(Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")</p><button type="submit" class="btn btn-go btn-block btn-lg problemSubmit">Save &amp; Continue</button><button class="btn btn-info btn-block btn-lg problemContinue">Cancel</button></div></form></div></div></div><div class="sensitivity-slide score-slide" style="width:83.3333px;"><div class="row top-row scoreIdea"><div class="col-xs-12"><h2 class="top-row-header">Score Inkerator's Sensitivity</h2><h3>Will usage or the environment easily disturb or damage Inkerator while solving the problem of sad knees?</h3></div></div><div class="row scoring-stars"><div class="col-xs-1"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-one sensitivity-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-two sensitivity-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-three sensitivity-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-four sensitivity-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-five sensitivity-star"></div><div class="col-xs-1"></div></div><div class="row viability-labels"><div class="col-xs-1"></div><div class="col-xs-2"><h3>Reliable</h3></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"><h3>Fragile</h3></div><div class="col-xs-1"></div></div><div class="problem-slide"><div class="row"><h3>Why the low score?</h3><form role="form" action="http://localhost:5000/add-idea-problem" method="post" data-idea-doc="{&quot;visibility&quot;:&quot;public&quot;,&quot;images&quot;:[],&quot;aptitudes&quot;:[&quot;57c99df8abccc6820608bb7e&quot;],&quot;visibleEditingSections&quot;:[],&quot;collaborators&quot;:[],&quot;campaigns&quot;:[],&quot;variants&quot;:[],&quot;ideaReviews&quot;:[],&quot;problemPriorities&quot;:[&quot;58014f5dc73d763bbc93b296&quot;],&quot;performPriority&quot;:1,&quot;affordPriority&quot;:2,&quot;featurePriority&quot;:3,&quot;deliverPriority&quot;:4,&quot;useabilityPriority&quot;:5,&quot;maintainPriority&quot;:6,&quot;durabilityPriority&quot;:7,&quot;imagePriority&quot;:8,&quot;complexPriority&quot;:9,&quot;precisionPriority&quot;:10,&quot;variabilityPriority&quot;:11,&quot;sensitivityPriority&quot;:12,&quot;immaturePriority&quot;:13,&quot;dangerPriority&quot;:14,&quot;skillsPriority&quot;:15,&quot;name&quot;:&quot;Inkerator&quot;,&quot;description&quot;:&quot;happy knees&quot;,&quot;problem&quot;:&quot;sad knees&quot;,&quot;__v&quot;:2,&quot;inventorName&quot;:&quot;joseph.oldenburg@gmail.com&quot;,&quot;_id&quot;:&quot;57d495601c845f9e2fd9b903&quot;}"><div class="form-group"><input type="hidden" name="_csrf" value="VitHykcq-0_ogsIoDD_FsJHJgUVqC_1mUFf8"><input type="hidden" value="Area : Sensitivity" class="problemArea"><textarea rows="3" class="problemStatement form-control">The problem is</textarea><p class="exampleText">(Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")</p><button type="submit" class="btn btn-go btn-block btn-lg problemSubmit">Save &amp; Continue</button><button class="btn btn-info btn-block btn-lg problemContinue">Cancel</button></div></form></div></div></div><div class="immaturity-slide score-slide" style="width:83.3333px;"><div class="row top-row scoreIdea"><div class="col-xs-12"><h2 class="top-row-header">Score Inkerator's Immaturity</h2><h3>Will the design, manufacture, or production of Inkerator require new or unproven technology, processes or materials to solve the problem of sad knees?</h3></div></div><div class="row scoring-stars"><div class="col-xs-1"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-one immaturity-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-two immaturity-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-three immaturity-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-four immaturity-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-five immaturity-star"></div><div class="col-xs-1"></div></div><div class="row viability-labels"><div class="col-xs-1"></div><div class="col-xs-2"><h3>Developed</h3></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"><h3>Raw</h3></div><div class="col-xs-1"></div></div><div class="problem-slide"><div class="row"><h3>Why the low score?</h3><form role="form" action="http://localhost:5000/add-idea-problem" method="post" data-idea-doc="{&quot;visibility&quot;:&quot;public&quot;,&quot;images&quot;:[],&quot;aptitudes&quot;:[&quot;57c99df8abccc6820608bb7e&quot;],&quot;visibleEditingSections&quot;:[],&quot;collaborators&quot;:[],&quot;campaigns&quot;:[],&quot;variants&quot;:[],&quot;ideaReviews&quot;:[],&quot;problemPriorities&quot;:[&quot;58014f5dc73d763bbc93b296&quot;],&quot;performPriority&quot;:1,&quot;affordPriority&quot;:2,&quot;featurePriority&quot;:3,&quot;deliverPriority&quot;:4,&quot;useabilityPriority&quot;:5,&quot;maintainPriority&quot;:6,&quot;durabilityPriority&quot;:7,&quot;imagePriority&quot;:8,&quot;complexPriority&quot;:9,&quot;precisionPriority&quot;:10,&quot;variabilityPriority&quot;:11,&quot;sensitivityPriority&quot;:12,&quot;immaturePriority&quot;:13,&quot;dangerPriority&quot;:14,&quot;skillsPriority&quot;:15,&quot;name&quot;:&quot;Inkerator&quot;,&quot;description&quot;:&quot;happy knees&quot;,&quot;problem&quot;:&quot;sad knees&quot;,&quot;__v&quot;:2,&quot;inventorName&quot;:&quot;joseph.oldenburg@gmail.com&quot;,&quot;_id&quot;:&quot;57d495601c845f9e2fd9b903&quot;}"><div class="form-group"><input type="hidden" name="_csrf" value="VitHykcq-0_ogsIoDD_FsJHJgUVqC_1mUFf8"><input type="hidden" value="Area : Immaturity" class="problemArea"><textarea rows="3" class="problemStatement form-control">The problem is</textarea><p class="exampleText">(Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")</p><button type="submit" class="btn btn-go btn-block btn-lg problemSubmit">Save &amp; Continue</button><button class="btn btn-info btn-block btn-lg problemContinue">Cancel</button></div></form></div></div></div><div class="dangerous-slide score-slide" style="width:83.3333px;"><div class="row top-row scoreIdea"><div class="col-xs-12"><h2 class="top-row-header">Score Inkerator's Dangerousness</h2><h3>Will Inkerator require human or environmental protections to reduce potential harm?</h3></div></div><div class="row scoring-stars"><div class="col-xs-1"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-one dangerous-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-two dangerous-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-three dangerous-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-four dangerous-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-five dangerous-star"></div><div class="col-xs-1"></div></div><div class="row viability-labels"><div class="col-xs-1"></div><div class="col-xs-2"><h3>Harmless</h3></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"><h3>Hazardous</h3></div><div class="col-xs-1"></div></div><div class="problem-slide"><div class="row"><h3>Why the low score?</h3><form role="form" action="http://localhost:5000/add-idea-problem" method="post" data-idea-doc="{&quot;visibility&quot;:&quot;public&quot;,&quot;images&quot;:[],&quot;aptitudes&quot;:[&quot;57c99df8abccc6820608bb7e&quot;],&quot;visibleEditingSections&quot;:[],&quot;collaborators&quot;:[],&quot;campaigns&quot;:[],&quot;variants&quot;:[],&quot;ideaReviews&quot;:[],&quot;problemPriorities&quot;:[&quot;58014f5dc73d763bbc93b296&quot;],&quot;performPriority&quot;:1,&quot;affordPriority&quot;:2,&quot;featurePriority&quot;:3,&quot;deliverPriority&quot;:4,&quot;useabilityPriority&quot;:5,&quot;maintainPriority&quot;:6,&quot;durabilityPriority&quot;:7,&quot;imagePriority&quot;:8,&quot;complexPriority&quot;:9,&quot;precisionPriority&quot;:10,&quot;variabilityPriority&quot;:11,&quot;sensitivityPriority&quot;:12,&quot;immaturePriority&quot;:13,&quot;dangerPriority&quot;:14,&quot;skillsPriority&quot;:15,&quot;name&quot;:&quot;Inkerator&quot;,&quot;description&quot;:&quot;happy knees&quot;,&quot;problem&quot;:&quot;sad knees&quot;,&quot;__v&quot;:2,&quot;inventorName&quot;:&quot;joseph.oldenburg@gmail.com&quot;,&quot;_id&quot;:&quot;57d495601c845f9e2fd9b903&quot;}"><div class="form-group"><input type="hidden" name="_csrf" value="VitHykcq-0_ogsIoDD_FsJHJgUVqC_1mUFf8"><input type="hidden" value="Area : Danger" class="problemArea"><textarea rows="3" class="problemStatement form-control">The problem is</textarea><p class="exampleText">(Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")</p><button type="submit" class="btn btn-go btn-block btn-lg problemSubmit">Save &amp; Continue</button><button class="btn btn-info btn-block btn-lg problemContinue">Cancel</button></div></form></div></div></div><div class="skills-slide score-slide" style="width:83.3333px;"><div class="row top-row scoreIdea"><div class="col-xs-12"><h2 class="top-row-header">Score Inkerator's Level of Skills to Operate</h2><h3>Will Inkerator require many specific skills to solve the problem of sad knees?</h3></div></div><div class="row scoring-stars"><div class="col-xs-1"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-one skills-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-two skills-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-three skills-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-four skills-star"></div><div class="col-xs-2"><img src="./edit_files/empty-star.png" class="star-five skills-star"></div><div class="col-xs-1"></div></div><div class="row viability-labels"><div class="col-xs-1"></div><div class="col-xs-2"><h3>Easy</h3></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"></div><div class="col-xs-2"><h3>Onerous</h3></div><div class="col-xs-1"></div></div><div class="problem-slide"><div class="row"><h3>Why the low score?</h3><form role="form" action="http://localhost:5000/add-idea-problem" method="post" data-idea-doc="{&quot;visibility&quot;:&quot;public&quot;,&quot;images&quot;:[],&quot;aptitudes&quot;:[&quot;57c99df8abccc6820608bb7e&quot;],&quot;visibleEditingSections&quot;:[],&quot;collaborators&quot;:[],&quot;campaigns&quot;:[],&quot;variants&quot;:[],&quot;ideaReviews&quot;:[],&quot;problemPriorities&quot;:[&quot;58014f5dc73d763bbc93b296&quot;],&quot;performPriority&quot;:1,&quot;affordPriority&quot;:2,&quot;featurePriority&quot;:3,&quot;deliverPriority&quot;:4,&quot;useabilityPriority&quot;:5,&quot;maintainPriority&quot;:6,&quot;durabilityPriority&quot;:7,&quot;imagePriority&quot;:8,&quot;complexPriority&quot;:9,&quot;precisionPriority&quot;:10,&quot;variabilityPriority&quot;:11,&quot;sensitivityPriority&quot;:12,&quot;immaturePriority&quot;:13,&quot;dangerPriority&quot;:14,&quot;skillsPriority&quot;:15,&quot;name&quot;:&quot;Inkerator&quot;,&quot;description&quot;:&quot;happy knees&quot;,&quot;problem&quot;:&quot;sad knees&quot;,&quot;__v&quot;:2,&quot;inventorName&quot;:&quot;joseph.oldenburg@gmail.com&quot;,&quot;_id&quot;:&quot;57d495601c845f9e2fd9b903&quot;}"><div class="form-group"><input type="hidden" name="_csrf" value="VitHykcq-0_ogsIoDD_FsJHJgUVqC_1mUFf8"><input type="hidden" value="Area : Skills" class="problemArea"><textarea rows="3" class="problemStatement form-control">The problem is</textarea><p class="exampleText">(Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")</p><button type="submit" class="btn btn-go btn-block btn-lg problemSubmit">Save &amp; Continue</button><button class="btn btn-info btn-block btn-lg problemContinue">Cancel</button></div></form></div></div></div><div class="viability-scoring-outro-slide score-slide" style="width:83.3333px;"><div class="row"><div class="col-xs-4"></div><div class="col-xs-4"><h2>Great job!</h2><h4>You're almost done. Think of any other areas of improvement for Inkerator and view your idea profile.</h4><a id="add-viability-next-btn" href="http://localhost:5000/ideas/Inkerator/edit#add-imperfections-row" class="btn btn-go btn-lg btn-block">Next Step</a></div><div class="col-xs-4"></div></div></div></div></div><div class="col-xs-1 viabilty-slider-right-arrow-column"><a class="viabilty-slider-right-arrow"><img src="./edit_files/right-arrow.png"></a></div></div><div class="viability-icons row hidden"><div class="col-xs-1"></div><div class="col-xs-10"><a class="slide-icon-one"><img src="./edit_files/perfIcon.png" class="performability-icon"></a><a class="slide-icon-two"><img src="./edit_files/affordIcon.png" class="affordability-icon"></a><a class="slide-icon-three"><img src="./edit_files/perfIcon.png" class="featurability-icon"></a><a class="slide-icon-four"><img src="./edit_files/deliverabilityIcon.png" class="deliverability-icon"></a><a class="slide-icon-five"><img src="./edit_files/useabilityIcon.png" class="useability-icon"></a><a class="slide-icon-six"><img src="./edit_files/maintainabilityIcon.png" class="maintainability-icon"></a><a class="slide-icon-seven"><img src="./edit_files/durabilityIcon.png" class="durability-icon"></a><a class="slide-icon-eight"><img src="./edit_files/imageabilityIcon.png" class="imageability-icon"></a><a class="slide-icon-nine"><img src="./edit_files/complexityIcon.png" class="complexity-icon"></a><a class="slide-icon-ten"><img src="./edit_files/precisionIcon.png" class="precision-icon"></a><a class="slide-icon-eleven"><img src="./edit_files/variabilityIcon.png" class="variability-icon"></a><a class="slide-icon-twelve"><img src="./edit_files/sensitivityIcon.png" class="sensitivity-icon"></a><a class="slide-icon-thirteen"><img src="./edit_files/immaturityIcon.png" class="immaturity-icon"></a><a class="slide-icon-fourteen"><img src="./edit_files/dangerIcon.png" class="dangerous-icon"></a><a class="slide-icon-fifteen"><img src="./edit_files/skillsIcon.png" class="skills-icon"></a></div><div class="col-xs-1"></div></div><div id="add-imperfections-row" class="odd-row hidden idea-edit-row row"><div class="col-md-12 idea-seed-imperfections"><h2 id="imperfections-header">Imperfections</h2><h4>Add any other imperfections that Inkerator may currently have that you'd like to improve</h4><form role="form" id="addIdeaProblem" action="http://localhost:5000/add-idea-problem" method="post" data-idea-doc="{&quot;visibility&quot;:&quot;public&quot;,&quot;images&quot;:[],&quot;aptitudes&quot;:[&quot;57c99df8abccc6820608bb7e&quot;],&quot;visibleEditingSections&quot;:[],&quot;collaborators&quot;:[],&quot;campaigns&quot;:[],&quot;variants&quot;:[],&quot;ideaReviews&quot;:[],&quot;problemPriorities&quot;:[&quot;58014f5dc73d763bbc93b296&quot;],&quot;performPriority&quot;:1,&quot;affordPriority&quot;:2,&quot;featurePriority&quot;:3,&quot;deliverPriority&quot;:4,&quot;useabilityPriority&quot;:5,&quot;maintainPriority&quot;:6,&quot;durabilityPriority&quot;:7,&quot;imagePriority&quot;:8,&quot;complexPriority&quot;:9,&quot;precisionPriority&quot;:10,&quot;variabilityPriority&quot;:11,&quot;sensitivityPriority&quot;:12,&quot;immaturePriority&quot;:13,&quot;dangerPriority&quot;:14,&quot;skillsPriority&quot;:15,&quot;name&quot;:&quot;Inkerator&quot;,&quot;description&quot;:&quot;happy knees&quot;,&quot;problem&quot;:&quot;sad knees&quot;,&quot;__v&quot;:2,&quot;inventorName&quot;:&quot;joseph.oldenburg@gmail.com&quot;,&quot;_id&quot;:&quot;57d495601c845f9e2fd9b903&quot;}"><div class="form-group"><input type="hidden" name="_csrf" value="VitHykcq-0_ogsIoDD_FsJHJgUVqC_1mUFf8"><h4>Describe the imperfection:</h4><textarea rows="3" class="problemStatement form-control">The problem is</textarea><h4>Type of Imperfection:</h4><select id="problemArea" required="" class="form-control"><option value="Area : Performability">Area : Performability</option><option value="Area : Affordability">Area : Affordability</option><option value="Area : Featurability">Area : Featurability</option><option value="Area : Deliverability">Area : Deliverability</option><option value="Area : Useability">Area : Useability</option><option value="Area : Maintainability">Area : Maintainability</option><option value="Area : Durability">Area : Durability</option><option value="Area : Imageability">Area : Imageability</option><option value="Area : Complexity">Area : Complexity</option><option value="Area : Precision">Area : Precision</option><option value="Area : Variability">Area : Variability</option><option value="Area : Sensitivity">Area : Sensitivity</option><option value="Area : Immaturity">Area : Immaturity</option><option value="Area : Danger">Area : Danger</option><option value="Area : Skills">Area : Skills</option></select><br><button type="submit" class="btn btn-industry btn-lg individualProblemSubmit">Save</button></div></form><div id="prob-1476480861662" class="row problem-row idea-edit-problem-element"><div class="col-sm-6 problem-row-padding click-row"><div class="suggestionStyle">The imperfection of it's too expensive</div><br><span>By: <a href="http://localhost:5000/imagineer/Joe%20Oldenburg"><span class="suggestionStyle">Joe Oldenburg </span><div style="display: inline-block; border-radius: 15px; height: 15px; width: 15px; background-image : url(&#39;https://qonspire.s3.amazonaws.com/green-square-1475171518283.png&#39;);  background-position: center center; background-repeat: no-repeat; background-size: cover;"></div></a></span></div><div class="col-sm-3"><img src="./edit_files/IdeaJam-logo.gif" style="display:none;" class="ideajam-spinner"><a id="upvote-prob-1476480861662" data-problem-id="58014f5dc73d763bbc93b296" ontouchstart="this.style.background = &#39;#69847d&#39;;" ontouchend="this.style.background=&#39;#337ab7&#39;;" class="btn btn-vision btn-block full-width-mobile btn-lg upvote-imperfection">Upvote 0</a></div><div class="col-sm-3 right-jam-col"><img src="./edit_files/IdeaJam-logo.gif" style="display:none;" class="ideajam-spinner"><a href="http://localhost:5000/imperfection-profile/prob-1476480861662" class="btn btn-electric btn-block full-width-mobile btn-lg">Solve This!</a></div></div><script type="text/javascript">$(".click-row").click(function(event){
+  if ($.contains($("#prob-1476480861662")[0], event.target)) {
+    window.document.location = "/imperfection-profile/" + "prob-1476480861662";    
+  }
+});</script></div><div class="col-xs-12 complete-idea-editing"><a id="complete-button" href="http://localhost:5000/ideas/Inkerator" class="btn btn-go btn-lg btn-block">Complete</a></div></div></div><div class="pagefooter"><div id="footer"><div class="row"><div class="col-md-6"><p id="footer-info"><a href="http://localhost:5000/whatisideajam">What Is IdeaJam? |  </a><a href="http://localhost:5000/howideajamworks">How IdeaJam Works |  </a><a href="http://localhost:5000/faq">FAQ | </a><a href="http://localhost:5000/people">Who We Are | </a><a href="http://localhost:5000/terms.html">Terms of Use</a></p></div><div class="col-md-6"><table id="symantec-seal" width="135" border="0" cellpadding="2" cellspacing="0" title="Click to Verify - This site chose Symantec SSL for secure e-commerce and confidential communications.">
+<tbody><tr>
+<td width="135" align="center" valign="top"><script type="text/javascript" src="./edit_files/getseal"></script><br>
+<a href="http://www.symantec.com/ssl-certificates" target="_blank" style="color:#000000; text-decoration:none; font:bold 7px verdana,sans-serif; letter-spacing:.5px; text-align:center; margin:0px; padding:0px;">ABOUT SSL CERTIFICATES</a></td>
+</tr>
+</tbody></table></div></div></div></div><div id="titleModal" role="dialog" class="modal fade annotate-modal"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><div class="modal-title"> <h2>Joe Oldenburg, name Your Idea</h2><p>Give your idea a short, descriptive, memorable name:</p></div></div><div class="modal-body"><form role="form" id="saveIdeaName" action="http://localhost:5000/save-idea-name" method="post" style="max-width: 300px;" data-idea-doc="{&quot;visibility&quot;:&quot;public&quot;,&quot;images&quot;:[],&quot;aptitudes&quot;:[&quot;57c99df8abccc6820608bb7e&quot;],&quot;visibleEditingSections&quot;:[],&quot;collaborators&quot;:[],&quot;campaigns&quot;:[],&quot;variants&quot;:[],&quot;ideaReviews&quot;:[],&quot;problemPriorities&quot;:[&quot;58014f5dc73d763bbc93b296&quot;],&quot;performPriority&quot;:1,&quot;affordPriority&quot;:2,&quot;featurePriority&quot;:3,&quot;deliverPriority&quot;:4,&quot;useabilityPriority&quot;:5,&quot;maintainPriority&quot;:6,&quot;durabilityPriority&quot;:7,&quot;imagePriority&quot;:8,&quot;complexPriority&quot;:9,&quot;precisionPriority&quot;:10,&quot;variabilityPriority&quot;:11,&quot;sensitivityPriority&quot;:12,&quot;immaturePriority&quot;:13,&quot;dangerPriority&quot;:14,&quot;skillsPriority&quot;:15,&quot;name&quot;:&quot;Inkerator&quot;,&quot;description&quot;:&quot;happy knees&quot;,&quot;problem&quot;:&quot;sad knees&quot;,&quot;__v&quot;:2,&quot;inventorName&quot;:&quot;joseph.oldenburg@gmail.com&quot;,&quot;_id&quot;:&quot;57d495601c845f9e2fd9b903&quot;}"><div class="form-group"><input type="hidden" name="_csrf" value="VitHykcq-0_ogsIoDD_FsJHJgUVqC_1mUFf8"><input type="text" name="inventionName" value="My idea is called the " class="form-control"><p>(Example: "My idea is called the DeLorean Time Machine")</p><p class="charactersRemaining">30 characters remaining</p></div><div class="modal-footer"><button id="titleSubmit" type="submit" class="btn btn-success">Save<img src="./edit_files/single-einstein-point.png" class="einstein-point-btn-icon"></button></div></form><div class="row"><div class="col-xs-12"><div class="hint">Hint: Choose a concise, catchy and descriptive name for your idea.</div></div></div></div></div></div></div><div id="filePatentModal" role="dialog" class="modal fade annotate-modal"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" class="close">×</button><div class="modal-title"> <h3>Visibility status of your inkerator</h3><h4>Protect yourself against others who might see and steal ideas from your inkerator.</h4><h4>IdeaJam can create a provisional patent application template for your inkerator.  Filing a patent application before making your ideas visible will provide you with patent pending status over inkerator earning you potential rights over anyone who later makes or sells the same idea.</h4></div></div><div class="modal-body"><a id="create-application-button" href="http://localhost:5000/create-application" class="btn btn-go">Download Application</a><br><form role="form" id="prelimReceiptUpload" action="http://localhost:5000/receipt-upload" method="post" data-idea-doc="{&quot;visibility&quot;:&quot;public&quot;,&quot;images&quot;:[],&quot;aptitudes&quot;:[&quot;57c99df8abccc6820608bb7e&quot;],&quot;visibleEditingSections&quot;:[],&quot;collaborators&quot;:[],&quot;campaigns&quot;:[],&quot;variants&quot;:[],&quot;ideaReviews&quot;:[],&quot;problemPriorities&quot;:[&quot;58014f5dc73d763bbc93b296&quot;],&quot;performPriority&quot;:1,&quot;affordPriority&quot;:2,&quot;featurePriority&quot;:3,&quot;deliverPriority&quot;:4,&quot;useabilityPriority&quot;:5,&quot;maintainPriority&quot;:6,&quot;durabilityPriority&quot;:7,&quot;imagePriority&quot;:8,&quot;complexPriority&quot;:9,&quot;precisionPriority&quot;:10,&quot;variabilityPriority&quot;:11,&quot;sensitivityPriority&quot;:12,&quot;immaturePriority&quot;:13,&quot;dangerPriority&quot;:14,&quot;skillsPriority&quot;:15,&quot;name&quot;:&quot;Inkerator&quot;,&quot;description&quot;:&quot;happy knees&quot;,&quot;problem&quot;:&quot;sad knees&quot;,&quot;__v&quot;:2,&quot;inventorName&quot;:&quot;joseph.oldenburg@gmail.com&quot;,&quot;_id&quot;:&quot;57d495601c845f9e2fd9b903&quot;}" enctype="multipart/form-data"><div class="form-group"><input type="hidden" name="_csrf" value="VitHykcq-0_ogsIoDD_FsJHJgUVqC_1mUFf8"><input id="receiptInput" type="file" name="receipt"></div></form><br></div><div class="modal-footer"><button id="enterMoreInformation" data-dismiss="modal" class="btn btn-info">Enter More Information</button><a id="bypass-application-button" data-toggle="modal" data-target="#confirmExposeIdeaModal" class="btn btn-go">Expose Idea Now</a></div></div></div></div><div id="confirmExposeIdeaModal" role="dialog" class="modal fade annotate-modal"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" class="close">×</button><div class="modal-title"> <h2>Are you sure?</h2></div></div><div class="modal-body"><h5>If you expose this idea publicly prior to filing a patent application, you may lose your right to patent the idea. We recommend that you file a patent application before disclosing. Are you sure you want to make this idea public before obtaining patent pending status?</h5><div class="modal-footer"><button data-dismiss="modal" class="btn btn-industry">Cancel</button><button id="exposeIdeaNow" class="btn btn-go">Yes, Expose Now!</button></div></div></div></div></div><button type="button" id="titleModalButton" style="display:none;" data-toggle="modal" data-target="#titleModal" class="btn btn-primary">Go Win Fight</button><script src="./edit_files/bootstrap.min.js"></script><script src="./edit_files/jquery-ui.js"></script><script src="./edit_files/underscore-min.js"></script><script src="./edit_files/jquery.ui.touch-punch.min.js"></script><script src="./edit_files/bootstrap-toggle.min.js"></script><script src="./edit_files/exif.js"></script><script type="text/javascript">$(document).ready(function(){
+  if("Inkerator" == ""){
+    $('#titleModal').modal('show');
+  }
+  if("happy knees" == ""){
+    $("#idea-summary-accomplish")
+      .addClass("incomplete-data");
+    $("#idea-summary-accomplish a")
+      .before("<h4><i>No data entered</i></h4>");
+  }
+  if("sad knees" == ""){
+    $("#idea-summary-challenge")
+      .addClass("incomplete-data");
+    $("#idea-summary-challenge a")
+      .before("<h4><i>No data entered</i></h4>");
+  }
+
+  $("#enterMoreInformation").click(function(event){
+    $("#whatsLeftModal").modal('show');
+  })
+
+  $("#openTitleModal").click(function(event){
+    $("#whatsLeftModal").modal('hide');
+    $('#titleModal').modal('show');
+  })
+
+  $("#openAddProblemModal").click(function(event){
+    $("#whatsLeftModal").modal('hide');
+    $('#addProblemModal').modal('show');
+  })
+
+  $("#viewComponentsTab").click(function(event){
+    $("#whatsLeftModal").modal('hide');
+    $('a').filter(function(index) { return $(this).text() === "Components"; }).click();
+  })
+
+  var viabilitySliderWidth = $(".slide-content").width();
+  $(".viability-slide-wrapper > div").attr("style", "width:" + viabilitySliderWidth + "px;");
+
+  //twice the left-right margin on desktop size sliders
+  viabilitySliderWidth += 30;
+
+  $(".viabilty-slider-right-arrow").click(function(event){
+    $.each($(".problem-slide").filter(":visible"),function(index, element){
+      $(element).siblings(".scoring-stars").animate({
+        "marginTop" : "+=10em",
+        "width" : "100%"
+      }, 500)
+      $(element).siblings(".viability-labels").removeClass("hidden");
+      $(element).hide()
+    });
+    $('#add-viability-scores-row .slide-content').animate( { scrollLeft: '+=' + viabilitySliderWidth}, 400);
+  });
+
+  $(".viabilty-slider-left-arrow").click(function(event){
+    $.each($(".problem-slide").filter(":visible"),function(index, element){
+      $(element).siblings(".scoring-stars").animate({
+        "marginTop" : "+=10em;",
+        "width" : "100%"
+      }, 500)
+      $(element).siblings(".viability-labels").removeClass("hidden");
+      $(element).hide()
+    });
+    $('#add-viability-scores-row .slide-content').animate( { scrollLeft: '-=' + viabilitySliderWidth}, 400);
+  });
+
+  $("a.slide-icon-one").click(function(event){
+    $('#add-viability-scores-row .slide-content').animate( { scrollLeft: viabilitySliderWidth}, 400);
+  })
+  $("a.slide-icon-two").click(function(event){
+    $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 2 * viabilitySliderWidth}, 400);
+  })
+  $("a.slide-icon-three").click(function(event){
+    $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 3 * viabilitySliderWidth}, 400);
+  })
+  $("a.slide-icon-four").click(function(event){
+    $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 4 * viabilitySliderWidth}, 400);
+  })
+  $("a.slide-icon-five").click(function(event){
+    $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 5 * viabilitySliderWidth}, 400);
+  })
+  $("a.slide-icon-six").click(function(event){
+    $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 6 * viabilitySliderWidth}, 400);
+  })
+  $("a.slide-icon-seven").click(function(event){
+    $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 7 * viabilitySliderWidth}, 400);
+  })
+  $("a.slide-icon-eight").click(function(event){
+    $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 8 * viabilitySliderWidth}, 400);
+  })
+  $("a.slide-icon-nine").click(function(event){
+    $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 8 * viabilitySliderWidth}, 400);
+  })
+  $("a.slide-icon-ten").click(function(event){
+    $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 10 * viabilitySliderWidth}, 400);
+  })
+  $("a.slide-icon-eleven").click(function(event){
+    $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 11 * viabilitySliderWidth}, 400);
+  })
+  $("a.slide-icon-twelve").click(function(event){
+    $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 12 * viabilitySliderWidth}, 400);
+  })
+  $("a.slide-icon-thirteen").click(function(event){
+    $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 13 * viabilitySliderWidth}, 400);
+  })
+  $("a.slide-icon-fourteen").click(function(event){
+    $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 14 * viabilitySliderWidth}, 400);
+  })
+  $("a.slide-icon-fifteen").click(function(event){
+    $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 15 * viabilitySliderWidth}, 400);
+  })
+
+});
+
+
+$("#viabilityModal .cancel-button").click(function(event){
+    $("#perfSlider").slider("destroy");
+    $("#affordSlider").slider("destroy");
+    $("#featureSlider").slider("destroy");
+    $("#deliverSlider").slider("destroy");
+    $("#useabilitySlider").slider("destroy");
+    $("#maintainSlider").slider("destroy");
+    $("#dangerSlider").slider("destroy");
+    $("#durabilitySlider").slider("destroy");
+    $("#imageSlider").slider("destroy");
+    $("#complexSlider").slider("destroy");
+    $("#precisionSlider").slider("destroy");
+    $("#variabilitySlider").slider("destroy");
+    $("#sensitivitySlider").slider("destroy");
+    $("#immatureSlider").slider("destroy");
+    $("#skillsSlider").slider("destroy");
+});
+
+
+$("#imperfections-header").click(function(event){
+  $('#viewAllImperfections').modal('show');
+})
+
+$(".individualProblemSubmit").click(function(event){
+  event.preventDefault();
+  if ($(this).siblings(".problemStatement").val().length > 15){
+    var newProblemStatement = $(this).siblings(".problemStatement").val().trim();
+    $.post('/add-idea-problem', 
+      {
+        _csrf : $('[name="_csrf"]').val(),
+        problemStatement : newProblemStatement.slice(15),
+        problemArea : $("#problemArea option:selected").text(),
+      },
+      function(resp) {
+        window.location.href= "/ideas/Inkerator/edit?r="+(new Date())+"#add-imperfections-row";
+      });
+  }
+});
+
+$(".problemSubmit").click(function(event){
+  event.preventDefault();
+
+  var problemText = $(this).siblings("textarea").val();
+
+  if(problemText == "The problem is "){
+    $(".viabilty-slider-right-arrow").click();
+  } else if (problemText.length > 15){
+    var newProblemStatement = problemText.trim();
+    $.post('/add-idea-problem', 
+      {
+        _csrf : $('[name="_csrf"]').val(),
+        problemStatement : newProblemStatement.slice(15),
+        problemArea : $(this).siblings("input.problemArea").val()
+      },
+      function(resp) {
+        $(".viabilty-slider-right-arrow").click();
+      });
+  } else {
+    $(".viabilty-slider-right-arrow").click();
+  }
+});
+
+$(".problemContinue").click(function(event){
+  event.preventDefault();
+  $(".problem-slide").filter(":visible").each(function(){
+    $(this).siblings(".scoring-stars").animate({"marginTop": "+=10em", "width" : "100%"}, 500) 
+    $(this).siblings(".viability-labels").removeClass("hidden");
+    $(this).hide(500);
+  })
+
+})
+
+$("#titleSubmit").click(function(event){
+  event.preventDefault();
+  if($("#saveIdeaName input[name='inventionName']").val() == "My idea is called the "){
+    if($("#titleRequiredMessage").length == 0){
+      $("<p id='titleRequiredMessage'>A title is required</p>").insertBefore("#saveIdeaName input[name='inventionName']");
+    }
+  } else {
+    $.post('/save-idea-name', 
+      {
+        _csrf : $('[name="_csrf"]').val(),
+        inventionName : $("#saveIdeaName input[name='inventionName']").val().trim(),
+      },
+      function(resp) {
+        if(resp['newUrl']){
+          window.location = resp['newUrl'];
+        } else {
+          window.location.reload(true);
+        }
+      });
+  }
+})
+
+$("#componentSubmit").click(function(event){
+  event.preventDefault();
+
+  if($("#componentName").val() == "The ..." || $("#componentName").val() == "The "){
+    $("#addComponentModal").modal('hide');
+  } else {
+    var newComponentName = $("#componentName").val().trim();
+    var newComponentDescr;
+
+    var data = {
+        _csrf : $('[name="_csrf"]').val(),
+        componentName : newComponentName.slice(4)
+    };
+
+    if($("#componentDescription").val().length > "This component is described as ".length){
+      newComponentDescr = $("#componentDescription").val().trim();
+      data['componentDescription'] = newComponentDescr.slice("This component is described as ".length)
+    }
+
+    $.post('/add-idea-component', 
+      data,
+      function(data, response) {
+        window.location.href= "/ideas/Inkerator/edit?r="+(new Date())+"#add-components-row";
+      });      
+  }
+
+});
+
+$("#subComponentCheckbox").click(function(event){
+  $("#parentComponentDropdown").show(400);
+});
+
+// This is for the idea name
+var inputName = $("#saveIdeaName input")[1];
+var requiredNameText = "My idea is called the "
+$("#saveIdeaName .charactersRemaining").text((30) + " characters remaining");
+inputName.addEventListener ("mousedown", function () {
+  if (String($(this).val()).indexOf(requiredNameText) == -1 || String($(this).val()) == "My idea is called the ") {
+        $(this).val(requiredNameText);
+  }
+  if (this.selectionStart < requiredNameText.length) {
+    this.selectionStart = requiredNameText.length;
+  }
+}, false);
+
+inputName.addEventListener ("keydown", function () {
+  if (String($(this).val()).indexOf(requiredNameText) == -1) {
+        $(this).val(requiredNameText);
+  }
+  if (this.selectionStart < requiredNameText.length) {
+    this.selectionStart = requiredNameText.length;
+  }
+  $("#saveIdeaName input").keyup(function(){
+    $("#saveIdeaName .charactersRemaining").text((30 + requiredNameText.length - $(this).val().length) + " characters remaining");
+  });
+}, false);
+
+// This is for the problem input
+var inputProb = $(".problem-slide form textarea");
+var requiredProbText = "The problem is ";
+$.each(inputProb, function(index, value){
+  value.addEventListener ("mousedown", function () {
+    if (String($(this).val()).indexOf(requiredProbText) == -1) {
+          $(this).val(requiredProbText);
+    }
+    if (this.selectionStart < 15) {
+      this.selectionStart = 15;
+    }
+  }, false);
+
+  value.addEventListener ("keydown", function () {
+    if (String($(this).val()).indexOf(requiredProbText) == -1) {
+          $(this).val(requiredProbText);
+    }
+    if (this.selectionStart < 15) {
+      this.selectionStart = 15;
+    }
+  }, false);
+})
+
+// This is for the first text input field in the add component modal
+var inputOne = $("#addIdeaComponent input#componentName")[0];
+var requiredCompTextOne = "The "
+$("#addIdeaComponent .compNameCharRemaining").text((200) + " characters remaining");
+inputOne.addEventListener ("mousedown", function () {
+  if (String($(this).val()).indexOf(requiredCompTextOne) == -1 || String($(this).val()) == "The ...") {
+        $(this).val(requiredCompTextOne);
+  }
+  if (this.selectionStart < requiredCompTextOne.length) {
+    this.selectionStart = requiredCompTextOne.length;
+  }
+}, false);
+
+inputOne.addEventListener ("keydown", function () {
+  if (String($(this).val()).indexOf(requiredCompTextOne) == -1 || String($(this).val()) == "The ...") {
+        $(this).val(requiredCompTextOne);
+  }
+  if (this.selectionStart < requiredCompTextOne.length) {
+    this.selectionStart = requiredCompTextOne.length;
+  }
+  $("#addIdeaComponent input#componentName").keyup(function(){
+    $("#addIdeaComponent .compNameCharRemaining").text((200 + requiredCompTextOne.length - $(this).val().length) + " characters remaining");
+  });
+}, false);
+
+// This is for the second text input field in the add component modal
+var inputTwo = $("#addIdeaComponent input#componentDescription")[0];
+var requiredCompTextTwo = "This component is described as "
+$("#addIdeaComponent .compDescrCharRemaining").text((200) + " characters remaining");
+inputTwo.addEventListener ("mousedown", function () {
+  if (String($(this).val()).indexOf(requiredCompTextTwo) == -1) {
+        $(this).val(requiredCompTextTwo);
+  }
+  if (this.selectionStart < "This component is described as ".length) {
+    this.selectionStart = "This component is described as ".length;
+  }
+}, false);
+
+inputTwo.addEventListener ("keydown", function () {
+  if (String($(this).val()).indexOf(requiredCompTextTwo) == -1) {
+        $(this).val(requiredCompTextTwo);
+  }
+  if (this.selectionStart < "This component is described as ".length) {
+    this.selectionStart = "This component is described as ".length;
+  }
+  $("#addIdeaComponent input#componentDescription").keyup(function(){
+    $("#addIdeaComponent .compDescrCharRemaining").text((200 + requiredCompTextTwo.length - $(this).val().length) + " characters remaining");
+  });
+}, false);
+
+$("#aptitudeSubmit").click(function(event){
+  event.preventDefault();
+  if($("#aptitudeTitle").val() != ""){
+    var newAptitude = $("#aptitudeTitle").val().trim();
+    $.post('/save-aptitude', 
+      {
+        _csrf : $('[name="_csrf"]').val(),
+        ideaName : "Inkerator",
+        aptitudeTitle : newAptitude
+      },
+      function(resp) {
+        window.location.href= "/ideas/Inkerator/edit?r="+(new Date())+"#add-aptitudes-row";
+      });
+  } else {
+    alert("Please enter a valid aptitude.");
+  }
+});
+
+$("#exposeIdeaNow").click(function(event){
+  $.get("/expose-idea-seed", function(err, response){
+    window.location.reload(true);
+  });
+})
+
+
+$("#visibilityLink").click(function(event){
+  $("#filePatentModal").modal('show');
+})
+
+if($("#fileInput [type='file']").length > 0){
+
+  $("#fileInput [type='file']")[0].onchange = function(event) {
+    $("<img id='spinner' src='/spinner.gif'>").insertAfter("#formImageUpload");
+    const files = $("#fileInput [type='file']")[0].files;
+    const file = files[0];
+    const csrf = $("input[name='_csrf']").val();
+    if(file == null){
+      return alert('No file selected.');
+    }
+    var fr   = new FileReader;
+    
+    fr.onloadend = function() {
+      // get EXIF data
+      var exif = EXIF.readFromBinaryFile(this.result);
+
+      if(file.size < 3000000){
+        getSignedRequest(file, exif, csrf);
+      } else if (file.size > 3000000){
+        alert('Please choose an image smaller than 3 MB.')
+      } else {
+        alert('An error ocurred with this image.')
+      }
+
+    };
+
+    fr.readAsArrayBuffer(file); // read the file
+
+
+  };
+
+  function uploadFile(file, signedRequest, url, exif, csrf){
+    const xhr = new XMLHttpRequest();
+    xhr.open('PUT', signedRequest);
+    xhr.onreadystatechange = function() {
+      if(xhr.readyState === 4){
+        if(xhr.status === 200 && (file.type=="image/jpeg" || file.type=="image/png")){
+          var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type,
+            exif : exif, "_csrf" : csrf };
+          $.post('/image-upload', data , function(response, status){
+            window.location.reload(true);
+          });
+        }
+        else{
+          alert('Could not upload file.');
+        }
+      }
+    };
+    xhr.send(file);
+  }
+
+  function getSignedRequest(file, exif, csrf){
+    const xhr = new XMLHttpRequest();
+    var filename = file.name.split(".");
+    filename[0] = filename[0] + "-" + Date.now().toString();
+    filename = filename.join(".");
+    xhr.open('GET', '/sign-s3?file-name='+ filename + '&file-type='+ file.type);
+    xhr.onreadystatechange = function() {
+      if(xhr.readyState === 4 && xhr.responseText != ""){
+        if(xhr.status === 200){
+          var response = JSON.parse(xhr.responseText);
+          uploadFile(file, response.signedRequest, response.url, exif, csrf);
+        }
+        else{
+          alert('Could not get signed URL.');
+        }
+      } 
+      
+    };
+    xhr.send();
+  }
+}
+
+$(document).on('click', '.next-step a', function(event){
+    event.preventDefault();
+
+    $('html, body').animate({
+        scrollTop: $( $.attr(this, 'href') ).offset().top
+    }, 500);
+});
+
+$(".scoring-stars img").click(function(event){
+  
+  var scoreClass = "",
+      saveScoreRoute = "",
+      scoreName = "",
+      problemName = "",
+      iconClass = "",
+      slideClass = "";
+
+  if($(this).hasClass("performability-star")){
+    scoreClass = "performability-star";
+    saveScoreRoute = "/performability-mobile";
+    scoreName = "performOne";
+    problemName = "performProblem";
+    iconClass = "performability-icon";
+    slideClass = "performability-slide";
+
+  } else if($(this).hasClass("affordability-star")){
+    scoreClass = "affordability-star";
+    saveScoreRoute = "/affordability-mobile";
+    scoreName = "affordOne";
+    problemName = "affordProblem";
+    iconClass = "affordability-icon";
+    slideClass = "affordability-slide";
+
+  } else if($(this).hasClass("featurability-star")){
+    scoreClass = "featurability-star";
+    saveScoreRoute = "/featurability-mobile";
+    scoreName = "featureOne";
+    problemName = "featureProblem";
+    iconClass = "featurability-icon";
+    slideClass = "featurability-slide";
+
+  } else if($(this).hasClass("deliverability-star")){
+    scoreClass = "deliverability-star";
+    saveScoreRoute = "/deliverability-mobile";
+    scoreName = "deliverOne";
+    problemName = "deliverProblem";
+    iconClass = "deliverability-icon";
+    slideClass = "deliverability-slide";
+
+  } else if($(this).hasClass("useability-star")){
+    scoreClass = "useability-star";
+    saveScoreRoute = "/useability-mobile";
+    scoreName = "useabilityOne";
+    problemName = "useabilityOne";
+    iconClass = "useability-icon";
+    slideClass = "useability-slide";
+
+  } else if($(this).hasClass("maintainability-star")){
+    scoreClass = "maintainability-star";
+    saveScoreRoute = "/maintainability-mobile";
+    scoreName = "maintainOne";
+    problemName = "maintainOne";
+    iconClass = "maintainability-icon";
+    slideClass = "maintainability-slide";
+
+  } else if($(this).hasClass("durability-star")){
+    scoreClass = "durability-star";
+    saveScoreRoute = "/durability-mobile";
+    scoreName = "durabilityOne";
+    problemName = "durabilityOne";
+    iconClass = "durability-icon";
+    slideClass = "durability-slide";
+
+  } else if($(this).hasClass("imageability-star")){
+    scoreClass = "imageability-star";
+    saveScoreRoute = "/imageability-mobile";
+    scoreName = "imageOne";
+    problemName = "imageProblem";
+    iconClass = "imageability-icon";
+    slideClass = "imageability-slide";
+
+  } else if($(this).hasClass("complexity-star")){
+    scoreClass = "complexity-star";
+    saveScoreRoute = "/complexity-mobile";
+    scoreName = "complexOne";
+    problemName = "complexProblem";
+    iconClass = "complexity-icon";
+    slideClass = "complexity-slide";
+
+  } else if($(this).hasClass("precision-star")){
+    scoreClass = "precision-star";
+    saveScoreRoute = "/precision-mobile";
+    scoreName = "precisionOne";
+    problemName = "precisionProblem";
+    iconClass = "precision-icon";
+    slideClass = "precision-slide";
+
+  } else if($(this).hasClass("variability-star")){
+    scoreClass = "variability-star";
+    saveScoreRoute = "/variability-mobile";
+    scoreName = "variabilityOne";
+    problemName = "variabilityProblem";
+    iconClass = "variability-icon";
+    slideClass = "variability-slide";
+
+  } else if($(this).hasClass("sensitivity-star")){
+    scoreClass = "sensitivity-star";
+    saveScoreRoute = "/sensitivity-mobile";
+    scoreName = "sensitivityOne";
+    problemName = "sensitivityProblem";
+    iconClass = "sensitivity-icon";
+    slideClass = "sensitivity-slide";
+
+  } else if($(this).hasClass("immaturity-star")){
+    scoreClass = "immaturity-star";
+    saveScoreRoute = "/immaturity-mobile";
+    scoreName = "immatureOne";
+    problemName = "immatureProblem";
+    iconClass = "immaturity-icon";
+    slideClass = "immaturity-slide";
+
+  } else if($(this).hasClass("dangerous-star")){
+    scoreClass = "dangerous-star";
+    saveScoreRoute = "/dangerous-mobile";
+    scoreName = "dangerOne";
+    problemName = "dangerProblem";
+    iconClass = "dangerous-icon";
+    slideClass = "dangerous-slide";
+
+  } else if($(this).hasClass("skills-star")){
+    scoreClass = "skills-star";
+    saveScoreRoute = "/skills-mobile";
+    scoreName = "skillsOne";
+    problemName = "skillsProblem";
+    iconClass = "skills-icon";
+    slideClass = "skills-slide";
+
+  }
+
+  if( $(this).hasClass("star-one") ){
+    $("img.star-one." + scoreClass).addClass("scored");
+    $("img.star-two." + scoreClass).removeClass("scored");
+    $("img.star-three." + scoreClass).removeClass("scored");
+    $("img.star-four." + scoreClass).removeClass("scored");
+    $("img.star-five." + scoreClass).removeClass("scored");
+
+    $("." + iconClass).addClass("scored");
+
+    var data = {_csrf : $('[name="_csrf"]').val()};
+    data[scoreName] = 20;
+    data[problemName] = "";
+
+    $.post(saveScoreRoute, data);
+
+    $(this).parent().parent().animate({"marginTop": "-=10em", "width" : "40%"}, 500)
+    $(this).parent().parent().siblings(".viability-labels").addClass("hidden");
+    $(this).parent().parent().siblings($(".problem-slide")).show(500);
+
+  } else if ($(this).hasClass("star-two") ){
+    $("img.star-one." + scoreClass).addClass("scored");
+    $("img.star-two." + scoreClass).addClass("scored");
+    $("img.star-three." + scoreClass).removeClass("scored");
+    $("img.star-four." + scoreClass).removeClass("scored");
+    $("img.star-five." + scoreClass).removeClass("scored");
+
+    $("." + iconClass).addClass("scored");
+
+    var data = {_csrf : $('[name="_csrf"]').val()};
+    data[scoreName] = 40;
+    data[problemName] = "";
+
+    $.post(saveScoreRoute, data);
+
+    $(".viabilty-slider-right-arrow").click();
+
+  } else if ($(this).hasClass("star-three") ){
+    $("img.star-one." + scoreClass).addClass("scored");
+    $("img.star-two." + scoreClass).addClass("scored");
+    $("img.star-three." + scoreClass).addClass("scored");
+    $("img.star-four." + scoreClass).removeClass("scored");
+    $("img.star-five." + scoreClass).removeClass("scored");
+
+    $("." + iconClass).addClass("scored");
+
+    var data = {_csrf : $('[name="_csrf"]').val()};
+    data[scoreName] = 60;
+    data[problemName] = "";
+
+    $.post(saveScoreRoute, data);
+
+    $(".viabilty-slider-right-arrow").click();
+
+  } else if ($(this).hasClass("star-four") ){
+    $("img.star-one." + scoreClass).addClass("scored");
+    $("img.star-two." + scoreClass).addClass("scored");
+    $("img.star-three." + scoreClass).addClass("scored");
+    $("img.star-four." + scoreClass).addClass("scored");
+    $("img.star-five." + scoreClass).removeClass("scored");
+
+    $("." + iconClass).addClass("scored");
+
+    var data = {_csrf : $('[name="_csrf"]').val()};
+    data[scoreName] = 80;
+    data[problemName] = "";
+
+    $.post(saveScoreRoute, data);
+
+    $(".viabilty-slider-right-arrow").click();
+
+  } else if ($(this).hasClass("star-five") ){
+    $("img.star-one." + scoreClass).addClass("scored");
+    $("img.star-two." + scoreClass).addClass("scored");
+    $("img.star-three." + scoreClass).addClass("scored");
+    $("img.star-four." + scoreClass).addClass("scored");
+    $("img.star-five." + scoreClass).addClass("scored");
+
+    $("." + iconClass).addClass("scored");
+
+    var data = {_csrf : $('[name="_csrf"]').val()};
+    data[scoreName] = 100;
+    data[problemName] = "";
+
+    $.post(saveScoreRoute, data);
+
+    $(".viabilty-slider-right-arrow").click();
+
+  }
+
+});
+
+$("#upload-image-next-btn").click(function(event){
+  event.preventDefault();
+
+  var data = {
+    _csrf : $('[name="_csrf"]').val(),
+    newEditingSection : "annotate-images-row",
+    ideaName : "Inkerator"
+  }
+
+  $.post("/add-idea-editing-section", data, function(data, response){
+    window.location.href= "/ideas/Inkerator/edit?r="+(new Date())+"#annotate-images-row";
+  });
+
+});
+
+$("#annotate-image-next-btn").click(function(event){
+  event.preventDefault();
+
+  var data = {
+    _csrf : $('[name="_csrf"]').val(),
+    newEditingSection : "add-components-row",
+    ideaName : "Inkerator"
+  }
+
+  $.post("/add-idea-editing-section", data, function(data, response){
+    window.location.href= "/ideas/Inkerator/edit?r="+(new Date())+"#add-components-row";
+  });
+});    
+
+$("#add-components-next-btn").click(function(event){
+  event.preventDefault();
+
+  var data = {
+    _csrf : $('[name="_csrf"]').val(),
+    newEditingSection : "add-aptitudes-row",
+    ideaName : "Inkerator"
+  }
+
+  $.post("/add-idea-editing-section", data, function(data, response){
+    window.location.href= "/ideas/Inkerator/edit?r="+(new Date())+"#add-aptitudes-row";
+  });
+});    
+
+$("#add-aptitudes-next-btn").click(function(event){
+  event.preventDefault();
+
+  var data = {
+    _csrf : $('[name="_csrf"]').val(),
+    newEditingSection : "add-viability-scores-row",
+    ideaName : "Inkerator"
+  }
+
+  $.post("/add-idea-editing-section", data, function(data, response){
+    window.location.href= "/ideas/Inkerator/edit?r="+(new Date())+"#add-viability-scores-row";
+  });
+});    
+
+$("#add-viability-next-btn").click(function(event){
+  event.preventDefault();
+
+  var data = {
+    _csrf : $('[name="_csrf"]').val(),
+    newEditingSection : "add-imperfections-row",
+    ideaName : "Inkerator"
+  }
+
+  $.post("/add-idea-editing-section", data, function(data, response){
+    window.location.href= "/ideas/Inkerator/edit?r="+(new Date())+"#add-imperfections-row";
+  });
+});    
+
+
+$("#beginScoring").click(function(event){
+  $(".viabilty-slider-right-arrow").click();
+})
+
+$(window).on('scroll',function(){
+  // we round here to reduce a little workload
+  var stop = Math.round($(window).scrollTop());
+  if (stop > 100) {
+      $('.sticky-edit-header').removeClass('hidden');
+  } else {
+      $('.sticky-edit-header').addClass('hidden');
+  }
+});
+
+var stop = Math.round($(window).scrollTop());
+if (stop > 100) {
+    $('.sticky-edit-header').removeClass('hidden');
+} else {
+    $('.sticky-edit-header').addClass('hidden');
+}
+
+$.getJSON("/university-majors.json", function(data){
+  var majorName, words = [];
+  var majorsArray = _.map(data, function(object){
+     majorName = object['Major']
+     words = majorName.toLowerCase().split(' ');;
+      for(var i = 0; i < words.length; i++){
+        words[i] = words[i].split('');
+        words[i][0] = words[i][0].toUpperCase(); 
+        words[i] = words[i].join('');
+      }
+      return words.join(' ');
+  });
+
+  $("#aptitudeTitle").autocomplete({
+    source : majorsArray,
+    appendTo : "#saveAptitude .form-group"
+  });
+});</script><span role="status" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></span></body></html>

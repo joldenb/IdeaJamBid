@@ -26,9 +26,8 @@ html
                 if index < 3 && index > 0
                   img.ideaSeedThumbnails(src=imageURL[1]  style=imageURL[2])
         else
-          a(href="/image-upload")
-            .upload-image-div
-              span.glyphicon.glyphicon-cloud-upload.big-upload-icon
+          .image-placeholder-wrapper
+            img.ideaseed-image-placeholder(src="/ideaseed-image-placeholder.jpg")
       .col-sm-4.desktop-component-section
         .score-wrapper
           h3.average-score-number Viability Score: #{averageScore}

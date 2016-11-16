@@ -95,7 +95,7 @@ html
                   .image-container
                     a(href="/annotate-image/" + imageURLs[index+3][0])
                       img.imageListItems(src=imageURLs[index+3][1] style=imageURLs[index+3][2])
-      if listOfVisibleSections.indexOf('annotate-images-row') == -1
+      if listOfVisibleSections.indexOf('annotate-images-row') == -1 && listOfVisibleSections.indexOf('add-components-row') == -1 && listOfVisibleSections.indexOf('add-viability-scores-row') == -1
         .col-xs-12.next-step
           a#upload-image-next-btn.btn.btn-go.btn-lg.btn-block(href="#annotate-images-row") Next Step
 

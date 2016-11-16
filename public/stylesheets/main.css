@@ -4,7 +4,6 @@ body {
   right: 0;
   left: 0;
   bottom: 0;
-  background-color: #ededed; /* light gray */
   height:100%;
   margin:0;
 }
@@ -304,6 +303,14 @@ form {
 
 form.imagineer-profile-edit, form#jamInvitationEmail, form.jamInvitationEmailPreview {
   margin: initial;
+}
+
+.image-placeholder-wrapper {
+  text-align: center;
+}
+
+.ideaseed-image-placeholder {
+  width:70%;
 }
 
 .fromEmailText, .bodyText, .subjectText {
@@ -1776,8 +1783,9 @@ button.suggestion-tactics, button.suggestion-targets {
   min-height: 30em;
   position: relative;
   margin:3em;
-  border: 3px solid #337ab7;
-  border-radius: 5px;
+/*  border: 3px solid #337ab7;
+*/  border-radius: 5px;
+  background-color: #ededed; /* light gray */
 }
 
 .viability-scoring-intro-slide .row {
