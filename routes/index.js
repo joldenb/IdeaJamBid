@@ -5184,6 +5184,271 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
     });// end of component query
 });
 
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for component profile
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/component-profile/:identifier/edit', csrfProtection, function(req, res){
+  if(!(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
+  var parentComponents = [];
+  var relatedCompArray;
+
+  var headshotData = ideaSeedHelpers.getUserHeadshot(req);
+  var headshotURL = headshotData['headshotURL'];
+  var headshotStyle = headshotData['headshotStyle'];
+
+    Component.findOne({"identifier" : req.params.identifier}, function(err, component){
+      if(!component || !component.ideaSeed){
+        res.redirect('/');
+        return;
+      } 
+      var ideaSeedId = req.session.idea || component.ideaSeed.toString();
+      IdeaSeed.findById(ideaSeedId,function(err, idea){
+
+        Component.find({
+          "ideaSeed" : req.session.idea
+          }, function(err, components){
+
+          var relatedComponents = [];
+          if(component.relatedComps.length > 0){
+            var compDescription = "";
+            var relatedCompIdStrings = _.map(component.relatedComps, function(item){
+              return item['compID'].toString();
+            });
+
+            for(var j = 0; j < components.length; j++){
+              //gets the component object for each id in the list of related comp ID's
+              for(var i = 0; i < relatedCompIdStrings.length; i++){
+                if(relatedCompIdStrings[i] == components[j]['id']){
+                  compDescription = component.relatedComps[i]['relationship'];
+                  relatedCompArray = [components[j], compDescription];
+                  if(component.relatedComps[i]['subComponent'] && component.relatedComps[i]['subComponent'] == "parent"){
+                    var mainCompTitle = component.text ||component.descriptions[0] || "No component title";
+                    var otherCompTitle = components[j].text ||components[j].descriptions[0] || "No component title";
+                    relatedCompArray.push("The " + otherCompTitle + " is a sub-component of the " + mainCompTitle + ".");
+                  } else if (component.relatedComps[i]['subComponent'] && component.relatedComps[i]['subComponent'] == "sub-component"){
+                    var mainCompTitle = component.text ||component.descriptions[0] || "No component title";
+                    var otherCompTitle = components[j].text ||components[j].descriptions[0] || "No component title";
+                    relatedCompArray.push("The " + mainCompTitle + " is a sub-component of the " + otherCompTitle + ".");
+                  }
+                  relatedComponents.push(relatedCompArray);
+
+                  //check if this component is a sub-component of another, and list other
+                  //components that it's a sub-component of by the title
+                  var thisComponentTitle = component.text || component.descriptions[0] || "No title";
+                  if(component.relatedComps[i]['subComponent'] && component.relatedComps[i]['subComponent'] == "sub-component"){
+                    parentComponents.push(components[j])
+                  }
+                }
+              }
+            }
+          }
+
+          var listOfVariants = [], variantDates = [];
+          if(idea.variants.length > 0){
+            for(var k = 0; k < idea.variants.length; k ++){
+              if(idea.variants[k].components && idea.variants[k].components.indexOf(component['id'].toString()) > -1){
+                listOfVariants.push(idea.variants[k]);
+              }
+            }
+          }
+
+          variantDates = _.map(listOfVariants, function(item){
+            return [new Date(parseInt(item.name.substr(-13))).toString(), item.name];
+          });
+
+          Account.findOne({"username" : idea.inventorName}, function(err, ideaInventor){
+            Account.findOne({"username" : component.creator}, function(err, componentContributor){
+              if(component['problemID']){
+                IdeaProblem.findOne({"_id" : component['problemID']}, function(err, problem){
+
+                  //Get problem creator picture
+                  Account.findOne({"username": problem['creator']}, function(err, problemCreator){
+
+                    //assumes the first headshot in the user's array of headshots is their
+                    // primary one for display
+                    if(problemCreator['headshots']){
+                      var problemHeadshotID = problemCreator['headshots'][0];
+                      var problemHeadshotURL = '';
+                    } else {
+                      var problemHeadshotID, problemHeadshotURL, problemHeadshotStyle;
+                    }
+
+                    problem['wholeCreator'] = {
+                      'nickname' : problemCreator['nickname']
+                    };
+
+                    //first get the images that the component is in
+                    if(component.images.length > 0 || problemHeadshotID){
+                      var imageIDs = _.map(component.images, function(item){ return item['imageID']});
+
+                      if(problemHeadshotID){
+                        imageIDs.push(problemHeadshotID);
+                      }
+
+                      IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
+                        var imageURLs = [];
+                        for(var i = 0; i < images.length; i++){
+                          if(images[i] && images[i]['amazonURL']){
+                            var imageStyle = "";
+                            imageStyle = ideaSeedHelpers.getImageOrientation(images[i]["orientation"]);
+                            var filename = images[i]["filename"];
+                            //if it's the main component image, put in the first spot of the array so it's big on
+                            // the component profile page
+                            if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
+                              imageURLs.unshift([
+                                filename,
+                                images[i]["amazonURL"],
+                                imageStyle
+                              ]);
+                            } else if( images[i].id.toString() == problemCreator['headshots'][0]){
+                              problemHeadshotURL = images[i]["amazonURL"];
+                              problemHeadshotStyle = imageStyle;
+                            } else {
+                              imageURLs.push([
+                                filename,
+                                images[i]["amazonURL"],
+                                imageStyle
+                              ]);
+                            }
+                          }
+                        }
+                        problem['headshot'] = {
+                          'url' : problemHeadshotURL,
+                          'style' : problemHeadshotStyle
+                        };
+
+                        res.render('pages/component-profile-edit', {
+                          csrfToken: req.csrfToken(),
+                          user : req.user || {},
+                          headshot : headshotURL,
+                          headshotStyle : headshotStyle,
+                          idea : idea._doc,
+                          ideaInventor : ideaInventor,
+                          componentContributor : componentContributor,
+                          problemHeadshotURL : problemHeadshotURL,
+                          component : component,
+                          problem : problem,
+                          parentComponents : parentComponents,
+                          variantDates : variantDates,
+                          imageURLs : imageURLs,
+                          components : components,
+                          relatedComponents : relatedComponents
+                        });
+                      });//end of image query
+
+                    // in case theres no images
+                    } else {
+                          res.render('pages/component-profile-edit', {
+                            csrfToken: req.csrfToken(),
+                            user : req.user || {},
+                            headshot : headshotURL,
+                            headshotStyle : headshotStyle,
+                            problemHeadshotURL : problemHeadshotURL,
+                            idea : idea._doc,
+                            ideaInventor : ideaInventor,
+                            componentContributor : componentContributor,
+                            components : components,
+                            parentComponents : parentComponents,
+                            component : component,
+                            problem : problem,
+                            variantDates : variantDates,
+                            //problemAreas  : problemAreas,
+                            imageURLs : [],
+                            relatedComponents : relatedComponents
+                            //components : components,
+                            //listOfProblems : listOfProblems
+                          });
+                    }
+                  }); // end of problem creator query
+                });// end of problem query
+              } else {
+                  //first get the images that the component is in
+                  if(component.images.length > 0 || component.mainImage){
+                    var imageIDs = _.map(component.images || [], function(item){ return item['imageID']});
+
+
+                    IdeaImage.find({"_id" : {$in : imageIDs}}, function(err, images){
+                      var imageURLs = [];
+                      for(var i = 0; i < images.length; i++){
+                        var imageStyle = "";
+                        imageStyle = ideaSeedHelpers.getImageOrientation(images[i]["orientation"]);
+                        if(images[i] && images[i]["amazonURL"]){
+                          var filename = images[i]["filename"];
+                          //if it's the main component image, put in the first spot of the array so it's big on
+                          // the component profile page
+                          if(component.mainImage && images[i].id.toString() == component.mainImage.toString()){
+                            imageURLs.unshift([
+                              filename,
+                              images[i]["amazonURL"],
+                              imageStyle
+                            ]);
+                          } else {
+                            imageURLs.push([
+                              filename,
+                              images[i]["amazonURL"],
+                              imageStyle
+                            ]);
+                          }
+                        }
+                      }
+                      res.render('pages/component-profile-edit', {
+                        csrfToken: req.csrfToken(),
+                        user : req.user || {},
+                        headshot : headshotURL,
+                        headshotStyle : headshotStyle,
+                        idea : idea._doc,
+                        ideaInventor : ideaInventor,
+                        parentComponents : parentComponents,
+                        componentContributor : componentContributor,
+                        components : components,
+                        component : component,
+                        problem : "none",
+                        variantDates : variantDates,
+                        imageURLs : imageURLs,
+                        relatedComponents : relatedComponents
+                        //components : components,
+                        //listOfProblems : listOfProblems
+                      });
+
+                    });//end of image query
+
+                  // in case theres no images
+                  } else {
+                        res.render('pages/component-profile-edit', {
+                          csrfToken: req.csrfToken(),
+                          user : req.user || {},
+                          headshot : headshotURL,
+                          headshotStyle : headshotStyle,
+                          idea : idea._doc,
+                          ideaInventor : ideaInventor,
+                          components : components,
+                          componentContributor : componentContributor,
+                          parentComponents : parentComponents,
+                          component : component,
+                          variantDates : variantDates,
+                          problem : "none",
+                          relatedComponents : relatedComponents,
+                          imageURLs : []
+                        });
+                  }
+              }
+          }); //end of component contributor
+          }); //end of idea inventor query
+        }); // end of other component query
+      });
+
+    });// end of component query
+});
+
+
 /*****************************************************************
 ******************************************************************
 ******************************************************************
