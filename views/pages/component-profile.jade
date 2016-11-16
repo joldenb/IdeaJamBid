@@ -25,7 +25,8 @@ html
           if (component['descriptions'][0])
             h3 The suggestion of #{component['descriptions'][0]}
       br
-      a.home-logout.btn.btn-industry.btn-lg( href="/component-profile/#{component.identifier}/edit") Edit Component
+      if ideaInventor.username == user.username
+        a.home-logout.btn.btn-industry.btn-lg( href="/component-profile/#{component.identifier}/edit") Edit Component
 
       if parentComponents && parentComponents.length > 0
         each parent, index in parentComponents
