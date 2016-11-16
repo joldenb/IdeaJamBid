@@ -105,7 +105,8 @@ describe('Payment Service', function () {
         "testuser2@madeuptesturl.com": 2
       };
       try {
-        PaymentService.payContributors(contributorsWithCounts, 3000).should.be.true;
+        PaymentService.payContributors(contributorsWithCounts, 3000)
+          .should.eql([{username: "testuser1@madeuptesturl.com", amount: 1000}, {username: "testuser2@madeuptesturl.com", amount: 2000}]);
 
         stub.should.have.been.calledWith(sinon.match(function (data) {
           return data.items.length == 2 &&

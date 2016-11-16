@@ -137,7 +137,6 @@ app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
 
-// var checkCampaignsJob = new CronJob('*/15 * * * * *', function() {
 var checkCampaignsJob = new CronJob('5 */5 * * * *', function() {
   CrowdfundingService.processCampaignClosings();
 });

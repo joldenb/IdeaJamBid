@@ -67,7 +67,10 @@ exports._paypalPayContributors = function(data) {
 
 exports.payContributors = function(contributorsWithCounts, totalContribPayment) {
   var paypalMap = buildPaypalPayContributors(contributorsWithCounts, totalContribPayment);
-  return this._paypalPayContributors(paypalMap);
+  this._paypalPayContributors(paypalMap);
+  return _.map(paypalMap.items, function(item) {
+    return {username: item.receiver, amount: item.amount.value};
+  })
 };
 
 function sumPayments(campaign) {

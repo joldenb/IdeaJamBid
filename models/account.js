@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 require('../models/aptitude');
 var Schema = mongoose.Schema;
 var StripeCredentials = require('../models/stripeCredentials');
+var UserPayout = require('../models/userPayout');
 var passportLocalMongoose = require('passport-local-mongoose');
 var IdeaSeed = mongoose.model('IdeaSeed').schema;
 var StripeCredentials = mongoose.model('StripeCredentials');
@@ -22,6 +23,7 @@ var Account = new Schema({
     rupees			: {type: Number, default:0},
     ideaSeeds       : [{type: Schema.Types.ObjectId, ref: 'IdeaSeed', autopopulate: true }],
     aptitudes       : [{type: Schema.Types.ObjectId, ref: 'Aptitude', autopopulate: true }],
+    userPayouts     : [{type: Schema.Types.ObjectId, ref: 'UserPayout'}],
     stripeCredentials : {type: Schema.Types.ObjectId, ref: 'StripeCredentials', autopopulate: true },
     headshots		: [{
         filename : String,

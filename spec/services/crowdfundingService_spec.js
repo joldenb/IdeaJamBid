@@ -16,6 +16,8 @@ var CampaignPayment = require('../../models/campaignPayment');
 var Campaign = require('../../models/campaign');
 var IdeaSeed = require('../../models/ideaSeed');
 var Component = require('../../models/component');
+var UserPayout = require('../../models/userPayout');
+var Account = require('../../models/account');
 var SpecHelper = require('../specHelper');
 var _ = require('underscore');
 
@@ -555,6 +557,10 @@ describe('Crowdfunding Service', function () {
           return Campaign.findById(campaign._id).exec();
         }).then(function(c) {
           campaign = c;
+          return Account.find({username: {$in: ['testuser1@madeuptesturl.com', 'testuser2@madeuptesturl.com']}}).exec();
+        }).then(function(contribAccounts) {
+          return UserPayout.find({_id: {$in: contribAccounts[0].userPayouts.concat(contribAccounts[1].userPayouts)}}).exec();
+        }).then(function(userPayouts) {
           try {
             campaign.state.should.eql('processing_payouts');
             moment(campaign.startPayoutDate).format('YYYY-MM-DD').should.eql(moment().format('YYYY-MM-DD'));
@@ -566,6 +572,9 @@ describe('Crowdfunding Service', function () {
                 user1[0].amount.value == 340 &&
                 user2[0].amount.value == 170;
             }));
+            userPayouts.length.should.eql(2);
+            userPayouts[0].amount.should.eql(340);
+            userPayouts[0].campaign.should.eql(campaign._id);
             done();
           } catch(error) {
             done(error);

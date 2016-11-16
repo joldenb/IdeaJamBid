@@ -5,6 +5,8 @@ var CampaignPrize = require('../models/campaignPrize');
 var CampaignPayment = require('../models/campaignPayment');
 var IdeaProblem = require('../models/ideaProblem');
 var Component = require('../models/component');
+const UserPayout = require('../models/userPayout');
+const Account = require('../models/account');
 var EmailService = require('./emailService');
 var StripeService = require('./stripeService');
 const PaymentService = require('./paymentService');
@@ -205,9 +207,21 @@ function processCampaignPayout(campaign) {
         let contributorFundsInDollars = Math.floor(totalAppCollected/2)/100;
         return getContributorUsernames(campaign, idea).then(function(usernames) {
           var usernamesWithCounts = _.countBy(usernames);
-          PaymentService.payContributors(usernamesWithCounts, contributorFundsInDollars)
+          let payouts = PaymentService.payContributors(usernamesWithCounts, contributorFundsInDollars);
+          let payoutSavePromises = _.map(payouts, function(payout) {
+            let userPayout = new UserPayout({
+              amount: payout.amount,
+              campaign: campaign._id,
+              dateSent: new Date()
+            });
+            return userPayout.save().then(function(savedUserPayout) {
+              return Account.update({username: payout.username}, {$push: {userPayouts: savedUserPayout._id}}).exec();
+            })
+          });
+          return Promise.all(payoutSavePromises);
+        }).then(function() {
+          return c;
         });
-        return c;
       })
     } else {
       return campaign;
