@@ -34,7 +34,7 @@ html
         if idea.name
           h1 #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
         if inventorName == user.username
-          a.btn.btn-industry.btn-lg.btn-block(type="button" href="/ideas/#{idea.name}/edit") Edit Idea
+          a.btn.btn-industry.btn-lg.btn-block(type="button" href="/ideas/#{idea.name}/edit") Inventor Dashboard
         if idea.name && inventorName == user.username
           h4 Your <b>#{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}</b> solves the <span class="problemColor">problem of #[a(href='/introduce-idea') #{idea.problem}]</span> by #[a(href='/accomplish') <span class="solutionColor">#{idea.description}]</span>.
         else if idea.name 

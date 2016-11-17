@@ -8,7 +8,7 @@ html
 
   .container-fluid.idea-summary.idea-summary-edit
     .row(class="visibility-row-#{idea.visibility}")
-      .col-sm-4
+      .col-sm-3
         if idea.name
           h2 #{idea.name}
         if idea.visibility == "private"
@@ -17,7 +17,10 @@ html
               span.glyphicon.glyphicon-pencil
         else
           h4 Visibility : #{idea.visibility.charAt(0).toUpperCase() + idea.visibility.slice(1)}
-
+      .col-sm-6
+      .col-sm-3
+        a.btn.btn-go.btn-lg#file-patent(data-toggle="modal" data-target="#filePatentModal" style="margin-top:1em;") 
+          h4 Generate Patent Application
 
       //- .col-sm-4
       //-   if (inventorName == user.username) && idea.visibility == "private" && idea.collaborators.length < 6
