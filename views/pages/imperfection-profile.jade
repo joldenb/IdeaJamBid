@@ -108,7 +108,7 @@ script(type="text/javascript").
           }
 
           $.post('/suggestion-submit-new', data, function(error, response){
-            window.location = "/ideas/!{idea.name}/view-all-suggestions";
+            window.location = "/ideas/!{idea.name}/edit";
           });
         }
       } else {

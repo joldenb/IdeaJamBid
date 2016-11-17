@@ -17,15 +17,15 @@ html
               span.glyphicon.glyphicon-pencil
         else
           h4 Visibility : #{idea.visibility.charAt(0).toUpperCase() + idea.visibility.slice(1)}
-      if inventorName == user.username
-        .col-sm-8.patent-strength-row
-          .app-strength-bar.col-md-8
-            .app-strength(class="#{appStrengthClass}") #{appStrengthText}
-          .col-md-4.app-strength-button
-            if appStrengthClass == "yes col-md-12" || idea.visibility == "public"
-              a.btn.btn-go.btn-lg.btn-block#file-patent(data-toggle="modal" data-target="#filePatentModal") Generate Patent Application
-            else
-              a.btn.btn-go.btn-lg.btn-block#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal") Next Steps
+      //- if inventorName == user.username
+      //-   .col-sm-8.patent-strength-row
+      //-     .app-strength-bar.col-md-8
+      //-       .app-strength(class="#{appStrengthClass}") #{appStrengthText}
+      //-     .col-md-4.app-strength-button
+      //-       if appStrengthClass == "yes col-md-12" || idea.visibility == "public"
+      //-         a.btn.btn-go.btn-lg.btn-block#file-patent(data-toggle="modal" data-target="#filePatentModal") Generate Patent Application
+      //-       else
+      //-         a.btn.btn-go.btn-lg.btn-block#whats-left-link(data-toggle="modal" data-target="#whatsLeftModal") Next Steps
 
     .row.sticky-edit-header.hidden
       if listOfVisibleSections.indexOf('annotate-images-row') == -1

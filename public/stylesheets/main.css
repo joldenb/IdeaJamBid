@@ -575,6 +575,13 @@ img.summary-image {
 
 .idea-summary-edit .imageListItems {
   max-height:15em;
+  padding:5px;
+}
+
+.idea-summary-edit .imageListItems:hover {
+  border: 3px solid #337ab7;
+  border-radius: 5px;
+  padding: 2px;
 }
 
 .half-column {
@@ -664,11 +671,6 @@ canvas {
 }
 
 
-
-.annotate-image-container {
-  width: 80%;
-  position:relative;
-}
 
 .annotate-modal h2, .annotate-modal h3 {
   text-align: initial;
@@ -2143,4 +2145,8 @@ img.prizeImage {
 
 .share-idea-row .sharing-icons {
   text-align: center;
+}
+
+#hover-icon {
+  position:absolute;
 }

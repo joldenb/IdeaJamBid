@@ -43,9 +43,10 @@ html
           .row
             .col-xs-12
               a.btn.btn-electric.btn-lg.btn-block#inviteCollaboratorsButton(type="button" data-toggle="modal" data-target="#inviteCollaboratorsModal") Invite Collaborators
+              br
         .row
           .col-sm-6
-            a#score-now-button.btn(type="button"  class="btn btn-go btn-lg btn-block" ontouchstart="this.style.background = '#007338';" href="#add-viability-scores-row") Score
+            a#score-now-button.btn.btn-block.btn-lg(type="button"  class="btn btn-go btn-lg btn-block" ontouchstart="this.style.background = '#007338';" href="#add-viability-scores-row") Score
           .col-sm-6
             if openCampaign !== undefined
               a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign' ontouchstart="this.style.background = '#007338';" disabled) Fund This Idea
@@ -793,11 +794,11 @@ html
             a(href='/ideas/' + idea.name + '/view-all-imperfections')
               button(type="button"  class="btn btn-industry btn-lg btn-block") View All Imperfections
           .tab-pane#suggestions(role="tabpanel")
-            .view-all-components-wrapper
-              a.btn.btn-electric.btn-lg.btn-block#componentsViewAllLink(type="button" href='/ideas/' + idea.name + '/view-all-suggestions') View All Suggestions
             each suggestion, identifier in wholeSuggestionBlockInfo
               if suggestion.document.inventorApproved !== false && suggestion.document.descriptions && suggestion.document.descriptions[0]
                 include ../partials/suggestion-summary-element.jade
+            .view-all-components-wrapper
+              a.btn.btn-electric.btn-lg.btn-block#componentsViewAllLink(type="button" href='/ideas/' + idea.name + '/view-all-suggestions') View All Suggestions
     .row.share-idea-row
       .col-md-3
       .col-md-6.sharing-icons

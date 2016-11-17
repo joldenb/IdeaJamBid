@@ -23,33 +23,30 @@ html
                 input(type="hidden" id="previous-title" name="previousTitle")
           .modal-footer
             // button.btn.btn-info(data-dismiss="modal") Cancel
-            button.btn.btn-success#submit(type='submit') Save Component Tag
+            button.btn.btn-success.btn-lg.bt-block#submit(type='submit') Save Component Tag
               img.einstein-point-btn-icon(src="/single-einstein-point.png")
 
     button(type="button" id="modalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Go Win Fight
 
   .container-fluid.annotate-image-container
     .row
-      h2 Tag this image with components of #{idea.name}:
-      h3 You should tag as many components of #{idea.name} as you can because your tags will explain what #{idea.name} is to the world.  Also, you will earn 10 einstein points for each tag.
-      h4 Click on the image to tag components of your #{idea.name}, then click "Save Tagged Components" when finished:
+      .col-xs-12#image-title
+        if imageTitle == ""
+          h2 Add Components to this Image
+            a#edit-image-title
+              button.btn.btn-industry.enter-title-text Add Image Title
+        else
+          h2 Add Components to #{imageTitle}
+
+      //- h3 You should tag as many components of #{idea.name} as you can because your tags will explain what #{idea.name} is to the world.  Also, you will earn 10 einstein points for each tag.
+      //- h4 Click on the image to tag components of your #{idea.name}, then click "Save Tagged Components" when finished:
 
       // For Joe to Fix - before the components the idea.name should appear, but it won't come through here.  Also the above language should come through differently to the inventor ("your tags will appear as components in the idea.name profile") and to third party viewers ("your tags will appear as suggestions to the inventor of idea.name")
 
-    .row#image-title
-      if imageTitle != ""
-        a#edit-image-title
-          h3 #{imageTitle.charAt(0).toUpperCase() + imageTitle.slice(1)}
-            span
-              img(src="/pencil.png" style="height:1em; vertical-align:baseline; padding-left:.3em;")
-      else
-        a#edit-image-title
-          h2.enter-title-text <i>Create a descriptive name for this image</i>
-            span
-              img(src="/pencil.png" style="height:1em; vertical-align:baseline; padding-left:.3em;")
     .row
       .col-md-2
         #componentList
+          h3 Components
           #listOfComponents
             each value in comps
               .individual-component
@@ -58,8 +55,7 @@ html
                 h4 #{value.number}. #{value.text}
           br
           br
-          a#save-annotations.btn.btn-success( href="/ideas/#{idea.name}/edit#annotate-images-row") Save Tagged Components
-          h4 Click on your image to describe the components of your invention:
+          a#save-annotations.btn.btn-industry.btn-lg.bt-block( href="/ideas/#{idea.name}/edit#annotate-images-row") Back to Idea Profile
           .checkbox
       .col-md-10
         if (imgURL)
@@ -68,6 +64,7 @@ html
         each value in comps
           canvas.component(id="component-#{value['number']}", width="1000", height="700", style="border:1px solid #d3d3d3;")
 
+      img#hover-icon(src="/pencil.png" height="40" width="40")
 
       
 
@@ -158,6 +155,18 @@ html
           }
         }
 
+        $("<canvas id='temporary-canvas-marker' width='1000' height='700' style='border:1px solid #d3d3d3;'>").insertAfter("#myCanvas");
+
+        canvas = document.getElementById("temporary-canvas-marker");
+        var ctx = canvas.getContext("2d");
+
+        ctx.beginPath();
+        ctx.arc(firstClickX, firstClickY, 10, 0, 2 * Math.PI, false);
+        ctx.fillStyle = 'green';
+        ctx.fill();
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = '#003300';
+        ctx.stroke();
 
         $("#modalButton").click();
     });
@@ -199,6 +208,7 @@ html
         
 
         $.post('/save-component', data, function(resp) {
+          $("#temporary-canvas-marker").remove();
           $("#componentName").val('The component named the ');
           $("#description").val('');
           $("#existingComponents option[value='None Selected']").prop({'selected': true});
@@ -408,5 +418,14 @@ html
           window.location.reload();
         }
       })
+    });
+
+    $(document).mousemove(function(e){
+      if (e.pageX >= $("canvas").offset().left && e.pageY >= $("canvas").offset().top){
+        $("#hover-icon").show();
+        $("#hover-icon").css({left:e.pageX - 5, top:e.pageY - 45});
+      } else {
+        $("#hover-icon").hide();
+      }
     });
 
