@@ -19,8 +19,9 @@ html
           h4 Visibility : #{idea.visibility.charAt(0).toUpperCase() + idea.visibility.slice(1)}
       .col-sm-6
       .col-sm-3
-        a.btn.btn-go.btn-lg#file-patent(data-toggle="modal" data-target="#filePatentModal" style="margin-top:1em;") 
-          h4 Generate Patent Application
+        if idea.visibility != "private" || listOfVisibleSections.length > 3
+          a.btn.btn-go.btn-lg#file-patent(data-toggle="modal" data-target="#filePatentModal" style="margin-top:1em;") 
+            h4 Generate Patent Application
 
       //- .col-sm-4
       //-   if (inventorName == user.username) && idea.visibility == "private" && idea.collaborators.length < 6
