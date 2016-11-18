@@ -34,8 +34,9 @@ function buildPaypalPayContributors(contributorsWithCounts, totalPayment) {
         "currency": "USD"
       },
       "receiver": contributor,
-      "note": "Thank you.",
-      "sender_item_id": contributor  //docs say: A sender-specified ID number. Tracks the batch payout in an accounting system.
+      "note": "Thank you."
+      // Do not actually need a sender item id, might be useful but need a sub-30 character id. Not implementing for now.
+      // "sender_item_id": contributor  //docs say: A sender-specified ID number. Tracks the batch payout in an accounting system. Max len 30.
     };
   });
 
