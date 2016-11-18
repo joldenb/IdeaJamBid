@@ -2393,6 +2393,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
   ];
   var ideaAptitudes;
   var openCampaign;
+  let mostRecentCampaign;
 
   query.exec()
   .then(function(idea){
@@ -2418,7 +2419,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
     }
 
     openCampaign = CrowdfundingService.getOpenCampaign(idea);
-
+    mostRecentCampaign = CrowdfundingService.getNewestCampaign(idea);
     return ideaSeedHelpers.getApplicationStrength(idea.id)
   })
   .then(function(strengthResponse){
@@ -2566,7 +2567,8 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
       components : components,
       viabilities : viabilities,
       listOfProblems : listOfProblems,
-      openCampaign: openCampaign
+      openCampaign: openCampaign,
+      mostRecentCampaign: mostRecentCampaign
     });
   
   })
@@ -2664,6 +2666,7 @@ router.get('/ideas/:ideaName/redesign', csrfProtection, function(req, res){
   ];
   var ideaAptitudes;
   var openCampaign;
+  var mostRecentCampaign;
 
   query.exec()
   .then(function(idea){
@@ -2689,6 +2692,7 @@ router.get('/ideas/:ideaName/redesign', csrfProtection, function(req, res){
     }
 
     openCampaign = CrowdfundingService.getOpenCampaign(idea);
+    mostRecentCampaign = CrowdfundingService.getNewestCampaign(idea);
 
     return ideaSeedHelpers.getApplicationStrength(idea.id)
   })
@@ -2837,7 +2841,8 @@ router.get('/ideas/:ideaName/redesign', csrfProtection, function(req, res){
       components : components,
       viabilities : viabilities,
       listOfProblems : listOfProblems,
-      openCampaign: openCampaign
+      openCampaign: openCampaign,
+      mostRecentCampaign: mostRecentCampaign
     });
   
   })
@@ -2935,6 +2940,7 @@ router.get('/ideas/:ideaName/edit', csrfProtection, function(req, res){
   ];
   var ideaAptitudes;
   var openCampaign;
+  var mostRecentCampaign;
 
   query.exec()
   .then(function(idea){
@@ -2960,6 +2966,7 @@ router.get('/ideas/:ideaName/edit', csrfProtection, function(req, res){
     }
 
     openCampaign = CrowdfundingService.getOpenCampaign(idea);
+    mostRecentCampaign = CrowdfundingService.getNewestCampaign(idea);
 
     return ideaSeedHelpers.getApplicationStrength(idea.id)
   })
@@ -3109,6 +3116,7 @@ router.get('/ideas/:ideaName/edit', csrfProtection, function(req, res){
       viabilities : viabilities,
       listOfProblems : listOfProblems,
       openCampaign: openCampaign,
+      mostRecentCampaign: mostRecentCampaign,
       listOfVisibleSections : currentIdea.visibleEditingSections
     });
   

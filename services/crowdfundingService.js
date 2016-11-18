@@ -74,6 +74,14 @@ exports.getOpenCampaign = function(ideaSeed) {
   return openCampaigns[0];
 };
 
+exports.getNewestCampaign = function(ideaSeed) {
+  if(ideaSeed.campaigns.length > 1) {
+    ideaSeed.campaigns.sort(function(a, b) {return a.endDate > b.endDate});
+    return ideaSeed.campaigns[ideaSeed.campaigns.length - 1];
+  }
+  return undefined;
+};
+
 function ideaSeedComponents(idea) {
   return Component.find({"ideaSeed": idea._id}).exec();
 }
@@ -220,7 +228,8 @@ function processCampaignPayout(campaign) {
           });
           return Promise.all(payoutSavePromises);
         }).then(function() {
-          return c;
+          c.state = 'closed';
+          return c.save();
         });
       })
     } else {

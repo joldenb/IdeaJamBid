@@ -94,26 +94,26 @@ router.get('/ideas/:ideaName/campaign', csrfProtection, function(req, res){
     return;
   }
 
-  let idea, prizes = [], openCampaign, totalPayments, components;
+  let idea, prizes = [], campaign, totalPayments, components;
 
   var query = IdeaSeed.findOne({"name" : req.params.ideaName});
   query.exec().then(function(ideaSeed) {
     idea = ideaSeed;
-    openCampaign = CrowdfundingService.getOpenCampaign(idea);
-    return CampaignPrize.find({'_id': {$in: openCampaign.prizes}}).exec()
+    campaign = CrowdfundingService.getNewestCampaign(idea);
+    return CampaignPrize.find({'_id': {$in: campaign.prizes}}).exec()
   }).then(function (campaignPrizes) {
     prizes = campaignPrizes;
-    return PaymentService.sumPayments(openCampaign)
+    return PaymentService.sumPayments(campaign)
   }).then(function (total) {
     totalPayments = total;
-    return CrowdfundingService.getComponents(openCampaign, idea);
+    return CrowdfundingService.getComponents(campaign, idea);
   }).then(function(campaignComponents) {
     components = campaignComponents;
     res.render('pages/campaign/view', {
       csrfToken: req.csrfToken(),
       user: req.user,
       idea: idea,
-      campaign: openCampaign,
+      campaign: campaign,
       funderTotalPayments: totalPayments,
       prizes: prizes,
       components: components

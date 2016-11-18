@@ -9,7 +9,13 @@ html
   .container-fluid.pagecontentblock
     .row.text-center
       .col-xs-12
-        h1 Fund #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}!
+        - var title = idea.name.charAt(0).toUpperCase() + idea.name.slice(1)
+        if campaign.state === 'open'
+          h1 Fund #{title}!
+        else if campaign.state === 'unsuccessful'
+          h1 Unsuccessful Campaign Summary for #{title}
+        else
+          h1 Successfully Funded Campaign #{title}
       .col-xs-12
         h3.fundSubHeader solves the <span class="problemColor">problem of #[a(href='/introduce-idea') #{idea.problem}]</span> by #[a(href='/accomplish') <span class="solutionColor">#{idea.description}]</span>
     .row.text-center.campaignSummary
@@ -20,9 +26,13 @@ html
         h2 $#{funderTotalPayments}&nbsp;
           small.campaignStats raised of $#{campaign.goal}
       .col-md-2.col-sm-offset-0.col-sm-3.col-xs-offset-0.col-xs-3
-        - var timeLeft = campaign.timeRemaining()
-        h2 #{timeLeft.time}
-          small.campaignStats #{timeLeft.units} left
+        if campaign.state === 'open'
+          - var timeLeft = campaign.timeRemaining()
+          h2 #{timeLeft.time}
+            small.campaignStats #{timeLeft.units} left
+        else
+          h2 #{campaign.endDateShort()}
+            small.campaignStats ended on
     .row
       .col-sm-4
         .row
@@ -45,21 +55,33 @@ html
                         p.campaignComponentDesc <b>Description:</b> #{component.descriptions[0]}
           else
             p <i>No Components Yet</i>
-      .col-sm-8
-        .row
-          .col-sm-12
-            h4 Prizes
-            input(type="hidden", name="_csrf", value="#{csrfToken}")
-          each prize, index in prizes
-            .col-xs-12
-              button.btn.btn-default.btn-block.purchaseButton(cost=prize.cost prizeId=prize._id data-dismiss="modal")
-                div.row
-                  h3.col-xs-12.prizeHeader $#{prize.cost} #{prize.name}
-                  if prize.imageUrl
-                    img.col-xs-4.col-sm-4.col-md-3.img-responsive(src=prize.imageUrl)
-                  p.col-xs-12.col-sm-8.col-md-9.prizeDesc #{prize.description}
-                  div.col-xs-12
-                    p.btn.btn-go.btn-block.purchasePrize GET THIS PRIZE!
+      if campaign.state === 'open'
+        .col-sm-8
+          .row
+            .col-sm-12
+              h4 Prizes
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+            each prize, index in prizes
+              .col-xs-12
+                button.btn.btn-default.btn-block.purchaseButton(cost=prize.cost prizeId=prize._id data-dismiss="modal")
+                  div.row
+                    h3.col-xs-12.prizeHeader $#{prize.cost} #{prize.name}
+                    if prize.imageUrl
+                      img.col-xs-4.col-sm-4.col-md-3.img-responsive(src=prize.imageUrl)
+                    p.col-xs-12.col-sm-8.col-md-9.prizeDesc #{prize.description}
+                    div.col-xs-12
+                      p.btn.btn-go.btn-block.purchasePrize GET THIS PRIZE!
+      else if campaign.state !== 'unsuccessful'
+        .col-sm-8
+          h4 Post-funding Progress
+          each step in campaign.completedSteps()
+            .stepStatus.completedStep
+              span.glyphicon.glyphicon-ok-circle
+              span.stepTitle #{step}
+          each step in campaign.uncompletedSteps()
+            .stepStatus.incompleteStep
+              span.glyphicon.glyphicon-unchecked
+              span.stepTitle #{step}
   .pagefooter
     include ../../partials/footer.jade
 

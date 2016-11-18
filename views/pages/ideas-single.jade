@@ -45,9 +45,11 @@ html
         .row
           .col-sm-12
             if openCampaign !== undefined
-              a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign' ontouchstart="this.style.background = '#007338';" disabled) Fund This Idea
+              a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign' ontouchstart="this.style.background = '#007338';") Fund This Idea
+            else if mostRecentCampaign !== undefined
+              a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign' ontouchstart="this.style.background = '#007338';") Crowdfund Status
             else if inventorName === user.username && idea.visibility === "public"
-              a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign/new' ontouchstart="this.style.background = '#007338';" disabled) Crowdfund
+              a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign/new' ontouchstart="this.style.background = '#007338';") Crowdfund
 
           .col-xs-12
             #idea-summary-aptitudes.aptitudeList

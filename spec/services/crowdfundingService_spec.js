@@ -562,7 +562,7 @@ describe('Crowdfunding Service', function () {
           return UserPayout.find({_id: {$in: contribAccounts[0].userPayouts.concat(contribAccounts[1].userPayouts)}}).exec();
         }).then(function(userPayouts) {
           try {
-            campaign.state.should.eql('processing_payouts');
+            campaign.state.should.eql('closed');
             moment(campaign.startPayoutDate).format('YYYY-MM-DD').should.eql(moment().format('YYYY-MM-DD'));
             payContribsStub.should.have.been.calledOnce;
             payContribsStub.should.have.been.calledWith(sinon.match(function(data) {
@@ -573,7 +573,8 @@ describe('Crowdfunding Service', function () {
                 user2[0].amount.value == 170;
             }));
             userPayouts.length.should.eql(2);
-            userPayouts[0].amount.should.eql(340);
+            let amounts = _.map(userPayouts, function(payout) { return payout.amount}).sort();
+            amounts.should.eql([170, 340]);
             userPayouts[0].campaign.should.eql(campaign._id);
             done();
           } catch(error) {

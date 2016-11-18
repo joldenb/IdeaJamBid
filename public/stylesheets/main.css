@@ -2107,6 +2107,19 @@ img.prizeImage {
   padding-bottom: 20px;
 }
 
+.completedStep .glyphicon {
+  color: green;
+  margin-right: 5px;
+}
+
+.incompleteStep .glyphicon {
+  margin-right: 2px;
+}
+
+.stepStatus {
+  margin: auto;
+}
+
 .campaignComponent {
   margin-left: 0;
   margin-top: 5px;

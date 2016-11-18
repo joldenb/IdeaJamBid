@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var moment = require('moment');
+const steps = ['Backer Payment Processing', 'Funding Sent to Inventor', 'Contributor Payouts Sent'];
+
 
 var Campaign = new Schema({
   variant: String, //unique name of the variant
@@ -29,6 +31,35 @@ Campaign.methods.timeRemaining = function() {
     return {time: Math.trunc(remainingDuration.asMinutes()), units: 'minutes'}
   } else {
     return {time: Math.trunc(remainingDuration.asSeconds()), units: 'seconds'}
+  }
+};
+
+Campaign.methods.endDateShort = function() {
+  let endMoment = moment(this.endDate);
+  return endMoment.format("l");
+};
+
+Campaign.methods.completedSteps = function() {
+  if(this.state === 'open' || this.state === 'unsuccessful' || this.state === 'processing_payments') {
+    return [];
+  }
+  if(this.state === 'funded' || this.state  === 'processing_payouts') {
+    return steps.slice(0, 2);
+  }
+  if(this.state === 'closed') {
+    return steps;
+  }
+};
+
+Campaign.methods.uncompletedSteps = function() {
+  if(this.state === 'closed' || this.state === 'unsuccessful') {
+    return [];
+  }
+  if(this.state === 'open' || this.state === 'processing_payments') {
+    return steps;
+  }
+  if(this.state === 'funded' || this.state  === 'processing_payouts') {
+    return steps.slice(2, 4);
   }
 };
 
