@@ -635,6 +635,7 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
                         ideaObject['inventorName'] = "";
                       }
                     });
+                    req.session.loginPath = "/imagineer/" + req.user.nickname;
 
 
 

@@ -98,8 +98,12 @@ html
   script(type="text/javascript").
     $( document ).ready(function() {
 
-      if("!{redirectURL}" === ""){
+      if("!{redirectURL}" === "" && "!{user.nickname}" === ""){
         $.post('/set-session-redirect', {redirectURL : "/membership-options", "_csrf" : $('[name="_csrf"]').val()}, function(response){
+          var stop;
+        });
+      } else if("!{redirectURL}" === "" && "!{user.nickname}" != ""){
+        $.post('/set-session-redirect', {redirectURL : "/imagineer/!{user.nickname}", "_csrf" : $('[name="_csrf"]').val()}, function(response){
           var stop;
         });
       } else {
