@@ -84,7 +84,8 @@ html
                     span.idea-text-date= val['creationDate']
 
           else
-            h4 None yet.
+            h4 
+              a.btn.btn-go( href="/introduce-idea/new"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Begin a New Idea
           h3 Collaborations
           if collaboratorIdeas.length > 0
             ul
