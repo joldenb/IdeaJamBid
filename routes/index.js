@@ -3007,12 +3007,11 @@ router.get('/ideas/:ideaName/edit', csrfProtection, function(req, res){
     currentIdea = idea._doc;
 
     //check permissions
-    if(!((currentIdea.visibility == "private" && currentIdea.inventorName == req.user.username) ||
-      currentIdea.visibility == "public" ||
+    if(!((currentIdea.inventorName == req.user.username) ||
       (currentIdea.collaborators.indexOf(req.user.username) > -1))){
       console.log("visibility mode does not permit this user to view this idea");
       throw new Error('abort promise chain');
-      return;
+      
     }
 
     openCampaign = CrowdfundingService.getOpenCampaign(idea);
@@ -3194,6 +3193,7 @@ router.get('/ideas/:ideaName/edit', csrfProtection, function(req, res){
   })
   .catch(function(err){
     // just need one of these
+    req.session.loginPath = null;
     console.log('error:', err);
     res.redirect('/');
   });
