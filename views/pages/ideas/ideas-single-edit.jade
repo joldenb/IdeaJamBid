@@ -1,10 +1,10 @@
 doctype html
 html
   head
-    include ../partials/head.jade
+    include ../../partials/head.jade
   body
   .header.navbar.navbar-default
-    include ../partials/header.jade
+    include ../../partials/header.jade
 
   .container-fluid.idea-summary.idea-summary-edit
     .row(class="visibility-row-#{idea.visibility}")
@@ -19,8 +19,11 @@ html
           h4 Visibility : #{idea.visibility.charAt(0).toUpperCase() + idea.visibility.slice(1)}
       .col-sm-6
       .col-sm-3
-        if idea.visibility != "private" || listOfVisibleSections.length > 3
+        if (idea.visibility != "private" || listOfVisibleSections.length > 3) && hasActiveMembership
           a.btn.btn-go.btn-lg#file-patent(data-toggle="modal" data-target="#filePatentModal" style="margin-top:1em;") 
+            h4 Generate Patent Application
+        else
+          a.btn.btn-go.btn-lg#purchase-patent-application-button(href="/membership-options" style="margin-top:1em;") 
             h4 Generate Patent Application
 
       //- .col-sm-4
@@ -167,7 +170,7 @@ html
       .col-md-12.list-all-components
         if components.length > 0
           each component, identifier in wholeSuggestionBlockInfo
-            include ../partials/component-summary-element.jade
+            include ../../partials/component-summary-element.jade
         else
           h4 <i>No Components Yet</i>
       if listOfVisibleSections.indexOf('add-aptitudes-row') == -1
@@ -219,13 +222,13 @@ html
             button.btn.btn-industry.btn-lg.individualProblemSubmit(type='submit') Save
         each problem, index in problems
           if(problem.text && problem['identifier'])
-            include ../partials/problem-summary-element.jade
+            include ../../partials/problem-summary-element.jade
       .col-xs-12.complete-idea-editing
         a#complete-button.btn.btn-go.btn-lg.btn-block(href="/ideas/#{idea.name}") Complete
 
 
   .pagefooter
-    include ../partials/footer.jade
+    include ../../partials/footer.jade
 
   #titleModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -309,7 +312,7 @@ html
 
   button(type="button" id="titleModalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#titleModal") Go Win Fight
 
-  include ../partials/js-includes.jade
+  include ../../partials/js-includes.jade
   script(src='/exif.js')
   script(type="text/javascript").
     $(document).ready(function(){
@@ -746,4 +749,10 @@ html
           appendTo : "#saveAptitude .form-group"
         });
       });
-    });
+
+      $.post('/set-session-redirect', {redirectURL : "/ideas/!{idea.name}/edit", "_csrf" : $('[name="_csrf"]').val()}, function(response){
+        var stop;
+      });
+
+
+    }); //end of document.ready

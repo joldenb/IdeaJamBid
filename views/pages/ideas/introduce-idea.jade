@@ -1,15 +1,15 @@
 doctype html
 html
   head
-    include ../partials/head.jade
+    include ../../partials/head.jade
   body
   .header.navbar.navbar-default
-    include ../partials/header.jade
+    include ../../partials/header.jade
 
   .container
     .row
       .col-xs-12
-        form(role='form', id="formIntroduceIdea" action="/introduce-idea", method="post", style='max-width: 300px;', data-idea-doc=idea)
+        form(role='form', id="formIntroduceIdea" action="/introduce-idea", method="post", style='max-width: 400px;', data-idea-doc=idea)
           .form-group
             h3 #{user.nickname}, what problem does your idea solve?
             input(type="hidden", name="_csrf", value="#{csrfToken}")
@@ -26,7 +26,7 @@ html
             .col-xs-12
               .hint Hint : Keep it simple here.  You can add more detailed problems later.
 
-  include ../partials/js-includes.jade
+  include ../../partials/js-includes.jade
   script(type="text/javascript").
     var input = document.getElementsByTagName("input");
 

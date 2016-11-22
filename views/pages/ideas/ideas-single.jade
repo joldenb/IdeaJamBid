@@ -1,10 +1,10 @@
 doctype html
 html
   head
-    include ../partials/head.jade
+    include ../../partials/head.jade
   body
   .header.navbar.navbar-default
-    include ../partials/header.jade
+    include ../../partials/header.jade
   .container-fluid.idea-summary
     .row.idea-seed-profile
       .col-sm-8
@@ -50,6 +50,11 @@ html
               a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign' ontouchstart="this.style.background = '#007338';") Crowdfund Status
             else if inventorName === user.username && idea.visibility === "public"
               a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign/new' ontouchstart="this.style.background = '#007338';") Crowdfund
+          //- .col-sm-12
+          //-   if openCampaign !== undefined
+          //-     a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign' ontouchstart="this.style.background = '#007338';" disabled) Fund This Idea
+          //-   else if inventorName === user.username && idea.visibility === "public"
+          //-     a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign/new' ontouchstart="this.style.background = '#007338';" disabled) Crowdfund
 
           .col-xs-12
             #idea-summary-aptitudes.aptitudeList
@@ -66,7 +71,7 @@ html
           h2.component-title Components
           if components.length > 0
             each component, identifier in wholeSuggestionBlockInfo
-              include ../partials/component-summary-element.jade
+              include ../../partials/component-summary-element.jade
           else
             h4 <i>No Components Yet</i>
         else
@@ -790,14 +795,14 @@ html
             - var currentUser = user.username
             each problem, index in problems
               if(problem.text && problem['identifier'])
-                include ../partials/problem-summary-element.jade
+                include ../../partials/problem-summary-element.jade
             button(type="button" id="problemModalButton"  class="btn btn-go btn-lg btn-block" data-toggle="modal" data-target="#addProblemModal" ontouchstart="this.style.background = '#007338';") Add New Imperfection
             a(href='/ideas/' + idea.name + '/view-all-imperfections')
               button(type="button"  class="btn btn-industry btn-lg btn-block") View All Imperfections
           .tab-pane#suggestions(role="tabpanel")
             each suggestion, identifier in wholeSuggestionBlockInfo
               if suggestion.document.inventorApproved !== false && suggestion.document.descriptions && suggestion.document.descriptions[0]
-                include ../partials/suggestion-summary-element.jade
+                include ../../partials/suggestion-summary-element.jade
             .view-all-components-wrapper
               a.btn.btn-electric.btn-lg.btn-block#componentsViewAllLink(type="button" href='/ideas/' + idea.name + '/view-all-suggestions') View All Suggestions
     .row.share-idea-row
@@ -816,7 +821,7 @@ html
       .col-md-3
 
   .pagefooter
-    include ../partials/footer.jade
+    include ../../partials/footer.jade
   #titleModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
       .modal-content
@@ -854,7 +859,7 @@ html
                 each problem, index in problems
                   if(problem.text && problem['identifier'])
                     li
-                      include ../partials/problem-summary-element.jade
+                      include ../../partials/problem-summary-element.jade
 
               button.btn-lg.btn-block(type="button" id="problemModalButton"  class="btn btn-go" data-toggle="modal" data-target="#addProblemModal") Add a Problem
         .modal-footer
@@ -931,7 +936,7 @@ html
               h2 Score this idea
         .modal-body
           .view-all-viabilities
-              include ../partials/viability-overview-modal.jade
+              include ../../partials/viability-overview-modal.jade
           .view-specific-viability
         .modal-footer.view-all-button
             button.btn.btn-info.modal-view-all View All
@@ -1096,7 +1101,7 @@ html
               button.btn.btn-info.btn-lg.btn-block(data-dismiss="modal") Cancel
   button(type="button" id="titleModalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#titleModal") Go Win Fight
 
-  include ../partials/js-includes.jade
+  include ../../partials/js-includes.jade
   script(src='/exif.js')
   script(type="text/javascript").
     var viabilitySliderWidth = $(".slide-content").width();

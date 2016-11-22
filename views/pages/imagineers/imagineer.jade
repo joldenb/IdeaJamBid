@@ -1,11 +1,11 @@
 doctype html
 html
   head
-    include ../partials/head.jade
+    include ../../partials/head.jade
   body
   if user  
     .header.navbar.navbar-default
-      include ../partials/header.jade
+      include ../../partials/header.jade
     div.container
       .row
         .col-md-6
@@ -15,6 +15,20 @@ html
                 img(src="/pencil.png" height="25" width="25")
           else
             h1.profile-name #{profileAccount.nickname}
+          .profile-membership
+            if hasActiveMembership
+              if membershipDocument['membershipType'] === "one_month"
+                h4 One Month Membership
+                h5 Active from #{membershipDocument['formattedStartDate']} to #{membershipDocument['formattedEndDate']}
+              else if membershipDocument['membershipType'] === "six_month"
+                h4 Six Month Membership
+                h5 Active from #{membershipDocument['formattedStartDate']} to #{membershipDocument['formattedEndDate']}
+              else if membershipDocument['membershipType'] === "twelve_month"
+                h4 Twelve Month Membership
+                h5 Active from #{membershipDocument['formattedStartDate']} to #{membershipDocument['formattedEndDate']}
+            else
+              h4 Not an Active Member
+              a.btn.btn-go(href="/membership-options") Membership Options
           if aptitudes && aptitudes.length > 0
           .profileAptitudes
             each aptitude in aptitudes
@@ -165,7 +179,7 @@ html
 
   button(type="button" id="secretLocationButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#locationModal") Go Win Fight
 
-  include ../partials/js-includes.jade
+  include ../../partials/js-includes.jade
   script(type="text/javascript").
     $( document ).ready(function() {
       jQuery.get("/clear-session-idea", function(data){

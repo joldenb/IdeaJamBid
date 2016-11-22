@@ -471,7 +471,7 @@ router.get('/view-jams/:nickname', csrfProtection, function(req, res){
 
     });
 
-    res.render('pages/my-jams', {
+    res.render('pages/jams/my-jams', {
       user : req.user,
       jams : allNetworks,
       jamLeaders : jamLeaders,
@@ -602,7 +602,7 @@ router.get('/view-jams', csrfProtection, function(req, res){
     });
     otherGroups = otherGroupsWithMembers;
 
-    res.render('pages/jams', {
+    res.render('pages/jams/jams', {
       user : req.user,
       jams : allNetworks,
       schools : schools,
@@ -817,7 +817,7 @@ router.get('/jam/:networkName/admin', csrfProtection, function(req, res){
                   console.log("error is " + err);
                 }
 
-                    return res.render('pages/jam-admin', {
+                    return res.render('pages/jams/jam-admin', {
                       csrfToken: req.csrfToken(),
                       user : req.user || {},
                       topInventors : topAccountsToDisplay,
@@ -1257,7 +1257,7 @@ router.get('/jam/:networkName', csrfProtection, function(req, res){
                                     });
                                   });
 
-                                  return res.render('pages/jam-profile', {
+                                  return res.render('pages/jams/jam-profile', {
                                     csrfToken: req.csrfToken(),
                                     user : req.user || {},
                                     dsw : dsw,
@@ -1455,7 +1455,7 @@ router.get('/jam/:networkName/view-all-members', csrfProtection, function(req, r
                   console.log("error is " + err);
                 }
 
-                    return res.render('pages/jam-members', {
+                    return res.render('pages/jams/jam-members', {
                       csrfToken: req.csrfToken(),
                       user : req.user || {},
                       topInventors : topAccountsToDisplay,

@@ -1,10 +1,10 @@
 doctype html
 html
   head
-    include ../partials/head.jade
+    include ../../partials/head.jade
   body
   .header.navbar.navbar-default
-    include ../partials/header.jade
+    include ../../partials/header.jade
 
   .container-fluid.view-all-imperfections
     .row
@@ -20,10 +20,10 @@ html
       .idea-summary-data#idea-summary-problems
         each problem, index in problems
           if(problem.text && problem['identifier'])
-            include ../partials/problem-summary-element.jade
+            include ../../partials/problem-summary-element.jade
     input(type="hidden", name="_csrf", value="#{csrfToken}")
 
-  include ../partials/js-includes.jade
+  include ../../partials/js-includes.jade
   script(src='/exif.js')
   script(type="text/javascript").
     $(".upvote-imperfection").click(function(event){

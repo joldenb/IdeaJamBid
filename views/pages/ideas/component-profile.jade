@@ -1,10 +1,10 @@
 doctype html
 html
   head
-    include ../partials/head.jade
+    include ../../partials/head.jade
   body
   .header.navbar.navbar-default
-    include ../partials/header.jade
+    include ../../partials/header.jade
 
   .component-summary.container
     .col-md-4
@@ -68,7 +68,7 @@ html
           br
           h4 Related Imperfection
           #idea-summary-problems
-            include ../partials/problem-summary-element.jade
+            include ../../partials/problem-summary-element.jade
 
         //- .component-variants
         //-   br
@@ -232,7 +232,7 @@ html
                 button.btn.btn-success#componentTitleSubmit(type='submit') Save Component Title
 
   script(src='/exif.js')
-  include ../partials/js-includes.jade
+  include ../../partials/js-includes.jade
   script(type="text/javascript").
     $(document).ready(function(){
       if("!{component.text}" == ""){

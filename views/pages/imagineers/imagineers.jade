@@ -1,10 +1,10 @@
 doctype html
 html
   head
-    include ../partials/head.jade
+    include ../../partials/head.jade
   body#topSection
     .header.navbar.navbar-default.jamTopNav
-      include ../partials/header.jade
+      include ../../partials/header.jade
 
     .container.network-profile.jam-page
       .row
@@ -28,7 +28,7 @@ html
                 - inventorName = inventor.nickname
                 - inventorPoints = inventor.einsteinPoints
                 - inventorAptitudeIds = inventor.aptitudes
-                include ../partials/inventor-block.jade
+                include ../../partials/inventor-block.jade
             .col-md-4
               if(topInventors[index + 1])
                 if topInventors[index + 1].headshots && topInventors[index + 1].headshots[0]
@@ -40,7 +40,7 @@ html
                 - inventorName = topInventors[index + 1].nickname
                 - inventorPoints = topInventors[index + 1].einsteinPoints
                 - inventorAptitudeIds = topInventors[index + 1].aptitudes
-                include ../partials/inventor-block.jade
+                include ../../partials/inventor-block.jade
             .col-md-4
               if(topInventors[index + 2 ])
                 if topInventors[index + 2].headshots && topInventors[index + 2].headshots[0]
@@ -52,7 +52,7 @@ html
                 - inventorName = topInventors[index + 2].nickname
                 - inventorPoints = topInventors[index + 2].einsteinPoints
                 - inventorAptitudeIds = topInventors[index + 2].aptitudes
-                include ../partials/inventor-block.jade
+                include ../../partials/inventor-block.jade
   #loginModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
       .modal-content
@@ -118,7 +118,7 @@ html
             | 
             div Home   
 
-  include ../partials/js-includes.jade
+  include ../../partials/js-includes.jade
   script(src='/exif.js')
   script(type="text/javascript").
     $(document).ready(function(){

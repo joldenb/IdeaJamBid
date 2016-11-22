@@ -1,10 +1,10 @@
 doctype html
 html
   head
-    include ../partials/head.jade
+    include ../../partials/head.jade
   body#topSection
     .header.navbar.navbar-default.jamTopNav
-      include ../partials/header.jade
+      include ../../partials/header.jade
 
     if networkImage
       a(href="/jam/" + networkName)
@@ -35,7 +35,7 @@ html
                 - inventorName = topInventors[index].nickname
                 - inventorPoints = topInventors[index].einsteinPoints
                 - inventorAptitudeIds = topInventors[index].aptitudes
-                include ../partials/inventor-block.jade
+                include ../../partials/inventor-block.jade
             .col-md-4
               if(topInventors[index + 1])
                 if accountNameAndURLs[topInventors[index + 1].username]
@@ -47,7 +47,7 @@ html
                 - inventorName = topInventors[index + 1].nickname
                 - inventorPoints = topInventors[index + 1].einsteinPoints
                 - inventorAptitudeIds = topInventors[index + 1].aptitudes
-                include ../partials/inventor-block.jade
+                include ../../partials/inventor-block.jade
             .col-md-4
               if(topInventors[index + 2 ])
                 if accountNameAndURLs[topInventors[index + 2].username]
@@ -59,9 +59,9 @@ html
                 - inventorName = topInventors[index + 2].nickname
                 - inventorPoints = topInventors[index + 2].einsteinPoints
                 - inventorAptitudeIds = topInventors[index + 2].aptitudes
-                include ../partials/inventor-block.jade
+                include ../../partials/inventor-block.jade
 
-  include ../partials/js-includes.jade
+  include ../../partials/js-includes.jade
   script(src='/exif.js')
   script(type="text/javascript").
     $(document).ready(function(){

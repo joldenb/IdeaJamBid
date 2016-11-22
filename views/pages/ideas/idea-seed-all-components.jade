@@ -1,10 +1,10 @@
 doctype html
 html
   head
-    include ../partials/head.jade
+    include ../../partials/head.jade
   body
   .header.navbar.navbar-default
-    include ../partials/header.jade
+    include ../../partials/header.jade
 
   .container-fluid.idea-summary
     if idea.name
@@ -14,7 +14,7 @@ html
           .col-xs-12
             each component, identifier in wholeSuggestionBlockInfo
               if component.document.text
-                include ../partials/component-summary-element.jade
+                include ../../partials/component-summary-element.jade
       else
         h4 <i>No Components Yet</i>
         .row

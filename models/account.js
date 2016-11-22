@@ -58,6 +58,8 @@ var options = {
     passwordValidator: validatePassword, //specifies your custom validation function for the password in the form 'function(password,cb)'. Default: validates non-empty passwords.
 };
 
+
+
 Account.plugin(passportLocalMongoose, options);
 Account.plugin(autopopulate);
 

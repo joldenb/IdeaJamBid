@@ -1,10 +1,10 @@
 doctype html
 html
   head
-    include ../partials/head.jade
+    include ../../partials/head.jade
   body
   .header.navbar.navbar-default
-    include ../partials/header.jade
+    include ../../partials/header.jade
 
   .view-idea-suggestions
     h2 Name : #{idea.name}
@@ -28,7 +28,7 @@ html
                     - compHeadshot = headshotURLs[suggestionsList[i]['creator']][0]
                     - compHeadshotStyle = headshotURLs[suggestionsList[i]['creator']][1]
                   - compId = suggestionsList[i]['id']
-                  include ../partials/suggestion-element.jade
+                  include ../../partials/suggestion-element.jade
               if (suggestionsList[i + 1])
                 .col-md-4
                   - suggestionText = suggestionsList[i + 1]['descriptions'][0]
@@ -37,7 +37,7 @@ html
                     - compHeadshot = headshotURLs[suggestionsList[i + 1]['creator']][0]
                     - compHeadshotStyle = headshotURLs[suggestionsList[i + 1]['creator']][1]
                   - compId = suggestionsList[i + 1]['id']
-                  include ../partials/suggestion-element.jade
+                  include ../../partials/suggestion-element.jade
               if (suggestionsList[i + 2])
                 .col-md-4
                   - suggestionText = suggestionsList[i + 2]['descriptions'][0]
@@ -46,7 +46,7 @@ html
                     - compHeadshot = headshotURLs[suggestionsList[i + 2]['creator']][0]
                     - compHeadshotStyle = headshotURLs[suggestionsList[i + 2]['creator']][1]
                   - compId = suggestionsList[i + 2]['id']
-                  include ../partials/suggestion-element.jade
+                  include ../../partials/suggestion-element.jade
          
         h2 Images with Components
         each image, i in images
@@ -71,7 +71,7 @@ html
                     - compHeadshot = headshotURLs[images[i][1]][0]
                     - compHeadshotStyle = headshotURLs[images[i][1]][1]
                   - imageID = images[i][2]
-                  include ../partials/image-block-element.jade
+                  include ../../partials/image-block-element.jade
               .col-md-4
                 if(images[i + 1])
                   - imageName = images[i + 1][0]
@@ -83,7 +83,7 @@ html
                     - compHeadshot = headshotURLs[images[i + 1][1]][0]
                     - compHeadshotStyle = headshotURLs[images[i + 1][1]][1]
                   - imageID = images[i + 1][2]
-                  include ../partials/image-block-element.jade
+                  include ../../partials/image-block-element.jade
               .col-md-4
                 if(images[i + 2])
                   - imageName = images[i + 2][0]
@@ -95,7 +95,7 @@ html
                     - compHeadshot = headshotURLs[images[i + 2][1]][0]
                     - compHeadshotStyle = headshotURLs[images[i + 2][1]][1]
                   - imageID = images[i + 2][2]
-                  include ../partials/image-block-element.jade
+                  include ../../partials/image-block-element.jade
 
       br
       input(type="hidden", name="_csrf", value="#{csrfToken}")
@@ -105,7 +105,7 @@ html
     br
     a.home-logout.btn.btn-go( href="/ideas/" + idea.name) < Back to Idea Summary
 
-  include ../partials/js-includes.jade
+  include ../../partials/js-includes.jade
   script(type="text/javascript").
     $(".btn.suggest").click(function(){
       $("#suggestion-category").val($(this).attr("id"));

@@ -1,10 +1,10 @@
 doctype html
 html
   head
-    include ../partials/head.jade
+    include ../../partials/head.jade
   body
   .header.navbar.navbar-default
-    include ../partials/header.jade
+    include ../../partials/header.jade
 
   .container-fluid.view-all-imperfections.idea-seed-all-suggestions
     .row
@@ -20,11 +20,11 @@ html
       input(type="hidden", name="_csrf", value="#{csrfToken}")
       each suggestion, identifier in wholeSuggestionBlockInfo
         if suggestion.document.inventorApproved !== false
-          include ../partials/suggestion-incorporate-element.jade
+          include ../../partials/suggestion-incorporate-element.jade
     else
       each suggestion, identifier in wholeSuggestionBlockInfo
         if suggestion.document.inventorApproved !== false
-          include ../partials/suggestion-summary-element.jade
+          include ../../partials/suggestion-summary-element.jade
 
       input(type="hidden", name="_csrf", value="#{csrfToken}")
   #removeSuggestionConfirmation.modal.fade.annotate-modal(role="dialog")
@@ -40,7 +40,7 @@ html
             .col-sm-6
               a.btn.btn-lg.btn-tomato Remove
 
-  include ../partials/js-includes.jade
+  include ../../partials/js-includes.jade
   script(src='/exif.js')
   script(type="text/javascript").
 

@@ -15,6 +15,8 @@ var Network = require('../models/network');
 var IdeaProblem = require('../models/ideaProblem');
 var Account = require('../models/account');
 var StripeCredentials = require('../models/stripeCredentials');
+var stripe = require("stripe")("sk_test_dxHWhv5U1LCrruTtDLCGuap4");
+var Membership = require('../models/membership');
 var router = express.Router();
 var multer = require('multer');
 var fs = require('fs');
@@ -23,6 +25,7 @@ var mongoSanitize = require('mongo-sanitize');
 var csrf = require('csurf');
 var csrfProtection = csrf({ cookie: true });
 var ideaSeedHelpers = require('../helpers/idea-seed-helpers');
+var moment = require('moment');
 
 var S3_BUCKET = process.env.S3_BUCKET;
 
@@ -219,38 +222,38 @@ router.post('/register', csrfProtection, function(req, res) {
 
   Account.findOne({ 'username' : req.body.username  }, function(err, user) {
     if(user){
-      res.render('pages/login', {
+      return res.render('pages/login', {
         csrfToken: req.csrfToken(),
         showMessage : "You already have an account. Log in below"
       });
-    }
+    } else {
+      Account.find({"nickname" : {$regex : ".*"+req.body.nickname+".*"}}, function(err, users){
+        if(users.length > 1){
+          var newNickname = req.body.nickname + " (" + (users.length + 1).toString() + ")";
+        } else {
+          var newNickname = req.body.nickname;
+        }
 
-    Account.find({"nickname" : {$regex : ".*"+req.body.nickname+".*"}}, function(err, users){
-      if(users.length > 1){
-        var newNickname = req.body.nickname + " (" + (users.length + 1).toString() + ")";
-      } else {
-        var newNickname = req.body.nickname;
-      }
+        Account.register(new Account({
+          firstname : req.body.firstname,
+          lastname : req.body.lastname,
+          nickname : newNickname,
+          identifier : "account" + Date.now() + Math.floor((Math.random() * 10) + 1),
+          username : req.body.username,
+          einsteinPoints: 0, rupees: 0,
+          ideaSeeds: []
+        }), req.body.password, function(err, account) {
+            if (err) {
+                console.log("err.message:" + err.message);
+                return res.render('pages/register', { account : account, message : err.message, csrfToken: req.csrfToken() });
+            }
 
-      Account.register(new Account({
-        firstname : req.body.firstname,
-        lastname : req.body.lastname,
-        nickname : newNickname,
-        identifier : "account" + Date.now() + Math.floor((Math.random() * 10) + 1),
-        username : req.body.username,
-        einsteinPoints: 0, rupees: 0,
-        ideaSeeds: []
-      }), req.body.password, function(err, account) {
-          if (err) {
-              console.log("err.message:" + err.message);
-              return res.render('pages/register', { account : account, message : err.message, csrfToken: req.csrfToken() });
-          }
-
-          passport.authenticate('local')(req, res, function () {
-              res.redirect('/');
-          });
+            passport.authenticate('local')(req, res, function () {
+                res.redirect('/');
+            });
+        });
       });
-    });
+    }
   });
 });
 
@@ -332,38 +335,38 @@ router.post('/register-nda', csrfProtection, function(req, res) {
   
   Account.findOne({ 'username' : req.body.username  }, function(err, user) {
     if(user){
-      res.render('pages/login', {
+      return res.render('pages/login', {
         csrfToken: req.csrfToken(),
         showMessage : "You already have an account. Log in below"
       });
-    }
+    } else {
+      Account.find({"nickname" : {$regex : ".*"+req.body.nickname+".*"}}, function(err, users){
+        if(users.length > 0){
+          var newNickname = req.body.nickname + "-" + (users.length + 1).toString();
+        } else {
+          var newNickname = req.body.nickname;
+        }
 
-    Account.find({"nickname" : {$regex : ".*"+req.body.nickname+".*"}}, function(err, users){
-      if(users.length > 0){
-        var newNickname = req.body.nickname + "-" + (users.length + 1).toString();
-      } else {
-        var newNickname = req.body.nickname;
-      }
+        Account.register(new Account({
+          firstname : req.body.firstname,
+          lastname : req.body.lastname,
+          nickname : newNickname,
+          identifier : "account" + Date.now() + Math.floor((Math.random() * 10) + 1),
+          username : req.body.username,
+          einsteinPoints: 0, rupees: 0,
+          ideaSeeds: []
+        }), req.body.password, function(err, account) {
+            if (err) {
+                console.log("err.message:" + err.message);
+                return res.render('pages/register', { account : account, message : err.message, csrfToken: req.csrfToken() });
+            }
 
-      Account.register(new Account({
-        firstname : req.body.firstname,
-        lastname : req.body.lastname,
-        nickname : newNickname,
-        identifier : "account" + Date.now() + Math.floor((Math.random() * 10) + 1),
-        username : req.body.username,
-        einsteinPoints: 0, rupees: 0,
-        ideaSeeds: []
-      }), req.body.password, function(err, account) {
-          if (err) {
-              console.log("err.message:" + err.message);
-              return res.render('pages/register', { account : account, message : err.message, csrfToken: req.csrfToken() });
-          }
-
-          passport.authenticate('local')(req, res, function () {
-              res.redirect('/ideas/'+idea.body["idea-seed"] + '/nda');
-          });
+            passport.authenticate('local')(req, res, function () {
+                res.redirect('/ideas/'+idea.body["idea-seed"] + '/nda');
+            });
+        });
       });
-    });
+    }
   });
 });
 
@@ -380,40 +383,42 @@ router.post('/register-dsw', csrfProtection, function(req, res) {
   
   Account.findOne({ 'username' : req.body.username  }, function(err, user) {
     if(user){
-      res.render('pages/login', {
+      return res.render('pages/login', {
         csrfToken: req.csrfToken(),
         showMessage : "You already have an account. Log in below"
       });
+    } else {
+      Account.find({"nickname" : {$regex : ".*"+req.body.nickname+".*"}}, function(err, users){
+        if(users.length > 0){
+          var newNickname = req.body.nickname + "-" + (users.length + 1).toString();
+        } else {
+          var newNickname = req.body.nickname;
+        }
+
+
+        // gets a default password value from jam profile page "itcrashed"
+        Account.register(new Account({
+          firstname : req.body.firstname,
+          lastname : req.body.lastname,
+          nickname : newNickname,
+          identifier : "account" + Date.now() + Math.floor((Math.random() * 10) + 1),
+          username : req.body.username,
+          einsteinPoints: 0, rupees: 0,
+          ideaSeeds: []
+        }), req.body.password, function(err, account) {
+            if (err) {
+                console.log("err.message:" + err.message);
+                return res.render('pages/register', { account : account, message : err.message, csrfToken: req.csrfToken() });
+            }
+
+            passport.authenticate('local')(req, res, function () {
+                res.redirect('/jam/dsw');
+            });
+        });
+      });
+
     }
 
-    Account.find({"nickname" : {$regex : ".*"+req.body.nickname+".*"}}, function(err, users){
-      if(users.length > 0){
-        var newNickname = req.body.nickname + "-" + (users.length + 1).toString();
-      } else {
-        var newNickname = req.body.nickname;
-      }
-
-
-      // gets a default password value from jam profile page "itcrashed"
-      Account.register(new Account({
-        firstname : req.body.firstname,
-        lastname : req.body.lastname,
-        nickname : newNickname,
-        identifier : "account" + Date.now() + Math.floor((Math.random() * 10) + 1),
-        username : req.body.username,
-        einsteinPoints: 0, rupees: 0,
-        ideaSeeds: []
-      }), req.body.password, function(err, account) {
-          if (err) {
-              console.log("err.message:" + err.message);
-              return res.render('pages/register', { account : account, message : err.message, csrfToken: req.csrfToken() });
-          }
-
-          passport.authenticate('local')(req, res, function () {
-              res.redirect('/jam/dsw');
-          });
-      });
-    });
   });
 });
 
@@ -513,6 +518,8 @@ router.post('/reset-password', csrfProtection, function(req, res) {
 *****************************************************************/
 router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
   req.session.idea = null;
+  var hasActiveMembership = false;
+  var membershipDocument;
 
   var userNickname = req.params.nickname || req.user.nickname;
   if (!userNickname){
@@ -533,178 +540,190 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
       var account = accounts[0];
     }
 
-    if(!account.identifier) {
-      account.identifier = "account" + Date.now() + Math.floor((Math.random() * 10) + 1);
-      account.save();
-    }
+    ideaSeedHelpers.hasActiveMembership(account).then(function(membership){
 
-    IdeaSeed.find({"collaborators" : account.username}, function(err, collaboratorIdeas){
+      hasActiveMembership = membership["hasActiveMembership"];
+      if(hasActiveMembership){
+        membershipDocument = membership["membership"];
+        membershipDocument['formattedStartDate'] = moment(membershipDocument['startDate']).format("MMM Do YYYY");
+        membershipDocument['formattedEndDate'] = moment(membershipDocument['endDate']).format("MMM Do YYYY");
+      }
 
-      /* oh, this is a find all. this should change at some point */
-      Network.find({}, function(err, networks){
-        var masterSchoolNetworkList = [],
-            schoolNetwork = "",
-            masterCompanyNetworkList = [],
-            companyNetwork = "",
-            masterLocationNetworkList = [],
-            locationNetwork = "";
+      if(!account.identifier) {
+        account.identifier = "account" + Date.now() + Math.floor((Math.random() * 10) + 1);
+        account.save();
+      }
 
-        _.each(networks, function(element, index, list){
-          if(element['type'] == 'school'){
-            masterSchoolNetworkList.push(element);
-            //get school name if it exists
-            if(account.networks
-              && account.networks['school']
-              && account.networks['school'].toString() == element['id'].toString()){
-                schoolNetwork = element['name'];
+      IdeaSeed.find({"collaborators" : account.username}, function(err, collaboratorIdeas){
+
+        /* oh, this is a find all. this should change at some point */
+        Network.find({}, function(err, networks){
+          var masterSchoolNetworkList = [],
+              schoolNetwork = "",
+              masterCompanyNetworkList = [],
+              companyNetwork = "",
+              masterLocationNetworkList = [],
+              locationNetwork = "";
+
+          _.each(networks, function(element, index, list){
+            if(element['type'] == 'school'){
+              masterSchoolNetworkList.push(element);
+              //get school name if it exists
+              if(account.networks
+                && account.networks['school']
+                && account.networks['school'].toString() == element['id'].toString()){
+                  schoolNetwork = element['name'];
+              }
             }
-          }
 
-          if(element['type'] == 'company'){
-            masterCompanyNetworkList.push(element);
-            //get company name if it exists
-            if(account.networks
-              && account.networks['company']
-              && account.networks['company'].toString() == element['id'].toString()){
-                companyNetwork = element['name'];
+            if(element['type'] == 'company'){
+              masterCompanyNetworkList.push(element);
+              //get company name if it exists
+              if(account.networks
+                && account.networks['company']
+                && account.networks['company'].toString() == element['id'].toString()){
+                  companyNetwork = element['name'];
+              }
             }
-          }
 
-          if(element['type'] == 'location'){
-            masterLocationNetworkList.push(element);
-            //get company name if it exists
-            if(account.networks
-              && account.networks['location']
-              && account.networks['location'].toString() == element['id'].toString()){
-                locationNetwork = element['name'];
+            if(element['type'] == 'location'){
+              masterLocationNetworkList.push(element);
+              //get company name if it exists
+              if(account.networks
+                && account.networks['location']
+                && account.networks['location'].toString() == element['id'].toString()){
+                  locationNetwork = element['name'];
+              }
             }
-          }
 
-          if(req.user.otherNetworks && req.user.otherNetworks.indexOf(element.id) > -1 ){
-            generalJams.push(element.name);
-          }
+            if(req.user.otherNetworks && req.user.otherNetworks.indexOf(element.id) > -1 ){
+              generalJams.push(element.name);
+            }
 
-        });
-        Aptitude.find({"_id" : {$in : account.aptitudes}}, function(err, myAptitudes){
-          var headshotData = ideaSeedHelpers.getUserHeadshot(req);
-          var headshotURL = headshotData['headshotURL'];
-          var headshotStyle = headshotData['headshotStyle'];
+          });
+          Aptitude.find({"_id" : {$in : account.aptitudes}}, function(err, myAptitudes){
+            var headshotData = ideaSeedHelpers.getUserHeadshot(req);
+            var headshotURL = headshotData['headshotURL'];
+            var headshotStyle = headshotData['headshotStyle'];
 
-            var reviewNames, accountIdeaSeeds;
-            var ideaNames = [],
-                j = 0;
-            IdeaReview.find({"reviewer" : account.username}, function(err, reviews){
-              var reviewIDs = _.map(reviews, function(item){return item["ideaSeedId"];});
-              reviewIDs = _.filter(reviewIDs, Boolean);
-              IdeaSeed.find({_id : {$in : reviewIDs}}, function(err, reviewedIdeas){
-                var creationDate, formattedDate, reviewedIdeaCreators = [];
-                _.each(reviewedIdeas, function(item){
-                  creationDate = item._id.getTimestamp();
-                  formattedDate = creationDate.getMonth().toString() + "-" +
-                    creationDate.getDate().toString() + "-" +
-                    creationDate.getFullYear().toString();
-                  item['creationDate'] = formattedDate;
-                  reviewedIdeaCreators.push(item["inventorName"]);
-                });
-
-                Account.find({"username" : {$in : reviewedIdeaCreators}}, function(err, reviewedIdeaCreatorObjects){
-                  // figure out which account goes with with reviewed Idea
-                  _.each(reviewedIdeas, function(ideaObject, ideaIndex){
-                    _.each(reviewedIdeaCreatorObjects, function(account, accountIndex){
-                      if(account.username == ideaObject.inventorName){
-                        ideaObject['inventorName'] = account.nickname;
-                      }
-                    });
-                    if(!ideaObject['inventorName']){
-                      ideaObject['inventorName'] = "";
-                    }
+              var reviewNames, accountIdeaSeeds;
+              var ideaNames = [],
+                  j = 0;
+              IdeaReview.find({"reviewer" : account.username}, function(err, reviews){
+                var reviewIDs = _.map(reviews, function(item){return item["ideaSeedId"];});
+                reviewIDs = _.filter(reviewIDs, Boolean);
+                IdeaSeed.find({_id : {$in : reviewIDs}}, function(err, reviewedIdeas){
+                  var creationDate, formattedDate, reviewedIdeaCreators = [];
+                  _.each(reviewedIdeas, function(item){
+                    creationDate = item._id.getTimestamp();
+                    formattedDate = creationDate.getMonth().toString() + "-" +
+                      creationDate.getDate().toString() + "-" +
+                      creationDate.getFullYear().toString();
+                    item['creationDate'] = formattedDate;
+                    reviewedIdeaCreators.push(item["inventorName"]);
                   });
 
+                  Account.find({"username" : {$in : reviewedIdeaCreators}}, function(err, reviewedIdeaCreatorObjects){
+                    // figure out which account goes with with reviewed Idea
+                    _.each(reviewedIdeas, function(ideaObject, ideaIndex){
+                      _.each(reviewedIdeaCreatorObjects, function(account, accountIndex){
+                        if(account.username == ideaObject.inventorName){
+                          ideaObject['inventorName'] = account.nickname;
+                        }
+                      });
+                      if(!ideaObject['inventorName']){
+                        ideaObject['inventorName'] = "";
+                      }
+                    });
 
 
-                                    // find the idea seed documents that are created by the account showing in the profile
-                                    var originalIdeaIds = _.map(account.ideaSeeds, function(item){return item.id;})
-                                    IdeaSeed.find({_id : {$in : originalIdeaIds}}, function(err, originalIdeas){
-                                      var creationDate;
-                                      _.each(originalIdeas, function(item){
-                                        creationDate = item._id.getTimestamp();
-                                        formattedDate = creationDate.getMonth().toString() + "-" +
-                                          creationDate.getDate().toString() + "-" +
-                                          creationDate.getFullYear().toString();
-                                        item['creationDate'] = formattedDate;
-                                      });
-                                      if(account.headshots[0]){
-                                        var accountHeadshot = account.headshots[0];
-                                        accountHeadshot.style = ideaSeedHelpers.getImageOrientation(accountHeadshot['orientation']);
-                                        return res.render('pages/imagineer', {
-                                          csrfToken: req.csrfToken(),
-                                          reviewNames : reviewedIdeas,
-                                          reviewedIdeaCreatorObjects : reviewedIdeaCreatorObjects,
-                                          headshot : headshotURL,
-                                          headshotStyle : headshotStyle,
-                                          user : req.user || {},
-                                          profileAccount: account,
-                                          collaboratorIdeas : collaboratorIdeas,
-                                          accountHeadshot : accountHeadshot,
-                                          generalJams : generalJams,
-                                          aptitudes : myAptitudes,
-                                          schoolNetwork : schoolNetwork,
-                                          locationNetwork : locationNetwork,
-                                          companyNetwork : companyNetwork,
-                                          accountIdeaSeeds : originalIdeas || [],
-                                          masterSchoolNetworkList : masterSchoolNetworkList,
-                                          masterSchoolNetworkString : JSON.stringify(masterSchoolNetworkList)
-                                                                  .replace(/\\n/g, "\\n")
-                                                                  .replace(/'/g, "\\'")
-                                                                  .replace(/"/g, '\\"')
-                                                                  .replace(/\\&/g, "\\&")
-                                                                  .replace(/\\r/g, "\\r")
-                                                                  .replace(/\\t/g, "\\t")
-                                                                  .replace(/\\b/g, "\\b")
-                                                                  .replace(/\\f/g, "\\f")
 
+                                      // find the idea seed documents that are created by the account showing in the profile
+                                      var originalIdeaIds = _.map(account.ideaSeeds, function(item){return item.id;})
+                                      IdeaSeed.find({_id : {$in : originalIdeaIds}}, function(err, originalIdeas){
+                                        var creationDate;
+                                        _.each(originalIdeas, function(item){
+                                          creationDate = item._id.getTimestamp();
+                                          formattedDate = creationDate.getMonth().toString() + "-" +
+                                            creationDate.getDate().toString() + "-" +
+                                            creationDate.getFullYear().toString();
+                                          item['creationDate'] = formattedDate;
                                         });
-                                      } else {
-                                        var accountHeadshot;
-                                        return res.render('pages/imagineer', {
-                                          csrfToken: req.csrfToken(),
-                                          reviewNames : reviewedIdeas,
-                                          reviewedIdeaCreatorObjects : reviewedIdeaCreatorObjects,
-                                          headshot : headshotURL,
-                                          headshotStyle : headshotStyle,
-                                          user : req.user || {},
-                                          profileAccount: account,
-                                          generalJams : generalJams,
-                                          collaboratorIdeas : collaboratorIdeas,
-                                          accountHeadshot : accountHeadshot,
-                                          aptitudes : myAptitudes,
-                                          schoolNetwork : schoolNetwork,
-                                          locationNetwork : locationNetwork,
-                                          companyNetwork : companyNetwork,
-                                          accountIdeaSeeds : originalIdeas || [],
-                                          masterSchoolNetworkList : masterSchoolNetworkList,
-                                          masterSchoolNetworkString : JSON.stringify(masterSchoolNetworkList)
-                                                                  .replace(/\\n/g, "\\n")
-                                                                  .replace(/'/g, "\\'")
-                                                                  .replace(/"/g, '\\"')
-                                                                  .replace(/\\&/g, "\\&")
-                                                                  .replace(/\\r/g, "\\r")
-                                                                  .replace(/\\t/g, "\\t")
-                                                                  .replace(/\\b/g, "\\b")
-                                                                  .replace(/\\f/g, "\\f")
+                                        if(account.headshots[0]){
+                                          var accountHeadshot = account.headshots[0];
+                                          accountHeadshot.style = ideaSeedHelpers.getImageOrientation(accountHeadshot['orientation']);
+                                          return res.render('pages/imagineers/imagineer', {
+                                            csrfToken: req.csrfToken(),
+                                            reviewNames : reviewedIdeas,
+                                            reviewedIdeaCreatorObjects : reviewedIdeaCreatorObjects,
+                                            headshot : headshotURL,
+                                            headshotStyle : headshotStyle,
+                                            hasActiveMembership : hasActiveMembership,
+                                            user : req.user || {},
+                                            profileAccount: account,
+                                            collaboratorIdeas : collaboratorIdeas,
+                                            accountHeadshot : accountHeadshot,
+                                            membershipDocument : membershipDocument,
+                                            generalJams : generalJams,
+                                            aptitudes : myAptitudes,
+                                            schoolNetwork : schoolNetwork,
+                                            locationNetwork : locationNetwork,
+                                            companyNetwork : companyNetwork,
+                                            accountIdeaSeeds : originalIdeas || [],
+                                            masterSchoolNetworkList : masterSchoolNetworkList,
+                                            masterSchoolNetworkString : JSON.stringify(masterSchoolNetworkList)
+                                                                    .replace(/\\n/g, "\\n")
+                                                                    .replace(/'/g, "\\'")
+                                                                    .replace(/"/g, '\\"')
+                                                                    .replace(/\\&/g, "\\&")
+                                                                    .replace(/\\r/g, "\\r")
+                                                                    .replace(/\\t/g, "\\t")
+                                                                    .replace(/\\b/g, "\\b")
+                                                                    .replace(/\\f/g, "\\f")
 
-                                        });
-                                      }
-                                    });  
+                                          });
+                                        } else {
+                                          var accountHeadshot;
+                                          return res.render('pages/imagineers/imagineer', {
+                                            csrfToken: req.csrfToken(),
+                                            reviewNames : reviewedIdeas,
+                                            reviewedIdeaCreatorObjects : reviewedIdeaCreatorObjects,
+                                            headshot : headshotURL,
+                                            headshotStyle : headshotStyle,
+                                            user : req.user || {},
+                                            profileAccount: account,
+                                            hasActiveMembership : hasActiveMembership,
+                                            generalJams : generalJams,
+                                            collaboratorIdeas : collaboratorIdeas,
+                                            membershipDocument : membershipDocument,
+                                            accountHeadshot : accountHeadshot,
+                                            aptitudes : myAptitudes,
+                                            schoolNetwork : schoolNetwork,
+                                            locationNetwork : locationNetwork,
+                                            companyNetwork : companyNetwork,
+                                            accountIdeaSeeds : originalIdeas || [],
+                                            masterSchoolNetworkList : masterSchoolNetworkList,
+                                            masterSchoolNetworkString : JSON.stringify(masterSchoolNetworkList)
+                                                                    .replace(/\\n/g, "\\n")
+                                                                    .replace(/'/g, "\\'")
+                                                                    .replace(/"/g, '\\"')
+                                                                    .replace(/\\&/g, "\\&")
+                                                                    .replace(/\\r/g, "\\r")
+                                                                    .replace(/\\t/g, "\\t")
+                                                                    .replace(/\\b/g, "\\b")
+                                                                    .replace(/\\f/g, "\\f")
+
+                                          });
+                                        }
+                                      });  
+                  });
                 });
               });
-            });
-        }); //end of the aptitude query
-      }); // End of Network query
-    }); //end of collaborator idea seed query
+          }); //end of the aptitude query
+        }); // End of Network query
+      }); //end of collaborator idea seed query
+    }); 
   }); // End of Account query
-
-
 });
 
 
@@ -831,7 +850,7 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
         return [item["name"], formattedDate];
       });
     }
-    res.render('pages/imagineer-picture', {
+    res.render('pages/imagineers/imagineer-picture', {
       csrfToken: req.csrfToken(),
       user : req.user || {},
       aptitudes : myAptitudes,
@@ -994,7 +1013,7 @@ router.get('/ideas', csrfProtection, function(req, res){
                       }
                     }
 
-                    res.render('pages/ideas', {
+                    res.render('pages/ideas/ideas', {
                       csrfToken: req.csrfToken(),
                       user : req.user || {} || {},
                       headshot : headshotURL,
@@ -1064,11 +1083,11 @@ router.get('/introduce-idea', csrfProtection, function(req, res) {
           }
         );
         req.session.idea = newIdea._doc._id.toHexString();
-        res.render('pages/introduce-idea', { user : req.user || {}, idea : req.session.idea, csrfToken: req.csrfToken() });
+        res.render('pages/ideas/introduce-idea', { user : req.user || {}, idea : req.session.idea, csrfToken: req.csrfToken() });
       } else {
         IdeaSeed.findById(req.session.idea,function(err, idea){
           currentIdea = idea._doc;
-          res.render('pages/introduce-idea', { user : req.user || {},
+          res.render('pages/ideas/introduce-idea', { user : req.user || {},
             csrfToken: req.csrfToken(),
             headshot : headshotURL,
             headshotStyle : headshotStyle,
@@ -1141,7 +1160,7 @@ router.get('/accomplish', csrfProtection, function(req, res) {
 
     IdeaSeed.findById(req.session.idea,function(err, idea){
       currentIdea = idea._doc;
-      res.render('pages/accomplish', { user : req.user || {},
+      res.render('pages/ideas/accomplish', { user : req.user || {},
         csrfToken: req.csrfToken(),
         headshot: headshotURL,
         headshotStyle : headshotStyle,
@@ -1667,7 +1686,7 @@ router.get('/image-upload', csrfProtection, function(req, res){
           canEdit = true;
         }
 
-        res.render('pages/image-upload', {
+        res.render('pages/ideas/image-upload', {
           csrfToken: req.csrfToken(),
           user : req.user || {},
           headshot: headshotURL,
@@ -1974,7 +1993,7 @@ router.get('/create-new-variant', csrfProtection, function(req, res){
               }
 
               currentIdea = idea._doc;
-              res.render('pages/new-variant', {
+              res.render('pages/ideas/new-variant', {
                 csrfToken: req.csrfToken(),
                 user : req.user || {}, //user document
                 idea : currentIdea, //document
@@ -2273,7 +2292,12 @@ router.post('/login', csrfProtection, function(req,res, next){
       }
       req.logIn(user, function(err) {
         if (err) { return next(err); }
-        return res.redirect('/imagineer/' + user.nickname);
+        if (req.session.loginPath){
+          return res.redirect(req.session.loginPath);
+        } else {
+          return res.redirect('/imagineer/' + user.nickname);  
+        }
+        
       });
     })(req, res, next);
 
@@ -2317,6 +2341,7 @@ router.post('/login-nda', csrfProtection, function(req,res, next){
 ******************************************************************
 *****************************************************************/
 router.get('/ideas/:ideaName', csrfProtection, function(req, res){
+
   if(!(req.user && req.user.username)) {
     console.log("not logged in")
     res.redirect('/');
@@ -2333,7 +2358,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
       }
   }
 
-  shuffle(viabilities);
+  shuffle(viabilities); 
 
   for (var via in viabilities) {
     if (!viabilities[via]['iconId']) {
@@ -2374,6 +2399,8 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
   var imageStyle;
   var currentReceipt = "";
   var currentAppStrength;
+  var hasActiveMembership, membershipDocument;
+  var inventorAccount;
   var problemAreas = [
     "Area : Performability",
     "Area : Affordability",
@@ -2420,7 +2447,27 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
 
     openCampaign = CrowdfundingService.getOpenCampaign(idea);
     mostRecentCampaign = CrowdfundingService.getNewestCampaign(idea);
-    return ideaSeedHelpers.getApplicationStrength(idea.id)
+
+    return Account.findOne({"username" : idea.inventorName});
+
+  })
+  .then(function(account){
+
+    inventorAccount = account;
+
+    return ideaSeedHelpers.hasActiveMembership(account);
+
+  })
+  .then(function(membership){
+
+    hasActiveMembership = membership["hasActiveMembership"];
+    if(hasActiveMembership){
+      membershipDocument = membership["membership"];
+      membershipDocument['formattedStartDate'] = moment(membershipDocument['startDate']).format("MMM Do YYYY");
+      membershipDocument['formattedEndDate'] = moment(membershipDocument['endDate']).format("MMM Do YYYY");
+    }    
+
+    return ideaSeedHelpers.getApplicationStrength(currentIdea['_id'])
   })
   .then(function(strengthResponse){
     currentAppStrength = strengthResponse;
@@ -2547,7 +2594,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
         ]);
       }
     });
-    res.render('pages/ideas-single', { user : req.user || {}, idea : currentIdea,
+    res.render('pages/ideas/ideas-single', { user : req.user || {}, idea : currentIdea,
       review : req.session.ideaReview || {},
       averageScore : averageScore,
       csrfToken: req.csrfToken(),
@@ -2568,7 +2615,9 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
       viabilities : viabilities,
       listOfProblems : listOfProblems,
       openCampaign: openCampaign,
-      mostRecentCampaign: mostRecentCampaign
+      mostRecentCampaign: mostRecentCampaign,
+      membershipDocument : membershipDocument,
+      hasActiveMembership : hasActiveMembership
     });
   
   })
@@ -2694,7 +2743,7 @@ router.get('/ideas/:ideaName/redesign', csrfProtection, function(req, res){
     openCampaign = CrowdfundingService.getOpenCampaign(idea);
     mostRecentCampaign = CrowdfundingService.getNewestCampaign(idea);
 
-    return ideaSeedHelpers.getApplicationStrength(idea.id)
+    return ideaSeedHelpers.getApplicationStrength(currentIdea['_id'])
   })
   .then(function(strengthResponse){
     currentAppStrength = strengthResponse;
@@ -2821,7 +2870,7 @@ router.get('/ideas/:ideaName/redesign', csrfProtection, function(req, res){
         ]);
       }
     });
-    res.render('pages/idea-single-redesign', { user : req.user || {}, idea : currentIdea,
+    res.render('pages/ideas/idea-single-redesign', { user : req.user || {}, idea : currentIdea,
       review : req.session.ideaReview || {},
       averageScore : averageScore,
       csrfToken: req.csrfToken(),
@@ -2920,6 +2969,7 @@ router.get('/ideas/:ideaName/edit', csrfProtection, function(req, res){
   var filename;
   var imageStyle;
   var currentReceipt = "";
+  var hasActiveMembership, membershipDocument;
   var currentAppStrength;
   var problemAreas = [
     "Area : Performability",
@@ -2968,7 +3018,26 @@ router.get('/ideas/:ideaName/edit', csrfProtection, function(req, res){
     openCampaign = CrowdfundingService.getOpenCampaign(idea);
     mostRecentCampaign = CrowdfundingService.getNewestCampaign(idea);
 
-    return ideaSeedHelpers.getApplicationStrength(idea.id)
+    return Account.findOne({"username" : idea.inventorName});
+
+  })
+  .then(function(account){
+
+    inventorAccount = account;
+
+    return ideaSeedHelpers.hasActiveMembership(account);
+
+  })
+  .then(function(membership){
+
+    hasActiveMembership = membership["hasActiveMembership"];
+    if(hasActiveMembership){
+      membershipDocument = membership["membership"];
+      membershipDocument['formattedStartDate'] = moment(membershipDocument['startDate']).format("MMM Do YYYY");
+      membershipDocument['formattedEndDate'] = moment(membershipDocument['endDate']).format("MMM Do YYYY");
+    }    
+
+    return ideaSeedHelpers.getApplicationStrength(currentIdea['_id'])
   })
   .then(function(strengthResponse){
     currentAppStrength = strengthResponse;
@@ -3095,7 +3164,7 @@ router.get('/ideas/:ideaName/edit', csrfProtection, function(req, res){
         ]);
       }
     });
-    res.render('pages/ideas-single-edit', { user : req.user || {}, idea : currentIdea,
+    res.render('pages/ideas/ideas-single-edit', { user : req.user || {}, idea : currentIdea,
       review : req.session.ideaReview || {},
       averageScore : averageScore,
       csrfToken: req.csrfToken(),
@@ -3112,6 +3181,8 @@ router.get('/ideas/:ideaName/edit', csrfProtection, function(req, res){
       imageURLs : imageURLs,
       inventorName : currentIdea.inventorName,
       problems : problems,
+      membershipDocument : membershipDocument,
+      hasActiveMembership : hasActiveMembership,
       components : components,
       viabilities : viabilities,
       listOfProblems : listOfProblems,
@@ -3234,7 +3305,7 @@ router.get('/ideas/:ideaName/view-all-imperfections', csrfProtection, function(r
         })
       })
     }    
-    res.render('pages/idea-seed-all-imperfections', { user : req.user || {}, idea : currentIdea,
+    res.render('pages/ideas/idea-seed-all-imperfections', { user : req.user || {}, idea : currentIdea,
       csrfToken: req.csrfToken(),
       problemAreas  : problemAreas,
       headshot : headshotURL,
@@ -3377,7 +3448,7 @@ router.get('/ideas/:ideaName/view-all-suggestions', csrfProtection, function(req
         });
 
 
-        res.render('pages/idea-seed-all-suggestions', { user : req.user || {}, idea : currentIdea,
+        res.render('pages/ideas/idea-seed-all-suggestions', { user : req.user || {}, idea : currentIdea,
           csrfToken: req.csrfToken(),
           headshot : headshotURL,
           headshotStyle : headshotStyle,
@@ -3521,7 +3592,7 @@ router.get('/ideas/:ideaName/view-all-components', csrfProtection, function(req,
       }
     });
 
-    res.render('pages/idea-seed-all-components', { user : req.user || {}, idea : currentIdea,
+    res.render('pages/ideas/idea-seed-all-components', { user : req.user || {}, idea : currentIdea,
       csrfToken: req.csrfToken(),
       headshot : headshotURL,
       headshotStyle : headshotStyle,
@@ -3584,6 +3655,167 @@ router.get('/create-application', csrfProtection, function(req, res){
         });// end of problem query
       });
   });
+});
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Gets called when the user clicks the button to create a new
+* application
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/membership-options', csrfProtection, function(req, res){
+
+  res.render("pages/membership-options", {
+    user : req.user || {},
+    redirectURL : req.session.loginPath || "",
+    csrfToken: req.csrfToken()
+  });
+
+});
+
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for processing a membership payment
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.post('/process-one-month-payment', csrfProtection, function(req, res){
+
+
+  // Get the credit card details submitted by the form
+  var token = req.body.stripeToken; // Using Express
+
+  // Create a charge: this will charge the user's card
+  var charge = stripe.charges.create({
+    amount: 7499, // Amount in cents
+    currency: "usd",
+    source: token,
+    description: "Purchasing one month membership"
+  }, function(err, charge) {
+    if (err && err.type === 'StripeCardError') {
+      // The card has been declined
+    } else {
+
+      var newMembership = new Membership({
+        amountPaid : 17999,
+        customerID : req.user.id,
+        customerType : "account",
+        startDate : moment(),
+        endDate : moment().add(moment.duration({'months' : 1})),
+        membershipType : "one_month"
+      });
+
+      newMembership.save(function(err){
+        if (err) {
+          console.log( "error is " + err );
+        }
+      });
+
+      res.redirect('/')
+    }
+  });
+
+
+});
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for processing a membership payment
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.post('/process-six-month-payment', csrfProtection, function(req, res){
+
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
+
+  // Get the credit card details submitted by the form
+  var token = req.body.stripeToken; // Using Express
+
+  // Create a charge: this will charge the user's card
+  var charge = stripe.charges.create({
+    amount: 17999, // Amount in cents
+    currency: "usd",
+    source: token,
+    description: "Purchasing six month membership"
+  }, function(err, charge) {
+    if (err && err.type === 'StripeCardError') {
+      // The card has been declined
+    } else {
+
+      var newMembership = new Membership({
+        amountPaid : 17999,
+        customerID : req.user.id,
+        customerType : "account",
+        startDate : moment(),
+        endDate : moment().add(moment.duration({'months' : 6})),
+        membershipType : "six_month"
+      })
+
+      newMembership.save(function(err){
+        if (err) {
+          console.log( "error is " + err );
+        }
+      });
+
+      res.redirect('/')
+    }
+
+  });
+
+  
+});
+
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for processing a membership payment
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.post('/process-twelve-month-payment', csrfProtection, function(req, res){
+
+  // Get the credit card details submitted by the form
+  var token = req.body.stripeToken; // Using Express
+
+  // Create a charge: this will charge the user's card
+  var charge = stripe.charges.create({
+    amount: 23999, // Amount in cents
+    currency: "usd",
+    source: token,
+    description: "Purchasing twelve month membership"
+  }, function(err, charge) {
+    if (err && err.type === 'StripeCardError') {
+      // The card has been declined
+    } else {
+      var newMembership = new Membership({
+        amountPaid : 17999,
+        customerID : req.user.id,
+        customerType : "account",
+        startDate : moment(),
+        endDate : moment().add(moment.duration({'months' : 12})),
+        membershipType : "twelve_month"
+      })
+
+      newMembership.save(function(err){
+        if (err) {
+          console.log( "error is " + err );
+        }
+      });
+
+      res.redirect('/')
+    }
+  });
+
+  
 });
 
 /*****************************************************************
@@ -3694,7 +3926,7 @@ router.get('/ideas/:ideaSeedName/variant/:variantname', csrfProtection, function
                   }
                 });
 
-                res.render('pages/variant', { user : req.user || {}, idea : currentIdea,
+                res.render('pages/ideas/variant', { user : req.user || {}, idea : currentIdea,
                   csrfToken: req.csrfToken(),
                   suggestionsList : suggestionsList,
                   variantName : req.params.variantname,
@@ -3735,7 +3967,7 @@ router.get('/ideas/:ideaSeedName/variant/:variantname/contract/:contributorIdent
 
   IdeaSeed.findById(req.session.idea,function(err, idea){
     var currentIdea = idea._doc;
-    res.render('pages/variant-contract', { user : req.user || {},
+    res.render('pages/ideas/variant-contract', { user : req.user || {},
       idea : currentIdea,
       csrfToken: req.csrfToken(),
       contributorIdentifier : req.params.contributorIdentifier,
@@ -3849,7 +4081,7 @@ router.get('/annotate-image/:image', csrfProtection, function(req, res){
 
               compArray = _.sortBy(compArray, 'number');
               masterComponentList = _.sortBy(masterComponentList, 'number');
-              res.render('pages/annotate-image', {
+              res.render('pages/ideas/annotate-image', {
                 csrfToken: req.csrfToken(),
                 user : req.user || {},
                 imgURL : imageURL,
@@ -4196,7 +4428,7 @@ router.get('/imagineers', csrfProtection, function(req, res){
 
     topInventors = accounts;
 
-    res.render('pages/imagineers', {
+    res.render('pages/imagineers/imagineers', {
       user : req.user || {},
       topInventors : topInventors
     });
@@ -4754,7 +4986,7 @@ router.get('/imperfection-profile/:identifier', csrfProtection, function(req, re
                 // Now, wholeSuggestionBlockInfo is an object with suggestion identifier keys and values
                 // that hold suggestion objects as well as the suggestor nicknames and profile pictures
 
-                res.render('pages/imperfection-profile', {
+                res.render('pages/ideas/imperfection-profile', {
                   csrfToken: req.csrfToken(),
                   problem : ideaProblem,
                   wholeSuggestionBlockInfo : wholeSuggestionBlockInfo,
@@ -5069,7 +5301,7 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
                           'style' : problemHeadshotStyle
                         };
 
-                        res.render('pages/component-profile', {
+                        res.render('pages/ideas/component-profile', {
                           csrfToken: req.csrfToken(),
                           user : req.user || {},
                           headshot : headshotURL,
@@ -5090,7 +5322,7 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
 
                     // in case theres no images
                     } else {
-                          res.render('pages/component-profile', {
+                          res.render('pages/ideas/component-profile', {
                             csrfToken: req.csrfToken(),
                             user : req.user || {},
                             headshot : headshotURL,
@@ -5143,7 +5375,7 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
                           }
                         }
                       }
-                      res.render('pages/component-profile', {
+                      res.render('pages/ideas/component-profile', {
                         csrfToken: req.csrfToken(),
                         user : req.user || {},
                         headshot : headshotURL,
@@ -5166,7 +5398,7 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
 
                   // in case theres no images
                   } else {
-                        res.render('pages/component-profile', {
+                        res.render('pages/ideas/component-profile', {
                           csrfToken: req.csrfToken(),
                           user : req.user || {},
                           headshot : headshotURL,
@@ -5333,7 +5565,7 @@ router.get('/component-profile/:identifier/edit', csrfProtection, function(req, 
                           'style' : problemHeadshotStyle
                         };
 
-                        res.render('pages/component-profile-edit', {
+                        res.render('pages/ideas/component-profile-edit', {
                           csrfToken: req.csrfToken(),
                           user : req.user || {},
                           headshot : headshotURL,
@@ -5354,7 +5586,7 @@ router.get('/component-profile/:identifier/edit', csrfProtection, function(req, 
 
                     // in case theres no images
                     } else {
-                          res.render('pages/component-profile-edit', {
+                          res.render('pages/ideas/component-profile-edit', {
                             csrfToken: req.csrfToken(),
                             user : req.user || {},
                             headshot : headshotURL,
@@ -5407,7 +5639,7 @@ router.get('/component-profile/:identifier/edit', csrfProtection, function(req, 
                           }
                         }
                       }
-                      res.render('pages/component-profile-edit', {
+                      res.render('pages/ideas/component-profile-edit', {
                         csrfToken: req.csrfToken(),
                         user : req.user || {},
                         headshot : headshotURL,
@@ -5430,7 +5662,7 @@ router.get('/component-profile/:identifier/edit', csrfProtection, function(req, 
 
                   // in case theres no images
                   } else {
-                        res.render('pages/component-profile-edit', {
+                        res.render('pages/ideas/component-profile-edit', {
                           csrfToken: req.csrfToken(),
                           user : req.user || {},
                           headshot : headshotURL,

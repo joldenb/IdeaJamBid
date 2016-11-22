@@ -959,6 +959,10 @@ a.plus-overlay img{
   position: relative;
 }
 
+.next-step {
+  margin-bottom:1em;
+}
+
 #add-viability-scores-row {
   min-height: 40em;
 }
@@ -1316,9 +1320,11 @@ button.suggestion-tactics, button.suggestion-targets {
     display: block;
     padding-top: 10px;
   }
+
   body  div.header.navbar.navbar-default  div  div.dropdown.custom-nav  ul {
     background-color: #414142;
   }
+  
   body  div.header.navbar.navbar-default  div  div.dropdown.custom-nav  .btn {
     color: white;
   }  
@@ -1782,8 +1788,8 @@ button.suggestion-tactics, button.suggestion-targets {
 }
 
 .idea-edit-row {
-  min-height: 30em;
-  position: relative;
+/*  min-height: 30em;
+*/  position: relative;
   margin:3em;
 /*  border: 3px solid #337ab7;
 */  border-radius: 5px;
@@ -1810,7 +1816,7 @@ button.suggestion-tactics, button.suggestion-targets {
 }
 
 
-.next-step, .complete-idea-editing {
+.complete-idea-editing {
   position: absolute;
   bottom: 2em;
 }

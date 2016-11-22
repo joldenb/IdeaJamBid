@@ -13,6 +13,7 @@ var Component = require('../models/component');
 var Network = require('../models/network');
 var IdeaProblem = require('../models/ideaProblem');
 var Account = require('../models/account');
+var Membership = require('../models/membership');
 var router = express.Router();
 var multer = require('multer');
 var fs = require('fs');
@@ -350,8 +351,28 @@ var getCurrentDate = function getCurrentDate(){
   return mm+'/'+dd+'/'+yyyy;
 }
 
+var hasActiveMembership  = function hasActiveMembership(account){
+	return new Promise(
+	function (resolve, reject) {
+
+
+		Membership.find({customerID : account.id, startDate : {$lt : new Date(Date.now())}, endDate : {$gte : new Date(Date.now())}}, function(err, memberships){
+			if (memberships.length > 0) {
+				resolve({
+					hasActiveMembership : true,
+					membership : memberships[0]
+				});
+			} else {
+				resolve({hasActiveMembership : false});
+			}
+		});
+	});
+}
+
+
 exports.getCurrentDate = getCurrentDate;
 exports.getUserHeadshot = getUserHeadshot;
 exports.getApplicationStrength = getApplicationStrength;
 exports.getStrengthData = getStrengthData;
 exports.getImageOrientation = getImageOrientation;
+exports.hasActiveMembership = hasActiveMembership;

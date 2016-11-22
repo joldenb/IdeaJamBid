@@ -1,10 +1,10 @@
 doctype html
 html
   head
-    include ../partials/head.jade
+    include ../../partials/head.jade
   body#topSection
     .header.navbar.navbar-default.jamTopNav
-      include ../partials/header.jade
+      include ../../partials/header.jade
 
     if networkImage
       a(href="/jam/" + networkName)
@@ -51,7 +51,7 @@ html
       //-           - inventorName = topInventors[index].nickname
       //-           - inventorPoints = topInventors[index].einsteinPoints
       //-           - inventorAptitudeIds = topInventors[index].aptitudes
-      //-           include ../partials/inventor-block.jade
+      //-           include ../../partials/inventor-block.jade
       //-       .col-md-4
       //-         if(topInventors[index + 1])
       //-           if accountNameAndURLs[topInventors[index + 1].username]
@@ -63,7 +63,7 @@ html
       //-           - inventorName = topInventors[index + 1].nickname
       //-           - inventorPoints = topInventors[index + 1].einsteinPoints
       //-           - inventorAptitudeIds = topInventors[index + 1].aptitudes
-      //-           include ../partials/inventor-block.jade
+      //-           include ../../partials/inventor-block.jade
       //-       .col-md-4
       //-         if(topInventors[index + 2 ])
       //-           if accountNameAndURLs[topInventors[index + 2].username]
@@ -75,7 +75,7 @@ html
       //-           - inventorName = topInventors[index + 2].nickname
       //-           - inventorPoints = topInventors[index + 2].einsteinPoints
       //-           - inventorAptitudeIds = topInventors[index + 2].aptitudes
-      //-           include ../partials/inventor-block.jade
+      //-           include ../../partials/inventor-block.jade
 
       h3#ideaSection Top #{networkName} Ideas
       if ideas.length > 0
@@ -102,7 +102,7 @@ html
                   - inventorImage = ideas[index][7] || ""
                   - inventorImageStyle = ideas[index][8] || ""
                   - accountNickname = ideas[index][9] || ""
-                  include ../partials/view-all-idea-block.jade
+                  include ../../partials/view-all-idea-block.jade
               if(ideas[index + 1])
                 .col-md-4
                   - ideaName = ideas[index + 1][0] || ""
@@ -114,7 +114,7 @@ html
                   - inventorImage = ideas[index + 1][7] || ""
                   - inventorImageStyle = ideas[index + 1 ][8] || ""
                   - accountNickname = ideas[index + 1][9] || ""
-                  include ../partials/view-all-idea-block.jade
+                  include ../../partials/view-all-idea-block.jade
               if(ideas[index + 2 ])
                 .col-md-4
                   - ideaName = ideas[index + 2 ][0] || ""
@@ -126,7 +126,7 @@ html
                   - inventorImage = ideas[index + 2 ][7] || ""
                   - inventorImageStyle = ideas[index + 2 ][8] || ""
                   - accountNickname = ideas[index + 2][9] || ""
-                  include ../partials/view-all-idea-block.jade
+                  include ../../partials/view-all-idea-block.jade
       else
         p <i>None of ideas in this jam have yet received viability scores.</i>
         
@@ -138,10 +138,10 @@ html
         - numberOfImperfections = numberOfImperfections + 1
         if(problem.text && problem['identifier'])
           if(numberOfImperfections < 6)
-            include ../partials/problem-summary-element.jade
+            include ../../partials/problem-summary-element.jade
           else
             .hiddenImperfections(style="display:none;")
-              include ../partials/problem-summary-element.jade
+              include ../../partials/problem-summary-element.jade
       br
 
       if(Object.keys(wholeImperfectionBlockInfo).length > 6)
@@ -149,7 +149,7 @@ html
 
       h3#suggestionSection Top #{networkName} Suggestions
       each suggestion, identifier in wholeSuggestionBlockInfo
-        include ../partials/suggestion-summary-element.jade
+        include ../../partials/suggestion-summary-element.jade
       br
       a(href="/view-all-jam-suggestions/" + networkName)
         div
@@ -162,7 +162,7 @@ html
           .modal-title 
             h2 Login
         .modal-body
-          form#jam-signup-form(role='form', action="/register-jam",method="post")
+          form#jam-signup-form(role='form', action="/register",method="post")
             a.socialLink(href="/auth/google" class="btn btn-danger btn-lg btn-block" ontouchstart="this.style.background = '#D6DE26';" )
               span.fa.fa-google-plus Google
             |  
@@ -220,7 +220,7 @@ html
             | 
             div Home   
 
-  include ../partials/js-includes.jade
+  include ../../partials/js-includes.jade
   script(src='/exif.js')
   script(type="text/javascript").
     $(document).ready(function(){

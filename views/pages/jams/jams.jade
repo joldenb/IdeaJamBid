@@ -1,10 +1,10 @@
 doctype html
 html
   head
-    include ../partials/head.jade
+    include ../../partials/head.jade
   body
   .header.navbar.navbar-default
-    include ../partials/header.jade
+    include ../../partials/header.jade
 
   .container.view-idea-suggestions
     h1 All Public Jams
@@ -28,7 +28,7 @@ html
               - leaders = jamLeaders[jam.name] || []
               - jamType = jam.type || ""
               - jamImage = jam.profilePic || ""
-              include ../partials/view-all-jam-block.jade
+              include ../../partials/view-all-jam-block.jade
           .col-md-4.view-all-jam-block
             if(schools[index + 1])
               - jamName = schools[index + 1].name || ""
@@ -37,7 +37,7 @@ html
               - leaders = jamLeaders[schools[index + 1].name] || []
               - jamType = schools[index + 1].type || ""
               - jamImage = schools[index + 1].profilePic || ""
-              include ../partials/view-all-jam-block.jade
+              include ../../partials/view-all-jam-block.jade
           .col-md-4.view-all-jam-block
             if(schools[index + 2 ])
               - jamName = schools[index + 2 ].name || ""
@@ -46,7 +46,7 @@ html
               - leaders = jamLeaders[schools[index + 2].name] || []
               - jamType = schools[index + 2 ].type || ""
               - jamImage = schools[index + 2 ].profilePic || ""
-              include ../partials/view-all-jam-block.jade
+              include ../../partials/view-all-jam-block.jade
     br
     .row
       h2 Locations
@@ -66,7 +66,7 @@ html
               - leaders = jamLeaders[jam.name] || []
               - jamType = jam.type || ""
               - jamImage = jam.profilePic || ""
-              include ../partials/view-all-jam-block.jade
+              include ../../partials/view-all-jam-block.jade
           .col-md-4.view-all-jam-block
             if(locations[index + 1])
               - jamName = locations[index + 1].name || ""
@@ -75,7 +75,7 @@ html
               - leaders = jamLeaders[locations[index + 1].name] || []
               - jamType = locations[index + 1].type || ""
               - jamImage = locations[index + 1].profilePic || ""
-              include ../partials/view-all-jam-block.jade
+              include ../../partials/view-all-jam-block.jade
           .col-md-4.view-all-jam-block
             if(locations[index + 2 ])
               - jamName = locations[index + 2 ].name || ""
@@ -84,7 +84,7 @@ html
               - leaders = jamLeaders[locations[index + 2].name] || []
               - jamType = locations[index + 2 ].type || ""
               - jamImage = locations[index + 2 ].profilePic || ""
-              include ../partials/view-all-jam-block.jade
+              include ../../partials/view-all-jam-block.jade
     br
     .row
       h2 Companies
@@ -104,7 +104,7 @@ html
               - leaders = jamLeaders[jam.name] || []
               - jamType = jam.type || ""
               - jamImage = jam.profilePic || ""
-              include ../partials/view-all-jam-block.jade
+              include ../../partials/view-all-jam-block.jade
           .col-md-4.view-all-jam-block
             if(companies[index + 1])
               - jamName = companies[index + 1].name || ""
@@ -113,7 +113,7 @@ html
               - leaders = jamLeaders[companies[index + 1].name] || []
               - jamType = companies[index + 1].type || ""
               - jamImage = companies[index + 1].profilePic || ""
-              include ../partials/view-all-jam-block.jade
+              include ../../partials/view-all-jam-block.jade
           .col-md-4.view-all-jam-block
             if(companies[index + 2 ])
               - jamName = companies[index + 2 ].name || ""
@@ -122,7 +122,7 @@ html
               - leaders = jamLeaders[companies[index + 2].name] || []
               - jamType = companies[index + 2 ].type || ""
               - jamImage = companies[index + 2 ].profilePic || ""
-              include ../partials/view-all-jam-block.jade
+              include ../../partials/view-all-jam-block.jade
     br
     .row
       h2 Other Groups
@@ -142,7 +142,7 @@ html
               - leaders = jamLeaders[jam.name] || []
               - jamType = jam.type || ""
               - jamImage = jam.profilePic || ""
-              include ../partials/view-all-jam-block.jade
+              include ../../partials/view-all-jam-block.jade
           .col-md-4.view-all-jam-block
             if(otherGroups[index + 1])
               - jamName = otherGroups[index + 1].name || ""
@@ -151,7 +151,7 @@ html
               - leaders = jamLeaders[otherGroups[index + 1].name] || []
               - jamType = otherGroups[index + 1].type || ""
               - jamImage = otherGroups[index + 1].profilePic || ""
-              include ../partials/view-all-jam-block.jade
+              include ../../partials/view-all-jam-block.jade
           .col-md-4.view-all-jam-block
             if(otherGroups[index + 2 ])
               - jamName = otherGroups[index + 2 ].name || ""
@@ -160,8 +160,8 @@ html
               - leaders = jamLeaders[otherGroups[index + 2].name] || []
               - jamType = otherGroups[index + 2 ].type || ""
               - jamImage = otherGroups[index + 2 ].profilePic || ""
-              include ../partials/view-all-jam-block.jade
+              include ../../partials/view-all-jam-block.jade
     br
 
-  include ../partials/js-includes.jade
+  include ../../partials/js-includes.jade
   script(type="text/javascript").

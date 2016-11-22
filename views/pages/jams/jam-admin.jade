@@ -1,10 +1,10 @@
 doctype html
 html
   head
-    include ../partials/head.jade
+    include ../../partials/head.jade
   body#topSection
     .header.navbar.navbar-default.jamTopNav
-      include ../partials/header.jade
+      include ../../partials/header.jade
 
     if !networkImage
       form(role='form', id="jamProfilePicForm" action="/add-network-profile-pic", method="post", enctype="multipart/form-data")
@@ -47,7 +47,7 @@ html
                   - inventorPoints = topInventors[index].einsteinPoints
                   - inventorAptitudeIds = topInventors[index].aptitudes
                   - isPending = topInventors[index].pendingNetworks.indexOf(networkID) > -1
-                  include ../partials/inventor-block.jade
+                  include ../../partials/inventor-block.jade
               .col-md-4
                 if(topInventors[index + 1])
                   if accountNameAndURLs[topInventors[index + 1].username]
@@ -60,7 +60,7 @@ html
                   - inventorPoints = topInventors[index + 1].einsteinPoints
                   - inventorAptitudeIds = topInventors[index + 1].aptitudes
                   - isPending = topInventors[index + 1].pendingNetworks.indexOf(networkID) > -1
-                  include ../partials/inventor-block.jade
+                  include ../../partials/inventor-block.jade
               .col-md-4
                 if(topInventors[index + 2 ])
                   if accountNameAndURLs[topInventors[index + 2].username]
@@ -73,7 +73,7 @@ html
                   - inventorPoints = topInventors[index + 2].einsteinPoints
                   - inventorAptitudeIds = topInventors[index + 2].aptitudes
                   - isPending = topInventors[index + 2].pendingNetworks.indexOf(networkID) > -1
-                  include ../partials/inventor-block.jade
+                  include ../../partials/inventor-block.jade
 
       .row
         h3 Enter One or More Emails
@@ -110,7 +110,7 @@ html
           button.btn.btn-info(data-dismiss="modal") Cancel
           button.btn.btn-success#sendJamInvitations(type='submit') Send Email
 
-  include ../partials/js-includes.jade
+  include ../../partials/js-includes.jade
   script(src='/exif.js')
   script(type="text/javascript").
     $(document).ready(function(){

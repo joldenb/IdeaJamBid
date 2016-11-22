@@ -1,13 +1,13 @@
 doctype html
 html
   head
-    include ../partials/head.jade
+    include ../../partials/head.jade
   body
   .header.navbar.navbar-default
-    include ../partials/header.jade
+    include ../../partials/header.jade
 
   .container
-    form(role='form', id="formAccomplish" action="/accomplish", method="post", style='max-width: 300px;', data-idea-doc=idea)
+    form(role='form', id="formAccomplish" action="/accomplish", method="post", style='max-width: 400px;', data-idea-doc=idea)
       .form-group
         h3 What is your solution to the problem of #{idea.problem}, #{user.nickname}?
         input(type="hidden", name="_csrf", value="#{csrfToken}")
@@ -25,7 +25,7 @@ html
           .hint Hint: You can build out more details later!
 
 
-  include ../partials/js-includes.jade
+  include ../../partials/js-includes.jade
   script(type="text/javascript").
     var input = document.getElementsByTagName ("input");
 

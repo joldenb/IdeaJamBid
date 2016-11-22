@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    include ../partials/head.jade
+    include ../../partials/head.jade
   body
 
   .container.image-upload
@@ -92,7 +92,7 @@ html
         else
           h5 <i>No images uploaded yet</i>
 
-  include ../partials/js-includes.jade
+  include ../../partials/js-includes.jade
   script(src='/exif.js')
   script(type="text/javascript").
     if($(".my-images img").length == 0){

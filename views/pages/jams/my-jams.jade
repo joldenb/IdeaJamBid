@@ -1,10 +1,10 @@
 doctype html
 html
   head
-    include ../partials/head.jade
+    include ../../partials/head.jade
   body
   .header.navbar.navbar-default
-    include ../partials/header.jade
+    include ../../partials/header.jade
 
   .container.view-idea-suggestions
     .row
@@ -26,7 +26,7 @@ html
               - leaders = jamLeaders[jam.name] || []
               - jamType = jam.type || ""
               - jamImage = jam.profilePic || ""
-              include ../partials/view-all-jam-block.jade
+              include ../../partials/view-all-jam-block.jade
           .col-md-4.view-all-jam-block
             if(jams[index + 1])
               - jamName = jams[index + 1].name || ""
@@ -35,7 +35,7 @@ html
               - leaders = jamLeaders[jams[index + 1].name] || []
               - jamType = jams[index + 1].type || ""
               - jamImage = jams[index + 1].profilePic || ""
-              include ../partials/view-all-jam-block.jade
+              include ../../partials/view-all-jam-block.jade
           .col-md-4.view-all-jam-block
             if(jams[index + 2 ])
               - jamName = jams[index + 2 ].name || ""
@@ -44,9 +44,9 @@ html
               - leaders = jamLeaders[jams[index + 2].name] || []
               - jamType = jams[index + 2 ].type || ""
               - jamImage = jams[index + 2 ].profilePic || ""
-              include ../partials/view-all-jam-block.jade
+              include ../../partials/view-all-jam-block.jade
     br
     a.home-login.btn.btn-industry.btn-lg.btn-block( href="/view-jams" ) View All Jams
 
-  include ../partials/js-includes.jade
+  include ../../partials/js-includes.jade
   script(type="text/javascript").

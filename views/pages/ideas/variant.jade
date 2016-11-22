@@ -1,10 +1,10 @@
 doctype html
 html
   head
-    include ../partials/head.jade
+    include ../../partials/head.jade
   body
   .header.navbar.navbar-default
-    include ../partials/header.jade
+    include ../../partials/header.jade
 
   .view-idea-suggestions
     h2 Name : #{idea.name}
@@ -29,7 +29,7 @@ html
                 if headshotURLs[suggestionsList[i]['creator']]
                   - compHeadshot = headshotURLs[suggestionsList[i]['creator']][0]
                   - compHeadshotStyle = headshotURLs[suggestionsList[i]['creator']][1]
-                include ../partials/suggestion-element.jade
+                include ../../partials/suggestion-element.jade
             if (suggestionsList[i + 1])
               .col-md-4
                 - suggestionText = suggestionsList[i + 1]['descriptions'][0]
@@ -37,7 +37,7 @@ html
                 if headshotURLs[suggestionsList[i + 1]['creator']]
                   - compHeadshot = headshotURLs[suggestionsList[i + 1]['creator']][0]
                   - compHeadshotStyle = headshotURLs[suggestionsList[i + 1]['creator']][1]
-                include ../partials/suggestion-element.jade
+                include ../../partials/suggestion-element.jade
             if (suggestionsList[i + 2])
               .col-md-4
                 - suggestionText = suggestionsList[i + 2]['descriptions'][0]
@@ -45,7 +45,7 @@ html
                 if headshotURLs[suggestionsList[i + 2]['creator']]
                   - compHeadshot = headshotURLs[suggestionsList[i + 2]['creator']][0]
                   - compHeadshotStyle = headshotURLs[suggestionsList[i + 2]['creator']][1]
-                include ../partials/suggestion-element.jade
+                include ../../partials/suggestion-element.jade
        
       h2 Images with Components
       each image, i in images
@@ -68,7 +68,7 @@ html
                 if headshotURLs[images[i][1]]
                   - compHeadshot = headshotURLs[images[i][1]][0]
                   - compHeadshotStyle = headshotURLs[images[i][1]][1]
-                include ../partials/image-block-element.jade
+                include ../../partials/image-block-element.jade
             .col-md-4
               if(images[i + 1])
                 - imageName = images[i + 1][0]
@@ -79,7 +79,7 @@ html
                 if headshotURLs[images[i + 1][1]]
                   - compHeadshot = headshotURLs[images[i + 1][1]][0]
                   - compHeadshotStyle = headshotURLs[images[i + 1][1]][1]
-                include ../partials/image-block-element.jade
+                include ../../partials/image-block-element.jade
             .col-md-4
               if(images[i + 2])
                 - imageName = images[i + 2][0]
@@ -90,7 +90,7 @@ html
                 if headshotURLs[images[i + 2][1]]
                   - compHeadshot = headshotURLs[images[i + 2][1]][0]
                   - compHeadshotStyle = headshotURLs[images[i + 2][1]][1]
-                include ../partials/image-block-element.jade
+                include ../../partials/image-block-element.jade
 
 
     br
@@ -136,7 +136,7 @@ html
 
 
 
-  include ../partials/js-includes.jade
+  include ../../partials/js-includes.jade
   script(type="text/javascript").
     $(".btn.suggest").click(function(){
       $("#suggestion-category").val($(this).attr("id"));

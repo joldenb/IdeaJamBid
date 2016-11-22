@@ -1,10 +1,10 @@
 doctype html
 html
   head
-    include ../partials/head.jade
+    include ../../partials/head.jade
   body
   .header.navbar.navbar-default
-    include ../partials/header.jade
+    include ../../partials/header.jade
 
   .container.view-idea-suggestions
     .row
@@ -36,7 +36,7 @@ html
               - inventorImage = ideas[index][6] || ""
               - inventorImageStyle = ideas[index][7] || ""
               - accountNickname = ideas[index][8] || ""
-              include ../partials/view-all-idea-block.jade
+              include ../../partials/view-all-idea-block.jade
           .col-md-4.view-all-idea-block
             if(ideas[index + 1])
               - ideaName = ideas[index + 1][0] || ""
@@ -49,7 +49,7 @@ html
               - inventorImage = ideas[index + 1][6] || ""
               - inventorImageStyle = ideas[index + 1 ][7] || ""
               - accountNickname = ideas[index + 1][8] || ""
-              include ../partials/view-all-idea-block.jade
+              include ../../partials/view-all-idea-block.jade
           .col-md-4.view-all-idea-block
             if(ideas[index + 2 ])
               - ideaName = ideas[index + 2 ][0] || ""
@@ -62,8 +62,8 @@ html
               - inventorImage = ideas[index + 2 ][6] || ""
               - inventorImageStyle = ideas[index + 2 ][7] || ""
               - accountNickname = ideas[index + 2][8] || ""
-              include ../partials/view-all-idea-block.jade
+              include ../../partials/view-all-idea-block.jade
     br
 
-  include ../partials/js-includes.jade
+  include ../../partials/js-includes.jade
   script(type="text/javascript").
