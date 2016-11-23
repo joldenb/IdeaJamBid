@@ -26,6 +26,8 @@ html
             input(type="file", name="picture" style="display:none;")
           input(type="hidden", name="_csrf", value="#{csrfToken}")
           br
+      a.btn.btn-lg.btn-industry(href="/imagineer/#{user.nickname}/archive")
+        h4 Your Activity Archive
 
     .col-md-7
       div#begin-info-right

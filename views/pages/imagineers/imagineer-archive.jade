@@ -1,0 +1,55 @@
+doctype html
+html
+  head
+    include ../../partials/head.jade
+  body
+  .header.navbar.navbar-default.navbar.navbar-default
+    include ../../partials/header.jade
+
+  .container
+    .row
+      .col-xs-12
+        h1 #{user.nickname} Activity Archive
+  
+        ul.nav.nav-tabs(role="tablist")
+          li(role="presentation" class="active")
+            a(href="#all" aria-controls="all" role="tab" data-toggle="tab")
+              h4 All
+          li(role="presentation")
+            a(href="#billing" aria-controls="billing" role="tab" data-toggle="tab")
+              h4 Billing
+
+        .tab-content
+          .tab-pane.active(role="tabpanel" id="all")
+            each logEntry in logs
+              .row.logEntry
+                .col-md-8
+                  h4 #{logEntry['formattedDate']}
+                  h5 #{logEntry['text']}
+                .col-md-4
+                  if logEntry['amountPaid']
+                    - var amountPaid = logEntry['amountPaid']/100
+                    h4 Amount Paid : $#{amountPaid}
+                  else
+                    h4 Unknown Amount
+
+          .tab-pane(role="tabpanel" id="billing")
+            each logEntry in logs
+              if logEntry['type'] === "membership"
+                .row.logEntry
+                  .col-md-8
+                    h4 #{logEntry['formattedDate']}
+                    h5 #{logEntry['text']}
+                  .col-md-4
+                    if logEntry['amountPaid']
+                      - var amountPaid = logEntry['amountPaid']/100
+                      h4 Amount Paid : $#{amountPaid}
+                    else
+                      h4 Unknown Amount
+
+
+
+
+  include ../../partials/js-includes.jade
+  script(src='/exif.js')
+  script(type="text/javascript").

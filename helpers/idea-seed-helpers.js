@@ -379,8 +379,9 @@ var createLogEntry = function createLogEntry(text, type, userID, date, options){
         "date" : date
     };
 
-    if(options['membershipID']){
+    if(options['membershipID'] && options['amountPaid']){
         newLog['membershipID'] = options['membershipID'];
+        newLog['amountPaid'] = options['amountPaid'];
     }
 
     if(options['relevantLink']){

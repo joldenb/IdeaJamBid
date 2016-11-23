@@ -189,7 +189,7 @@ router.post('/save-school-network', csrfProtection, function(req, res) {
           });
         });
         if(req.user.nickname){
-          res.redirect('/imagineer-picture/' + req.user.nickname);
+          res.redirect('/imagineer-dashboard/' + req.user.nickname);
         } else {
           res.redirect('/');
         }
@@ -242,7 +242,7 @@ router.post('/save-company-network', csrfProtection, function(req, res) {
           });
         });
         if(req.user.nickname){
-          res.redirect('/imagineer-picture/' + req.user.nickname);
+          res.redirect('/imagineer-dashboard/' + req.user.nickname);
         } else {
           res.redirect('/');
         }
@@ -294,7 +294,7 @@ router.post('/save-location-network', csrfProtection, function(req, res) {
           });
         });
         if(req.user.nickname){
-          res.redirect('/imagineer-picture/' + req.user.nickname);
+          res.redirect('/imagineer-dashboard/' + req.user.nickname);
         } else {
           res.redirect('/');
         }

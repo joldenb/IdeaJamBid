@@ -8,6 +8,7 @@ var Log = new Schema({
     type : String, //either membership, idea-seed, created-account, made-suggestion, einstein-points
     user : ObjectId,
     membershipID : ObjectId,
+    amountPaid : Number,
     date : Date,
     relevantLink : String,
     ideaSeedID : ObjectId

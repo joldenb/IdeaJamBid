@@ -10,7 +10,7 @@ html
       .row
         .col-md-6
           if Object.keys(user).length != 0 && user.id == profileAccount.id
-            a(href="/imagineer-picture/")
+            a(href="/imagineer-dashboard/")
               h1.profile-name #{profileAccount.nickname}
                 img(src="/pencil.png" height="25" width="25")
           else
@@ -39,7 +39,7 @@ html
               div(class="imagineerProfilePic" style="height: 300px; max-width: 400px; background-image : url('" + accountHeadshot.amazonURL + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + accountHeadshot.style)
             
           else if Object.keys(user).length != 0 && user.id == profileAccount.id
-            a(href="/imagineer-picture/")
+            a(href="/imagineer-dashboard/")
               img.avatar(src="/avatar.png" height="120" width="120")
             //- div(class="imagineer-profile profile-einstein-points") #{user.einsteinPoints || "0"}            
           

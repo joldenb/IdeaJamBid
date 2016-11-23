@@ -1796,6 +1796,15 @@ button.suggestion-tactics, button.suggestion-targets {
   background-color: #ededed; /* light gray */
 }
 
+.row.logEntry {
+/*  min-height: 30em;
+*/  position: relative;
+  margin:3em;
+/*  border: 3px solid #337ab7;
+*/  border-radius: 5px;
+  background-color: #ededed; /* light gray */  
+}
+
 .viability-scoring-intro-slide .row {
   margin-top:8em;
 }

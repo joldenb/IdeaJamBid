@@ -737,7 +737,7 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
 ******************************************************************
 ******************************************************************
 *****************************************************************/
-router.get('/imagineer-picture', csrfProtection, function(req, res){
+router.get('/imagineer-dashboard', csrfProtection, function(req, res){
   if(!(req.user && req.user.username)) {
     res.redirect('/');
     return;
@@ -852,7 +852,7 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
         return [item["name"], formattedDate];
       });
     }
-    res.render('pages/imagineers/imagineer-picture', {
+    res.render('pages/imagineers/imagineer-dashboard', {
       csrfToken: req.csrfToken(),
       user : req.user || {},
       aptitudes : myAptitudes,
@@ -882,6 +882,41 @@ router.get('/imagineer-picture', csrfProtection, function(req, res){
   });
 });
 
+
+/*****************************************************************
+******************************************************************
+******************************************************************
+* Route for getting the profile activity history
+******************************************************************
+******************************************************************
+*****************************************************************/
+router.get('/imagineer/:nickName/archive', csrfProtection, function(req, res){
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
+
+  /* oh, this is a find all. this should change at some point */
+  Log.find({"user" : req.user.id})
+  .exec()
+  .then(function(logEntries){
+
+    _.each(logEntries, function(entry, index){
+      entry['formattedDate'] = moment(entry['date']).format("MMM Do YYYY");
+    });
+
+    res.render('pages/imagineers/imagineer-archive', {
+      csrfToken: req.csrfToken(),
+      user : req.user || {},
+      logs : logEntries
+    });
+  })
+  .catch(function(err){
+    // just need one of these
+    console.log('error:', err);
+  });
+
+});
 
 
 /*****************************************************************
@@ -3730,7 +3765,8 @@ router.post('/process-one-month-payment', csrfProtection, function(req, res){
               } else {
                 ideaSeedHelpers.createLogEntry("Began One Month Membership", "membership", req.user.id, moment(),
                   {
-                    "membershipID" : newMembershipDocument.id
+                    "membershipID" : newMembershipDocument.id,
+                    "amountPaid" : 7499
                   }
                 );
               }
@@ -3796,7 +3832,8 @@ router.post('/process-six-month-payment', csrfProtection, function(req, res){
               } else {
                 ideaSeedHelpers.createLogEntry("Began Six Month Membership", "membership", req.user.id, moment(),
                   {
-                    "membershipID" : newMembershipDocument.id
+                    "membershipID" : newMembershipDocument.id,
+                    "amountPaid" : 17999
                   }
                 );
               }
@@ -3862,7 +3899,8 @@ router.post('/process-twelve-month-payment', csrfProtection, function(req, res){
               } else {
                 ideaSeedHelpers.createLogEntry("Began Twelve Month Membership", "membership", req.user.id, moment(),
                   {
-                    "membershipID" : newMembershipDocument.id
+                    "membershipID" : newMembershipDocument.id,
+                    "amountPaid" : 23999
                   }
                 );
               }
