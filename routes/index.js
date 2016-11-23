@@ -15,6 +15,7 @@ var Network = require('../models/network');
 var IdeaProblem = require('../models/ideaProblem');
 var Account = require('../models/account');
 var StripeCredentials = require('../models/stripeCredentials');
+var Log = require('../models/log');
 var stripe = require("stripe")("sk_test_dxHWhv5U1LCrruTtDLCGuap4");
 var Membership = require('../models/membership');
 var router = express.Router();
@@ -3686,41 +3687,61 @@ router.get('/membership-options', csrfProtection, function(req, res){
 *****************************************************************/
 router.post('/process-one-month-payment', csrfProtection, function(req, res){
 
-
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
   // Get the credit card details submitted by the form
-  var token = req.body.stripeToken; // Using Express
+  var token = req.body.stripeToken,
+  hasActiveMembership = false;
 
-  // Create a charge: this will charge the user's card
-  var charge = stripe.charges.create({
-    amount: 7499, // Amount in cents
-    currency: "usd",
-    source: token,
-    description: "Purchasing one month membership"
-  }, function(err, charge) {
-    if (err && err.type === 'StripeCardError') {
-      // The card has been declined
-    } else {
+  Account.findOne({"username" : req.user.username}, function(err, account){
 
-      var newMembership = new Membership({
-        amountPaid : 17999,
-        customerID : req.user.id,
-        customerType : "account",
-        startDate : moment(),
-        endDate : moment().add(moment.duration({'months' : 1})),
-        membershipType : "one_month"
-      });
+    ideaSeedHelpers.hasActiveMembership(account).then(function(membership){
 
-      newMembership.save(function(err){
-        if (err) {
-          console.log( "error is " + err );
-        }
-      });
+      hasActiveMembership = membership["hasActiveMembership"];
+      if(hasActiveMembership){
+        res.redirect('/')
+        return;
+      } else {
+        // Create a charge: this will charge the user's card
+        var charge = stripe.charges.create({
+          amount: 7499, // Amount in cents
+          currency: "usd",
+          source: token,
+          description: "Purchasing one month membership"
+        }, function(err, charge) {
+          if (err && err.type === 'StripeCardError') {
+            // The card has been declined
+          } else {
 
-      res.redirect('/')
-    }
+            var newMembership = new Membership({
+              amountPaid : 7499,
+              customerID : req.user.id,
+              customerType : "account",
+              startDate : moment(),
+              endDate : moment().add(moment.duration({'months' : 1})),
+              membershipType : "one_month"
+            });
+
+            newMembership.save(function(err, newMembershipDocument){
+              if (err) {
+                console.log( "error is " + err );
+              } else {
+                ideaSeedHelpers.createLogEntry("Began One Month Membership", "membership", req.user.id, moment(),
+                  {
+                    "membershipID" : newMembershipDocument.id
+                  }
+                );
+              }
+            });
+
+            res.redirect('/')
+          }
+        });
+      }
+    });
   });
-
-
 });
 
 /*****************************************************************
@@ -3736,42 +3757,57 @@ router.post('/process-six-month-payment', csrfProtection, function(req, res){
     res.redirect('/');
     return;
   }
-
   // Get the credit card details submitted by the form
-  var token = req.body.stripeToken; // Using Express
+  var token = req.body.stripeToken,
+  hasActiveMembership = false;
 
-  // Create a charge: this will charge the user's card
-  var charge = stripe.charges.create({
-    amount: 17999, // Amount in cents
-    currency: "usd",
-    source: token,
-    description: "Purchasing six month membership"
-  }, function(err, charge) {
-    if (err && err.type === 'StripeCardError') {
-      // The card has been declined
-    } else {
+  Account.findOne({"username" : req.user.username}, function(err, account){
 
-      var newMembership = new Membership({
-        amountPaid : 17999,
-        customerID : req.user.id,
-        customerType : "account",
-        startDate : moment(),
-        endDate : moment().add(moment.duration({'months' : 6})),
-        membershipType : "six_month"
-      })
+    ideaSeedHelpers.hasActiveMembership(account).then(function(membership){
 
-      newMembership.save(function(err){
-        if (err) {
-          console.log( "error is " + err );
-        }
-      });
+      hasActiveMembership = membership["hasActiveMembership"];
+      if(hasActiveMembership){
+        res.redirect('/')
+        return;
+      } else {
+        // Create a charge: this will charge the user's card
+        var charge = stripe.charges.create({
+          amount: 17999, // Amount in cents
+          currency: "usd",
+          source: token,
+          description: "Purchasing six month membership"
+        }, function(err, charge) {
+          if (err && err.type === 'StripeCardError') {
+            // The card has been declined
+          } else {
 
-      res.redirect('/')
-    }
+            var newMembership = new Membership({
+              amountPaid : 17999,
+              customerID : req.user.id,
+              customerType : "account",
+              startDate : moment(),
+              endDate : moment().add(moment.duration({'months' : 6})),
+              membershipType : "six_month"
+            });
 
+            newMembership.save(function(err, newMembershipDocument){
+              if (err) {
+                console.log( "error is " + err );
+              } else {
+                ideaSeedHelpers.createLogEntry("Began Six Month Membership", "membership", req.user.id, moment(),
+                  {
+                    "membershipID" : newMembershipDocument.id
+                  }
+                );
+              }
+            });
+
+            res.redirect('/')
+          }
+        });
+      }
+    });
   });
-
-  
 });
 
 
@@ -3783,39 +3819,61 @@ router.post('/process-six-month-payment', csrfProtection, function(req, res){
 ******************************************************************
 *****************************************************************/
 router.post('/process-twelve-month-payment', csrfProtection, function(req, res){
-
+  if(!(req.user && req.user.username)) {
+    res.redirect('/');
+    return;
+  }
   // Get the credit card details submitted by the form
-  var token = req.body.stripeToken; // Using Express
+  var token = req.body.stripeToken,
+  hasActiveMembership = false;
 
-  // Create a charge: this will charge the user's card
-  var charge = stripe.charges.create({
-    amount: 23999, // Amount in cents
-    currency: "usd",
-    source: token,
-    description: "Purchasing twelve month membership"
-  }, function(err, charge) {
-    if (err && err.type === 'StripeCardError') {
-      // The card has been declined
-    } else {
-      var newMembership = new Membership({
-        amountPaid : 17999,
-        customerID : req.user.id,
-        customerType : "account",
-        startDate : moment(),
-        endDate : moment().add(moment.duration({'months' : 12})),
-        membershipType : "twelve_month"
-      })
+  Account.findOne({"username" : req.user.username}, function(err, account){
 
-      newMembership.save(function(err){
-        if (err) {
-          console.log( "error is " + err );
-        }
-      });
+    ideaSeedHelpers.hasActiveMembership(account).then(function(membership){
 
-      res.redirect('/')
-    }
+      hasActiveMembership = membership["hasActiveMembership"];
+      if(hasActiveMembership){
+        res.redirect('/')
+        return;
+      } else {
+        // Create a charge: this will charge the user's card
+        var charge = stripe.charges.create({
+          amount: 23999, // Amount in cents
+          currency: "usd",
+          source: token,
+          description: "Purchasing twelve month membership"
+        }, function(err, charge) {
+          if (err && err.type === 'StripeCardError') {
+            // The card has been declined
+          } else {
+
+            var newMembership = new Membership({
+              amountPaid : 23999,
+              customerID : req.user.id,
+              customerType : "account",
+              startDate : moment(),
+              endDate : moment().add(moment.duration({'months' : 12})),
+              membershipType : "twelve_month"
+            });
+
+            newMembership.save(function(err, newMembershipDocument){
+              if (err) {
+                console.log( "error is " + err );
+              } else {
+                ideaSeedHelpers.createLogEntry("Began Twelve Month Membership", "membership", req.user.id, moment(),
+                  {
+                    "membershipID" : newMembershipDocument.id
+                  }
+                );
+              }
+            });
+
+            res.redirect('/')
+          }
+        });
+      }
+    });
   });
-
   
 });
 

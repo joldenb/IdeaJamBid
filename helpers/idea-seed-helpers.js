@@ -14,6 +14,7 @@ var Network = require('../models/network');
 var IdeaProblem = require('../models/ideaProblem');
 var Account = require('../models/account');
 var Membership = require('../models/membership');
+var Log = require('../models/log');
 var router = express.Router();
 var multer = require('multer');
 var fs = require('fs');
@@ -369,6 +370,36 @@ var hasActiveMembership  = function hasActiveMembership(account){
 	});
 }
 
+var createLogEntry = function createLogEntry(text, type, userID, date, options){
+
+    var newLog = {
+        "text" : text,
+        "type" : type,
+        "user" : userID,
+        "date" : date
+    };
+
+    if(options['membershipID']){
+        newLog['membershipID'] = options['membershipID'];
+    }
+
+    if(options['relevantLink']){
+        newLog['relevantLink'] = options['relevantLink'];
+    }
+
+    if(options['ideaSeedID']){
+        newLog['ideaSeedID'] = options['ideaSeedID'];
+    }
+
+    newLog = new Log(newLog);
+    newLog.save(function(err, newLogEntry){
+        if (err){
+        	console.log("Log error : " + err)
+      	} else {
+      		console.log("New log entry : " + newLogEntry['text'])
+      	}
+    });
+};
 
 exports.getCurrentDate = getCurrentDate;
 exports.getUserHeadshot = getUserHeadshot;
@@ -376,3 +407,4 @@ exports.getApplicationStrength = getApplicationStrength;
 exports.getStrengthData = getStrengthData;
 exports.getImageOrientation = getImageOrientation;
 exports.hasActiveMembership = hasActiveMembership;
+exports.createLogEntry = createLogEntry;
