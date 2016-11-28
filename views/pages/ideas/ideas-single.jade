@@ -68,7 +68,7 @@ html
     .row
       .col-sm-12.desktop-component-section
         if idea.name
-          h2.component-title Components
+          h2.component-title #{idea.name} Components
           if components.length > 0
             each component, identifier in wholeSuggestionBlockInfo
               include ../../partials/component-summary-element.jade
@@ -107,14 +107,15 @@ html
               .col-xs-4
                 h2 Score #{idea.name}
                 if inventorName == user.username
-                  h4 Give your invention an honest evaluation based on the following categories and it will help identify areas of improvement
+                  p Score your invention on the following categories to identify areas to improve and earn Einstein Points
                 else
-                  h4 Give #{idea.name} an honest evaluation based on the following categories and it will help identify areas of improvement
+                  p Score #{idea.name} on the following categories to identify areas to improve and earn Einstein Points
                 button.btn.btn-go.btn-lg.btn-block#beginScoring(type='submit') Go
               .col-xs-4
           .performability-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
+                img.performability-icon(src="/perfIcon.png", height='100')
                 h2.top-row-header Score #{idea.name}'s Performability
                 h3 Will the #{idea.name} effectively work to solve the problem of #{idea.problem}?
             .row.scoring-stars
@@ -157,6 +158,7 @@ html
           .affordability-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
+                img.affordability-icon(src="/affordIcon.png", height="100")
                 h2.top-row-header Score #{idea.name}'s Affordability
                 h3 Will #{idea.name} stay within reasonable cost expectations when solving the problem of #{idea.problem}?
             .row.scoring-stars
@@ -198,6 +200,7 @@ html
           .featurability-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
+                img.featurability-icon(src="/perfIcon.png", height="100")
                 h2.top-row-header Score #{idea.name}'s Featurability
                 h3 Will #{idea.name} provide enough added benefits to solve the problem of #{idea.problem}?
             .row.scoring-stars
@@ -240,6 +243,7 @@ html
           .deliverability-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
+                img.deliverability-icon(src="/deliverabilityIcon.png", height="100")
                 h2.top-row-header Score #{idea.name}'s Deliverability
                 h3 Will #{idea.name} be ready on demand when and where the user wants it to solve the problem of #{idea.problem}?
             .row.scoring-stars
@@ -281,6 +285,7 @@ html
           .useability-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
+                img.useability-icon(src="/useabilityIcon.png", height="100")
                 h2.top-row-header Score #{idea.name}'s Useability
                 h3 Will #{idea.name} be quickly and easily learned and implemented when solving the problem of #{idea.problem}?
             .row.scoring-stars
@@ -322,6 +327,7 @@ html
           .maintainability-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
+                img.maintainability-icon(src="/maintainabilityIcon.png", height="100")
                 h2.top-row-header Score #{idea.name}'s Maintainability
                 h3 How easy will #{idea.name} be to keep in service when solving the problem of #{idea.problem}?
             .row.scoring-stars
@@ -363,6 +369,7 @@ html
           .durability-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
+                img.durability-icon(src="/durabilityIcon.png", height="100")
                 h2.top-row-header Score #{idea.name}'s Durability
                 h3 Is #{idea.name} robust enough to withstand abuse when solving the problem of #{idea.problem}? 
             .row.scoring-stars
@@ -404,6 +411,7 @@ html
           .imageability-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
+                img.imageability-icon(src="/imageabilityIcon.png", height="100")
                 h2.top-row-header Score #{idea.name}'s Imageability
                 h3 Will #{idea.name} convey an image of quality and prestige when solving the problem of #{idea.problem}?
             .row.scoring-stars
@@ -445,6 +453,7 @@ html
           .complexity-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
+                img.complexity-icon(src="/complexityIcon.png", height="100")
                 h2.top-row-header Score #{idea.name}'s Complexity
                 h3 Will #{idea.name} require a large number of steps to produce, assemble, ship or use to solve the problem of #{idea.problem}?
             .row.scoring-stars
@@ -486,6 +495,7 @@ html
           .precision-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
+                img.precision-icon(src="/precisionIcon.png", height="100")
                 h2.top-row-header Score #{idea.name}'s Precision
                 h3 Will #{idea.name} require specific timing, precise sequence or much practice to solve the problem of #{idea.problem}?
             .row.scoring-stars
@@ -528,6 +538,7 @@ html
           .variability-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
+                img.variability-icon(src="/variabilityIcon.png", height="100")
                 h2.top-row-header Score #{idea.name}'s Variability
                 h3 Will use or production of #{idea.name} change based upon specific scenarios or circumstances when solving the problem of #{idea.problem}?
             .row.scoring-stars
@@ -570,6 +581,7 @@ html
           .sensitivity-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
+                img.sensitivity-icon(src="/sensitivityIcon.png", height="100")
                 h2.top-row-header Score #{idea.name}'s Sensitivity
                 h3 Will usage or the environment easily disturb or damage #{idea.name} while solving the problem of #{idea.problem}?
             .row.scoring-stars
@@ -612,6 +624,7 @@ html
           .immaturity-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
+                img.immaturity-icon(src="/immaturityIcon.png", height="100")
                 h2.top-row-header Score #{idea.name}'s Immaturity
                 h3 Will the design, manufacture, or production of #{idea.name} require new or unproven technology, processes or materials to solve the problem of #{idea.problem}?
             .row.scoring-stars
@@ -654,6 +667,7 @@ html
           .dangerous-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
+                img.dangerous-icon(src="/dangerIcon.png", height="100")
                 h2.top-row-header Score #{idea.name}'s Dangerousness
                 h3 Will #{idea.name} require human or environmental protections to reduce potential harm?
             .row.scoring-stars
@@ -696,6 +710,7 @@ html
           .skills-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
+                img.skills-icon(src="/skillsIcon.png", height="100")
                 h2.top-row-header Score #{idea.name}'s Level of Skills to Operate
                 h3 Will #{idea.name} require many specific skills to solve the problem of #{idea.problem}?
             .row.scoring-stars

@@ -18,17 +18,17 @@ html
           .profile-membership
             if hasActiveMembership
               if membershipDocument['membershipType'] === "one_month"
-                h4 One Month Membership
-                h5 Active from #{membershipDocument['formattedStartDate']} to #{membershipDocument['formattedEndDate']}
+                h4 Premium Member
+                h5 One Month Membership Active from #{membershipDocument['formattedStartDate']} to #{membershipDocument['formattedEndDate']}
               else if membershipDocument['membershipType'] === "six_month"
-                h4 Six Month Membership
-                h5 Active from #{membershipDocument['formattedStartDate']} to #{membershipDocument['formattedEndDate']}
+                h4 Premium Member
+                h5 Six Month Membership Active from #{membershipDocument['formattedStartDate']} to #{membershipDocument['formattedEndDate']}
               else if membershipDocument['membershipType'] === "twelve_month"
-                h4 Twelve Month Membership
-                h5 Active from #{membershipDocument['formattedStartDate']} to #{membershipDocument['formattedEndDate']}
+                h4 Premium Member
+                h5 Twelve Month Membership Active from #{membershipDocument['formattedStartDate']} to #{membershipDocument['formattedEndDate']}
             else
-              h4 Not an Active Member
-              a.btn.btn-go(href="/membership-options") Membership Options
+              h4 Free Member
+              a.btn.btn-go(href="/membership-options") Become a Premium Member
           if aptitudes && aptitudes.length > 0
           .profileAptitudes
             each aptitude in aptitudes
@@ -73,7 +73,7 @@ html
           
     
         .col-md-6
-          h3 Your Original Ideas
+          h2 Your Original Ideas
           if accountIdeaSeeds.length > 0
             ul
               each val, index in accountIdeaSeeds
@@ -84,9 +84,10 @@ html
                     span.idea-text-date= val['creationDate']
 
           else
-            h4 
-              a.btn.btn-go( href="/introduce-idea/new"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Begin a New Idea
-          h3 Collaborations
+            p Your brilliance can change the world - with only one click:
+              br
+              a.btn.btn-go( href="/introduce-idea/new"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Start a New Idea
+          h2 Your Collaborations
           if collaboratorIdeas.length > 0
             ul
               each val, index in collaboratorIdeas
@@ -97,10 +98,11 @@ html
                   span #{val.inventorName}
                   span.idea-text-date= val['creationDate']
           else
-            h4 None yet.
+            p You can easily collaborate with others to inspire world-changing concepts while earning rewards.  Invite others to work with you in a private group under a confidentiality agreement to preserve your rights in your idea.
+            h2 INVITE OTHERS TO COLLABORATE BUTTON HERE
 
 
-          h3 Contributions
+          h2 Your Contributions
           if reviewNames.length > 0
             ul
               each val, index in reviewNames
@@ -112,8 +114,8 @@ html
                     span #{val.inventorName}
                     span.idea-text-date= val['creationDate']
           else
-            h4 None yet.
-          a.home-login.btn.btn-industry.btn-lg.btn-block( href="/ideas" ) All Ideas
+            p You can easily collaborate with others to inspire world-changing concepts while earning rewards. Contribute criticisms and suggestions to others' ideas to earn points, rewards and credibility.
+            a.home-login.btn.btn-industry.btn-lg.btn-block( href="/ideas" ) View All Ideas
       //- .row
       //-   .col-md-6
       //-     h2.text-left My Rank:

@@ -4,18 +4,22 @@ html
     include ../partials/head.jade
   body
   .container
-    h1 Register Page
-    p.lead Register to continue.
+    h1 Join IdeaJam
+    p.lead You can become an IdeaJam member for free without using social media.  
     br
     form(role='form', action="/register",method="post", style='max-width: 300px;')
       .form-group
         input.form-control(type='text', name="firstname", placeholder='First Name' required)
+        p (Example: "Elizabeth")
       .form-group
         input.form-control(type='text', name="lastname", placeholder='Last Name' required)
+        p (Example: "Smith")
       .form-group
         input.form-control(type='text', name="nickname", placeholder='Nickname' required)
+        p (Example: "Liz")
       .form-group
         input.form-control(type='email', name="username", placeholder='Email Address' required)
+        p (Example: "lizsmith@email.com")
       .form-group
         input.form-control(type='password', name="password", placeholder='Password' required)
         input(type="hidden", name="_csrf", value="#{csrfToken}")
