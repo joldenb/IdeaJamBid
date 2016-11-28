@@ -22,7 +22,7 @@ html
         if (idea.visibility != "private" || listOfVisibleSections.length > 3) && hasActiveMembership
           a.btn.btn-go.btn-lg#file-patent(data-toggle="modal" data-target="#filePatentModal" style="margin-top:1em;") 
             h4 Generate Patent Application
-        else
+        else if (idea.visibility != "private" || listOfVisibleSections.length > 3)
           a.btn.btn-go.btn-lg#purchase-patent-application-button(href="/membership-options" style="margin-top:1em;") 
             h4 Generate Patent Application
 
@@ -66,7 +66,7 @@ html
           h5 All Idea Editing Sections Visible
 
 
-    .row#upload-images-row.idea-edit-row.odd-row 
+    .row#upload-images-row.idea-edit-row.odd-row
       if listOfVisibleSections.indexOf('add-components-row') == -1
         .col-md-12
           h2 Upload Images
@@ -230,29 +230,24 @@ html
   .pagefooter
     include ../../partials/footer.jade
 
-  #titleModal.modal.fade.annotate-modal(role="dialog")
+  #titleModal.modal.fade.annotate-modal(role="dialog" data-backdrop="static" data-keyboard="false")
     .modal-dialog
       .modal-content
         .modal-header
           .modal-title 
             if user.firstname
-              h2 #{user.nickname}, name Your Idea
+              h2 #{user.nickname}, name your idea
             else
               h2 Name Your Idea
-            p Give your idea a short, descriptive, memorable name:
+            //- p Give your idea a short, descriptive, memorable name:
         .modal-body
-          form(role='form', id="saveIdeaName" action="/save-idea-name", method="post", style='max-width: 300px;', data-idea-doc=idea)
+          form(role='form', id="saveIdeaName" action="/save-idea-name", method="post", style='max-width: 450px;', data-idea-doc=idea)
             .form-group
               input(type="hidden", name="_csrf", value="#{csrfToken}")
               input.form-control(type="text", name="inventionName", value='My idea is called the ')
               p (Example: "My idea is called the DeLorean Time Machine")
-              p.charactersRemaining
-            .modal-footer
-              button.btn.btn-success#titleSubmit(type='submit') Save
+              button.btn.btn-success.btn-lg#titleSubmit(type='submit') Save
                 img.einstein-point-btn-icon(src="/single-einstein-point.png")
-          .row
-            .col-xs-12
-              .hint Hint: Choose a concise, catchy and descriptive name for your idea.
 
   #filePatentModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -397,9 +392,10 @@ html
 
       $("#titleSubmit").click(function(event){
         event.preventDefault();
-        if($("#saveIdeaName input[name='inventionName']").val() == "My idea is called the "){
+        if($("#saveIdeaName input[name='inventionName']").val() == "My idea is called the " ||
+        $("#saveIdeaName input[name='inventionName']").val().length <= "My idea is called the ".length){
           if($("#titleRequiredMessage").length == 0){
-            $("<p id='titleRequiredMessage'>A title is required</p>").insertBefore("#saveIdeaName input[name='inventionName']");
+            $("<p id='titleRequiredMessage'>A title is required.</p>").insertBefore("#saveIdeaName input[name='inventionName']");
           }
         } else {
           $.post('/save-idea-name', 
