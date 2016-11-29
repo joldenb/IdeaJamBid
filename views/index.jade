@@ -9,7 +9,6 @@ html
         .navbar-header
           .row
             .col-md-4
-                br
                 img(src="/IdeaJamIcon-2.png", height="50")
             .col-md-4
             .col-md-4.text-right
@@ -17,7 +16,24 @@ html
                 a.home-login.btn.btn-go.btn-sm(href="/login") Login
                 a.home-login.btn.btn-primary.btn-sm(href="/register") Register    
   .jumbotron
-    h1.text-center What's your idea?
+    .row
+      .col-sm-12
+        h1.text-center What's your jam?
+        br
+        br
+    .row
+      .col-sm-2
+      .col-sm-8
+        p.text-center IdeaJam joins dreamers, believers and inventors with unlimited patent applications, crowd capital and a mass of creative thought.
+      .col-sm-2
+    .row
+      .col-sm-12.text-center
+        br
+        br
+        button.btn.btn-success(type='button') 
+          |   Improve the world         
+          span.fa.fa-caret-square-o-right
+
   .row.text-center
     .col-sm-4.text-center
       img(src="left-arrow.png", width="35")
@@ -43,16 +59,12 @@ html
       h2 Fund 
       p Crowdfund your concepts to generate pre-sales and offer rewards to those who provide the seed capital needed to invest in your ideas.
   .row.text-center
-    h1
-  .row
-   .well
-      h3.text-center IdeaJam links dreamers, believers and inventors to affordable patent applications, crowd capital and a mass of creative thought to enable conspiracy to change the world.
-  .row.text-center
+    .well
       h2.text-center Earn Rewards
       p IdeaJam allows you to mine your ideas for Einstein Points.  Einstein Points can be redeemed for Amazon Gift Cards.  They also establish your ranking and credibility as an imagineer on IdeaJam.  You can also offer services to other imagineers based upon your aptitudes for a fee.
   .row
-    .well
-      h3.text-center Join your Jam:   
+    .well 
+      h3.text-center Join your Jam: 
         a.home-login.btn.btn-go(href="/view-jams")    View All
   .row.text-center
     .col-sm-4.text-center
