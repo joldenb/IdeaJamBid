@@ -3,25 +3,47 @@ html
   head
     include ../partials/head.jade
   body
+  .jumbotron.text-center    
+    h1 Sign in to IdeaJam:
   .container
-    h1 Login Page
     if showMessage
       p #{showMessage}
     else
-      p.lead Log in to continue
+      .row
+        .col-md-6.text-left 
+          h3.text-left Sign in directly:
+          form(role='form', action="/login",method="post", style='max-width: 300px;')
+            .form-group
+              input.form-control(type='email', name="username", placeholder='Email Address' required)
+            .form-group
+              input(type="hidden", name="_csrf", value="#{csrfToken}")
+              input.form-control(type='password', name="password", placeholder='Password' required)
+          button.btn.btn-go(type='submit') Submit
+          |  
+          a(href='/')
+            button.btn.btn-primary(type="button") Cancel
+          |  
+          a(href="/forgot-password/")
+            h4 Forget your password?
+            br
+            br
+        .col-md-6.text-center 
+          h3.text-left Sign in with social media:
+          .row
+            .col-sm-4
+              a.btn.btn-block.btn-social.btn-facebook(href="/auth/facebook")
+                span.fa.fa-facebook
+                |   Sign in with Facebook
+            .col-sm-4
+              a.btn.btn-block.btn-social.btn-google(href="/auth/google")
+                span.fa.fa-google-plus
+                |   Sign in with Google
+            .col-sm-4
+              a.btn.btn-block.btn-social.btn-facebook(href="/auth/linkedin")
+                span.fa.fa-linkedin
+                |   Sign in with LinkedIn
     br
-    form(role='form', action="/login",method="post", style='max-width: 300px;')
-      .form-group
-        input.form-control(type='email', name="username", placeholder='Email Address' required)
-      .form-group
-        input(type="hidden", name="_csrf", value="#{csrfToken}")
-        input.form-control(type='password', name="password", placeholder='Password' required)
-      button.btn.btn-go(type='submit') Submit
-      |  
-      a(href='/')
-        button.btn.btn-primary(type="button") Cancel
-      |  
-      a(href="/forgot-password/")
-        h4 Forget your password?
+    br
+  
 
   include ../partials/js-includes.jade

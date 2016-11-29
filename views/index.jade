@@ -2,36 +2,105 @@ doctype html
 html
   head
     include ./partials/head.jade
+
   body#login-page-body
-    .container.homepage
-      h1.text-center Patent. Refine. Fund.
-      h3.text-center Welcome to IdeaJam
-      .container.text-center
+    nav.navbar.navbar-default
+      .container-fluid
+        .navbar-header
+          .row
+            .col-md-4
+                img(src="/IdeaJamIcon-2.png", height="50")
+            .col-md-4
+            .col-md-4.text-right
+              if !(user)
+                a.home-login.btn.btn-go.btn-sm(href="/login") Login
+                a.home-login.btn.btn-primary.btn-sm(href="/register") Register    
+  .jumbotron
+    .row
+      .col-sm-12
+        h1.text-center What's your jam?
+        br
+        br
+    .row
+      .col-sm-2
+      .col-sm-8
+        p.text-center IdeaJam joins dreamers, believers and inventors with unlimited patent applications, crowd capital and a mass of creative thought.
+      .col-sm-2
+    .row
+      .col-sm-12.text-center
+        br
+        br
+        button.btn.btn-success(type='button') 
+          |   Improve the world         
+          span.fa.fa-caret-square-o-right
+
+  .row.text-center
+    .col-sm-4.text-center
+      img(src="left-arrow.png", width="35")
+      img(src="idea-example.png", width="200")
+    .col-sm-4.text-center
+      img(src="idea-example.png", width="200")
+    .col-sm-4.text-center
+      img(src="idea-example.png", width="200")
+      img(src="right-arrow.png", width="35")
+  .well
+    h2.text-center 1 Einstein Point = $0.0023 in rewards
+  .row
+    .col-sm-4.text-center
+      img(src="https://d30y9cdsu7xlg0.cloudfront.net/png/113406-200.png", width="100")
+      h2 Patent
+      p Own rights to your ideas by generating unlimited patent applications, gaining patent pending status prior to sharing your ideas.
+    .col-sm-4.text-center
+      img(src="https://openclipart.org/image/2400px/svg_to_png/213252/Gear-icon.png", width="100")
+      h2 Refine
+      p Ask for context specific improvements from IdeaJam members that have the skills you need to build out your ideas.
+    .col-sm-4.text-center
+      img(src="https://cdn3.iconfinder.com/data/icons/money-and-finance-1/32/transfer-funds-512.png", width="100")
+      h2 Fund 
+      p Crowdfund your concepts to generate pre-sales and offer rewards to those who provide the seed capital needed to invest in your ideas.
+  .row.text-center
+    .well
+      h2.text-center Earn Rewards
+      p IdeaJam allows you to mine your ideas for Einstein Points.  Einstein Points can be redeemed for Amazon Gift Cards.  They also establish your ranking and credibility as an imagineer on IdeaJam.  You can also offer services to other imagineers based upon your aptitudes for a fee.
+  .row
+    h3.text-center Join your Jam: 
+      a.home-login.btn.btn-go(href="/view-jams")    View All
+  .row.text-center
+    .col-sm-4.text-center
+      img(src="left-arrow.png", width="35")
+      img(src="jam-sample.png", width="200")
+    .col-sm-4.text-center
+      img(src="jam-sample.png", width="200")
+    .col-sm-4.text-center
+      img(src="jam-sample.png", width="200")
+      img(src="right-arrow.png", width="35")
+  if (!user)
+    .row
+      .well
+        h2.text-center Easily become a member:
         .row
-          if (!user)
-            p.lead Login or Register to Continue
-            a.home-login.btn.btn-go.btn-lg(href="/login") Login
-            |  
-            a.home-login.btn.btn-primary.btn-lg(href="/register") Register
-            br
-            p Login with Social Media:
-            a(href="/auth/google", class="btn btn-danger btn-lg") 
-              span.fa.fa-google-plus Google
-            |  
-            a(href="/auth/facebook",class="btn btn-primary btn-lg") 
-              span.fa.fa-facebook Facebook
-            |  
-            a(href="/auth/linkedin",class="btn btn-info btn-lg") 
-              span.fa.fa-linkedin LinkedIn
-            br
-            br
-            .container.text-center
-              .row.homepage-text
-                h2 IdeaJam links dreamers, believers and inventors to affordable patent applications and a mass of creative thought and capital to enable them to conspire to change the world.
+          .col-sm-4
+            a.btn.btn-block.btn-social.btn-facebook(href="/auth/facebook")
+              span.fa.fa-facebook
+              |   Sign in with Facebook
+          .col-sm-4
+            a.btn.btn-block.btn-social.btn-google(href="/auth/google")
+              span.fa.fa-google-plus
+              |   Sign in with Google
+          .col-sm-4
+            a.btn.btn-block.btn-social.btn-facebook(href="/auth/linkedin")
+              span.fa.fa-linkedin
+              |   Sign in with LinkedIn
+    .row
+      h2.text-center IdeaJam: The greatest engine for innovation the world has ever known
+      br
+      br
 
-      if (user)
-        h2 You are currently logged in as #{user.nickname}
-        a.home-login.btn.btn-go( href="/logout" ) Log Out
+  if (user)
+    .row
+      .col-sm-4
+         h2 You are currently logged in as #{user.nickname}
+         a.home-login.btn.btn-go( href="/logout" ) Log Out
 
-    .pagefooter
-      include partials/footer.jade
+  .pagefooter
+    include partials/footer.jade
