@@ -4,8 +4,24 @@ html
     include ../partials/head.jade
     include ../partials/js-includes.jade
   body#topSection
+    nav.navbar.navbar-default
+      .container-fluid
+        .navbar-header
+          .row
+            .col-md-4
+                img(src="/IdeaJamIcon-2.png", height="40")
+            .col-md-4
+            .col-md-4.text-right
+                if !(user)
+                    a.home-login.btn.btn-go.btn-sm(href="/login") Login
+                    a.home-login.btn.btn-primary.btn-sm(href="/register") Register
+                if (user)
+                    a.home-login.btn.btn-go.btn-sm(href="/people", type='button') 
+                      |   Who We Are         
+                      span.fa.fa-caret-square-o-right
+
     .jumbotron
-      h1.text-center FAQ
+      h1.text-center Frequently Asked Questions
     .container.text-left
       #accordion.panel-group(role='tablist', aria-multiselectable='true')
         .panel.panel-default

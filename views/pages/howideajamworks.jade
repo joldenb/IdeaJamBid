@@ -4,22 +4,47 @@ html
     include ../partials/head.jade
     include ../partials/js-includes.jade
   body#topSection
-    .header.navbar.navbar-default.jamTopNav
-      include ../partials/header.jade
+    nav.navbar.navbar-default
+      .container-fluid
+        .navbar-header
+          .row
+            .col-md-4
+                img(src="/IdeaJamIcon-2.png", height="40")
+            .col-md-4
+            .col-md-4.text-right
+                if !(user)
+                    a.home-login.btn.btn-go.btn-sm(href="/login") Login
+                    a.home-login.btn.btn-primary.btn-sm(href="/register") Register
+                if (user)
+                    a.home-login.btn.btn-go.btn-sm(href="/faq", type='button') 
+                      |  IdeaJam FAQ         
+                      span.fa.fa-caret-square-o-right
 
-    .container.text-center
+    .container
+        .row
+            .col-md-4.text-center
+                img(src="https://d30y9cdsu7xlg0.cloudfront.net/png/113406-200.png", width="100")
+            .col-md-4.text-center
+                img(src="https://openclipart.org/image/2400px/svg_to_png/213252/Gear-icon.png", width="100")
+            .col-md-4.text-center
+                img(src="https://cdn3.iconfinder.com/data/icons/money-and-finance-1/32/transfer-funds-512.png", width="100")
         .row
             div.hero-unit 
-                h1 Patent. Refine. Fund.
+                h1 IdeaJam streamlines the process of execution for your early stage ideas.
         .row    
-            h2 IdeaJam helps innovators protect and commercialize their ideas
+            h3.text-center IdeaJam Helps You Own Your Ideas
+            p.text-left <h4>A specific challenge faced by inventors under the new &quot;first-to-file&quot; US patent system in place in the US is <u>speed.</u>  Patents can help you assert ownership rights in your idea, but not unless you obtain a patent application filing date earlier than someone else with the same idea.</h4> Founders must act quickly to generate and file a patent application to obtain priority and patent pending status. If a startup founder does not win the race to file a patent application, that innovator may lose the rights in the invention he wishes to build a business around.  Thus, startup founders must protect their innovations before disclosing them to the world. 
+        .row
+            .col-md.2
+                img(src="https://d30y9cdsu7xlg0.cloudfront.net/png/113406-200.png", width="100", align="left")
+            .col-md.8
+                h4.text-left IdeaJam helps innovators obtain patent pending status and a patent filing date for ideas they generate through IdeaJam. 
+        .row
+            p.text-left Log in and generate a patent application for ideas that you build out using IdeaJam. 
             br
-            h3 Own Your Ideas
-            p.text-left A specific challenge faced by inventors under the &quot;first-to-file&quot; US patent system in place in the US is speed. Founders must act quickly to generate and file a patent application to obtain priority and patent pending status. If a startup founder does not win the race to file a patent application, that innovator may lose the rights in the invention he wishes to build a business around.  
-            p.text-left Thus, startup founders must protect their innovations before disclosing them to the world. IdeaJam helps innovators obtain patent pending status and a patent filing date for ideas they generate through IdeaJam.  IdeaJam actually can generate a patent application template for ideas that inventors run through the IdeaJam system (of course, IdeaJam does not provide legal advice and strongly recommends that every inventor consult with a patent attorney before filing any patent application, including those built with the help of IdeaJam's patent application template generator - but IdeaJam helps inventors connect with patent attorneys as well!)  Once an inventor files a provisional patent application from the application template IdeaJam generates, she can claim priority back to the patent application’s date to win any ensuing battles with those who attempt to commercialize similar inventions after the filing date.
-            br
-            h3 Improve Your Ideas
-            p.text-left IdeaJam also makes it easier and safer to connect with networks of people with specific skills who can make innovations better. After an innovator files a patent application, IdeaJam allows an inventor to share an invention to the entire IdeaJam network. Other IdeaJam users can identify specific imperfections associated with an invention and suggest solutions. The IdeaJam model incentivizes the crowd to not only suggest improvements to someone else’s invention, but assign all rights in those solutions back to the original inventor.  IdeaJam allows people with special aptitudes market their skills to inventors who require specific aptitudes to solve imperfections associated with their inventions.
+        .row
+            h3 IdeaJam Helps You Improve Your Ideas
+            p.text-left <h4>Connect more safely and easily with networks of people with specific skills who can make your innovations better on IdeaJam.</h4> After an innovator files a patent application, IdeaJam allows an inventor to share an invention to the entire IdeaJam network. Other IdeaJam users can identify specific imperfections associated with an invention and suggest solutions. The IdeaJam model incentivizes the crowd to not only suggest improvements to someone else’s invention, but assign all rights in those solutions back to the original inventor.  IdeaJam allows people with special aptitudes market their skills to inventors who require specific aptitudes to solve imperfections associated with their inventions.
             h3 Fund Your Ideas
             p.text-left IdeaJam incorporates a rewards-based crowdfunding platform seamlessly.  Once you create a groundbreaking idea and obtain patent pending status with the help of IdeaJam, you not only can improve the idea with the help of crowdsourced solutions, you can fund the idea through pre-sales and other reward offerings that you generate on IdeaJam's crowdfunding platform.  IdeaJam's members - "imagineers" - can even identify their own aptitudes and offer their services for hire by other imagineers to generate revenue (perhaps to fund more ideas?).  Never before has it been easier to access the intellectual capital and financial capital necessary to build or expand a business around your ideas.
             br
