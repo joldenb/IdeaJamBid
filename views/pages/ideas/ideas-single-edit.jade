@@ -255,16 +255,9 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            if idea.name
-              h3 Don't let anyone steal your idea!
-              h4 Prior to going public with your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}, you should protect your idea by obtaining patent pending status.
-            else
-              h3 #{user.nickname}, you need to name your idea before building a patent application and going public.
+              h2 Generate Patent Application
         .modal-body
-            if appStrengthClass == "yes col-md-12" || idea.visibility == "public"
-              .row.text-center
-                a.btn.btn-go.btn-lg#create-application-button( href="/create-application" ) Download Patent Application
-                br
+            if appStrengthClass == "yes col-md-12"
                 //- ** FILING A PATENT APPLICATION AND OBTAINING A RECEIPT IS TOO COMPLEX OF A PROCESS TO HAVE GOING ON WHILE A MODAL WINDOW IS ACTIVE IN A SECOND WEBSITE.  THE NEXT PROMPT AFTER DOWNLOADING A PATENT APPLICATION NEEDS TO BE A REDIRECT TO THE SCREEN WHERE YOU HIRE A PATENT ATTORNEY
                 //- if !receipt
                   form(role='form', id="prelimReceiptUpload" action="/receipt-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
@@ -282,24 +275,47 @@ html
                   a.btn.btn-go( href="/create-new-variant" ) Create a New Variant
                   br
             else if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
-              if idea.name
-                .row
-                  .col-md-2
-                    i.fa.fa-exclamation-triangle.fa-5x(style='color:red', aria-hidden='true')
-                  .col-md-10
-                    h4  You haven't yet entered enough details about #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} to build a patent application.  Click "Strengthen #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} Profile" to add more components, suggestions and criticisms.
-              else
-                h3 Name your idea before starting the process of generating a provisional patent application template.
-            br
-
+              .row
+                .col-md-2
+                  i.fa.fa-exclamation-triangle.fa-5x(style='color:red', aria-hidden='true')
+                .col-md-10
+                  h4  You haven't yet entered enough details about #{idea.name} to build a patent application.  Add more components, suggestions and criticisms.
+                  //- TO DO add the What's left functionality here so someone can see exactly what they need to add
           .modal-footer
-            .row
-              .col-md-6.text-center
-                if idea.name
-                  button#bypass-application-button.btn.btn-info(data-toggle="modal" data-target="#confirmExposeIdeaModal") Publicly Expose #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} Now
-              .col-md-6.text-center
-                if idea.name
-                  a.btn-go#enterMoreInformation.btn.btn-info(data-dismiss="modal") Strengthen #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} Profile
+            if appStrengthClass == "yes col-md-12"
+              a.btn.btn-go.btn-lg#create-application-button Generate Application
+            else
+              button#enterMoreInformation.btn.btn-info.btn-lg(data-dismiss="modal") Add More Information
+
+  #viewIdeaVisibilityLevel.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+              h2 #{idea.name} Visibility
+        .modal-body
+            if idea.visibility == "public"
+              .row
+                .col-md-12
+                  h4 This idea is Publicly Visible to Everyone.
+            else
+              .row
+                .col-md-2
+                  i.fa.fa-exclamation-triangle.fa-5x(style='color:red', aria-hidden='true')
+                .col-md-10
+                  if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
+                    h4  You haven't yet entered enough details about #{idea.name} to build a patent application.  Click "Strengthen #{idea.name} Profile" to add more components, suggestions and criticisms.
+                  h4 Prior to going public with your #{idea.name}, you should protect your idea by obtaining patent pending status, if you haven't already.
+          .modal-footer
+            if idea.visibility == "public"
+              button#restrictVisibilityToPrivate.btn.btn-info.btn-lg Change Visibility to Private
+              a.btn.btn-go.btn-lg(data-dismiss="modal") OK
+            else
+              button#enterMoreInformation.btn.btn-info.btn-lg(data-dismiss="modal") Strengthen #{idea.name} Profile
+              a.btn.btn-go#bypass-application-button.btn-lg(data-toggle="modal" data-target="#confirmExposeIdeaModal") Expose Idea Now
+
+
 
   #confirmExposeIdeaModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -311,20 +327,27 @@ html
               .col-md-2.text-bottom
                 i.fa.fa-exclamation-triangle.fa-5x(style='color:red', aria-hidden='true')
               .col-md-10
-                h1 Are you sure? 
-        .modal-body
-          h4 By making #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} available for everyone to see, someone might copy and steal your idea. 
-          h4 Are you sure you want to expose your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} and make it public before obtaining patent pending status?
+                h2 Are you sure? 
+          .modal-body
+            if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
+              .row
+                .col-md-12
+                  h4 By making #{idea.name} available for everyone to see, someone might copy and steal your idea. 
+                  h4 Are you sure you want to expose your #{idea.name} and make it public before obtaining patent pending status?
+            else
+              .row
+                .col-md-12
+                  h4 Make sure your patent application has been accepted by the US Patent and Trademark Office and has patent pending status before exposing to the public.
           .modal-footer
             .row
               br
               .col-md-6
                 if hasActiveMembership
-                  a.btn.btn-go#file-patent(data-toggle="modal" data-target="#filePatentModal") Generate Patent Application for #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
+                  a.btn.btn-go.btn-lg#file-patent(data-toggle="modal" data-target="#filePatentModal") Generate Patent Application
                 else
-                  a.btn.btn-go#purchase-patent-application-button(href="/membership-options") Generate Patent Application for #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
+                  a.btn.btn-go.btn-lg#purchase-patent-application-button(href="/membership-options") Generate Patent Application
               .col-md-6
-                button#exposeIdeaNow.btn.btn-info Yes, Expose #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} Now!
+                button#exposeIdeaNow.btn.btn-info.btn-lg Expose #{idea.name} Now
 
 
   button(type="button" id="titleModalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#titleModal") Go Win Fight
@@ -591,7 +614,7 @@ html
 
 
       $("#visibilityLink").click(function(event){
-        $("#filePatentModal").modal('show');
+        $("#viewIdeaVisibilityLevel").modal('show');
       })
 
       if($("#fileInput [type='file']").length > 0){
@@ -772,5 +795,88 @@ html
         var stop;
       });
 
+      $("#create-application-button").click(function(event){
+        $.get("/create-application", function(data){
+          window.location.reload(true)
+        });
+      })
+    if(document.getElementById("receiptInput")){
+      document.getElementById("receiptInput").onchange = function(event) {
+        $("<img id='spinner' src='/spinner.gif'>").insertAfter("#prelimReceiptUpload");
+        const files = document.getElementById('receiptInput').files;
+        const file = files[0];
+        const csrf = $("input[name='_csrf']").val();
+        if(file == null){
+          return alert('No file selected.');
+        }
+        var fr   = new FileReader;
+        
+        fr.onloadend = function() {
+          var exif = EXIF.readFromBinaryFile(this.result);
+          if(file.size < 3000000){
+            getSignedRequest(file, csrf, exif);
+          } else if (file.size > 3000000){
+            alert('Please choose an image smaller than 3 MB.')
+          } else {
+            alert('An error ocurred with this image.')
+          }
+
+        };
+
+        fr.readAsArrayBuffer(file); // read the file
+
+
+      };
+
+      function uploadFile(file, signedRequest, url, csrf, exif){
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', signedRequest);
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4){
+            if(xhr.status === 200 && (file.type=="application/pdf")){
+              var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type,
+                "_csrf" : csrf, exif : exif };
+              $.post('/receipt-upload', data , function(response, status){
+                if(status == 200){
+                  window.location.reload();
+                } else {
+                  alert('An error ocurred while uploading receipt.')
+                }
+              });
+            }
+            else{
+              alert('Please upload PDF.');
+            }
+          }
+        };
+        xhr.send(file);
+      }
+
+      function getSignedRequest(file, csrf,exif){
+        const xhr = new XMLHttpRequest();
+        var filename = file.name.split(".");
+        filename[0] = filename[0] + "-" + Date.now().toString();
+        filename = filename.join(".");
+        xhr.open('GET', '/sign-s3?file-name='+ filename + '&file-type='+ file.type);
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4){
+            if(xhr.status === 200){
+              var response;
+              if(xhr.responseText == ""){
+                response = JSON.parse('{}');
+              } else {
+                response = JSON.parse(xhr.responseText);
+              }
+              uploadFile(file, response.signedRequest, response.url, csrf, exif);
+            }
+            else{
+              alert('Could not get signed URL.');
+            }
+          } 
+          
+        };
+        xhr.send();
+      }
+    }
 
     }); //end of document.ready
