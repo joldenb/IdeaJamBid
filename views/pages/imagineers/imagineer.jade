@@ -45,7 +45,10 @@ html
           
           //- .view-all-components-wrapper
           //-   a.btn.btn-electric.btn-lg.btn-block(type="button" href='/jam/Startup%20Denver%20Pitch%20Battle') Go to Pitch Battle!
-          h3 #{profileAccount.nickname}'s Jams
+          if Object.keys(user).length != 0 && user.id == profileAccount.id
+            h3 My Jams
+          else
+            h3 #{profileAccount.nickname}'s Jams
           .profileSchool
             if schoolNetwork
               ul
@@ -73,8 +76,25 @@ html
           
     
         .col-md-6
-          h2 Your Original Ideas
-          if accountIdeaSeeds.length > 0
+          if Object.keys(user).length != 0 && user.id == profileAccount.id
+            h2 My Original Ideas:
+            
+            if accountIdeaSeeds.length > 0
+              ul
+                each val, index in accountIdeaSeeds
+                  if val.name && (val.visibility == "public" || val.inventorName == user.username)
+                    li
+                      a(href="/ideas/" + val.name)
+                        h4.idea-text-name= val.name
+                      span.idea-text-date= val['creationDate']
+            if accountIdeaSeeds.length == 0
+              p Your brilliance can change the world - with only one click:
+                br
+                a.btn.btn-go( href="/introduce-idea/new"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Start a New Idea
+
+          else
+            h2.profile-name #{profileAccount.nickname}'s Original Ideas:
+            if accountIdeaSeeds.length > 0
             ul
               each val, index in accountIdeaSeeds
                 if val.name && (val.visibility == "public" || val.inventorName == user.username)
@@ -83,39 +103,79 @@ html
                       h4.idea-text-name= val.name
                     span.idea-text-date= val['creationDate']
 
+            if accountIdeaSeeds.length < 1
+              p #{profileAccount.nickname} has no new ideas.
+         
+          
+          if Object.keys(user).length != 0 && user.id == profileAccount.id
+            .row
+              .jumbotron
+                h2 My Collaborations:
+                if collaboratorIdeas.length > 0
+                  ul
+                    each val, index in collaboratorIdeas
+                      li
+                        a(href="/ideas/" + val.name)
+                          h4.contributed-idea-text-name= val.name 
+                        span By : 
+                        span #{val.inventorName}
+                        span.idea-text-date= val['creationDate']
+                else
+                  p You can easily collaborate with others to inspire world-changing concepts while earning rewards.  Invite others to work with you in a private group under a confidentiality agreement to preserve your rights in your idea.
+                  a.home-login.btn.btn-industry.btn-md.btn-block( href="/ideas" ) Invite Collaborators
           else
-            p Your brilliance can change the world - with only one click:
-              br
-              a.btn.btn-go( href="/introduce-idea/new"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Start a New Idea
-          h2 Your Collaborations
-          if collaboratorIdeas.length > 0
-            ul
-              each val, index in collaboratorIdeas
-                li
-                  a(href="/ideas/" + val.name)
-                    h4.contributed-idea-text-name= val.name 
-                  span By : 
-                  span #{val.inventorName}
-                  span.idea-text-date= val['creationDate']
-          else
-            p You can easily collaborate with others to inspire world-changing concepts while earning rewards.  Invite others to work with you in a private group under a confidentiality agreement to preserve your rights in your idea.
-            h2 INVITE OTHERS TO COLLABORATE BUTTON HERE
+            .row
+              .jumbotron
+                h2.profile-name #{profileAccount.nickname}'s Collaborations:
+                if collaboratorIdeas.length > 0
+                  ul
+                    each val, index in collaboratorIdeas
+                      li
+                        a(href="/ideas/" + val.name)
+                          h4.contributed-idea-text-name= val.name 
+                        span By : 
+                        span #{val.inventorName}
+                        span.idea-text-date= val['creationDate']
+                else
+                  p.profile-name #{profileAccount.nickname} has not participated in any collaborations.
 
 
-          h2 Your Contributions
-          if reviewNames.length > 0
-            ul
-              each val, index in reviewNames
-                if val.name && (val.visibility == "public" || val.inventorName == user.username)
-                  li
-                    a(href="/ideas/" + val.name)
-                      h4.contributed-idea-text-name= val.name 
-                    span By : 
-                    span #{val.inventorName}
-                    span.idea-text-date= val['creationDate']
+
+          if Object.keys(user).length != 0 && user.id == profileAccount.id
+            .row
+              .jumbotron
+                h2 My Contributions:
+                if reviewNames.length > 0
+                  ul
+                    each val, index in reviewNames
+                      if val.name && (val.visibility == "public" || val.inventorName == user.username)
+                        li
+                          a(href="/ideas/" + val.name)
+                            h4.contributed-idea-text-name= val.name 
+                          span By : 
+                          span #{val.inventorName}
+                          span.idea-text-date= val['creationDate']
+                else
+                  p You can easily collaborate with others to inspire world-changing concepts while earning rewards. Contribute criticisms and suggestions to others' ideas to earn points, rewards and credibility.
+                  a.home-login.btn.btn-industry.btn-md.btn-block( href="/ideas" ) Contribute to Other Ideas
           else
-            p You can easily collaborate with others to inspire world-changing concepts while earning rewards. Contribute criticisms and suggestions to others' ideas to earn points, rewards and credibility.
-            a.home-login.btn.btn-industry.btn-lg.btn-block( href="/ideas" ) View All Ideas
+            .row
+              .jumbotron
+                h2.profile-name #{profileAccount.nickname}'s Contributions:
+                if reviewNames.length > 0
+                  ul
+                    each val, index in reviewNames
+                      if val.name && (val.visibility == "public" || val.inventorName == user.username)
+                        li
+                          a(href="/ideas/" + val.name)
+                            h4.contributed-idea-text-name= val.name 
+                          span By : 
+                          span #{val.inventorName}
+                          span.idea-text-date= val['creationDate']
+                else
+                  p.profile-name #{profileAccount.nickname} has not contributed any suggestions or criticisms.
+
+
       //- .row
       //-   .col-md-6
       //-     h2.text-left My Rank:
