@@ -8,16 +8,19 @@ html
       include ../partials/header.jade
     div.container
       .row
-        .col-xs-12
-          h1 Become a Premium Member
-          p Protect your rights in your ideas.  Premium membership allows you to generate unlimited patent applications.  As a premium member, you can also privately collaborate with people that you specifically invite to confidentially work on an idea with you.  
+        .col-xs-1
+          i.fa.fa-exclamation-triangle.fa-5x(style='color:red', aria-hidden='true')
+        .col-xs-11
+          h2 Patent Application Downloads Only Available to Premium Members
+      .row
+        .jumbotron
+          h1.text-center Become a Premium Member
+          h3.text-center Build Unlimited Patent Applications to Protect All Your Ideas
       .row
         .col-md-4
-          h2 One Month
+          h2 1 Month, $74.99
           ul
-            li Generate and download unlimited preliminary patent applications
-            li Give feedback and suggestions to other people's ideas
-            li Join an unlimited number of jams
+            li Generate and download unlimited provisional patent applications for any and all of your ideas
             li Find contractors to hire, as well as list yourself for hiring
           if !Object.keys(user).length > 0
             a.btn.btn-go.btn-lg(data-toggle="modal" data-target="#loginModal" ) Get Started
@@ -26,11 +29,11 @@ html
               script( src="https://checkout.stripe.com/checkout.js" class="stripe-button" data-key="pk_test_5T5pBn30fpwettn3jKAVBZ2q" data-amount="7499" data-name="Idea Jam" data-description="One Month Membership" data-image="/IdeaJamIcon-2.png" data-locale="auto" data-zip-code="true")
               input(type="hidden", name="_csrf", value="#{csrfToken}")
         .col-md-4
-          h2 Six Months
-          h5 All the benefits of the One Month membership, plus:
+          h2 6 Months, $179.99
+          h5 All the benefits of the 1 Month membership, plus:
           ul
-            li Invite collaborators to build an idea together
-            li 60% Discount
+            li Invite collaborators to privately build an idea together under a confidentiality agreement
+            li 60% discount on a per-month basis over the 1 month membership
           if !Object.keys(user).length > 0
             a.btn.btn-go.btn-lg(data-toggle="modal" data-target="#loginModal" ) Get Started
           else
@@ -39,16 +42,18 @@ html
               input(type="hidden", name="_csrf", value="#{csrfToken}")
 
         .col-md-4
-          h2 Twelve Months
+          h2 12 Months, $239.99
           h5 All the benefits of the Six Month membership, plus:
           ul
-            li 73% Discount
+            li 73% discount discount on a per-month basis over the 1 month membership
           if !Object.keys(user).length > 0
             a.btn.btn-go.btn-lg(data-toggle="modal" data-target="#loginModal" ) Get Started
           else
             form(action="/process-twelve-month-payment" method="POST")
               script( src="https://checkout.stripe.com/checkout.js" class="stripe-button" data-key="pk_test_5T5pBn30fpwettn3jKAVBZ2q" data-amount="23999" data-name="Idea Jam" data-description="Twelve Month Membership" data-image="/IdeaJamIcon-2.png" data-locale="auto" data-zip-code="true")
               input(type="hidden", name="_csrf", value="#{csrfToken}")
+      .row
+        h3 Protect your rights in your ideas. As a premium member, you can also collaborate under a confidentiality agreement with people that you specifically invite to privately work on an idea with you.
 
   #loginModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
