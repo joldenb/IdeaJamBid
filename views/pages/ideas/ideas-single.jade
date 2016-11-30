@@ -1073,12 +1073,25 @@ html
         .modal-header
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
-            h2 Are you sure?
+            .row
+              .col-md-2.text-bottom
+                i.fa.fa-exclamation-triangle.fa-5x(style='color:red', aria-hidden='true')
+              .col-md-10
+                h1 Are you sure? 
         .modal-body
-          h5 If you expose this idea publicly prior to filing a patent application, you may lose your right to patent the idea. We recommend that you file a patent application before disclosing. Are you sure you want to make this idea public before obtaining patent pending status?
+          h4 By making #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} available for everyone to see, someone might copy and steal your idea. 
+          h4 Are you sure you want to expose your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} and make it public before obtaining patent pending status?
           .modal-footer
-            button.btn.btn-industry(data-dismiss="modal") Cancel
-            button#exposeIdeaNow.btn.btn-go Yes, Expose Now!
+            .row
+              br
+              .col-md-6
+                if hasActiveMembership
+                  a.btn.btn-go#file-patent(data-toggle="modal" data-target="#filePatentModal") Generate Patent Application for #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
+                else
+                  a.btn.btn-go#purchase-patent-application-button(href="/membership-options") Generate Patent Application for #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
+              .col-md-6
+                button#exposeIdeaNow.btn.btn-info Yes, Expose #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} Now!
+
   button(type="button" id="titleModalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#titleModal") Go Win Fight
 
   #shareModal.modal.fade.annotate-modal(role="dialog")
