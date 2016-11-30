@@ -17,11 +17,13 @@ html
           h1.text-center Become a Premium Member
           h3.text-center Build Unlimited Patent Applications to Protect All Your Ideas
       .row
+        h2.text-center Individual Premium Memberships:
+      .row
         .col-md-4
           h2 1 Month, $74.99
           ul
-            li Generate and download unlimited provisional patent applications for any and all of your ideas
-            li Find contractors to hire, as well as list yourself for hiring
+            li Generate and download unlimited provisional patent applications for any and all of your ideas built out on IdeaJam during your premium membership
+            li Massive cost savings compared to the buildout of just one patent application on LegalZoom&reg; ($260.00) or patent attorney/agent drafting costs (thousands)
           if !Object.keys(user).length > 0
             a.btn.btn-go.btn-lg(data-toggle="modal" data-target="#loginModal" ) Get Started
           else
@@ -30,7 +32,7 @@ html
               input(type="hidden", name="_csrf", value="#{csrfToken}")
         .col-md-4
           h2 6 Months, $179.99
-          h5 All the benefits of the 1 Month membership, plus:
+          h5 The benefits of the 1 Month membership, plus:
           ul
             li Invite collaborators to privately build an idea together under a confidentiality agreement
             li 60% discount on a per-month basis over the 1 month membership
@@ -43,7 +45,7 @@ html
 
         .col-md-4
           h2 12 Months, $239.99
-          h5 All the benefits of the Six Month membership, plus:
+          h5 The benefits of the 6 Month membership, plus:
           ul
             li 73% discount discount on a per-month basis over the 1 month membership
           if !Object.keys(user).length > 0
@@ -54,6 +56,13 @@ html
               input(type="hidden", name="_csrf", value="#{csrfToken}")
       .row
         h3 Protect your rights in your ideas. As a premium member, you can also collaborate under a confidentiality agreement with people that you specifically invite to privately work on an idea with you.
+      .row
+        .jumbotron
+          h2 University and Company Memberships
+          h3 IdeaJam currently offers institutional memberships for universities and companies.  
+          p In advancement of our mission to change the world, during its beta period, IdeaJam will offer free membership to universities, their students and faculty.
+          p IdeaJam also offers company-wide memberships, which enable all a company's employees to privately or publicly collaborate at the direction of company management, for $799.99 per year.
+          a.btn.btn-go.btn-lg(data-toggle="modal" data-target="#loginModal" ) Start an Institutional Membership
 
   #loginModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
