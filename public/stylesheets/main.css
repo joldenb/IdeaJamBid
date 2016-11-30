@@ -33,7 +33,7 @@ h1, h2, h3, h4, p {
 }
 
 p, div {
-  font-family: Droid Sans;
+  font-family: Droid Sans, sans-serif;
 }
 
 h1, h2, h3, h4 {
