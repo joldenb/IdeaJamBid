@@ -72,14 +72,17 @@ html
           //-         li
           //-           a(href='/jam/'+ otherJam)
           //-             p #{otherJam}
-          a.home-login.btn.btn-industry.btn-lg( href="/view-jams/#{profileAccount.nickname}") More
-          
+          if Object.keys(user).length != 0 && user.id == profileAccount.id
+            .row.text-center
+              a.home-login.btn.btn-industry.btn-md( href="/view-jams/#{profileAccount.nickname}") View My Jam Leaderboards
+          else
+            .row.text-center
+              a.home-login.btn.btn-industry.btn-md( href="/view-jams/#{profileAccount.nickname}") View #{profileAccount.nickname}'s Jam Leaderboards
     
         .col-md-6
           if Object.keys(user).length != 0 && user.id == profileAccount.id
-            h2 My Original Ideas:
-            
             if accountIdeaSeeds.length > 0
+              h2 My Original Ideas:
               ul
                 each val, index in accountIdeaSeeds
                   if val.name && (val.visibility == "public" || val.inventorName == user.username)
@@ -87,10 +90,12 @@ html
                       a(href="/ideas/" + val.name)
                         h4.idea-text-name= val.name
                       span.idea-text-date= val['creationDate']
-            if accountIdeaSeeds.length == 0
-              p Your brilliance can change the world - with only one click:
-                br
-                a.btn.btn-go( href="/introduce-idea/new"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Start a New Idea
+            if !accountIdeaSeeds
+              ul
+                li
+                  p Your brilliance can change the world - with only one click:
+                li
+                  a.btn.btn-go( href="/introduce-idea/new"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Start a New Idea
 
           else
             h2.profile-name #{profileAccount.nickname}'s Original Ideas:
@@ -106,7 +111,8 @@ html
             if accountIdeaSeeds.length < 1
               p #{profileAccount.nickname} has no new ideas.
          
-          
+      .row
+        .col-md-6
           if Object.keys(user).length != 0 && user.id == profileAccount.id
             .row
               .jumbotron
@@ -121,7 +127,7 @@ html
                         span #{val.inventorName}
                         span.idea-text-date= val['creationDate']
                 else
-                  p You can easily collaborate with others to inspire world-changing concepts while earning rewards.  Invite others to work with you in a private group under a confidentiality agreement to preserve your rights in your idea.
+                  p Collaborate with others confidentially to advance world changing ideas:
                   a.home-login.btn.btn-industry.btn-md.btn-block( href="/ideas" ) Invite Collaborators
           else
             .row
@@ -139,8 +145,7 @@ html
                 else
                   p.profile-name #{profileAccount.nickname} has not participated in any collaborations.
 
-
-
+        .col-md-6
           if Object.keys(user).length != 0 && user.id == profileAccount.id
             .row
               .jumbotron
@@ -156,7 +161,7 @@ html
                           span #{val.inventorName}
                           span.idea-text-date= val['creationDate']
                 else
-                  p You can easily collaborate with others to inspire world-changing concepts while earning rewards. Contribute criticisms and suggestions to others' ideas to earn points, rewards and credibility.
+                  p Add your own solutions and criticisms to other ideas to earn rewards:
                   a.home-login.btn.btn-industry.btn-md.btn-block( href="/ideas" ) Contribute to Other Ideas
           else
             .row

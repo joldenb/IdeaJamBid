@@ -346,30 +346,31 @@ html
           button(type="button", class="close" data-dismiss="modal") &times;
           .modal-title 
             if idea.name
-              h3 Visibility status of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
-              h4 Protect yourself against others who might see and steal ideas from your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}.
-              h4 IdeaJam can create a provisional patent application template for your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}.  Filing a patent application before making your ideas visible will provide you with patent pending status over #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} earning you potential rights over anyone who later makes or sells the same idea.
+              h3 Don't let anyone steal your idea!
+              h4 Prior to going public with your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}, you should protect your idea by obtaining patent pending status.
             else
-              h3 #{user.nickname}, name your idea before starting the process of generating a provisional patent application template.
+              h3 #{user.nickname}, you need to name your idea before building a patent application and going public.
         .modal-body
             if appStrengthClass == "yes col-md-12" || idea.visibility == "public"
-              a.btn.btn-go#create-application-button( href="/create-application" ) Download Application
-              br
-              if !receipt
-                form(role='form', id="prelimReceiptUpload" action="/receipt-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
-                  .form-group
-                    input(type="hidden", name="_csrf", value="#{csrfToken}")
-                    input#receiptInput(type="file", name="receipt")
-              else
-                a(href=receipt.amazonURL download)
-                  p Receipt uploaded.
-                h4 Variants
-                each variantDate in variantDates
-                  .row
-                    a(href="/ideas/#{idea.name}/variant/"+variantDate[1]) #{variantDate[0]}
-
-                a.btn.btn-go( href="/create-new-variant" ) Create a New Variant
+              .row.text-center
+                a.btn.btn-go.btn-lg#create-application-button( href="/create-application" ) Download Patent Application
                 br
+                //- ** FILING A PATENT APPLICATION AND OBTAINING A RECEIPT IS TOO COMPLEX OF A PROCESS TO HAVE GOING ON WHILE A MODAL WINDOW IS ACTIVE IN A SECOND WEBSITE.  THE NEXT PROMPT AFTER DOWNLOADING A PATENT APPLICATION NEEDS TO BE A REDIRECT TO THE SCREEN WHERE YOU HIRE A PATENT ATTORNEY
+                //- if !receipt
+                  form(role='form', id="prelimReceiptUpload" action="/receipt-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
+                    .form-group
+                      input(type="hidden", name="_csrf", value="#{csrfToken}")
+                      input#receiptInput(type="file", name="receipt")
+                //- else
+                  a(href=receipt.amazonURL download)
+                    p Receipt uploaded.
+                  h4 Variants
+                  each variantDate in variantDates
+                    .row
+                      a(href="/ideas/#{idea.name}/variant/"+variantDate[1]) #{variantDate[0]}
+
+                  a.btn.btn-go( href="/create-new-variant" ) Create a New Variant
+                  br
             else if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
               if idea.name
                 h4 Strong patent applications generally have more descriptions of the invention and its components.   To strengthen the provisional patent application template for your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}, you should enter more information about the concept.
@@ -378,8 +379,11 @@ html
             br
 
           .modal-footer
-            button#enterMoreInformation.btn.btn-info(data-dismiss="modal") Enter More Information
-            a.btn.btn-go#bypass-application-button(data-toggle="modal" data-target="#confirmExposeIdeaModal") Expose Idea Now
+            .row
+              .col-md-6.text-center
+                button#enterMoreInformation.btn.btn-info(data-dismiss="modal") Strengthen #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} Profile
+              .col-md-6.text-center
+                a.btn.btn-go#bypass-application-button(data-toggle="modal" data-target="#confirmExposeIdeaModal") Publicly Expose #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} Now
 
   #confirmExposeIdeaModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
