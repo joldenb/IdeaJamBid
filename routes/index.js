@@ -2461,6 +2461,11 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
 
   query.exec()
   .then(function(idea){
+    if(!idea){
+      console.log("No idea found.");
+      throw new Error('abort promise chain');
+      return;
+    }
     req.session.idea = idea.id;
     currentIdea = idea._doc;
 
@@ -3685,8 +3690,9 @@ router.get('/create-application', csrfProtection, function(req, res){
             IdeaImage.find({"_id" : { $in : allImageIds}}, function(err, images){
               images = _.filter(images, function(item){return item.amazonURL});
   
-              IdeaSeed.createApplication(currentIdea, currentAccount, problems, images, comps, res);
-
+              IdeaSeed.createApplication(currentIdea, currentAccount, problems, images, comps, res).then(function(applicationInfo){
+                res.sendStatus(200);
+              });
             });
           }); // end of image query
         });// end of problem query
@@ -4454,6 +4460,7 @@ router.post('/delete-image-component', csrfProtection, function(req, res) {
 *****************************************************************/
 router.get('/logout', csrfProtection, function(req, res) {
   req.session.idea = null;
+  req.session.loginPath = null;
   req.logout();
   res.redirect('/');
 });
@@ -5284,6 +5291,11 @@ router.get('/component-profile/:identifier', csrfProtection, function(req, res){
       } 
       var ideaSeedId = req.session.idea || component.ideaSeed.toString();
       IdeaSeed.findById(ideaSeedId,function(err, idea){
+        if(!idea){
+          console.log("no idea found for this component: " + req.params.identifier);
+          res.redirect('/');
+          return;
+        }
 
         Component.find({
           "ideaSeed" : req.session.idea

@@ -253,43 +253,37 @@ html
     .modal-dialog
       .modal-content
         .modal-header
-          button(type="button", class="close" data-dismiss="modal") &times;
-          .modal-title 
-            if idea.name
-              h3 Visibility status of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
-              h4 Protect yourself against others who might see and steal ideas from your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}.
-              h4 IdeaJam can create a provisional patent application template for your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}.  Filing a patent application before making your ideas visible will provide you with patent pending status over #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} earning you potential rights over anyone who later makes or sells the same idea.
-            else
-              h3 #{user.nickname}, name your idea before starting the process of generating a provisional patent application template.
-        .modal-body
+          button(type="button", class="close" data-dismiss="modal")
+          .modal-title
             if appStrengthClass == "yes col-md-12" || idea.visibility == "public"
-              a.btn.btn-go#create-application-button( href="/create-application" ) Download Application
-              br
-              if !receipt
-                form(role='form', id="prelimReceiptUpload" action="/receipt-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
-                  .form-group
-                    input(type="hidden", name="_csrf", value="#{csrfToken}")
-                    input#receiptInput(type="file", name="receipt")
-              else
-                a(href=receipt.amazonURL download)
-                  p Receipt uploaded.
-                h4 Variants
-                each variantDate in variantDates
-                  .row
-                    a(href="/ideas/#{idea.name}/variant/"+variantDate[1]) #{variantDate[0]}
+              h2 Generate Patent Application
+            else
+              h2 Expose Idea
+        .modal-body
+          //- p Filing a patent application before making your ideas visible will provide you with patent pending status over #{idea.name}, earning you potential rights over anyone who later makes or sells the same idea.
 
-                a.btn.btn-go( href="/create-new-variant" ) Create a New Variant
-                br
-            else if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
-              if idea.name
-                h4 Strong patent applications generally have more descriptions of the invention and its components.   To strengthen the provisional patent application template for your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}, you should enter more information about the concept.
-              else
-                h3 Name your idea before starting the process of generating a provisional patent application template.
-            br
-
+          if appStrengthClass == "yes col-md-12" || idea.visibility == "public"
+            if !receipt
+              form(role='form', id="prelimReceiptUpload" action="/receipt-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
+                .form-group
+                  input(type="hidden", name="_csrf", value="#{csrfToken}")
+                  input#receiptInput(type="file", name="receipt")
+            else
+              a(href=receipt.amazonURL download)
+                p Receipt uploaded.
+              h4 Variants
+              each variantDate in variantDates
+                .row
+                  a(href="/ideas/#{idea.name}/variant/"+variantDate[1]) #{variantDate[0]}
+              a.btn.btn-go( href="/create-new-variant" ) Create a New Variant
+          else if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
+            p Your idea is currently private.  You may expose your idea to the public, but you may lose credit for it if you have not yet filed your preliminary patent application.  If you are sure, you may expose your idea now.  Otherwise, enter more information about it's components, images, etc. and then file an application with the US Patent and Trademark Office to claim the right to your idea.
           .modal-footer
-            button#enterMoreInformation.btn.btn-info(data-dismiss="modal") Enter More Information
-            a.btn.btn-go#bypass-application-button(data-toggle="modal" data-target="#confirmExposeIdeaModal") Expose Idea Now
+            if appStrengthClass == "yes col-md-12" || idea.visibility == "public"
+              a.btn.btn-go.btn-lg#create-application-button Generate Application
+            else
+              button#enterMoreInformation.btn.btn-info.btn-lg(data-dismiss="modal") Enter More Information
+              a.btn.btn-go#bypass-application-button.btn-lg(data-toggle="modal" data-target="#confirmExposeIdeaModal") Expose Idea Now
 
   #confirmExposeIdeaModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
@@ -750,5 +744,88 @@ html
         var stop;
       });
 
+      $("#create-application-button").click(function(event){
+        $.get("/create-application", function(data){
+          window.location.reload(true)
+        });
+      })
+    if(document.getElementById("receiptInput")){
+      document.getElementById("receiptInput").onchange = function(event) {
+        $("<img id='spinner' src='/spinner.gif'>").insertAfter("#prelimReceiptUpload");
+        const files = document.getElementById('receiptInput').files;
+        const file = files[0];
+        const csrf = $("input[name='_csrf']").val();
+        if(file == null){
+          return alert('No file selected.');
+        }
+        var fr   = new FileReader;
+        
+        fr.onloadend = function() {
+          var exif = EXIF.readFromBinaryFile(this.result);
+          if(file.size < 3000000){
+            getSignedRequest(file, csrf, exif);
+          } else if (file.size > 3000000){
+            alert('Please choose an image smaller than 3 MB.')
+          } else {
+            alert('An error ocurred with this image.')
+          }
+
+        };
+
+        fr.readAsArrayBuffer(file); // read the file
+
+
+      };
+
+      function uploadFile(file, signedRequest, url, csrf, exif){
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', signedRequest);
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4){
+            if(xhr.status === 200 && (file.type=="application/pdf")){
+              var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type,
+                "_csrf" : csrf, exif : exif };
+              $.post('/receipt-upload', data , function(response, status){
+                if(status == 200){
+                  window.location.reload();
+                } else {
+                  alert('An error ocurred while uploading receipt.')
+                }
+              });
+            }
+            else{
+              alert('Please upload PDF.');
+            }
+          }
+        };
+        xhr.send(file);
+      }
+
+      function getSignedRequest(file, csrf,exif){
+        const xhr = new XMLHttpRequest();
+        var filename = file.name.split(".");
+        filename[0] = filename[0] + "-" + Date.now().toString();
+        filename = filename.join(".");
+        xhr.open('GET', '/sign-s3?file-name='+ filename + '&file-type='+ file.type);
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === 4){
+            if(xhr.status === 200){
+              var response;
+              if(xhr.responseText == ""){
+                response = JSON.parse('{}');
+              } else {
+                response = JSON.parse(xhr.responseText);
+              }
+              uploadFile(file, response.signedRequest, response.url, csrf, exif);
+            }
+            else{
+              alert('Could not get signed URL.');
+            }
+          } 
+          
+        };
+        xhr.send();
+      }
+    }
 
     }); //end of document.ready

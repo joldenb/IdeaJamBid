@@ -25,6 +25,7 @@ var IdeaSeed = new Schema({
 	thirdFeature	: String,
   aptitudes       : [ObjectId],
   visibleEditingSections : [String],
+  applications : [String],
 
   collaborators : [String], //this will be a username
 
@@ -265,14 +266,11 @@ IdeaSeed.statics.createVariantContract = function(signerName){
 
 	var contractFilename = __dirname + '/../tmp/contract-' + signerName +Date.now()+'.docx';
 
-      fs.mkdir(__dirname + '/../tmp', function(error) {  
-			  if(error) {
-			    console.log("oh no!!!", error);
-			  } else {
-			    //Carry on, all good, directory exists / created.
-			  }
-			 });
-
+  fs.mkdir(__dirname + '/../tmp', function(error) {  
+	  if(error) {
+	    console.log("contract not saved correctly", error);
+	  } 
+	});
 
 	var out = fs.createWriteStream ( contractFilename );
 	docx.generate ( out, {
@@ -313,22 +311,17 @@ IdeaSeed.statics.createVariantContract = function(signerName){
 
 IdeaSeed.statics.createApplication = function(idea, account, problems, images, comps, res){
 
+	return new Promise(
+		function (resolve, reject) {
+
+
 		function createWordDoc(){
-					res.writeHead ( 200, {
-						"Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-						'Content-disposition': 'attachment; filename=PreliminaryApplication.docx'
-					});
+					// res.writeHead ( 200, {
+					// 	"Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+					// 	'Content-disposition': 'attachment; filename=PreliminaryApplication.docx'
+					// });
 
 					var docx = officegen ( {type: 'docx', font_face :'Times New Roman'} );
-
-					docx.on ( 'finalize', function ( written ) {
-						console.log ( 'Finish to create a Word file.\nTotal bytes created: ' + written + '\n' );
-					});
-
-					docx.on ( 'error', function ( err ) {
-						console.log ( 'Errors: ' + err + '\n' );
-					});
-
 
 					var pObj = docx.createP ({ align: 'center' });
 					pObj.addText ( 'IN THE UNITED STATES PATENT AND TRADEMARK OFFICE', { font_size: 14, font_face: 'Times New Roman' } );
@@ -670,21 +663,56 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 							console.log("figure " + i + " is not working")
 						}
 					}
+					var applicationFilename = 'application-' + idea.name.replace( /\s/g, "") +Date.now()+'.docx';
+					var applicationFilenameWithPath = __dirname + '/../tmp/' + applicationFilename;
 
-					docx.generate ( res, {
-				    'finalize': function ( written ) {
-								for(i=0;i<images.length; i++){
-									if (fs.existsSync(__dirname + '/figure-' + (i+1) +'.png')) {
-										fs.unlink(__dirname + '/figure-' + (i+1) +'.png');
-									}
-								}
+				  fs.mkdir(__dirname + '/../tmp', function(err) {
+            if (err && err.code == 'EEXIST') {
+            	console.log("directory already exists, but that's ok")
+            }
+					});
 
-				        console.log ( 'Finish to create a preliminary application.\nTotal bytes created: ' + written + '\n' );
-				    },
-				    'error': function ( err ) {
-				        console.log ( err );
-				    }
-					} );
+					var out = fs.createWriteStream ( applicationFilenameWithPath );
+					
+
+					out.on ( 'error', function (err) {
+					  console.log("Error is " + err);
+					  resolve({result:false})
+					});
+
+					docx.generate ( out );
+					out.on ( 'close', function () {
+						for(i=0;i<images.length; i++){
+							if (fs.existsSync(__dirname + '/figure-' + (i+1) +'.png')) {
+								fs.unlink(__dirname + '/figure-' + (i+1) +'.png');
+							}
+						}
+
+						var body = fs.createReadStream( applicationFilenameWithPath );
+					  var s3 = new aws.S3({
+					      accessKeyId : process.env.accessKeyId,
+					      secretAccessKey : process.env.secretAccessKey
+					  });
+					  var s3Params = {
+					    Body : body,
+					    Bucket: 'qonspire',
+					    Key: applicationFilename,
+					    Expires: 60,
+					    ContentType: "docx",
+					    ACL: 'public-read'
+					  };
+						s3.upload(s3Params).
+						  on('httpUploadProgress', function(evt) { console.log(evt); }).	
+						  send(function(err, data) {
+						  	fs.unlink( applicationFilenameWithPath );
+						  	if(err) console.log("error writing to s3")
+						  	console.log(err, data);
+						  	resolve({
+						  		"location":data['Location'], 
+						  		"filename" : applicationFilename
+						  	});
+						  });
+					});
 		}			
 
 		function renderImage(number) {
@@ -826,6 +854,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 		} else {
 			createWordDoc();
 		}
+	});
 
 };
 
