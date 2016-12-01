@@ -597,7 +597,7 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
               }
             }
 
-            if(req.user.otherNetworks && req.user.otherNetworks.indexOf(element.id) > -1 ){
+            if(req.user && req.user.otherNetworks && req.user.otherNetworks.indexOf(element.id) > -1 ){
               generalJams.push(element.name);
             }
 
@@ -636,7 +636,10 @@ router.get('/imagineer/:nickname', csrfProtection, function(req, res) {
                         ideaObject['inventorName'] = "";
                       }
                     });
-                    req.session.loginPath = "/imagineer/" + req.user.nickname;
+                    if(req.user && req.user.nickname){
+                      req.session.loginPath = "/imagineer/" + req.user.nickname;  
+                    }
+                    
 
 
 
@@ -2457,6 +2460,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
   ];
   var ideaAptitudes;
   var openCampaign;
+  var patentApplicationList = [];
   let mostRecentCampaign;
 
   query.exec()
@@ -2476,6 +2480,21 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
     return IdeaSeed.findById(req.session.idea).exec()
   })
   .then(function(idea){
+
+    if(idea.patentApplications && idea.patentApplications.length){
+      _.each(idea.patentApplications, function(oneApp, index){
+        if(oneApp.filename){
+          var dateVar = oneApp.filename.split("-")[2];  //this assumes the datestamp is the third part of a patent application filename, as built in the createApplication function (currently in idea seed model)
+          if ( !isNaN( dateVar ) ) {
+            patentApplicationList.push({
+              amazonURL : oneApp.amazonURL,
+              date : moment(dateVar).format("MMM Do YYYY")
+            });
+          }
+        }
+      });
+    }
+
     currentIdea = idea._doc;
 
     //check permissions
@@ -2649,6 +2668,7 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
       problemAreas  : problemAreas,
       aptitudes : ideaAptitudes,
       headshot : headshotURL,
+      patentApplicationList : patentApplicationList,
       headshotStyle : headshotStyle,
       imageURLs : imageURLs,
       inventorName : currentIdea.inventorName,
@@ -3013,6 +3033,7 @@ router.get('/ideas/:ideaName/edit', csrfProtection, function(req, res){
   var currentReceipt = "";
   var hasActiveMembership, membershipDocument;
   var currentAppStrength;
+  var numberOfComponentsWithDescriptions = 0;
   var problemAreas = [
     "Area : Performability",
     "Area : Affordability",
@@ -3032,6 +3053,7 @@ router.get('/ideas/:ideaName/edit', csrfProtection, function(req, res){
   ];
   var ideaAptitudes;
   var openCampaign;
+  var patentApplicationList = [];
   var mostRecentCampaign;
 
   query.exec()
@@ -3046,6 +3068,22 @@ router.get('/ideas/:ideaName/edit', csrfProtection, function(req, res){
     return IdeaSeed.findById(req.session.idea).exec()
   })
   .then(function(idea){
+
+    if(idea.patentApplications && idea.patentApplications.length){
+      _.each(idea.patentApplications, function(oneApp, index){
+        if(oneApp.filename){
+          var dateVar = oneApp.filename.split("-")[2];  //this assumes the datestamp is the third part of a patent application filename, as built in the createApplication function (currently in idea seed model)
+          if ( dateVar ) { dateVar = parseInt(dateVar.slice(0,-5)); }
+          if ( !isNaN( dateVar ) ) {
+            patentApplicationList.push({
+              amazonURL : oneApp.amazonURL,
+              date : moment(dateVar).format("MMM Do YYYY")
+            });
+          }
+        }
+      });
+    }
+
     currentIdea = idea._doc;
 
     //check permissions
@@ -3129,6 +3167,14 @@ router.get('/ideas/:ideaName/edit', csrfProtection, function(req, res){
     });
 
     components = newCompOrder;
+
+
+    //get number of components that have a description
+    _.each(components, function(oneComponent, index){
+      if(oneComponent.descriptions && oneComponent.descriptions.length && oneComponent.descriptions.length > 0){
+        numberOfComponentsWithDescriptions++;
+      }
+    })
 
     // Figure out which account and headshot go with with suggestion
     _.each(components, function(component, index){
@@ -3218,6 +3264,7 @@ router.get('/ideas/:ideaName/edit', csrfProtection, function(req, res){
       problemAreas  : problemAreas,
       aptitudes : ideaAptitudes,
       headshot : headshotURL,
+      patentApplicationList : patentApplicationList,
       headshotStyle : headshotStyle,
       imageURLs : imageURLs,
       inventorName : currentIdea.inventorName,
@@ -3229,7 +3276,8 @@ router.get('/ideas/:ideaName/edit', csrfProtection, function(req, res){
       listOfProblems : listOfProblems,
       openCampaign: openCampaign,
       mostRecentCampaign: mostRecentCampaign,
-      listOfVisibleSections : currentIdea.visibleEditingSections
+      listOfVisibleSections : currentIdea.visibleEditingSections,
+      numberOfComponentsWithDescriptions : numberOfComponentsWithDescriptions
     });
   
   })
@@ -3660,7 +3708,7 @@ router.get('/ideas/:ideaName/view-all-components', csrfProtection, function(req,
 ******************************************************************
 *****************************************************************/
 router.get('/create-application', csrfProtection, function(req, res){
-  if(!(req.user && req.user.username)) {
+  if(!(req.user && req.user.username && req.session.idea)) {
     res.redirect('/');
     return;
   }
@@ -3691,7 +3739,20 @@ router.get('/create-application', csrfProtection, function(req, res){
               images = _.filter(images, function(item){return item.amazonURL});
   
               IdeaSeed.createApplication(currentIdea, currentAccount, problems, images, comps, res).then(function(applicationInfo){
-                res.sendStatus(200);
+                  if ( idea.patentApplications && idea.patentApplications.length ){
+                    idea.patentApplications.push({
+                      amazonURL : applicationInfo['location'],
+                      filename : applicationInfo['filename']
+                    });
+                  } else {
+                    idea.patentApplications = [{
+                      amazonURL : applicationInfo['location'],
+                      filename : applicationInfo['filename']
+                    }];
+                  }
+                  idea.save( function( err) {
+                    res.sendStatus(200);
+                  });
               });
             });
           }); // end of image query

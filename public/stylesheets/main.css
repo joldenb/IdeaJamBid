@@ -1026,10 +1026,6 @@ a.network-link:hover {
   margin-top: -10px;
 }
 
-#create-application-button {
-  margin-bottom: 1em;
-}
-
 .problem-row {
   cursor: pointer;
   cursor: hand;
@@ -1554,6 +1550,28 @@ button.suggestion-tactics, button.suggestion-targets {
   color: #414142;
 }
 
+.btn-navigation {
+  background-color: white;
+  border: 2px solid #337ab7;
+  color: #414142;
+}
+
+.btn-navigation:hover {
+  background-color: #414142;
+  color: white;
+}
+
+.btn-generate-application {
+  background-color: white;
+  border: 2px solid #00A550;
+  color: #414142;
+}
+
+.btn-generate-application:hover {
+  background-color: #00A550;
+  color: white;
+}
+
 .btn-tomato {
   background-color: #C64143;
 }
@@ -1788,6 +1806,17 @@ button.suggestion-tactics, button.suggestion-targets {
   width:80%;
 }
 
+.idea-category-edit {
+  margin: 1em 0;
+  background-color: lightgray;
+  border-radius: 10px;
+  padding: .5em;  
+}
+
+.lefthand-buttons .row {
+  margin:0 1em 1em;
+}
+
 .idea-edit-row {
 /*  min-height: 30em;
 */  position: relative;
@@ -1829,6 +1858,14 @@ button.suggestion-tactics, button.suggestion-targets {
 .complete-idea-editing {
   position: absolute;
   bottom: 2em;
+}
+
+.complete-row {
+  margin: 1em 0;
+}
+
+.category-ready-checkbox {
+  margin-top:.4em;
 }
 
 @media screen and (min-width: 800px) {
@@ -2174,4 +2211,8 @@ img.prizeImage {
 
 #hover-icon {
   position:absolute;
+}
+
+#filePatentModal .row {
+  margin:1em;
 }

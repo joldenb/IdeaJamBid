@@ -25,7 +25,11 @@ var IdeaSeed = new Schema({
 	thirdFeature	: String,
   aptitudes       : [ObjectId],
   visibleEditingSections : [String],
-  applications : [String],
+  patentApplications : [{
+  	amazonURL : String,
+  	filename : String,
+  	variantName : String
+  }],
 
   collaborators : [String], //this will be a username
 
@@ -663,7 +667,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 							console.log("figure " + i + " is not working")
 						}
 					}
-					var applicationFilename = 'application-' + idea.name.replace( /\s/g, "") +Date.now()+'.docx';
+					var applicationFilename = 'application-' + idea.name.replace( /\s/g, "") +"-" + Date.now()+'.docx';
 					var applicationFilenameWithPath = __dirname + '/../tmp/' + applicationFilename;
 
 				  fs.mkdir(__dirname + '/../tmp', function(err) {
@@ -709,7 +713,7 @@ IdeaSeed.statics.createApplication = function(idea, account, problems, images, c
 						  	console.log(err, data);
 						  	resolve({
 						  		"location":data['Location'], 
-						  		"filename" : applicationFilename
+						  		"filename" : data['Key']
 						  	});
 						  });
 					});

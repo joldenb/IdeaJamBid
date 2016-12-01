@@ -6,41 +6,74 @@ html
   .header.navbar.navbar-default
     include ../../partials/header.jade
 
-  .container-fluid.view-all-imperfections
+  .container-fluid.view-all-imperfections.idea-seed-all-suggestions
     .row
-      .col-md-4
-        h2 All <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b> Imperfections
-      .col-md-4
-      .col-md-4
-        .return-button
-          a.home-logout.btn.btn-industry.btn-lg( href="/ideas/#{idea.name}") Back to Idea Summary
-        br
-
-    .row 
-      .idea-summary-data#idea-summary-problems
+      .col-xs-12
+        h1 #{idea.name} Criticisms
+    .row
+      .col-md-3.lefthand-buttons
+        .row
+          .col-xs-12
+            a.btn.btn-navigation.btn-lg(href="/ideas/#{idea.name}/edit") #{idea.name} Dashboard
+        .row
+          .col-xs-12
+            a.btn.btn-navigation.btn-lg(href="/ideas/#{idea.name}/edit/aptitudes") Previous Step
+        .row
+          .col-xs-12
+            a.btn.btn-navigation.btn-lg(href="/ideas/#{idea.name}/edit") Finish!
+      .col-md-9
+        form(role='form', id="addIdeaProblem" action="/add-idea-problem", method="post", data-idea-doc=idea)
+          .form-group
+            input(type="hidden", name="_csrf", value="#{csrfToken}")
+            h4 Describe the criticism :
+            textarea.problemStatement(class="form-control" rows="3")
+              | The problem is
+          button.btn.btn-go.btn-lg.individualProblemSubmit(type='submit') Save Criticism
+    .row
+      .col-xs-12
+        h3 Saved Criticisms
         each problem, index in problems
           if(problem.text && problem['identifier'])
             include ../../partials/problem-summary-element.jade
-    input(type="hidden", name="_csrf", value="#{csrfToken}")
 
   include ../../partials/js-includes.jade
   script(src='/exif.js')
   script(type="text/javascript").
-    $(".upvote-imperfection").click(function(event){
+    $(".individualProblemSubmit").click(function(event){
       event.preventDefault();
-      if(!$(this).hasClass("clicked-upvote")){
-        $(this).addClass("clicked-upvote");
-        $(this).text("Upvote " + (parseInt($(this).text().slice(7)) + 1));
+      if ($("#addIdeaProblem .problemStatement").val().length > 15){
+        var newProblemStatement = $("#addIdeaProblem .problemStatement").val().trim();
+        $.post('/add-idea-problem', 
+          {
+            _csrf : $('[name="_csrf"]').val(),
+            problemStatement : newProblemStatement.slice(15)
+          },
+          function(resp) {
+            window.location.reload(true);
+          });
       }
-
-        $.post('/upvote-imperfection', 
-        {
-          _csrf : $('[name="_csrf"]').val(),
-          problem : $(this)[0].dataset['problemId']
-        },
-        function(data, response) {
-        });
-      
-
-      return false;
     });
+
+    // This is for the problem input
+    var inputProb = $("#addIdeaProblem textarea");
+    var requiredProbText = "The problem is ";
+    $.each(inputProb, function(index, value){
+      value.addEventListener ("mousedown", function () {
+        if (String($(this).val()).indexOf(requiredProbText) == -1) {
+              $(this).val(requiredProbText);
+        }
+        if (this.selectionStart < 15) {
+          this.selectionStart = 15;
+        }
+      }, false);
+
+      value.addEventListener ("keydown", function () {
+        if (String($(this).val()).indexOf(requiredProbText) == -1) {
+              $(this).val(requiredProbText);
+        }
+        if (this.selectionStart < 15) {
+          this.selectionStart = 15;
+        }
+      }, false);
+    })
+

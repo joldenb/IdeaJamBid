@@ -9,7 +9,7 @@ html
   .container-fluid.idea-summary
     .row
       .col-xs-12
-        h1 #{idea.name} Components
+        h1 #{idea.name} Component Details
     .row
       .col-md-3.lefthand-buttons
         .row
@@ -17,28 +17,20 @@ html
             a.btn.btn-navigation.btn-lg(href="/ideas/#{idea.name}/edit") #{idea.name} Dashboard
         .row
           .col-xs-12
-            a.btn.btn-navigation.btn-lg(href="/ideas/#{idea.name}/edit/aptitudes") Next Step
+            a.btn.btn-navigation.btn-lg(href="/ideas/#{idea.name}/edit/images") Previous Step
+        .row
+          .col-xs-12
+            a.btn.btn-navigation.btn-lg(href="/ideas/#{idea.name}/edit/evaluation") Next Step
       .col-md-9
-        form(role='form', id="addIdeaComponent" action="/add-idea-component", method="post" data-idea-doc=idea)
-          .form-group
-            h3 Name the component:
-            input#componentName.form-control(type="text", name="componentName", value='The ...')
-            //- p (Example: "The Flux Capacitor")
-            input(type="hidden", name="_csrf", value="#{csrfToken}")
-            br
-            button.btn.btn-go.btn-lg#componentSubmit(type='submit') Save Component
-    .row
-      .col-xs-12
         h3 Saved Components
-
-    if Object.keys(wholeSuggestionBlockInfo).length != 0
-      .row
-        .col-xs-12
-          each component, identifier in wholeSuggestionBlockInfo
-            if component.document.text
-              include ../../partials/component-summary-element.jade
-    else
-      h4 <i>No Components Yet</i>
+        if Object.keys(wholeSuggestionBlockInfo).length != 0
+          .row
+            .col-xs-12
+              each component, identifier in wholeSuggestionBlockInfo
+                if component.document.text
+                  include ../../partials/component-summary-element.jade
+        else
+          h4 <i>No Components Yet</i>
 
   include ../../partials/js-includes.jade
   script(src='/exif.js')

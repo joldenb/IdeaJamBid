@@ -7,6 +7,7 @@ var Component = require('../models/component');
 var IdeaImage = require('../models/ideaImage');
 var IdeaReview = require('../models/ideaReviews');
 var IdeaProblem = require('../models/ideaProblem');
+var Aptitude = require('../models/aptitude');
 var Account = require('../models/account');
 var router = express.Router();
 var multer = require('multer');
@@ -22,6 +23,619 @@ var uploading = multer({
 });
 
 var today;
+
+////////////////////////////////////////////////
+// Add a problem to an idea seed
+////////////////////////////////////////////////
+router.get('/ideas/:ideaName/edit/criticisms', csrfProtection, function(req, res) {
+  if(!(req.user && req.user.username)) {
+    console.log("not logged in")
+    res.redirect('/');
+    return;
+  }
+
+  
+  if(req.params && req.params.ideaName){
+    var query = IdeaSeed.findOne({"name" : req.params.ideaName});
+  } 
+
+  var headshotData, headshotURL, headshotStyle, currentIdea;
+  var variantDates = [],
+      sortedProblems = [];
+  var imageURLs = [];
+  var problems, components;
+  var componentsList = [];
+  var listOfProblems = [];
+  var typeOfProblem, rankingOfProblem;
+  var averageScore = 0;
+  var filename;
+  var imageStyle;
+  var currentReceipt = "";
+  var currentAppStrength;
+  var problemAreas = [
+    "Area : Performability",
+    "Area : Affordability",
+    "Area : Featurability",
+    "Area : Deliverability",
+    "Area : Useability",
+    "Area : Maintainability",
+    "Area : Durability",
+    "Area : Imageability",
+    "Area : Complexity",
+    "Area : Precision",
+    "Area : Variability",
+    "Area : Sensitivity",
+    "Area : Immaturity",
+    "Area : Danger",
+    "Area : Skills"
+  ];
+  var ideaAptitudes;
+
+  query.exec()
+  .then(function(idea){
+    req.session.idea = idea.id;
+    currentIdea = idea._doc;
+
+    headshotData = ideaSeedHelpers.getUserHeadshot(req);
+    // headshotURL = headshotData['headshotURL'];
+    headshotStyle = headshotData['headshotStyle'];
+
+    return IdeaSeed.findById(req.session.idea).exec()
+  })
+  .then(function(idea){
+    currentIdea = idea._doc;
+
+    //check permissions
+    if(!((currentIdea.visibility == "private" && currentIdea.inventorName == req.user.username) ||
+      currentIdea.visibility == "public" ||
+      (currentIdea.collaborators.indexOf(req.user.username) > -1))){
+      console.log("visibility mode does not permit this user to view this idea");
+      throw new Error('abort promise chain');
+      return;
+    }
+
+    return IdeaProblem.find({"ideaSeed" : currentIdea._id, date : {$exists : true}})
+      .sort('-date')
+      .exec()
+  })
+  .then(function(currentProblems){
+    problems = currentProblems;
+    var listOfProblemCreators = [];
+    _.each(problems, function(value, key, list){
+      listOfProblemCreators.push(value.creator);
+    });
+
+    return Account.find({"username" : { $in : listOfProblemCreators}});
+  })
+  .then(function(problemCreators){
+    if(problemCreators && problemCreators.length){
+      //figure out which creator goes to which problem
+      _.each(problemCreators, function(creator, index){
+        _.each(problems, function(problem, probIndex){
+          if(creator.username == problem.creator){
+            problem.wholeCreator = creator;
+            if (creator.headshots[0]) {
+              problem.headshot = {};
+              problem.headshot.url = creator.headshots[0].amazonURL;
+              var imageStyle;
+              imageStyle = ideaSeedHelpers.getImageOrientation(creator.headshots[0]["orientation"]);
+              problem.headshot.style = imageStyle;
+            }
+          }  
+        })
+      })
+    }    
+    res.render('pages/ideas/idea-seed-all-imperfections', { user : req.user || {}, idea : currentIdea,
+      csrfToken: req.csrfToken(),
+      problemAreas  : problemAreas,
+      headshot : headshotURL,
+      headshotStyle : headshotStyle,
+      problems : problems
+    });
+  
+  })
+  .catch(function(err){
+    // just need one of these
+    console.log('error:', err);
+    res.redirect('/');
+  });
+
+});
+
+
+
+////////////////////////////////////////////////
+// Add a problem to an idea seed
+////////////////////////////////////////////////
+router.get('/ideas/:ideaName/edit/evaluation', csrfProtection, function(req, res) {
+
+  if(!(req.user && req.user.username)) {
+    console.log("not logged in")
+    res.redirect('/');
+    return;
+  }
+
+  if(req.params && req.params.ideaName){
+    var query = IdeaSeed.findOne({"name" : req.params.ideaName});
+  } 
+
+  var headshotData, headshotURL, headshotStyle, currentIdea;
+  var variantDates = [],
+      sortedProblems = [];
+  var imageURLs = [];
+  var problems, components;
+  var componentsList = [];
+  var listOfProblems = [];
+  var typeOfProblem, rankingOfProblem;
+  var averageScore = 0;
+  var filename;
+  var wholeSuggestionBlockInfo = {};
+  var imageStyle;
+  var currentReceipt = "";
+  var currentAppStrength;
+  var ideaAptitudes;
+
+  query.exec()
+  .then(function(idea){
+    req.session.idea = idea.id;
+    currentIdea = idea._doc;
+
+    headshotData = ideaSeedHelpers.getUserHeadshot(req);
+    // headshotURL = headshotData['headshotURL'];
+    headshotStyle = headshotData['headshotStyle'];
+
+    return IdeaSeed.findById(req.session.idea).exec()
+  })
+  .then(function(idea){
+    currentIdea = idea._doc;
+
+    //check permissions
+    if(!((currentIdea.visibility == "private" && currentIdea.inventorName == req.user.username) ||
+      currentIdea.visibility == "public" ||
+      (currentIdea.collaborators.indexOf(req.user.username) > -1))){
+      console.log("visibility mode does not permit this user to view this idea");
+      throw new Error('abort promise chain');
+      return;
+    }
+
+    res.render('pages/ideas/idea-seed-evaluation', { user : req.user || {}, idea : currentIdea,
+      csrfToken: req.csrfToken(),
+      headshot : headshotURL,
+      headshotStyle : headshotStyle,
+      wholeSuggestionBlockInfo : wholeSuggestionBlockInfo
+    });
+  
+  })
+  .catch(function(err){
+    // just need one of these
+    console.log('error:', err);
+    res.redirect('/');
+  });
+});
+
+
+
+////////////////////////////////////////////////
+// Add a problem to an idea seed
+////////////////////////////////////////////////
+router.get('/ideas/:ideaName/edit/component-details', csrfProtection, function(req, res) {
+
+  if(!(req.user && req.user.username)) {
+    console.log("not logged in")
+    res.redirect('/');
+    return;
+  }
+
+  if(req.params && req.params.ideaName){
+    var query = IdeaSeed.findOne({"name" : req.params.ideaName});
+  } 
+
+  var headshotData, headshotURL, headshotStyle, currentIdea;
+  var variantDates = [],
+      sortedProblems = [];
+  var imageURLs = [];
+  var problems, components;
+  var componentsList = [];
+  var listOfProblems = [];
+  var typeOfProblem, rankingOfProblem;
+  var averageScore = 0;
+  var filename;
+  var wholeSuggestionBlockInfo = {};
+  var imageStyle;
+  var currentReceipt = "";
+  var currentAppStrength;
+  var ideaAptitudes;
+
+  query.exec()
+  .then(function(idea){
+    req.session.idea = idea.id;
+    currentIdea = idea._doc;
+
+    headshotData = ideaSeedHelpers.getUserHeadshot(req);
+    // headshotURL = headshotData['headshotURL'];
+    headshotStyle = headshotData['headshotStyle'];
+
+    return IdeaSeed.findById(req.session.idea).exec()
+  })
+  .then(function(idea){
+    currentIdea = idea._doc;
+
+    //check permissions
+    if(!((currentIdea.visibility == "private" && currentIdea.inventorName == req.user.username) ||
+      currentIdea.visibility == "public" ||
+      (currentIdea.collaborators.indexOf(req.user.username) > -1))){
+      console.log("visibility mode does not permit this user to view this idea");
+      throw new Error('abort promise chain');
+      return;
+    }
+
+    return Component.find({"ideaSeed" : currentIdea._id});
+  })
+  .then(function(currentComponents){
+    components = currentComponents;
+    var componentsNameList = _.map(components, function(eachOne) { return eachOne.creator;})
+
+    return Account.find({"username" : {$in : componentsNameList}});
+  })
+  .then(function(componentCreators){
+    var suggestorHeadshotIdList = _.map(componentCreators, function(eachOne) { 
+      if(eachOne.headshots){
+        return eachOne.headshots[0];
+      } else {
+        return null;
+      }
+    });
+
+    components = _.filter(components, function(item){return item['text'];});
+
+    // Figure out which account and headshot go with with suggestion
+    _.each(components, function(component, index){
+      
+      wholeSuggestionBlockInfo[component.identifier] = {'document' : component};
+      
+      wholeSuggestionBlockInfo[component.identifier]['ideaName'] = currentIdea.name;
+
+      _.each(componentCreators, function(componentCreator, suggIndex){
+        if(componentCreator.username == component.creator){
+          //now we've found the right suggestor to go with the suggestion, so we put the 
+          // nickname and suggestor profile picture into the whole block object;
+          wholeSuggestionBlockInfo[component.identifier]['creatorNickname'] = componentCreator.nickname;
+          if(componentCreator.headshots && componentCreator.headshots[0]){
+            wholeSuggestionBlockInfo[component.identifier]['creatorProfilePic'] = componentCreator.headshots[0].amazonURL;
+            var imageStyle;
+            imageStyle = ideaSeedHelpers.getImageOrientation(componentCreator.headshots[0]["orientation"]);
+            wholeSuggestionBlockInfo[component.identifier]['profilePicOrientation'] = imageStyle;
+          }
+        }
+      })
+    });
+    componentsList = _.map(components, function(item){return "Component : "+item['text'];});
+    componentsList = componentsList.filter(function(item){
+      if(item == "Component : undefined"){
+        return false;
+      } else {
+        return true;
+      }
+    });
+
+    res.render('pages/ideas/idea-seed-component-details', { user : req.user || {}, idea : currentIdea,
+      csrfToken: req.csrfToken(),
+      headshot : headshotURL,
+      headshotStyle : headshotStyle,
+      wholeSuggestionBlockInfo : wholeSuggestionBlockInfo
+    });
+  
+  })
+  .catch(function(err){
+    // just need one of these
+    console.log('error:', err);
+    res.redirect('/');
+  });
+});
+
+
+
+
+
+
+
+////////////////////////////////////////////////
+// Add a problem to an idea seed
+////////////////////////////////////////////////
+router.get('/ideas/:ideaName/edit/images', csrfProtection, function(req, res) {
+
+  if(!(req.user && req.user.username)) {
+    console.log("not logged in");
+    res.redirect('/');
+    return;
+  }
+
+  // potentially fragile logic here. all ideas should have
+  // a name after the initial visit to this path. but on the first
+  // visit, we'll rely on the session to grab the idea id that was
+  // created on the introductory ideaseed creation pages, coming
+  // from the image upload page
+
+  if(req.params && req.params.ideaName && (req.params.ideaName != "yet-to-be-named")){
+    var query = IdeaSeed.findOne({"name" : req.params.ideaName});
+  } else {
+    var query = IdeaSeed.findById(req.session.idea);
+  }
+  var headshotData, headshotURL, headshotStyle, currentIdea;
+  var variantDates = [],
+      sortedProblems = [];
+  var imageURLs = [];
+  var problems, components;
+  var componentsList = [];
+  var listOfProblems = [];
+  var typeOfProblem, rankingOfProblem;
+  var wholeSuggestionBlockInfo = {};
+  var averageScore = 0;
+  var filename;
+  var imageStyle;
+  var currentReceipt = "";
+  var hasActiveMembership, membershipDocument;
+  var currentAppStrength;
+  var ideaAptitudes;
+  var imageURLs = [];
+  var thisIdea;
+
+  query.exec()
+  .then(function(idea){
+    req.session.idea = idea.id;
+    currentIdea = idea._doc;
+
+    headshotData = ideaSeedHelpers.getUserHeadshot(req);
+    // headshotURL = headshotData['headshotURL'];
+    headshotStyle = headshotData['headshotStyle'];
+
+    return IdeaSeed.findById(req.session.idea).exec()
+  })
+  .then(function(idea){
+    thisIdea = idea;        
+    return IdeaImage.find({"_id" : {$in : idea.images}}).exec()
+  })
+  .then( function(imageDocuments){
+    _.each(imageDocuments, function(image, index){
+      var filename = image["filename"];
+      var imageStyle = "";
+      imageStyle = ideaSeedHelpers.getImageOrientation(image["orientation"]);
+      imageURLs.push([
+        filename,
+        image["amazonURL"],
+        image._doc["uploader"],
+        imageStyle
+      ]);
+    });
+
+    imageURLs = imageURLs.reverse();
+
+    res.render('pages/ideas/image-upload', {
+      csrfToken: req.csrfToken(),
+      user : req.user || {},
+      headshot: headshotURL,
+      headshotStyle : headshotStyle,
+      idea : thisIdea,
+      imageURLs : imageURLs
+    });
+
+  })
+  .catch(function(err){
+    // just need one of these
+    req.session.loginPath = null;
+    console.log('error:', err);
+    res.redirect('/');
+  });
+
+});
+
+
+
+////////////////////////////////////////////////
+// Add a problem to an idea seed
+////////////////////////////////////////////////
+router.get('/ideas/:ideaName/edit/aptitudes', csrfProtection, function(req, res) {
+
+  if(!(req.user && req.user.username)) {
+    console.log("not logged in");
+    res.redirect('/');
+    return;
+  }
+
+  // potentially fragile logic here. all ideas should have
+  // a name after the initial visit to this path. but on the first
+  // visit, we'll rely on the session to grab the idea id that was
+  // created on the introductory ideaseed creation pages, coming
+  // from the image upload page
+
+  if(req.params && req.params.ideaName && (req.params.ideaName != "yet-to-be-named")){
+    var query = IdeaSeed.findOne({"name" : req.params.ideaName});
+  } else {
+    var query = IdeaSeed.findById(req.session.idea);
+  }
+  var headshotData, headshotURL, headshotStyle, currentIdea;
+  var variantDates = [],
+      sortedProblems = [];
+  var imageURLs = [];
+  var problems, components;
+  var componentsList = [];
+  var listOfProblems = [];
+  var typeOfProblem, rankingOfProblem;
+  var wholeSuggestionBlockInfo = {};
+  var averageScore = 0;
+  var filename;
+  var imageStyle;
+  var currentReceipt = "";
+  var hasActiveMembership, membershipDocument;
+  var currentAppStrength;
+  var ideaAptitudes;
+
+  query.exec()
+  .then(function(idea){
+    req.session.idea = idea.id;
+    currentIdea = idea._doc;
+
+    headshotData = ideaSeedHelpers.getUserHeadshot(req);
+    // headshotURL = headshotData['headshotURL'];
+    headshotStyle = headshotData['headshotStyle'];
+
+    return IdeaSeed.findById(req.session.idea).exec()
+  })
+  .then(function(idea){
+    currentIdea = idea._doc;
+
+    //check permissions
+    if(!((currentIdea.inventorName == req.user.username) ||
+      (currentIdea.collaborators.indexOf(req.user.username) > -1))){
+      console.log("visibility mode does not permit this user to view this idea");
+      throw new Error('abort promise chain');
+      
+    }
+
+    return Aptitude.find({"_id" : {$in : currentIdea.aptitudes}})
+  })
+  .then(function(myAptitudes){
+
+    ideaAptitudes = myAptitudes;
+
+    res.render('pages/ideas/idea-seed-aptitudes', { user : req.user || {}, idea : currentIdea,
+      review : req.session.ideaReview || {},
+      csrfToken: req.csrfToken(),
+      aptitudes : ideaAptitudes,
+      headshot : headshotURL,
+      headshotStyle : headshotStyle,
+      inventorName : currentIdea.inventorName
+    });
+  
+  })
+  .catch(function(err){
+    // just need one of these
+    req.session.loginPath = null;
+    console.log('error:', err);
+    res.redirect('/');
+  });
+
+});
+
+
+////////////////////////////////////////////////
+// Add a problem to an idea seed
+////////////////////////////////////////////////
+router.get('/ideas/:ideaName/edit/components', csrfProtection, function(req, res) {
+
+  if(!(req.user && req.user.username)) {
+    console.log("not logged in")
+    res.redirect('/');
+    return;
+  }
+
+  if(req.params && req.params.ideaName){
+    var query = IdeaSeed.findOne({"name" : req.params.ideaName});
+  } 
+
+  var headshotData, headshotURL, headshotStyle, currentIdea;
+  var variantDates = [],
+      sortedProblems = [];
+  var imageURLs = [];
+  var problems, components;
+  var componentsList = [];
+  var listOfProblems = [];
+  var typeOfProblem, rankingOfProblem;
+  var averageScore = 0;
+  var filename;
+  var wholeSuggestionBlockInfo = {};
+  var imageStyle;
+  var currentReceipt = "";
+  var currentAppStrength;
+  var ideaAptitudes;
+
+  query.exec()
+  .then(function(idea){
+    req.session.idea = idea.id;
+    currentIdea = idea._doc;
+
+    headshotData = ideaSeedHelpers.getUserHeadshot(req);
+    // headshotURL = headshotData['headshotURL'];
+    headshotStyle = headshotData['headshotStyle'];
+
+    return IdeaSeed.findById(req.session.idea).exec()
+  })
+  .then(function(idea){
+    currentIdea = idea._doc;
+
+    //check permissions
+    if(!((currentIdea.visibility == "private" && currentIdea.inventorName == req.user.username) ||
+      currentIdea.visibility == "public" ||
+      (currentIdea.collaborators.indexOf(req.user.username) > -1))){
+      console.log("visibility mode does not permit this user to view this idea");
+      throw new Error('abort promise chain');
+      return;
+    }
+
+    return Component.find({"ideaSeed" : currentIdea._id});
+  })
+  .then(function(currentComponents){
+    components = currentComponents;
+    var componentsNameList = _.map(components, function(eachOne) { return eachOne.creator;})
+
+    return Account.find({"username" : {$in : componentsNameList}});
+  })
+  .then(function(componentCreators){
+    var suggestorHeadshotIdList = _.map(componentCreators, function(eachOne) { 
+      if(eachOne.headshots){
+        return eachOne.headshots[0];
+      } else {
+        return null;
+      }
+    });
+
+    components = _.filter(components, function(item){return item['text'];});
+
+    // Figure out which account and headshot go with with suggestion
+    _.each(components, function(component, index){
+      
+      wholeSuggestionBlockInfo[component.identifier] = {'document' : component};
+      
+      wholeSuggestionBlockInfo[component.identifier]['ideaName'] = currentIdea.name;
+
+      _.each(componentCreators, function(componentCreator, suggIndex){
+        if(componentCreator.username == component.creator){
+          //now we've found the right suggestor to go with the suggestion, so we put the 
+          // nickname and suggestor profile picture into the whole block object;
+          wholeSuggestionBlockInfo[component.identifier]['creatorNickname'] = componentCreator.nickname;
+          if(componentCreator.headshots && componentCreator.headshots[0]){
+            wholeSuggestionBlockInfo[component.identifier]['creatorProfilePic'] = componentCreator.headshots[0].amazonURL;
+            var imageStyle;
+            imageStyle = ideaSeedHelpers.getImageOrientation(componentCreator.headshots[0]["orientation"]);
+            wholeSuggestionBlockInfo[component.identifier]['profilePicOrientation'] = imageStyle;
+          }
+        }
+      })
+    });
+    componentsList = _.map(components, function(item){return "Component : "+item['text'];});
+    componentsList = componentsList.filter(function(item){
+      if(item == "Component : undefined"){
+        return false;
+      } else {
+        return true;
+      }
+    });
+
+    res.render('pages/ideas/idea-seed-all-components', { user : req.user || {}, idea : currentIdea,
+      csrfToken: req.csrfToken(),
+      headshot : headshotURL,
+      headshotStyle : headshotStyle,
+      wholeSuggestionBlockInfo : wholeSuggestionBlockInfo
+    });
+  
+  })
+  .catch(function(err){
+    // just need one of these
+    console.log('error:', err);
+    res.redirect('/');
+  });
+});
+
 
 ////////////////////////////////////////////////
 // Add a problem to an idea seed

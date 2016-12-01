@@ -3,94 +3,56 @@ html
   head
     include ../../partials/head.jade
   body
+  .header.navbar.navbar-default
+    include ../../partials/header.jade
 
-  .container.image-upload
-    .row.top-row
-      .col-md-10
-        if idea.name && inventorName == user.username
-          h3.top-row-header Add images of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
-        else
-          h3.top-row-header Add images of the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
-      .col-md-2
-        .return-button
-          a.home-logout.btn.btn-industry.btn-lg( href="/ideas/#{idea.name}") Back to Idea Summary
-  
-    if idea.name && idea.inventorName == user.username
+  .container-fluid.idea-summary
+    .row
+      .col-xs-12
+        h1 Images
+    .row
+      .col-md-3.lefthand-buttons
+        .row
+          .col-xs-12
+            a.btn.btn-navigation.btn-lg(href="/ideas/#{idea.name}/edit") #{idea.name} Dashboard
+        .row
+          .col-xs-12
+            a.btn.btn-navigation.btn-lg(href="/ideas/#{idea.name}/edit/aptitudes") Previous Step
+        .row
+          .col-xs-12
+            a.btn.btn-navigation.btn-lg(href="/ideas/#{idea.name}/edit/component-details") Next Step
+      .col-md-1
+      .col-md-4
+        form(role='form', id="formImageUpload" action="/image-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
+          .form-group
+            input(type="hidden", name="_csrf", value="#{csrfToken}")
+            label.btn.btn-block.btn-file#fileInput
+              .upload-image-div
+                span.glyphicon.glyphicon-cloud-upload.big-upload-icon
+              input(type="file", name="picture" style="display:none;")
+        h3(style="text-align:center;") Upload Image
+      .col-md-4
+    if(imageURLs.length > 0)
       .row
         .col-xs-12
-          form(role='form', id="formImageUpload" action="/image-upload", method="post", data-idea-doc=idea, enctype="multipart/form-data")
-            .form-group
-
-              // For Joe to fix - I don't think this block is working quite as intended.  I'm trying to display the word "your" before the invention if the inventor is viewing.  Also have a different last sentence for the inventor view and the third party view
-                       
-              if idea.name && inventorName == user.username
-                h4 Upload a sketch, photo, or any other image of your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} or any of its components.  You can tag the image to names your #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} on uploaded images.  Tags will show up in the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} profile as components.
-              else
-                h4 Upload a sketch, photo, or any other image of the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} or any of its components.  You can tag the image to name components the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} on uploaded images.  Tags will show up in the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} profile as suggestions for the inventor to review. 
-              input(type="hidden", name="_csrf", value="#{csrfToken}")
-              label.btn.btn-block.btn-file.btn-go#fileInput
-                h4 Upload an image of #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)}
-                  img.einstein-point-btn-icon(src="/single-einstein-point.png")
-                input(type="file", name="picture" style="display:none;")
-
-            // For Joe to fix - Need to change the words "the inventor" in the above statement to the actual inventor's name linked to the inventor's profile
-    if(canEdit)
-      .imagesList
-        if(imageURLs.length > 0)
+          h3 Saved #{idea.name} Images
+      each imageURL, index in imageURLs
+        if( index % 3 == 0)
           .row
-            .col-xs-12
-              h4 All #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} images
-              p.text-left Click an image to tag it.  Tags will show up in the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} profile as suggestions for the inventor to review.
-
-            // For Joe to fix - Need to change the words "the inventor" in the above statement to the actual inventor's name linked to the inventor's profile
-
-          each imageURL, index in imageURLs
-            if( index % 3 == 0)
-              .row
-                if ( imageURL )
-                  .col-md-4
-                    .image-container
-                      a(href="/annotate-image/" + imageURL[0])
-                        img.imageListItems(src=imageURL[1] style=imageURL[3])
-                if ( imageURLs[index+1] )
-                  .col-md-4
-                    .image-container
-                      a(href="/annotate-image/" + imageURLs[index+1][0])
-                        img.imageListItems(src=imageURLs[index+1][1] style=imageURLs[index+1][3])
-                if ( imageURLs[index+2] )
-                  .col-md-4
-                    .image-container
-                      a(href="/annotate-image/" + imageURLs[index+2][0])
-                        img.imageListItems(src=imageURLs[index+2][1] style=imageURLs[index+2][3])
-        else
-          h5 <i>No images uploaded yet</i>
+            if ( imageURL )
+              .col-md-4
+                .image-container
+                  img.imageListItems(src=imageURL[1] style=imageURL[3])
+            if ( imageURLs[index+1] )
+              .col-md-4
+                .image-container
+                  img.imageListItems(src=imageURLs[index+1][1] style=imageURLs[index+1][3])
+            if ( imageURLs[index+2] )
+              .col-md-4
+                .image-container
+                  img.imageListItems(src=imageURLs[index+2][1] style=imageURLs[index+2][3])
     else
-      .imagesList
-        if(imageURLs.length > 0)
-          .row
-            .col-xs-12
-              h4 All #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} images
-              p.text-left Click an image to tag it.  Tags will show up in the #{idea.name.charAt(0).toLowerCase() + idea.name.slice(1)} profile as suggestions for the inventor to review.
-
-            // For Joe to fix - Need to change the words "the inventor" in the above statement to the actual inventor's name linked to the inventor's profile
-
-          each imageURL, index in imageURLs
-            if( index % 3 == 0)
-              .row
-                if ( imageURL )
-                  .col-md-4
-                    .image-container
-                      img.imageListItems(src=imageURL[1] style=imageURL[3])
-                if ( imageURLs[index+1] )
-                  .col-md-4
-                    .image-container
-                      img.imageListItems(src=imageURLs[index+1][1] style=imageURLs[index+1][3])
-                if ( imageURLs[index+2] )
-                  .col-md-4
-                    .image-container
-                      img.imageListItems(src=imageURLs[index+2][1] style=imageURLs[index+2][3])
-        else
-          h5 <i>No images uploaded yet</i>
+      h5 <i>No images uploaded yet</i>
 
   include ../../partials/js-includes.jade
   script(src='/exif.js')
@@ -104,7 +66,7 @@ html
     if($("#fileInput [type='file']").length > 0){
 
       $("#fileInput [type='file']")[0].onchange = function(event) {
-        $("<img id='spinner' src='/spinner.gif'>").insertAfter("#formImageUpload");
+        $("<img id='spinner' src='/spinner.gif'>").insertBefore("#formImageUpload");
         const files = $("#fileInput [type='file']")[0].files;
         const file = files[0];
         const csrf = $("input[name='_csrf']").val();
@@ -141,7 +103,7 @@ html
               var data = {"filename" : file.name, "fileUrl" : url, "type" : file.type,
                 exif : exif, "_csrf" : csrf };
               $.post('/image-upload', data , function(response, status){
-                window.location.replace(response["redirectURL"]);
+                window.location.reload(true);
               });
             }
             else{

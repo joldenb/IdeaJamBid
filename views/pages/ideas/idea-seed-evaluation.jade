@@ -1,0 +1,1109 @@
+doctype html
+html
+  head
+    include ../../partials/head.jade
+  body
+  .header.navbar.navbar-default
+    include ../../partials/header.jade
+
+  .container-fluid.idea-summary
+    .row
+      .col-xs-12
+        h1 #{idea.name} Evaluation
+    .row
+      .col-md-3.lefthand-buttons
+        .row
+          .col-xs-12
+            a.btn.btn-navigation.btn-lg(href="/ideas/#{idea.name}/edit") #{idea.name} Dashboard
+        .row
+          .col-xs-12
+            a.btn.btn-navigation.btn-lg(href="/ideas/#{idea.name}/edit/component-details") Previous Step
+        .row
+          .col-xs-12
+            a.btn.btn-navigation.btn-lg(href="/ideas/#{idea.name}/edit/criticisms") Next Step
+      .col-md-9
+        #add-viability-scores-row(class="row")
+          .col-xs-1
+            a.viabilty-slider-left-arrow
+              img(src="/left-arrow.png")
+          .col-xs-10.slide-content
+            .viability-slide-wrapper
+              .viability-scoring-intro-slide.score-slide
+                .row
+                  .col-xs-4
+                  .col-xs-4
+                    h2 Score #{idea.name}
+                    if inventorName == user.username
+                      p Score your invention on the following categories to identify areas to improve and earn Einstein Points
+                    else
+                      p Score #{idea.name} on the following categories to identify areas to improve and earn Einstein Points
+                    button.btn.btn-go.btn-lg.btn-block#beginScoring(type='submit') Go
+                  .col-xs-4
+              .performability-slide.score-slide
+                .row.top-row.scoreIdea
+                  .col-xs-12
+                    h2.top-row-header
+                      img.performability-icon(src="/perfIcon.png", height='100')
+                      |  Score #{idea.name}'s Performability
+                    h4 Will the #{idea.name} effectively work to solve the problem of #{idea.problem}?
+                .row.scoring-stars
+                  .col-xs-1
+                  .col-xs-2
+                    img.star-one.performability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-two.performability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-three.performability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-four.performability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-five.performability-star(src="/empty-star.png")
+                  .col-xs-1
+                .row.viability-labels
+                  .col-xs-1
+                  .col-xs-2
+                    h3 Incapable
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                    h3 Effective
+                  .col-xs-1
+                .problem-slide
+                  .row
+                    h3 Is there a specific reason for this low score?
+                    form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                      .form-group
+                        input(type="hidden", name="_csrf", value="#{csrfToken}")
+                        input.problemArea(type="hidden", value="Area : Performability" )
+                        textarea.problemStatement(class="form-control" rows="3")
+                          | The problem is
+                        p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                        button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                          //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                        button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+
+              .affordability-slide.score-slide
+                .row.top-row.scoreIdea
+                  .col-xs-12
+                    h2.top-row-header
+                      img.affordability-icon(src="/affordIcon.png", height="100")
+                      |  Score #{idea.name}'s Affordability
+                    h4 Will #{idea.name} stay within reasonable cost expectations when solving the problem of #{idea.problem}?
+                .row.scoring-stars
+                  .col-xs-1
+                  .col-xs-2
+                    img.star-one.affordability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-two.affordability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-three.affordability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-four.affordability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-five.affordability-star(src="/empty-star.png")
+                  .col-xs-1
+                .row.viability-labels
+                  .col-xs-1
+                  .col-xs-2
+                    h3 Expensive
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                    h3 Economical
+                  .col-xs-1
+                .problem-slide
+                  .row
+                    h3 Why the low score?
+                    form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                      .form-group
+                        input(type="hidden", name="_csrf", value="#{csrfToken}")
+                        input.problemArea(type="hidden", value="Area : Affordability")
+                        textarea.problemStatement(class="form-control" rows="3")
+                          | The problem is
+                        p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                        button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                          //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                        button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+              .featurability-slide.score-slide
+                .row.top-row.scoreIdea
+                  .col-xs-12
+                    h2.top-row-header
+                      img.featurability-icon(src="/perfIcon.png", height="100")
+                      |  Score #{idea.name}'s Featurability
+                    h4 Will #{idea.name} provide enough added benefits to solve the problem of #{idea.problem}?
+                .row.scoring-stars
+                  .col-xs-1
+                  .col-xs-2
+                    img.star-one.featurability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-two.featurability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-three.featurability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-four.featurability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-five.featurability-star(src="/empty-star.png")
+                  .col-xs-1
+                .row.viability-labels
+                  .col-xs-1
+                  .col-xs-2
+                    h3 Bland
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                    h3 Multifaceted
+                  .col-xs-1
+                .problem-slide
+                  .row
+                    h3 Why the low score?
+                    form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                      .form-group
+                        input(type="hidden", name="_csrf", value="#{csrfToken}")
+                        input.problemArea(type="hidden", value="Area : Featurability")
+                        textarea.problemStatement(class="form-control" rows="3")
+                          | The problem is
+                        p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                        button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                          //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                        button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+
+              .deliverability-slide.score-slide
+                .row.top-row.scoreIdea
+                  .col-xs-12
+                    h2.top-row-header
+                      img.deliverability-icon(src="/deliverabilityIcon.png", height="100")
+                      |  Score #{idea.name}'s Deliverability
+                    h4 Will #{idea.name} be ready on demand when and where the user wants it to solve the problem of #{idea.problem}?
+                .row.scoring-stars
+                  .col-xs-1
+                  .col-xs-2
+                    img.star-one.deliverability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-two.deliverability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-three.deliverability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-four.deliverability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-five.deliverability-star(src="/empty-star.png")
+                  .col-xs-1
+                .row.viability-labels
+                  .col-xs-1
+                  .col-xs-2
+                    h3 Unaccessible
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                    h3 Available
+                  .col-xs-1
+                .problem-slide
+                  .row
+                    h3 Why the low score?
+                    form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                      .form-group
+                        input(type="hidden", name="_csrf", value="#{csrfToken}")
+                        input.problemArea(type="hidden", value="Area : Deliverability")
+                        textarea.problemStatement(class="form-control" rows="3")
+                          | The problem is
+                        p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                        button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                          //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                        button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+              .useability-slide.score-slide
+                .row.top-row.scoreIdea
+                  .col-xs-12
+                    h2.top-row-header
+                      img.useability-icon(src="/useabilityIcon.png", height="100")
+                      |  Score #{idea.name}'s Useability
+                    h4 Will #{idea.name} be quickly and easily learned and implemented when solving the problem of #{idea.problem}?
+                .row.scoring-stars
+                  .col-xs-1
+                  .col-xs-2
+                    img.star-one.useability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-two.useability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-three.useability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-four.useability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-five.useability-star(src="/empty-star.png")
+                  .col-xs-1
+                .row.viability-labels
+                  .col-xs-1
+                  .col-xs-2
+                    h3 Impractical
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                    h3 Pragmatic
+                  .col-xs-1
+                .problem-slide
+                  .row
+                    h3 Why the low score?
+                    form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                      .form-group
+                        input(type="hidden", name="_csrf", value="#{csrfToken}")
+                        input.problemArea(type="hidden", value="Area : Useability")
+                        textarea.problemStatement(class="form-control" rows="3")
+                          | The problem is
+                        p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                        button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                          //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                        button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+              .maintainability-slide.score-slide
+                .row.top-row.scoreIdea
+                  .col-xs-12
+                    h2.top-row-header
+                      img.maintainability-icon(src="/maintainabilityIcon.png", height="100")
+                      |  Score #{idea.name}'s Maintainability
+                    h4 How easy will #{idea.name} be to keep in service when solving the problem of #{idea.problem}?
+                .row.scoring-stars
+                  .col-xs-1
+                  .col-xs-2
+                    img.star-one.maintainability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-two.maintainability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-three.maintainability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-four.maintainability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-five.maintainability-star(src="/empty-star.png")
+                  .col-xs-1
+                .row.viability-labels
+                  .col-xs-1
+                  .col-xs-2
+                    h3 Untenable
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                    h3 Sustainable
+                  .col-xs-1
+                .problem-slide
+                  .row
+                    h3 Why the low score?
+                    form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                      .form-group
+                        input(type="hidden", name="_csrf", value="#{csrfToken}")
+                        input.problemArea(type="hidden", value="Area : Maintainability")
+                        textarea.problemStatement(class="form-control" rows="3")
+                          | The problem is
+                        p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                        button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                          //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                        button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+              .durability-slide.score-slide
+                .row.top-row.scoreIdea
+                  .col-xs-12
+                    h2.top-row-header
+                      img.durability-icon(src="/durabilityIcon.png", height="100")
+                      |  Score #{idea.name}'s Durability
+                    h4 Is #{idea.name} robust enough to withstand abuse when solving the problem of #{idea.problem}? 
+                .row.scoring-stars
+                  .col-xs-1
+                  .col-xs-2
+                    img.star-one.durability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-two.durability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-three.durability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-four.durability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-five.durability-star(src="/empty-star.png")
+                  .col-xs-1
+                .row.viability-labels
+                  .col-xs-1
+                  .col-xs-2
+                    h3 Unreliable
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                    h3 Enduring
+                  .col-xs-1
+                .problem-slide
+                  .row
+                    h3 Why the low score?
+                    form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                      .form-group
+                        input(type="hidden", name="_csrf", value="#{csrfToken}")
+                        input.problemArea(type="hidden", value="Area : Durability")
+                        textarea.problemStatement(class="form-control" rows="3")
+                          | The problem is
+                        p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                        button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                          //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                        button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+              .imageability-slide.score-slide
+                .row.top-row.scoreIdea
+                  .col-xs-12
+                    h2.top-row-header
+                      img.imageability-icon(src="/imageabilityIcon.png", height="100")
+                      |  Score #{idea.name}'s Imageability
+                    h4 Will #{idea.name} convey an image of quality and prestige when solving the problem of #{idea.problem}?
+                .row.scoring-stars
+                  .col-xs-1
+                  .col-xs-2
+                    img.star-one.imageability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-two.imageability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-three.imageability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-four.imageability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-five.imageability-star(src="/empty-star.png")
+                  .col-xs-1
+                .row.viability-labels
+                  .col-xs-1
+                  .col-xs-2
+                    h3 Undesirable
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                    h3 Appealing
+                  .col-xs-1
+                .problem-slide
+                  .row
+                    h3 Why the low score?
+                    form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                      .form-group
+                        input(type="hidden", name="_csrf", value="#{csrfToken}")
+                        input.problemArea(type="hidden", value="Area : Imageability")
+                        textarea.problemStatement(class="form-control" rows="3")
+                          | The problem is
+                        p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                        button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                          //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                        button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+              .complexity-slide.score-slide
+                .row.top-row.scoreIdea
+                  .col-xs-12
+                    h2.top-row-header
+                      img.complexity-icon(src="/complexityIcon.png", height="100")
+                      |  Score #{idea.name}'s Complexity
+                    h4 Will #{idea.name} require a large number of steps to produce, assemble, ship or use to solve the problem of #{idea.problem}?
+                .row.scoring-stars
+                  .col-xs-1
+                  .col-xs-2
+                    img.star-one.complexity-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-two.complexity-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-three.complexity-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-four.complexity-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-five.complexity-star(src="/empty-star.png")
+                  .col-xs-1
+                .row.viability-labels
+                  .col-xs-1
+                  .col-xs-2
+                    h3 Simple
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                    h3 Complicated
+                  .col-xs-1
+                .problem-slide
+                  .row
+                    h3 Why the low score?
+                    form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                      .form-group
+                        input(type="hidden", name="_csrf", value="#{csrfToken}")
+                        input.problemArea(type="hidden", value="Area : Complexity")
+                        textarea.problemStatement(class="form-control" rows="3")
+                          | The problem is
+                        p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                        button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                          //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                        button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+              .precision-slide.score-slide
+                .row.top-row.scoreIdea
+                  .col-xs-12
+                    h2.top-row-header
+                      img.precision-icon(src="/precisionIcon.png", height="100")
+                      |  Score #{idea.name}'s Precision
+                    h4 Will #{idea.name} require specific timing, precise sequence or much practice to solve the problem of #{idea.problem}?
+                .row.scoring-stars
+                  .col-xs-1
+                  .col-xs-2
+                    img.star-one.precision-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-two.precision-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-three.precision-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-four.precision-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-five.precision-star(src="/empty-star.png")
+                  .col-xs-1
+                .row.viability-labels
+                  .col-xs-1
+                  .col-xs-2
+                    h3 Lenient
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                    h3 Fussy
+                  .col-xs-1
+                .problem-slide
+                  .row
+                    h3 Why the low score?
+                    form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                      .form-group
+                        input(type="hidden", name="_csrf", value="#{csrfToken}")
+                        input.problemArea(type="hidden", value="Area : Precision")
+                        textarea.problemStatement(class="form-control" rows="3")
+                          | The problem is
+                        p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                        button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                          //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                        button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+
+              .variability-slide.score-slide
+                .row.top-row.scoreIdea
+                  .col-xs-12
+                    h2.top-row-header
+                      img.variability-icon(src="/variabilityIcon.png", height="100")
+                      |  Score #{idea.name}'s Variability
+                    h4 Will use or production of #{idea.name} change based upon specific scenarios or circumstances when solving the problem of #{idea.problem}?
+                .row.scoring-stars
+                  .col-xs-1
+                  .col-xs-2
+                    img.star-one.variability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-two.variability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-three.variability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-four.variability-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-five.variability-star(src="/empty-star.png")
+                  .col-xs-1
+                .row.viability-labels
+                  .col-xs-1
+                  .col-xs-2
+                    h3 Consistent
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                    h3 Erratic
+                  .col-xs-1
+                .problem-slide
+                  .row
+                    h3 Why the low score?
+                    form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                      .form-group
+                        input(type="hidden", name="_csrf", value="#{csrfToken}")
+                        input.problemArea(type="hidden", value="Area : Variability")
+                        textarea.problemStatement(class="form-control" rows="3")
+                          | The problem is
+                        p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                        button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                          //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                        button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+
+              .sensitivity-slide.score-slide
+                .row.top-row.scoreIdea
+                  .col-xs-12
+                    h2.top-row-header
+                      img.sensitivity-icon(src="/sensitivityIcon.png", height="100")
+                      |  Score #{idea.name}'s Sensitivity
+                    h4 Will usage or the environment easily disturb or damage #{idea.name} while solving the problem of #{idea.problem}?
+                .row.scoring-stars
+                  .col-xs-1
+                  .col-xs-2
+                    img.star-one.sensitivity-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-two.sensitivity-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-three.sensitivity-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-four.sensitivity-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-five.sensitivity-star(src="/empty-star.png")
+                  .col-xs-1
+                .row.viability-labels
+                  .col-xs-1
+                  .col-xs-2
+                    h3 Reliable
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                    h3 Fragile
+                  .col-xs-1
+                .problem-slide
+                  .row
+                    h3 Why the low score?
+                    form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                      .form-group
+                        input(type="hidden", name="_csrf", value="#{csrfToken}")
+                        input.problemArea(type="hidden", value="Area : Sensitivity")
+                        textarea.problemStatement(class="form-control" rows="3")
+                          | The problem is
+                        p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                        button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                          //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                        button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+
+              .immaturity-slide.score-slide
+                .row.top-row.scoreIdea
+                  .col-xs-12
+                    h2.top-row-header
+                      img.immaturity-icon(src="/immaturityIcon.png", height="100")
+                      |  Score #{idea.name}'s Immaturity
+                    h4 Will the design, manufacture, or production of #{idea.name} require new or unproven technology, processes or materials to solve the problem of #{idea.problem}?
+                .row.scoring-stars
+                  .col-xs-1
+                  .col-xs-2
+                    img.star-one.immaturity-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-two.immaturity-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-three.immaturity-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-four.immaturity-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-five.immaturity-star(src="/empty-star.png")
+                  .col-xs-1
+                .row.viability-labels
+                  .col-xs-1
+                  .col-xs-2
+                    h3 Developed
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                    h3 Raw
+                  .col-xs-1
+                .problem-slide
+                  .row
+                    h3 Why the low score?
+                    form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                      .form-group
+                        input(type="hidden", name="_csrf", value="#{csrfToken}")
+                        input.problemArea(type="hidden", value="Area : Immaturity")
+                        textarea.problemStatement(class="form-control" rows="3")
+                          | The problem is
+                        p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                        button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                          //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                        button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+
+              .dangerous-slide.score-slide
+                .row.top-row.scoreIdea
+                  .col-xs-12
+                    h2.top-row-header
+                      img.dangerous-icon(src="/dangerIcon.png", height="100")
+                      |  Score #{idea.name}'s Dangerousness
+                    h4 Will #{idea.name} require human or environmental protections to reduce potential harm?
+                .row.scoring-stars
+                  .col-xs-1
+                  .col-xs-2
+                    img.star-one.dangerous-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-two.dangerous-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-three.dangerous-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-four.dangerous-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-five.dangerous-star(src="/empty-star.png")
+                  .col-xs-1
+                .row.viability-labels
+                  .col-xs-1
+                  .col-xs-2
+                    h3 Harmless
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                    h3 Hazardous
+                  .col-xs-1
+                .problem-slide
+                  .row
+                    h3 Why the low score?
+                    form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                      .form-group
+                        input(type="hidden", name="_csrf", value="#{csrfToken}")
+                        input.problemArea(type="hidden", value="Area : Danger")
+                        textarea.problemStatement(class="form-control" rows="3")
+                          | The problem is
+                        p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                        button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                          //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                        button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+
+              .skills-slide.score-slide
+                .row.top-row.scoreIdea
+                  .col-xs-12
+                    h2.top-row-header
+                      img.skills-icon(src="/skillsIcon.png", height="100")
+                      |  Score #{idea.name}'s Level of Skills to Operate
+                    h4 Will #{idea.name} require many specific skills to solve the problem of #{idea.problem}?
+                .row.scoring-stars
+                  .col-xs-1
+                  .col-xs-2
+                    img.star-one.skills-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-two.skills-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-three.skills-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-four.skills-star(src="/empty-star.png")
+                  .col-xs-2
+                    img.star-five.skills-star(src="/empty-star.png")
+                  .col-xs-1
+                .row.viability-labels
+                  .col-xs-1
+                  .col-xs-2
+                    h3 Easy
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                  .col-xs-2
+                    h3 Onerous
+                  .col-xs-1
+                .problem-slide
+                  .row
+                    h3 Why the low score?
+                    form(role='form', action="/add-idea-problem", method="post", data-idea-doc=idea)
+                      .form-group
+                        input(type="hidden", name="_csrf", value="#{csrfToken}")
+                        input.problemArea(type="hidden", value="Area : Skills")
+                        textarea.problemStatement(class="form-control" rows="3")
+                          | The problem is
+                        p.exampleText (Example: "The time machine imperfection of needing to accelerate to 88 miles per hour before time travel is initiated.")
+                        button.btn.btn-go.btn-block.btn-lg.problemSubmit(type='submit') Save & Continue
+                          //- img.einstein-point-btn-icon(src="/single-einstein-point.png")
+                        button.btn.btn-info.btn-block.btn-lg.problemContinue Cancel
+              .viability-scoring-outro-slide.score-slide
+                .row
+                  .col-xs-4
+                  .col-xs-4
+                    h2 Great job!
+                    h4 You're almost done. Think of any other areas of improvement for #{idea.name} and view your idea profile.
+                  .col-xs-4
+
+          .col-xs-1.viabilty-slider-right-arrow-column
+            a.viabilty-slider-right-arrow
+              img(src="/right-arrow.png")
+        div(class="viability-icons row")
+          .col-xs-1
+          .col-xs-10
+            a.slide-icon-one
+              img.performability-icon(src="/perfIcon.png")
+            a.slide-icon-two
+              img.affordability-icon(src="/affordIcon.png")
+            a.slide-icon-three
+              img.featurability-icon(src="/perfIcon.png")
+            a.slide-icon-four
+              img.deliverability-icon(src="/deliverabilityIcon.png")
+            a.slide-icon-five
+              img.useability-icon(src="/useabilityIcon.png")
+            a.slide-icon-six
+              img.maintainability-icon(src="/maintainabilityIcon.png")
+            a.slide-icon-seven
+              img.durability-icon(src="/durabilityIcon.png")
+            a.slide-icon-eight
+              img.imageability-icon(src="/imageabilityIcon.png")
+            a.slide-icon-nine
+              img.complexity-icon(src="/complexityIcon.png")
+            a.slide-icon-ten
+              img.precision-icon(src="/precisionIcon.png")
+            a.slide-icon-eleven
+              img.variability-icon(src="/variabilityIcon.png")
+            a.slide-icon-twelve
+              img.sensitivity-icon(src="/sensitivityIcon.png")
+            a.slide-icon-thirteen
+              img.immaturity-icon(src="/immaturityIcon.png")
+            a.slide-icon-fourteen
+              img.dangerous-icon(src="/dangerIcon.png")
+            a.slide-icon-fifteen
+              img.skills-icon(src="/skillsIcon.png")
+          .col-xs-1
+  include ../../partials/js-includes.jade
+  script(src='/exif.js')
+  script(type="text/javascript").
+    var viabilitySliderWidth = $(".slide-content").width();
+    $(".viability-slide-wrapper > div").attr("style", "width:" + viabilitySliderWidth + "px;");
+    //twice the left-right margin on desktop size sliders
+    viabilitySliderWidth += 30;
+    $(".viabilty-slider-right-arrow").click(function(event){
+      $.each($(".problem-slide").filter(":visible"),function(index, element){
+        $(element).siblings(".scoring-stars").animate({
+          "marginTop" : "+=10em",
+          "width" : "100%"
+        }, 500)
+        $(element).siblings(".viability-labels").removeClass("hidden");
+        $(element).hide()
+      });
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: '+=' + viabilitySliderWidth}, 400);
+    });
+
+    $(".viabilty-slider-left-arrow").click(function(event){
+      $.each($(".problem-slide").filter(":visible"),function(index, element){
+        $(element).siblings(".scoring-stars").animate({
+          "marginTop" : "+=10em;",
+          "width" : "100%"
+        }, 500)
+        $(element).siblings(".viability-labels").removeClass("hidden");
+        $(element).hide()
+      });
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: '-=' + viabilitySliderWidth}, 400);
+    });
+
+    $("a.slide-icon-one").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-two").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 2 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-three").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 3 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-four").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 4 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-five").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 5 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-six").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 6 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-seven").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 7 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-eight").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 8 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-nine").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 8 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-ten").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 10 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-eleven").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 11 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-twelve").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 12 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-thirteen").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 13 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-fourteen").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 14 * viabilitySliderWidth}, 400);
+    })
+    $("a.slide-icon-fifteen").click(function(event){
+      $('#add-viability-scores-row .slide-content').animate( { scrollLeft: 15 * viabilitySliderWidth}, 400);
+    })
+    $(".problemSubmit").click(function(event){
+      event.preventDefault();
+
+      var problemText = $(this).siblings("textarea").val();
+
+      if(problemText == "The problem is "){
+        $(".viabilty-slider-right-arrow").click();
+      } else if (problemText.length > 15){
+        var newProblemStatement = problemText.trim();
+        $.post('/add-idea-problem', 
+          {
+            _csrf : $('[name="_csrf"]').val(),
+            problemStatement : newProblemStatement.slice(15),
+            problemArea : $(this).siblings("input.problemArea").val()
+          },
+          function(resp) {
+            $(".viabilty-slider-right-arrow").click();
+          });
+      } else {
+        $(".viabilty-slider-right-arrow").click();
+      }
+    });
+
+    $(".problemContinue").click(function(event){
+      event.preventDefault();
+      $(".problem-slide").filter(":visible").each(function(){
+        $(this).siblings(".scoring-stars").animate({"marginTop": "+=10em", "width" : "100%"}, 500) 
+        $(this).siblings(".viability-labels").removeClass("hidden");
+        $(this).hide(500);
+      })
+
+    })
+    // This is for the problem input
+    var inputProb = $(".problem-slide form textarea");
+    var requiredProbText = "The problem is ";
+    $.each(inputProb, function(index, value){
+      value.addEventListener ("mousedown", function () {
+        if (String($(this).val()).indexOf(requiredProbText) == -1) {
+              $(this).val(requiredProbText);
+        }
+        if (this.selectionStart < 15) {
+          this.selectionStart = 15;
+        }
+      }, false);
+
+      value.addEventListener ("keydown", function () {
+        if (String($(this).val()).indexOf(requiredProbText) == -1) {
+              $(this).val(requiredProbText);
+        }
+        if (this.selectionStart < 15) {
+          this.selectionStart = 15;
+        }
+      }, false);
+    })
+
+    $(document).on('click', '.next-step a', function(event){
+        event.preventDefault();
+
+        $('html, body').animate({
+            scrollTop: $( $.attr(this, 'href') ).offset().top
+        }, 500);
+    });
+
+    $(document).on('click', '#score-now-button', function(event){
+        event.preventDefault();
+
+        $('html, body').animate({
+            scrollTop: $( $.attr(this, 'href') ).offset().top
+        }, 500);
+    });
+
+    $(".scoring-stars img").click(function(event){
+      var scoreClass = "",
+          saveScoreRoute = "",
+          scoreName = "",
+          problemName = "",
+          iconClass = "",
+          slideClass = "";
+
+      if($(this).hasClass("performability-star")){
+        scoreClass = "performability-star";
+        saveScoreRoute = "/performability-mobile";
+        scoreName = "performOne";
+        problemName = "performProblem";
+        iconClass = "performability-icon";
+        slideClass = "performability-slide";
+
+      } else if($(this).hasClass("affordability-star")){
+        scoreClass = "affordability-star";
+        saveScoreRoute = "/affordability-mobile";
+        scoreName = "affordOne";
+        problemName = "affordProblem";
+        iconClass = "affordability-icon";
+        slideClass = "affordability-slide";
+
+      } else if($(this).hasClass("featurability-star")){
+        scoreClass = "featurability-star";
+        saveScoreRoute = "/featurability-mobile";
+        scoreName = "featureOne";
+        problemName = "featureProblem";
+        iconClass = "featurability-icon";
+        slideClass = "featurability-slide";
+
+      } else if($(this).hasClass("deliverability-star")){
+        scoreClass = "deliverability-star";
+        saveScoreRoute = "/deliverability-mobile";
+        scoreName = "deliverOne";
+        problemName = "deliverProblem";
+        iconClass = "deliverability-icon";
+        slideClass = "deliverability-slide";
+
+      } else if($(this).hasClass("useability-star")){
+        scoreClass = "useability-star";
+        saveScoreRoute = "/useability-mobile";
+        scoreName = "useabilityOne";
+        problemName = "useabilityProblem";
+        iconClass = "useability-icon";
+        slideClass = "useability-slide";
+
+      } else if($(this).hasClass("maintainability-star")){
+        scoreClass = "maintainability-star";
+        saveScoreRoute = "/maintainability-mobile";
+        scoreName = "maintainOne";
+        problemName = "maintainProblem";
+        iconClass = "maintainability-icon";
+        slideClass = "maintainability-slide";
+
+      } else if($(this).hasClass("durability-star")){
+        scoreClass = "durability-star";
+        saveScoreRoute = "/durability-mobile";
+        scoreName = "durabilityOne";
+        problemName = "durabilityProblem";
+        iconClass = "durability-icon";
+        slideClass = "durability-slide";
+
+      } else if($(this).hasClass("imageability-star")){
+        scoreClass = "imageability-star";
+        saveScoreRoute = "/imageability-mobile";
+        scoreName = "imageOne";
+        problemName = "imageProblem";
+        iconClass = "imageability-icon";
+        slideClass = "imageability-slide";
+
+      } else if($(this).hasClass("complexity-star")){
+        scoreClass = "complexity-star";
+        saveScoreRoute = "/complexity-mobile";
+        scoreName = "complexOne";
+        problemName = "complexProblem";
+        iconClass = "complexity-icon";
+        slideClass = "complexity-slide";
+
+      } else if($(this).hasClass("precision-star")){
+        scoreClass = "precision-star";
+        saveScoreRoute = "/precision-mobile";
+        scoreName = "precisionOne";
+        problemName = "precisionProblem";
+        iconClass = "precision-icon";
+        slideClass = "precision-slide";
+
+      } else if($(this).hasClass("variability-star")){
+        scoreClass = "variability-star";
+        saveScoreRoute = "/variability-mobile";
+        scoreName = "variabilityOne";
+        problemName = "variabilityProblem";
+        iconClass = "variability-icon";
+        slideClass = "variability-slide";
+
+      } else if($(this).hasClass("sensitivity-star")){
+        scoreClass = "sensitivity-star";
+        saveScoreRoute = "/sensitivity-mobile";
+        scoreName = "sensitivityOne";
+        problemName = "sensitivityProblem";
+        iconClass = "sensitivity-icon";
+        slideClass = "sensitivity-slide";
+
+      } else if($(this).hasClass("immaturity-star")){
+        scoreClass = "immaturity-star";
+        saveScoreRoute = "/immaturity-mobile";
+        scoreName = "immatureOne";
+        problemName = "immatureProblem";
+        iconClass = "immaturity-icon";
+        slideClass = "immaturity-slide";
+
+      } else if($(this).hasClass("dangerous-star")){
+        scoreClass = "dangerous-star";
+        saveScoreRoute = "/dangerous-mobile";
+        scoreName = "dangerOne";
+        problemName = "dangerProblem";
+        iconClass = "dangerous-icon";
+        slideClass = "dangerous-slide";
+
+      } else if($(this).hasClass("skills-star")){
+        scoreClass = "skills-star";
+        saveScoreRoute = "/skills-mobile";
+        scoreName = "skillsOne";
+        problemName = "skillsProblem";
+        iconClass = "skills-icon";
+        slideClass = "skills-slide";
+
+      }
+
+      if( $(this).hasClass("star-one") ){
+        $("img.star-one." + scoreClass).addClass("scored");
+        $("img.star-two." + scoreClass).removeClass("scored");
+        $("img.star-three." + scoreClass).removeClass("scored");
+        $("img.star-four." + scoreClass).removeClass("scored");
+        $("img.star-five." + scoreClass).removeClass("scored");
+
+        $("." + iconClass).addClass("scored");
+
+        var data = {_csrf : $('[name="_csrf"]').val()};
+        data[scoreName] = 20;
+        data[problemName] = "";
+
+        $.post(saveScoreRoute, data);
+
+        $(this).parent().parent().animate({"marginTop": "-=10em", "width" : "40%"}, 500)
+        $(this).parent().parent().siblings(".viability-labels").addClass("hidden");
+        $(this).parent().parent().siblings($(".problem-slide")).show(500);
+
+      } else if ($(this).hasClass("star-two") ){
+        $("img.star-one." + scoreClass).addClass("scored");
+        $("img.star-two." + scoreClass).addClass("scored");
+        $("img.star-three." + scoreClass).removeClass("scored");
+        $("img.star-four." + scoreClass).removeClass("scored");
+        $("img.star-five." + scoreClass).removeClass("scored");
+
+        $("." + iconClass).addClass("scored");
+
+        var data = {_csrf : $('[name="_csrf"]').val()};
+        data[scoreName] = 40;
+        data[problemName] = "";
+
+        $.post(saveScoreRoute, data);
+
+        $(".viabilty-slider-right-arrow").click();
+
+      } else if ($(this).hasClass("star-three") ){
+        $("img.star-one." + scoreClass).addClass("scored");
+        $("img.star-two." + scoreClass).addClass("scored");
+        $("img.star-three." + scoreClass).addClass("scored");
+        $("img.star-four." + scoreClass).removeClass("scored");
+        $("img.star-five." + scoreClass).removeClass("scored");
+
+        $("." + iconClass).addClass("scored");
+
+        var data = {_csrf : $('[name="_csrf"]').val()};
+        data[scoreName] = 60;
+        data[problemName] = "";
+
+        $.post(saveScoreRoute, data);
+
+        $(".viabilty-slider-right-arrow").click();
+
+      } else if ($(this).hasClass("star-four") ){
+        $("img.star-one." + scoreClass).addClass("scored");
+        $("img.star-two." + scoreClass).addClass("scored");
+        $("img.star-three." + scoreClass).addClass("scored");
+        $("img.star-four." + scoreClass).addClass("scored");
+        $("img.star-five." + scoreClass).removeClass("scored");
+
+        $("." + iconClass).addClass("scored");
+
+        var data = {_csrf : $('[name="_csrf"]').val()};
+        data[scoreName] = 80;
+        data[problemName] = "";
+
+        $.post(saveScoreRoute, data);
+
+        $(".viabilty-slider-right-arrow").click();
+
+      } else if ($(this).hasClass("star-five") ){
+        $("img.star-one." + scoreClass).addClass("scored");
+        $("img.star-two." + scoreClass).addClass("scored");
+        $("img.star-three." + scoreClass).addClass("scored");
+        $("img.star-four." + scoreClass).addClass("scored");
+        $("img.star-five." + scoreClass).addClass("scored");
+
+        $("." + iconClass).addClass("scored");
+
+        var data = {_csrf : $('[name="_csrf"]').val()};
+        data[scoreName] = 100;
+        data[problemName] = "";
+
+        $.post(saveScoreRoute, data);
+
+        $(".viabilty-slider-right-arrow").click();
+
+      }
+
+    });
+
+    $("#beginScoring").click(function(event){
+      $(".viabilty-slider-right-arrow").click();
+    });    

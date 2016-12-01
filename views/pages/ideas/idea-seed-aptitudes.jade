@@ -1,0 +1,78 @@
+doctype html
+html
+  head
+    include ../../partials/head.jade
+  body
+  .header.navbar.navbar-default
+    include ../../partials/header.jade
+
+  .container-fluid.idea-summary
+    .row
+      .col-xs-12
+        h1 Aptitude
+        h4 Add some areas of focus that relate directly to your invention, e.g. plumbing equipment
+    .row
+      .col-md-3.lefthand-buttons
+        .row
+          .col-xs-12
+            a.btn.btn-navigation.btn-lg(href="/ideas/#{idea.name}/edit") #{idea.name} Dashboard
+        .row
+          .col-xs-12
+            a.btn.btn-navigation.btn-lg(href="/ideas/#{idea.name}/edit/components") Previous Step
+        .row
+          .col-xs-12
+            a.btn.btn-navigation.btn-lg(href="/ideas/#{idea.name}/edit/images") Next Step
+      .col-md-9
+        form(role='form', id="saveAptitude" action="/save-aptitude", method="post", data-idea-doc=idea)
+          .form-group
+            |  
+            input(type="hidden", name="_csrf", value="#{csrfToken}")
+            input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='New Aptitude..', autocomplete="on")
+            br    
+            button.btn.btn-go.btn-lg#aptitudeSubmit(type='submit') Save
+
+    .row
+      .col-xs-12
+        h3 Saved Aptitudes
+        each aptitude, aptIndex in aptitudes
+          li(data-apt-id="#{aptitude.identifier}") 
+            h4 #{aptitude.title}
+
+  include ../../partials/js-includes.jade
+  script(src='/exif.js')
+  script(type="text/javascript").
+      $.getJSON("/university-majors.json", function(data){
+        var majorName, words = [];
+        var majorsArray = _.map(data, function(object){
+           majorName = object['Major']
+           words = majorName.toLowerCase().split(' ');;
+            for(var i = 0; i < words.length; i++){
+              words[i] = words[i].split('');
+              words[i][0] = words[i][0].toUpperCase(); 
+              words[i] = words[i].join('');
+            }
+            return words.join(' ');
+        });
+
+        $("#aptitudeTitle").autocomplete({
+          source : majorsArray,
+          appendTo : "#saveAptitude .form-group"
+        });
+      });
+      $("#aptitudeSubmit").click(function(event){
+        event.preventDefault();
+        if($("#aptitudeTitle").val() != ""){
+          var newAptitude = $("#aptitudeTitle").val().trim();
+          $.post('/save-aptitude', 
+            {
+              _csrf : $('[name="_csrf"]').val(),
+              ideaName : "!{idea.name}",
+              aptitudeTitle : newAptitude
+            },
+            function(resp) {
+              window.location.reload(true);
+            });
+        } else {
+          alert("Please enter a valid aptitude.");
+        }
+      });
