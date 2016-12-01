@@ -20,12 +20,6 @@ html
             a.btn.btn-navigation.btn-lg(href="/ideas/#{idea.name}") Preview Idea Profile
         .row
           .col-xs-12
-            a.btn.btn-navigation.btn-lg(href="/ideas/#{idea.name}") Viability Scores
-        .row
-          .col-xs-12
-            a.btn.btn-navigation.btn-lg(href="/ideas/#{idea.name}") Suggestions
-        .row
-          .col-xs-12
             if hasActiveMembership && components.length && components.length >= 6 && aptitudes.length && aptitudes.length >= 3 && imageURLs.length && imageURLs.length >= 3 && numberOfComponentsWithDescriptions >= components.length && strengthResponse['viabilityScores'] && strengthResponse['viabilityScores'].length > 0 && strengthResponse['viabilityScores'].length === 15 && problems.length && problems.length >= 2
               a.btn.btn-go.btn-lg#file-patent(data-toggle="modal" data-target="#filePatentModal")  Generate Patent Application
               //- If all the requirements are met, light up the patent application button
@@ -375,7 +369,7 @@ html
                   i.fa.fa-exclamation-triangle.fa-5x(style='color:red', aria-hidden='true')
                 .col-md-10
                   if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
-                    h4  You haven't yet entered enough details about #{idea.name} to build a patent application.  Click "Strengthen #{idea.name} Profile" to add more components, suggestions and criticisms.
+                    h4  You haven't yet entered enough details about #{idea.name} to build an effective patent application.  Click "Strengthen #{idea.name} Profile" to add more information.
                   h4 Prior to going public with your #{idea.name}, you should protect your idea by obtaining patent pending status, if you haven't already.
           .modal-footer
             if idea.visibility == "public"
