@@ -275,7 +275,7 @@ var getMobileProblemPage = function getMobileProblemPage(req, res, problemArea, 
 };
 
 var postViabilityFormInfo = function postViabilityFormInfo( req, res, sliderValue, reviewScore, reviewProblem, newProblemArea){
-  if(!(req.user && req.user.username && req.session.ideaReview)) {
+  if(!(req.user && req.user.username)) {
     res.redirect('/');
     return;
   }
