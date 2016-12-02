@@ -32,7 +32,11 @@ html
         .score-wrapper
           h3.average-score-number Viability Score: #{averageScore}
         if idea.name
-          h1 #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
+          if idea.visibility != "public"
+            h1 #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
+              a#visibilityLink.btn.btn-industry Visibility Private
+          else
+            h1 #{idea.name.charAt(0).toUpperCase() + idea.name.slice(1)}
         if inventorName == user.username
           a.btn.btn-industry.btn-lg.btn-block(type="button" href="/ideas/#{idea.name}/edit") Inventor Dashboard
         if idea.name && inventorName == user.username
@@ -755,7 +759,6 @@ html
               .col-xs-4
                 h2 Great job!
                 h4 You're almost done. Think of any other areas of improvement for #{idea.name} and view your idea profile.
-                a#add-viability-next-btn.btn.btn-go.btn-lg.btn-block(href="#add-imperfections-row") Next Step
               .col-xs-4
 
       .col-xs-1.viabilty-slider-right-arrow-column
@@ -1135,6 +1138,69 @@ html
               input(type="hidden", name="_csrf", value="#{csrfToken}")
               button.btn.btn-success.btn-lg.btn-block#inviteCollaboratorSend(type='submit') Send
               button.btn.btn-info.btn-lg.btn-block(data-dismiss="modal") Cancel
+  #viewIdeaVisibilityLevel.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+              h2 #{idea.name} Visibility
+        .modal-body
+            if idea.visibility == "public"
+              .row
+                .col-md-12
+                  h4 This idea is Publicly Visible to Everyone.
+            else
+              .row
+                .col-md-2
+                  i.fa.fa-exclamation-triangle.fa-5x(style='color:red', aria-hidden='true')
+                .col-md-10
+                  if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
+                    h4  You haven't yet entered enough details about #{idea.name} to build an effective patent application.  Click "Strengthen #{idea.name} Profile" to add more information.
+                  h4 Prior to going public with your #{idea.name}, you should protect your idea by obtaining patent pending status, if you haven't already.
+          .modal-footer
+            if idea.visibility == "public"
+              button#restrictVisibilityToPrivate.btn.btn-info.btn-lg Change Visibility to Private
+              a.btn.btn-go.btn-lg(data-dismiss="modal") OK
+            else
+              button#enterMoreInformation.btn.btn-info.btn-lg(data-dismiss="modal") Strengthen #{idea.name} Profile
+              a.btn.btn-go#bypass-application-button.btn-lg(data-toggle="modal" data-target="#confirmExposeIdeaModal") Expose Idea Now
+
+
+
+  #confirmExposeIdeaModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            .row
+              .col-md-2.text-bottom
+                i.fa.fa-exclamation-triangle.fa-5x(style='color:red', aria-hidden='true')
+              .col-md-10
+                h2 Are you sure? 
+          .modal-body
+            if appStrengthClass.indexOf("almost") > -1 || appStrengthClass.indexOf("not-yet") > -1
+              .row
+                .col-md-12
+                  h4 By making #{idea.name} available for everyone to see, someone might copy and steal your idea. 
+                  h4 Are you sure you want to expose your #{idea.name} and make it public before obtaining patent pending status?
+            else
+              .row
+                .col-md-12
+                  h4 Make sure your patent application has been accepted by the US Patent and Trademark Office and has patent pending status before exposing to the public.
+          .modal-footer
+            .row
+              br
+              .col-md-6
+                if hasActiveMembership
+                  a.btn.btn-go.btn-lg#file-patent(data-toggle="modal" data-target="#filePatentModal") Generate Patent Application
+                else
+                  a.btn.btn-go.btn-lg#purchase-patent-application-button(href="/membership-options") Generate Patent Application
+              .col-md-6
+                button#exposeIdeaNow.btn.btn-info.btn-lg Expose #{idea.name} Now
+
+
   button(type="button" id="titleModalButton" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#titleModal") Go Win Fight
 
   include ../../partials/js-includes.jade
@@ -1671,3 +1737,12 @@ html
     $("#beginScoring").click(function(event){
       $(".viabilty-slider-right-arrow").click();
     });    
+
+    $("#visibilityLink").click(function(event){
+      $("#viewIdeaVisibilityLevel").modal('show');
+    })
+    $("#exposeIdeaNow").click(function(event){
+      $.get("/expose-idea-seed", function(err, response){
+        window.location.reload(true);
+      });
+    })
