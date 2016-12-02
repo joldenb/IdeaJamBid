@@ -577,7 +577,7 @@ img.summary-image {
   padding:5px;
 }
 
-.idea-summary-edit .imageListItems:hover {
+.idea-summary-edit .imageListItems:hover, .image-container:hover {
   border: 3px solid #337ab7;
   border-radius: 5px;
   padding: 2px;

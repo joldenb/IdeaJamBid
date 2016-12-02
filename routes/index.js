@@ -3427,7 +3427,6 @@ router.get('/ideas/:ideaName/view-all-suggestions', csrfProtection, function(req
     res.redirect('/');
     return;
   }
-
   
   if(req.params && req.params.ideaName){
     var query = IdeaSeed.findOne({"name" : req.params.ideaName});
