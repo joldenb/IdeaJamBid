@@ -27,6 +27,13 @@ html
               a.btn.btn-generate-application.btn-lg#file-patent(data-toggle="modal" data-target="#filePatentModal")  Generate Patent Application
             else if (idea.visibility != "private" || listOfVisibleSections.length > 3)
               a.btn.btn-generate-application.btn-lg#purchase-patent-application-button(href="/membership-options" ) Generate Patent Application
+        .row.patent-refine-fund
+          .col-xs-4
+            h4 Patent
+          .col-xs-4
+            h4 Refine
+          .col-xs-4
+            h4 Fund
 
       .col-md-9
         if !(components.length && components.length >= 6 && aptitudes.length && aptitudes.length >= 3 && imageURLs.length && imageURLs.length >= 3 && numberOfComponentsWithDescriptions >= components.length && strengthResponse['viabilityScores'] && strengthResponse['viabilityScores'].length > 0 && strengthResponse['viabilityScores'].length === 15 && problems.length && problems.length >= 2)
