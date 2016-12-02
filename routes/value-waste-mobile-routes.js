@@ -280,11 +280,16 @@ var postViabilityFormInfo = function postViabilityFormInfo( req, res, sliderValu
     return;
   }
 
+  console.log("Viability Form Submitted");
+
   IdeaSeed.findById(req.session.idea, function(err, thisIdea){
+    console.log("Idea Found: " + thisIdea.name);
     // this is if the inventor is the same as the session user
     // enters info into the ideaSeed model vs the ideaReview model
     if(thisIdea.inventorName == req.user.username){
+      console.log("Inventor saving viability information");
       if(req.body[reviewScore]){
+        console.log("Saving Viability Score" + reviewScore);
         thisIdea[reviewScore] = req.body[reviewScore];
       }
       if(req.body[reviewProblem]){
