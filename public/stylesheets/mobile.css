@@ -351,5 +351,49 @@
 		display: none;
 	}
 
+	.viability-slide-wrapper > div {
+		margin: 0;
+	}
+
+	#add-viability-scores-row > .col-xs-1 a {
+		top:85%;
+	}
+
+	.scoring-into-text {
+		width: 90%;
+	}
+
+	.scoreIdea {
+		padding-bottom: 0;
+	}
+
+	.top-row-header img {
+		width: 30px;
+	}
+
+	#add-viability-scores-row .scoring-stars {
+		margin-top:1em;
+	}
+
+	.top-row.scoreIdea h3 {
+		font-size:18px;
+	}
+
+	.left-score-label h3 {
+		font-size: 18px;
+	}
+
+	.right-score-label h3 {
+		font-size: 18px;
+		margin-left:-3em;
+	}
+
+	.viabilty-slider-right-arrow {
+		margin-left: -6em;
+	}
+
+	#add-viability-scores-row {
+		min-height: 32em;
+	}
 }
 

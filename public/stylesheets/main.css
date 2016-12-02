@@ -2220,3 +2220,7 @@ img.prizeImage {
 #filePatentModal .row {
   margin:1em;
 }
+
+.top-row-header img {
+  width: 80px;
+}

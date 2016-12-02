@@ -108,7 +108,7 @@ html
           .viability-scoring-intro-slide.score-slide
             .row
               .col-xs-4
-              .col-xs-4
+              .col-xs-4.scoring-into-text
                 h2 Score #{idea.name}
                 if inventorName == user.username
                   p Score your invention on the following categories to identify areas to improve and earn Einstein Points
@@ -119,8 +119,9 @@ html
           .performability-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
-                img.performability-icon(src="/perfIcon.png", height='100')
-                h2.top-row-header Score #{idea.name}'s Performability
+                h2.top-row-header 
+                  img.performability-icon(src="/perfIcon.png")
+                  |  Performability  
                 h3 Will the #{idea.name} effectively work to solve the problem of #{idea.problem}?
             .row.scoring-stars
               .col-xs-1
@@ -137,12 +138,12 @@ html
               .col-xs-1
             .row.viability-labels
               .col-xs-1
-              .col-xs-2
+              .col-xs-2.left-score-label
                 h3 Incapable
               .col-xs-2
               .col-xs-2
               .col-xs-2
-              .col-xs-2
+              .col-xs-2.right-score-label
                 h3 Effective
               .col-xs-1
             .problem-slide
@@ -162,8 +163,9 @@ html
           .affordability-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
-                img.affordability-icon(src="/affordIcon.png", height="100")
-                h2.top-row-header Score #{idea.name}'s Affordability
+                h2.top-row-header
+                  img.affordability-icon(src="/affordIcon.png")
+                  |  Affordability
                 h3 Will #{idea.name} stay within reasonable cost expectations when solving the problem of #{idea.problem}?
             .row.scoring-stars
               .col-xs-1
@@ -180,12 +182,12 @@ html
               .col-xs-1
             .row.viability-labels
               .col-xs-1
-              .col-xs-2
+              .col-xs-2.left-score-label
                 h3 Expensive
               .col-xs-2
               .col-xs-2
               .col-xs-2
-              .col-xs-2
+              .col-xs-2.right-score-label
                 h3 Economical
               .col-xs-1
             .problem-slide
@@ -204,8 +206,9 @@ html
           .featurability-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
-                img.featurability-icon(src="/perfIcon.png", height="100")
-                h2.top-row-header Score #{idea.name}'s Featurability
+                h2.top-row-header
+                  img.featurability-icon(src="/perfIcon.png")
+                  |  Featurability
                 h3 Will #{idea.name} provide enough added benefits to solve the problem of #{idea.problem}?
             .row.scoring-stars
               .col-xs-1
@@ -222,12 +225,12 @@ html
               .col-xs-1
             .row.viability-labels
               .col-xs-1
-              .col-xs-2
+              .col-xs-2.left-score-label
                 h3 Bland
               .col-xs-2
               .col-xs-2
               .col-xs-2
-              .col-xs-2
+              .col-xs-2.right-score-label
                 h3 Multifaceted
               .col-xs-1
             .problem-slide
@@ -247,8 +250,9 @@ html
           .deliverability-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
-                img.deliverability-icon(src="/deliverabilityIcon.png", height="100")
-                h2.top-row-header Score #{idea.name}'s Deliverability
+                h2.top-row-header
+                  img.deliverability-icon(src="/deliverabilityIcon.png")
+                  |  Deliverability
                 h3 Will #{idea.name} be ready on demand when and where the user wants it to solve the problem of #{idea.problem}?
             .row.scoring-stars
               .col-xs-1
@@ -265,12 +269,12 @@ html
               .col-xs-1
             .row.viability-labels
               .col-xs-1
-              .col-xs-2
+              .col-xs-2.left-score-label
                 h3 Unaccessible
               .col-xs-2
               .col-xs-2
               .col-xs-2
-              .col-xs-2
+              .col-xs-2.right-score-label
                 h3 Available
               .col-xs-1
             .problem-slide
@@ -289,8 +293,9 @@ html
           .useability-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
-                img.useability-icon(src="/useabilityIcon.png", height="100")
-                h2.top-row-header Score #{idea.name}'s Useability
+                h2.top-row-header
+                  img.useability-icon(src="/useabilityIcon.png")
+                  |  Useability
                 h3 Will #{idea.name} be quickly and easily learned and implemented when solving the problem of #{idea.problem}?
             .row.scoring-stars
               .col-xs-1
@@ -307,12 +312,12 @@ html
               .col-xs-1
             .row.viability-labels
               .col-xs-1
-              .col-xs-2
+              .col-xs-2.left-score-label
                 h3 Impractical
               .col-xs-2
               .col-xs-2
               .col-xs-2
-              .col-xs-2
+              .col-xs-2.right-score-label
                 h3 Pragmatic
               .col-xs-1
             .problem-slide
@@ -331,8 +336,9 @@ html
           .maintainability-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
-                img.maintainability-icon(src="/maintainabilityIcon.png", height="100")
-                h2.top-row-header Score #{idea.name}'s Maintainability
+                h2.top-row-header
+                  img.maintainability-icon(src="/maintainabilityIcon.png")
+                  |  Maintainability
                 h3 How easy will #{idea.name} be to keep in service when solving the problem of #{idea.problem}?
             .row.scoring-stars
               .col-xs-1
@@ -349,12 +355,12 @@ html
               .col-xs-1
             .row.viability-labels
               .col-xs-1
-              .col-xs-2
+              .col-xs-2.left-score-label
                 h3 Untenable
               .col-xs-2
               .col-xs-2
               .col-xs-2
-              .col-xs-2
+              .col-xs-2.right-score-label
                 h3 Sustainable
               .col-xs-1
             .problem-slide
@@ -373,8 +379,9 @@ html
           .durability-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
-                img.durability-icon(src="/durabilityIcon.png", height="100")
-                h2.top-row-header Score #{idea.name}'s Durability
+                h2.top-row-header
+                  img.durability-icon(src="/durabilityIcon.png")
+                  |  Durability
                 h3 Is #{idea.name} robust enough to withstand abuse when solving the problem of #{idea.problem}? 
             .row.scoring-stars
               .col-xs-1
@@ -391,12 +398,12 @@ html
               .col-xs-1
             .row.viability-labels
               .col-xs-1
-              .col-xs-2
+              .col-xs-2.left-score-label
                 h3 Unreliable
               .col-xs-2
               .col-xs-2
               .col-xs-2
-              .col-xs-2
+              .col-xs-2.right-score-label
                 h3 Enduring
               .col-xs-1
             .problem-slide
@@ -415,8 +422,9 @@ html
           .imageability-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
-                img.imageability-icon(src="/imageabilityIcon.png", height="100")
-                h2.top-row-header Score #{idea.name}'s Imageability
+                h2.top-row-header
+                  img.imageability-icon(src="/imageabilityIcon.png")
+                  |  Imageability
                 h3 Will #{idea.name} convey an image of quality and prestige when solving the problem of #{idea.problem}?
             .row.scoring-stars
               .col-xs-1
@@ -433,12 +441,12 @@ html
               .col-xs-1
             .row.viability-labels
               .col-xs-1
-              .col-xs-2
+              .col-xs-2.left-score-label
                 h3 Undesirable
               .col-xs-2
               .col-xs-2
               .col-xs-2
-              .col-xs-2
+              .col-xs-2.right-score-label
                 h3 Appealing
               .col-xs-1
             .problem-slide
@@ -457,8 +465,9 @@ html
           .complexity-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
-                img.complexity-icon(src="/complexityIcon.png", height="100")
-                h2.top-row-header Score #{idea.name}'s Complexity
+                h2.top-row-header
+                  img.complexity-icon(src="/complexityIcon.png")
+                  |  Complexity
                 h3 Will #{idea.name} require a large number of steps to produce, assemble, ship or use to solve the problem of #{idea.problem}?
             .row.scoring-stars
               .col-xs-1
@@ -475,12 +484,12 @@ html
               .col-xs-1
             .row.viability-labels
               .col-xs-1
-              .col-xs-2
+              .col-xs-2.left-score-label
                 h3 Simple
               .col-xs-2
               .col-xs-2
               .col-xs-2
-              .col-xs-2
+              .col-xs-2.right-score-label
                 h3 Complicated
               .col-xs-1
             .problem-slide
@@ -499,8 +508,9 @@ html
           .precision-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
-                img.precision-icon(src="/precisionIcon.png", height="100")
-                h2.top-row-header Score #{idea.name}'s Precision
+                h2.top-row-header
+                  img.precision-icon(src="/precisionIcon.png")
+                  |  Precision
                 h3 Will #{idea.name} require specific timing, precise sequence or much practice to solve the problem of #{idea.problem}?
             .row.scoring-stars
               .col-xs-1
@@ -517,12 +527,12 @@ html
               .col-xs-1
             .row.viability-labels
               .col-xs-1
-              .col-xs-2
+              .col-xs-2.left-score-label
                 h3 Lenient
               .col-xs-2
               .col-xs-2
               .col-xs-2
-              .col-xs-2
+              .col-xs-2.right-score-label
                 h3 Fussy
               .col-xs-1
             .problem-slide
@@ -542,8 +552,9 @@ html
           .variability-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
-                img.variability-icon(src="/variabilityIcon.png", height="100")
-                h2.top-row-header Score #{idea.name}'s Variability
+                h2.top-row-header
+                  img.variability-icon(src="/variabilityIcon.png")
+                  |  Variability
                 h3 Will use or production of #{idea.name} change based upon specific scenarios or circumstances when solving the problem of #{idea.problem}?
             .row.scoring-stars
               .col-xs-1
@@ -560,12 +571,12 @@ html
               .col-xs-1
             .row.viability-labels
               .col-xs-1
-              .col-xs-2
+              .col-xs-2.left-score-label
                 h3 Consistent
               .col-xs-2
               .col-xs-2
               .col-xs-2
-              .col-xs-2
+              .col-xs-2.right-score-label
                 h3 Erratic
               .col-xs-1
             .problem-slide
@@ -585,8 +596,9 @@ html
           .sensitivity-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
-                img.sensitivity-icon(src="/sensitivityIcon.png", height="100")
-                h2.top-row-header Score #{idea.name}'s Sensitivity
+                h2.top-row-header
+                  img.sensitivity-icon(src="/sensitivityIcon.png")
+                  |  Sensitivity
                 h3 Will usage or the environment easily disturb or damage #{idea.name} while solving the problem of #{idea.problem}?
             .row.scoring-stars
               .col-xs-1
@@ -603,12 +615,12 @@ html
               .col-xs-1
             .row.viability-labels
               .col-xs-1
-              .col-xs-2
+              .col-xs-2.left-score-label
                 h3 Reliable
               .col-xs-2
               .col-xs-2
               .col-xs-2
-              .col-xs-2
+              .col-xs-2.right-score-label
                 h3 Fragile
               .col-xs-1
             .problem-slide
@@ -628,8 +640,9 @@ html
           .immaturity-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
-                img.immaturity-icon(src="/immaturityIcon.png", height="100")
-                h2.top-row-header Score #{idea.name}'s Immaturity
+                h2.top-row-header
+                  img.immaturity-icon(src="/immaturityIcon.png")
+                  |  Immaturity
                 h3 Will the design, manufacture, or production of #{idea.name} require new or unproven technology, processes or materials to solve the problem of #{idea.problem}?
             .row.scoring-stars
               .col-xs-1
@@ -646,12 +659,12 @@ html
               .col-xs-1
             .row.viability-labels
               .col-xs-1
-              .col-xs-2
+              .col-xs-2.left-score-label
                 h3 Developed
               .col-xs-2
               .col-xs-2
               .col-xs-2
-              .col-xs-2
+              .col-xs-2.right-score-label
                 h3 Raw
               .col-xs-1
             .problem-slide
@@ -671,8 +684,9 @@ html
           .dangerous-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
-                img.dangerous-icon(src="/dangerIcon.png", height="100")
-                h2.top-row-header Score #{idea.name}'s Dangerousness
+                h2.top-row-header
+                  img.dangerous-icon(src="/dangerIcon.png")
+                  |  Dangerousness
                 h3 Will #{idea.name} require human or environmental protections to reduce potential harm?
             .row.scoring-stars
               .col-xs-1
@@ -689,12 +703,12 @@ html
               .col-xs-1
             .row.viability-labels
               .col-xs-1
-              .col-xs-2
+              .col-xs-2.left-score-label
                 h3 Harmless
               .col-xs-2
               .col-xs-2
               .col-xs-2
-              .col-xs-2
+              .col-xs-2.right-score-label
                 h3 Hazardous
               .col-xs-1
             .problem-slide
@@ -714,8 +728,9 @@ html
           .skills-slide.score-slide
             .row.top-row.scoreIdea
               .col-xs-12
-                img.skills-icon(src="/skillsIcon.png", height="100")
-                h2.top-row-header Score #{idea.name}'s Level of Skills to Operate
+                h2.top-row-header
+                  img.skills-icon(src="/skillsIcon.png")
+                  |  Skills
                 h3 Will #{idea.name} require many specific skills to solve the problem of #{idea.problem}?
             .row.scoring-stars
               .col-xs-1
@@ -732,12 +747,12 @@ html
               .col-xs-1
             .row.viability-labels
               .col-xs-1
-              .col-xs-2
+              .col-xs-2.left-score-label
                 h3 Easy
               .col-xs-2
               .col-xs-2
               .col-xs-2
-              .col-xs-2
+              .col-xs-2.right-score-label
                 h3 Onerous
               .col-xs-1
             .problem-slide
@@ -1207,9 +1222,12 @@ html
   script(src='/exif.js')
   script(type="text/javascript").
     var viabilitySliderWidth = $(".slide-content").width();
-    $(".viability-slide-wrapper > div").attr("style", "width:" + viabilitySliderWidth + "px;");
+    
+    $(".viability-slide-wrapper > div").attr("style", "width:" + viabilitySliderWidth + "px;margin:0 15px 0 0;");
     //twice the left-right margin on desktop size sliders
-    viabilitySliderWidth += 30;
+  
+      viabilitySliderWidth += 15;
+
     $(".viabilty-slider-right-arrow").click(function(event){
       $.each($(".problem-slide").filter(":visible"),function(index, element){
         $(element).siblings(".scoring-stars").animate({
