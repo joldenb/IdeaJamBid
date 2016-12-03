@@ -33,10 +33,7 @@ html
                   .col-xs-4
                   .col-xs-4
                     h2 Score #{idea.name}
-                    if inventorName == user.username
-                      p Score your invention on the following categories to identify areas to improve and earn Einstein Points
-                    else
-                      p Score #{idea.name} on the following categories to identify areas to improve and earn Einstein Points
+                    p Score your invention on the following categories to identify areas to improve and earn Einstein Points
                     button.btn.btn-go.btn-lg.btn-block#beginScoring(type='submit') Go
                   .col-xs-4
               .performability-slide.score-slide
@@ -49,24 +46,39 @@ html
                 .row.scoring-stars
                   .col-xs-1
                   .col-xs-2
-                    img.star-one.performability-star(src="/empty-star.png")
+                    if (idea.performOne && idea.performOne >=20)
+                      img.star-one.performability-star.scored(src="/empty-star.png" class="")
+                    else
+                      img.star-one.performability-star(src="/empty-star.png" class="")
                   .col-xs-2
-                    img.star-two.performability-star(src="/empty-star.png")
+                    if (idea.performOne && idea.performOne >=40)
+                      img.star-two.performability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-two.performability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-three.performability-star(src="/empty-star.png")
+                    if (idea.performOne && idea.performOne >=60)
+                      img.star-three.performability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-three.performability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-four.performability-star(src="/empty-star.png")
+                    if (idea.performOne && idea.performOne >=80)
+                      img.star-four.performability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-four.performability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-five.performability-star(src="/empty-star.png")
+                    if (idea.performOne && idea.performOne >=100)
+                      img.star-five.performability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-five.performability-star(src="/empty-star.png")
                   .col-xs-1
                 .row.viability-labels
                   .col-xs-1
-                  .col-xs-2
+                  .col-xs-2.left-score-label
                     h3 Incapable
                   .col-xs-2
                   .col-xs-2
                   .col-xs-2
-                  .col-xs-2
+                  .col-xs-2.right-score-label
                     h3 Effective
                   .col-xs-1
                 .problem-slide
@@ -87,30 +99,45 @@ html
                 .row.top-row.scoreIdea
                   .col-xs-12
                     h2.top-row-header
-                      img.affordability-icon(src="/affordIcon.png", height="100")
-                      |  Score #{idea.name}'s Affordability
-                    h4 Will #{idea.name} stay within reasonable cost expectations when solving the problem of #{idea.problem}?
+                      img.affordability-icon(src="/affordIcon.png")
+                      |  Affordability
+                    h3 Will #{idea.name} stay within reasonable cost expectations when solving the problem of #{idea.problem}?
                 .row.scoring-stars
                   .col-xs-1
                   .col-xs-2
-                    img.star-one.affordability-star(src="/empty-star.png")
+                    if (idea.affordOne && idea.affordOne >=20)
+                      img.star-one.affordability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-one.affordability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-two.affordability-star(src="/empty-star.png")
+                    if (idea.affordOne && idea.affordOne >=40)
+                      img.star-two.affordability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-two.affordability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-three.affordability-star(src="/empty-star.png")
+                    if (idea.affordOne && idea.affordOne >=60)
+                      img.star-three.affordability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-three.affordability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-four.affordability-star(src="/empty-star.png")
+                    if (idea.affordOne && idea.affordOne >=80)
+                      img.star-four.affordability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-four.affordability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-five.affordability-star(src="/empty-star.png")
+                    if (idea.affordOne && idea.affordOne >=100)
+                      img.star-five.affordability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-five.affordability-star(src="/empty-star.png")
                   .col-xs-1
                 .row.viability-labels
                   .col-xs-1
-                  .col-xs-2
+                  .col-xs-2.left-score-label
                     h3 Expensive
                   .col-xs-2
                   .col-xs-2
                   .col-xs-2
-                  .col-xs-2
+                  .col-xs-2.right-score-label
                     h3 Economical
                   .col-xs-1
                 .problem-slide
@@ -130,30 +157,45 @@ html
                 .row.top-row.scoreIdea
                   .col-xs-12
                     h2.top-row-header
-                      img.featurability-icon(src="/perfIcon.png", height="100")
-                      |  Score #{idea.name}'s Featurability
-                    h4 Will #{idea.name} provide enough added benefits to solve the problem of #{idea.problem}?
+                      img.featurability-icon(src="/perfIcon.png")
+                      |  Featurability
+                    h3 Will #{idea.name} provide enough added benefits to solve the problem of #{idea.problem}?
                 .row.scoring-stars
                   .col-xs-1
                   .col-xs-2
-                    img.star-one.featurability-star(src="/empty-star.png")
+                    if (idea.featureOne && idea.featureOne >=20)
+                      img.star-one.featurability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-one.featurability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-two.featurability-star(src="/empty-star.png")
+                    if (idea.featureOne && idea.featureOne >=40)
+                      img.star-two.featurability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-two.featurability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-three.featurability-star(src="/empty-star.png")
+                    if (idea.featureOne && idea.featureOne >=60)
+                      img.star-three.featurability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-three.featurability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-four.featurability-star(src="/empty-star.png")
+                    if (idea.featureOne && idea.featureOne >=80)
+                      img.star-four.featurability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-four.featurability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-five.featurability-star(src="/empty-star.png")
+                    if (idea.featureOne && idea.featureOne >=100)
+                      img.star-five.featurability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-five.featurability-star(src="/empty-star.png")
                   .col-xs-1
                 .row.viability-labels
                   .col-xs-1
-                  .col-xs-2
+                  .col-xs-2.left-score-label
                     h3 Bland
                   .col-xs-2
                   .col-xs-2
                   .col-xs-2
-                  .col-xs-2
+                  .col-xs-2.right-score-label
                     h3 Multifaceted
                   .col-xs-1
                 .problem-slide
@@ -174,30 +216,45 @@ html
                 .row.top-row.scoreIdea
                   .col-xs-12
                     h2.top-row-header
-                      img.deliverability-icon(src="/deliverabilityIcon.png", height="100")
-                      |  Score #{idea.name}'s Deliverability
-                    h4 Will #{idea.name} be ready on demand when and where the user wants it to solve the problem of #{idea.problem}?
+                      img.deliverability-icon(src="/deliverabilityIcon.png")
+                      |  Deliverability
+                    h3 Will #{idea.name} be ready on demand when and where the user wants it to solve the problem of #{idea.problem}?
                 .row.scoring-stars
                   .col-xs-1
                   .col-xs-2
-                    img.star-one.deliverability-star(src="/empty-star.png")
+                    if (idea.deliverOne && idea.deliverOne >=20)
+                      img.star-one.deliverability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-one.deliverability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-two.deliverability-star(src="/empty-star.png")
+                    if (idea.deliverOne && idea.deliverOne >=40)
+                      img.star-two.deliverability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-two.deliverability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-three.deliverability-star(src="/empty-star.png")
+                    if (idea.deliverOne && idea.deliverOne >=60)
+                      img.star-three.deliverability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-three.deliverability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-four.deliverability-star(src="/empty-star.png")
+                    if (idea.deliverOne && idea.deliverOne >=80)
+                      img.star-four.deliverability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-four.deliverability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-five.deliverability-star(src="/empty-star.png")
+                    if (idea.deliverOne && idea.deliverOne >=100)
+                      img.star-five.deliverability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-five.deliverability-star(src="/empty-star.png")
                   .col-xs-1
                 .row.viability-labels
                   .col-xs-1
-                  .col-xs-2
+                  .col-xs-2.left-score-label
                     h3 Unaccessible
                   .col-xs-2
                   .col-xs-2
                   .col-xs-2
-                  .col-xs-2
+                  .col-xs-2.right-score-label
                     h3 Available
                   .col-xs-1
                 .problem-slide
@@ -217,30 +274,45 @@ html
                 .row.top-row.scoreIdea
                   .col-xs-12
                     h2.top-row-header
-                      img.useability-icon(src="/useabilityIcon.png", height="100")
-                      |  Score #{idea.name}'s Useability
-                    h4 Will #{idea.name} be quickly and easily learned and implemented when solving the problem of #{idea.problem}?
+                      img.useability-icon(src="/useabilityIcon.png")
+                      |  Useability
+                    h3 Will #{idea.name} be quickly and easily learned and implemented when solving the problem of #{idea.problem}?
                 .row.scoring-stars
                   .col-xs-1
                   .col-xs-2
-                    img.star-one.useability-star(src="/empty-star.png")
+                    if (idea.useabilityOne && idea.useabilityOne >=20)
+                      img.star-one.useability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-one.useability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-two.useability-star(src="/empty-star.png")
+                    if (idea.useabilityOne && idea.useabilityOne >=40)
+                      img.star-two.useability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-two.useability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-three.useability-star(src="/empty-star.png")
+                    if (idea.useabilityOne && idea.useabilityOne >=60)
+                      img.star-three.useability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-three.useability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-four.useability-star(src="/empty-star.png")
+                    if (idea.useabilityOne && idea.useabilityOne >=80)
+                      img.star-four.useability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-four.useability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-five.useability-star(src="/empty-star.png")
+                    if (idea.useabilityOne && idea.useabilityOne >=100)
+                      img.star-five.useability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-five.useability-star(src="/empty-star.png")
                   .col-xs-1
                 .row.viability-labels
                   .col-xs-1
-                  .col-xs-2
+                  .col-xs-2.left-score-label
                     h3 Impractical
                   .col-xs-2
                   .col-xs-2
                   .col-xs-2
-                  .col-xs-2
+                  .col-xs-2.right-score-label
                     h3 Pragmatic
                   .col-xs-1
                 .problem-slide
@@ -260,30 +332,45 @@ html
                 .row.top-row.scoreIdea
                   .col-xs-12
                     h2.top-row-header
-                      img.maintainability-icon(src="/maintainabilityIcon.png", height="100")
-                      |  Score #{idea.name}'s Maintainability
-                    h4 How easy will #{idea.name} be to keep in service when solving the problem of #{idea.problem}?
+                      img.maintainability-icon(src="/maintainabilityIcon.png")
+                      |  Maintainability
+                    h3 How easy will #{idea.name} be to keep in service when solving the problem of #{idea.problem}?
                 .row.scoring-stars
                   .col-xs-1
                   .col-xs-2
-                    img.star-one.maintainability-star(src="/empty-star.png")
+                    if (idea.maintainOne && idea.maintainOne >=20)
+                      img.star-one.maintainability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-one.maintainability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-two.maintainability-star(src="/empty-star.png")
+                    if (idea.maintainOne && idea.maintainOne >=40)
+                      img.star-two.maintainability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-two.maintainability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-three.maintainability-star(src="/empty-star.png")
+                    if (idea.maintainOne && idea.maintainOne >=60)
+                      img.star-three.maintainability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-three.maintainability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-four.maintainability-star(src="/empty-star.png")
+                    if (idea.maintainOne && idea.maintainOne >=80)
+                      img.star-four.maintainability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-four.maintainability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-five.maintainability-star(src="/empty-star.png")
+                    if (idea.maintainOne && idea.maintainOne >=100)
+                      img.star-five.maintainability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-five.maintainability-star(src="/empty-star.png")
                   .col-xs-1
                 .row.viability-labels
                   .col-xs-1
-                  .col-xs-2
+                  .col-xs-2.left-score-label
                     h3 Untenable
                   .col-xs-2
                   .col-xs-2
                   .col-xs-2
-                  .col-xs-2
+                  .col-xs-2.right-score-label
                     h3 Sustainable
                   .col-xs-1
                 .problem-slide
@@ -303,30 +390,45 @@ html
                 .row.top-row.scoreIdea
                   .col-xs-12
                     h2.top-row-header
-                      img.durability-icon(src="/durabilityIcon.png", height="100")
-                      |  Score #{idea.name}'s Durability
-                    h4 Is #{idea.name} robust enough to withstand abuse when solving the problem of #{idea.problem}? 
+                      img.durability-icon(src="/durabilityIcon.png")
+                      |  Durability
+                    h3 Is #{idea.name} robust enough to withstand abuse when solving the problem of #{idea.problem}? 
                 .row.scoring-stars
                   .col-xs-1
                   .col-xs-2
-                    img.star-one.durability-star(src="/empty-star.png")
+                    if (idea.durabilityOne && idea.durabilityOne >=20)
+                      img.star-one.durability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-one.durability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-two.durability-star(src="/empty-star.png")
+                    if (idea.durabilityOne && idea.durabilityOne >=40)
+                      img.star-two.durability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-two.durability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-three.durability-star(src="/empty-star.png")
+                    if (idea.durabilityOne && idea.durabilityOne >=60)
+                      img.star-three.durability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-three.durability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-four.durability-star(src="/empty-star.png")
+                    if (idea.durabilityOne && idea.durabilityOne >=80)
+                      img.star-four.durability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-four.durability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-five.durability-star(src="/empty-star.png")
+                    if (idea.durabilityOne && idea.durabilityOne >=100)
+                      img.star-five.durability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-five.durability-star(src="/empty-star.png")
                   .col-xs-1
                 .row.viability-labels
                   .col-xs-1
-                  .col-xs-2
+                  .col-xs-2.left-score-label
                     h3 Unreliable
                   .col-xs-2
                   .col-xs-2
                   .col-xs-2
-                  .col-xs-2
+                  .col-xs-2.right-score-label
                     h3 Enduring
                   .col-xs-1
                 .problem-slide
@@ -346,30 +448,45 @@ html
                 .row.top-row.scoreIdea
                   .col-xs-12
                     h2.top-row-header
-                      img.imageability-icon(src="/imageabilityIcon.png", height="100")
-                      |  Score #{idea.name}'s Imageability
-                    h4 Will #{idea.name} convey an image of quality and prestige when solving the problem of #{idea.problem}?
+                      img.imageability-icon(src="/imageabilityIcon.png")
+                      |  Imageability
+                    h3 Will #{idea.name} convey an image of quality and prestige when solving the problem of #{idea.problem}?
                 .row.scoring-stars
                   .col-xs-1
                   .col-xs-2
-                    img.star-one.imageability-star(src="/empty-star.png")
+                    if (idea.imageOne && idea.imageOne >=20)
+                      img.star-one.imageability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-one.imageability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-two.imageability-star(src="/empty-star.png")
+                    if (idea.imageOne && idea.imageOne >=40)
+                      img.star-two.imageability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-two.imageability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-three.imageability-star(src="/empty-star.png")
+                    if (idea.imageOne && idea.imageOne >=60)
+                      img.star-three.imageability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-three.imageability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-four.imageability-star(src="/empty-star.png")
+                    if (idea.imageOne && idea.imageOne >=80)
+                      img.star-four.imageability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-four.imageability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-five.imageability-star(src="/empty-star.png")
+                    if (idea.imageOne && idea.imageOne >=100)
+                      img.star-five.imageability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-five.imageability-star(src="/empty-star.png")
                   .col-xs-1
                 .row.viability-labels
                   .col-xs-1
-                  .col-xs-2
+                  .col-xs-2.left-score-label
                     h3 Undesirable
                   .col-xs-2
                   .col-xs-2
                   .col-xs-2
-                  .col-xs-2
+                  .col-xs-2.right-score-label
                     h3 Appealing
                   .col-xs-1
                 .problem-slide
@@ -389,30 +506,45 @@ html
                 .row.top-row.scoreIdea
                   .col-xs-12
                     h2.top-row-header
-                      img.complexity-icon(src="/complexityIcon.png", height="100")
-                      |  Score #{idea.name}'s Complexity
-                    h4 Will #{idea.name} require a large number of steps to produce, assemble, ship or use to solve the problem of #{idea.problem}?
+                      img.complexity-icon(src="/complexityIcon.png")
+                      |  Complexity
+                    h3 Will #{idea.name} require a large number of steps to produce, assemble, ship or use to solve the problem of #{idea.problem}?
                 .row.scoring-stars
                   .col-xs-1
                   .col-xs-2
-                    img.star-one.complexity-star(src="/empty-star.png")
+                    if (idea.complexOne && idea.complexOne >=20)
+                      img.star-one.complexity-star.scored(src="/empty-star.png")
+                    else
+                      img.star-one.complexity-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-two.complexity-star(src="/empty-star.png")
+                    if (idea.complexOne && idea.complexOne >=40)
+                      img.star-two.complexity-star.scored(src="/empty-star.png")
+                    else
+                      img.star-two.complexity-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-three.complexity-star(src="/empty-star.png")
+                    if (idea.complexOne && idea.complexOne >=60)
+                      img.star-three.complexity-star.scored(src="/empty-star.png")
+                    else
+                      img.star-three.complexity-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-four.complexity-star(src="/empty-star.png")
+                    if (idea.complexOne && idea.complexOne >=80)
+                      img.star-four.complexity-star.scored(src="/empty-star.png")
+                    else
+                      img.star-four.complexity-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-five.complexity-star(src="/empty-star.png")
+                    if (idea.complexOne && idea.complexOne >=100)
+                      img.star-five.complexity-star.scored(src="/empty-star.png")
+                    else
+                      img.star-five.complexity-star(src="/empty-star.png")
                   .col-xs-1
                 .row.viability-labels
                   .col-xs-1
-                  .col-xs-2
+                  .col-xs-2.left-score-label
                     h3 Simple
                   .col-xs-2
                   .col-xs-2
                   .col-xs-2
-                  .col-xs-2
+                  .col-xs-2.right-score-label
                     h3 Complicated
                   .col-xs-1
                 .problem-slide
@@ -432,30 +564,45 @@ html
                 .row.top-row.scoreIdea
                   .col-xs-12
                     h2.top-row-header
-                      img.precision-icon(src="/precisionIcon.png", height="100")
-                      |  Score #{idea.name}'s Precision
-                    h4 Will #{idea.name} require specific timing, precise sequence or much practice to solve the problem of #{idea.problem}?
+                      img.precision-icon(src="/precisionIcon.png")
+                      |  Precision
+                    h3 Will #{idea.name} require specific timing, precise sequence or much practice to solve the problem of #{idea.problem}?
                 .row.scoring-stars
                   .col-xs-1
                   .col-xs-2
-                    img.star-one.precision-star(src="/empty-star.png")
+                    if (idea.precisionOne && idea.precisionOne >=20)
+                      img.star-one.precision-star.scored(src="/empty-star.png")
+                    else
+                      img.star-one.precision-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-two.precision-star(src="/empty-star.png")
+                    if (idea.precisionOne && idea.precisionOne >=40)
+                      img.star-two.precision-star.scored(src="/empty-star.png")
+                    else
+                      img.star-two.precision-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-three.precision-star(src="/empty-star.png")
+                    if (idea.precisionOne && idea.precisionOne >=60)
+                      img.star-three.precision-star.scored(src="/empty-star.png")
+                    else
+                      img.star-three.precision-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-four.precision-star(src="/empty-star.png")
+                    if (idea.precisionOne && idea.precisionOne >=80)
+                      img.star-four.precision-star.scored(src="/empty-star.png")
+                    else
+                      img.star-four.precision-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-five.precision-star(src="/empty-star.png")
+                    if (idea.precisionOne && idea.precisionOne >=100)
+                      img.star-five.precision-star.scored(src="/empty-star.png")
+                    else
+                      img.star-five.precision-star(src="/empty-star.png")
                   .col-xs-1
                 .row.viability-labels
                   .col-xs-1
-                  .col-xs-2
+                  .col-xs-2.left-score-label
                     h3 Lenient
                   .col-xs-2
                   .col-xs-2
                   .col-xs-2
-                  .col-xs-2
+                  .col-xs-2.right-score-label
                     h3 Fussy
                   .col-xs-1
                 .problem-slide
@@ -476,30 +623,45 @@ html
                 .row.top-row.scoreIdea
                   .col-xs-12
                     h2.top-row-header
-                      img.variability-icon(src="/variabilityIcon.png", height="100")
-                      |  Score #{idea.name}'s Variability
-                    h4 Will use or production of #{idea.name} change based upon specific scenarios or circumstances when solving the problem of #{idea.problem}?
+                      img.variability-icon(src="/variabilityIcon.png")
+                      |  Variability
+                    h3 Will use or production of #{idea.name} change based upon specific scenarios or circumstances when solving the problem of #{idea.problem}?
                 .row.scoring-stars
                   .col-xs-1
                   .col-xs-2
-                    img.star-one.variability-star(src="/empty-star.png")
+                    if (idea.variabilityOne && idea.variabilityOne >=20)
+                      img.star-one.variability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-one.variability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-two.variability-star(src="/empty-star.png")
+                    if (idea.variabilityOne && idea.variabilityOne >=40)
+                      img.star-two.variability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-two.variability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-three.variability-star(src="/empty-star.png")
+                    if (idea.variabilityOne && idea.variabilityOne >=60)
+                      img.star-three.variability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-three.variability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-four.variability-star(src="/empty-star.png")
+                    if (idea.variabilityOne && idea.variabilityOne >=80)
+                      img.star-four.variability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-four.variability-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-five.variability-star(src="/empty-star.png")
+                    if (idea.variabilityOne && idea.variabilityOne >=100)
+                      img.star-five.variability-star.scored(src="/empty-star.png")
+                    else
+                      img.star-five.variability-star(src="/empty-star.png")
                   .col-xs-1
                 .row.viability-labels
                   .col-xs-1
-                  .col-xs-2
+                  .col-xs-2.left-score-label
                     h3 Consistent
                   .col-xs-2
                   .col-xs-2
                   .col-xs-2
-                  .col-xs-2
+                  .col-xs-2.right-score-label
                     h3 Erratic
                   .col-xs-1
                 .problem-slide
@@ -520,30 +682,45 @@ html
                 .row.top-row.scoreIdea
                   .col-xs-12
                     h2.top-row-header
-                      img.sensitivity-icon(src="/sensitivityIcon.png", height="100")
-                      |  Score #{idea.name}'s Sensitivity
-                    h4 Will usage or the environment easily disturb or damage #{idea.name} while solving the problem of #{idea.problem}?
+                      img.sensitivity-icon(src="/sensitivityIcon.png")
+                      |  Sensitivity
+                    h3 Will usage or the environment easily disturb or damage #{idea.name} while solving the problem of #{idea.problem}?
                 .row.scoring-stars
                   .col-xs-1
                   .col-xs-2
-                    img.star-one.sensitivity-star(src="/empty-star.png")
+                    if (idea.sensitivityOne && idea.sensitivityOne >=20)
+                      img.star-one.sensitivity-star.scored(src="/empty-star.png")
+                    else
+                      img.star-one.sensitivity-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-two.sensitivity-star(src="/empty-star.png")
+                    if (idea.sensitivityOne && idea.sensitivityOne >=40)
+                      img.star-two.sensitivity-star.scored(src="/empty-star.png")
+                    else
+                      img.star-two.sensitivity-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-three.sensitivity-star(src="/empty-star.png")
+                    if (idea.sensitivityOne && idea.sensitivityOne >=60)
+                      img.star-three.sensitivity-star.scored(src="/empty-star.png")
+                    else
+                      img.star-three.sensitivity-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-four.sensitivity-star(src="/empty-star.png")
+                    if (idea.sensitivityOne && idea.sensitivityOne >=80)
+                      img.star-four.sensitivity-star.scored(src="/empty-star.png")
+                    else
+                      img.star-four.sensitivity-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-five.sensitivity-star(src="/empty-star.png")
+                    if (idea.sensitivityOne && idea.sensitivityOne >=100)
+                      img.star-five.sensitivity-star.scored(src="/empty-star.png")
+                    else
+                      img.star-five.sensitivity-star(src="/empty-star.png")
                   .col-xs-1
                 .row.viability-labels
                   .col-xs-1
-                  .col-xs-2
+                  .col-xs-2.left-score-label
                     h3 Reliable
                   .col-xs-2
                   .col-xs-2
                   .col-xs-2
-                  .col-xs-2
+                  .col-xs-2.right-score-label
                     h3 Fragile
                   .col-xs-1
                 .problem-slide
@@ -564,30 +741,45 @@ html
                 .row.top-row.scoreIdea
                   .col-xs-12
                     h2.top-row-header
-                      img.immaturity-icon(src="/immaturityIcon.png", height="100")
-                      |  Score #{idea.name}'s Immaturity
-                    h4 Will the design, manufacture, or production of #{idea.name} require new or unproven technology, processes or materials to solve the problem of #{idea.problem}?
+                      img.immaturity-icon(src="/immaturityIcon.png")
+                      |  Immaturity
+                    h3 Will the design, manufacture, or production of #{idea.name} require new or unproven technology, processes or materials to solve the problem of #{idea.problem}?
                 .row.scoring-stars
                   .col-xs-1
                   .col-xs-2
-                    img.star-one.immaturity-star(src="/empty-star.png")
+                    if (idea.immatureOne && idea.immatureOne >=20)
+                      img.star-one.immaturity-star.scored(src="/empty-star.png")
+                    else
+                      img.star-one.immaturity-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-two.immaturity-star(src="/empty-star.png")
+                    if (idea.immatureOne && idea.immatureOne >=40)
+                      img.star-two.immaturity-star.scored(src="/empty-star.png")
+                    else
+                      img.star-two.immaturity-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-three.immaturity-star(src="/empty-star.png")
+                    if (idea.immatureOne && idea.immatureOne >=60)
+                      img.star-three.immaturity-star.scored(src="/empty-star.png")
+                    else
+                      img.star-three.immaturity-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-four.immaturity-star(src="/empty-star.png")
+                    if (idea.immatureOne && idea.immatureOne >=80)
+                      img.star-four.immaturity-star.scored(src="/empty-star.png")
+                    else
+                      img.star-four.immaturity-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-five.immaturity-star(src="/empty-star.png")
+                    if (idea.immatureOne && idea.immatureOne >=100)
+                      img.star-five.immaturity-star.scored(src="/empty-star.png")
+                    else
+                      img.star-five.immaturity-star(src="/empty-star.png")
                   .col-xs-1
                 .row.viability-labels
                   .col-xs-1
-                  .col-xs-2
+                  .col-xs-2.left-score-label
                     h3 Developed
                   .col-xs-2
                   .col-xs-2
                   .col-xs-2
-                  .col-xs-2
+                  .col-xs-2.right-score-label
                     h3 Raw
                   .col-xs-1
                 .problem-slide
@@ -608,30 +800,45 @@ html
                 .row.top-row.scoreIdea
                   .col-xs-12
                     h2.top-row-header
-                      img.dangerous-icon(src="/dangerIcon.png", height="100")
-                      |  Score #{idea.name}'s Dangerousness
-                    h4 Will #{idea.name} require human or environmental protections to reduce potential harm?
+                      img.dangerous-icon(src="/dangerIcon.png")
+                      |  Dangerousness
+                    h3 Will #{idea.name} require human or environmental protections to reduce potential harm?
                 .row.scoring-stars
                   .col-xs-1
                   .col-xs-2
-                    img.star-one.dangerous-star(src="/empty-star.png")
+                    if (idea.dangerOne && idea.dangerOne >=20)
+                      img.star-one.dangerous-star.scored(src="/empty-star.png")
+                    else
+                      img.star-one.dangerous-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-two.dangerous-star(src="/empty-star.png")
+                    if (idea.dangerOne && idea.dangerOne >=40)
+                      img.star-two.dangerous-star.scored(src="/empty-star.png")
+                    else
+                      img.star-two.dangerous-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-three.dangerous-star(src="/empty-star.png")
+                    if (idea.dangerOne && idea.dangerOne >=60)
+                      img.star-three.dangerous-star.scored(src="/empty-star.png")
+                    else
+                      img.star-three.dangerous-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-four.dangerous-star(src="/empty-star.png")
+                    if (idea.dangerOne && idea.dangerOne >=80)
+                      img.star-four.dangerous-star.scored(src="/empty-star.png")
+                    else
+                      img.star-four.dangerous-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-five.dangerous-star(src="/empty-star.png")
+                    if (idea.dangerOne && idea.dangerOne >=100)
+                      img.star-five.dangerous-star.scored(src="/empty-star.png")
+                    else
+                      img.star-five.dangerous-star(src="/empty-star.png")
                   .col-xs-1
                 .row.viability-labels
                   .col-xs-1
-                  .col-xs-2
+                  .col-xs-2.left-score-label
                     h3 Harmless
                   .col-xs-2
                   .col-xs-2
                   .col-xs-2
-                  .col-xs-2
+                  .col-xs-2.right-score-label
                     h3 Hazardous
                   .col-xs-1
                 .problem-slide
@@ -652,30 +859,45 @@ html
                 .row.top-row.scoreIdea
                   .col-xs-12
                     h2.top-row-header
-                      img.skills-icon(src="/skillsIcon.png", height="100")
-                      |  Score #{idea.name}'s Level of Skills to Operate
-                    h4 Will #{idea.name} require many specific skills to solve the problem of #{idea.problem}?
+                      img.skills-icon(src="/skillsIcon.png")
+                      |  Skills
+                    h3 Will #{idea.name} require many specific skills to solve the problem of #{idea.problem}?
                 .row.scoring-stars
                   .col-xs-1
                   .col-xs-2
-                    img.star-one.skills-star(src="/empty-star.png")
+                    if (idea.skillsOne && idea.skillsOne >=20)
+                      img.star-one.skills-star.scored(src="/empty-star.png")
+                    else
+                      img.star-one.skills-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-two.skills-star(src="/empty-star.png")
+                    if (idea.skillsOne && idea.skillsOne >=40)
+                      img.star-two.skills-star.scored(src="/empty-star.png")
+                    else
+                      img.star-two.skills-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-three.skills-star(src="/empty-star.png")
+                    if (idea.skillsOne && idea.skillsOne >=60)
+                      img.star-three.skills-star.scored(src="/empty-star.png")
+                    else
+                      img.star-three.skills-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-four.skills-star(src="/empty-star.png")
+                    if (idea.skillsOne && idea.skillsOne >=80)
+                      img.star-four.skills-star.scored(src="/empty-star.png")
+                    else
+                      img.star-four.skills-star(src="/empty-star.png")
                   .col-xs-2
-                    img.star-five.skills-star(src="/empty-star.png")
+                    if (idea.skillsOne && idea.skillsOne >=100)
+                      img.star-five.skills-star.scored(src="/empty-star.png")
+                    else
+                      img.star-five.skills-star(src="/empty-star.png")
                   .col-xs-1
                 .row.viability-labels
                   .col-xs-1
-                  .col-xs-2
+                  .col-xs-2.left-score-label
                     h3 Easy
                   .col-xs-2
                   .col-xs-2
                   .col-xs-2
-                  .col-xs-2
+                  .col-xs-2.right-score-label
                     h3 Onerous
                   .col-xs-1
                 .problem-slide
@@ -706,36 +928,82 @@ html
           .col-xs-1
           .col-xs-10
             a.slide-icon-one
-              img.performability-icon(src="/perfIcon.png")
+              if (idea.performOne)
+                img.performability-icon.scored(src="/perfIcon.png")
+              else
+                img.performability-icon(src="/perfIcon.png")
             a.slide-icon-two
-              img.affordability-icon(src="/affordIcon.png")
+              if (idea.affordOne)
+                img.affordability-icon.scored(src="/affordIcon.png")
+              else
+                img.affordability-icon(src="/affordIcon.png")
             a.slide-icon-three
-              img.featurability-icon(src="/perfIcon.png")
+              if (idea.featureOne)
+                img.featurability-icon.scored(src="/perfIcon.png")
+              else
+                img.featurability-icon(src="/perfIcon.png")
             a.slide-icon-four
-              img.deliverability-icon(src="/deliverabilityIcon.png")
+              if (idea.deliverOne)
+                img.deliverability-icon.scored(src="/deliverabilityIcon.png")
+              else
+                img.deliverability-icon(src="/deliverabilityIcon.png")
             a.slide-icon-five
-              img.useability-icon(src="/useabilityIcon.png")
+              if (idea.useabilityOne)
+                img.useability-icon.scored(src="/useabilityIcon.png")
+              else
+                img.useability-icon(src="/useabilityIcon.png")
             a.slide-icon-six
-              img.maintainability-icon(src="/maintainabilityIcon.png")
+              if (idea.maintainOne)
+                img.maintainability-icon.scored(src="/maintainabilityIcon.png")
+              else
+                img.maintainability-icon(src="/maintainabilityIcon.png")
             a.slide-icon-seven
-              img.durability-icon(src="/durabilityIcon.png")
+              if (idea.durabilityOne)
+                img.durability-icon.scored(src="/durabilityIcon.png")
+              else
+                img.durability-icon(src="/durabilityIcon.png")
             a.slide-icon-eight
-              img.imageability-icon(src="/imageabilityIcon.png")
+              if (idea.imageOne)
+                img.imageability-icon.scored(src="/imageabilityIcon.png")
+              else
+                img.imageability-icon(src="/imageabilityIcon.png")
             a.slide-icon-nine
-              img.complexity-icon(src="/complexityIcon.png")
+              if (idea.complexOne)
+                img.complexity-icon.scored(src="/complexityIcon.png")
+              else
+                img.complexity-icon(src="/complexityIcon.png")
             a.slide-icon-ten
-              img.precision-icon(src="/precisionIcon.png")
+              if (idea.precisionOne)
+                img.precision-icon.scored(src="/precisionIcon.png")
+              else
+                img.precision-icon(src="/precisionIcon.png")
             a.slide-icon-eleven
-              img.variability-icon(src="/variabilityIcon.png")
+              if (idea.variabilityOne)
+                img.variability-icon.scored(src="/variabilityIcon.png")
+              else
+                img.variability-icon(src="/variabilityIcon.png")
             a.slide-icon-twelve
-              img.sensitivity-icon(src="/sensitivityIcon.png")
+              if (idea.sensitivityOne)
+                img.sensitivity-icon.scored(src="/sensitivityIcon.png")
+              else
+                img.sensitivity-icon(src="/sensitivityIcon.png")
             a.slide-icon-thirteen
-              img.immaturity-icon(src="/immaturityIcon.png")
+              if (idea.immatureOne)
+                img.immaturity-icon.scored(src="/immaturityIcon.png")
+              else
+                img.immaturity-icon(src="/immaturityIcon.png")
             a.slide-icon-fourteen
-              img.dangerous-icon(src="/dangerIcon.png")
+              if (idea.dangerOne)
+                img.dangerous-icon.scored(src="/dangerIcon.png")
+              else
+                img.dangerous-icon(src="/dangerIcon.png")
             a.slide-icon-fifteen
-              img.skills-icon(src="/skillsIcon.png")
+              if (idea.skillsOne)
+                img.skills-icon.scored(src="/skillsIcon.png")
+              else
+                img.skills-icon(src="/skillsIcon.png")
           .col-xs-1
+
   include ../../partials/js-includes.jade
   script(src='/exif.js')
   script(type="text/javascript").

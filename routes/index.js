@@ -2631,6 +2631,8 @@ router.get('/ideas/:ideaName', csrfProtection, function(req, res){
     if(review.length > 0){
       req.session.ideaReview = review[0];
       averageScore = Math.round(IdeaReview.averageViabilityScores(review));
+    } else {
+      req.session.ideaReview = null;
     }
     return Aptitude.find({"_id" : {$in : currentIdea.aptitudes}})
   })

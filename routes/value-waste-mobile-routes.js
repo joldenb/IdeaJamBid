@@ -328,41 +328,45 @@ var postViabilityFormInfo = function postViabilityFormInfo( req, res, sliderValu
             account.einsteinPoints = account.einsteinPoints + 10;
           }
           account.save(function (err) {
-              res.redirect('/view-all-viabilities');
+              res.sendStatus(200);
           });
       });
     } else {
-      if(!req.body[sliderValue] && !req.body[reviewProblem]){
-        console.log("Reviewer saving viability information");
+      if(!req.body[reviewScore] && !req.body[reviewProblem]){
+        console.log("Neither score nor problem are submitted");
 
         if(req.body.nextLink == '/ideas/'){
-          res.redirect("/ideas/"+ thisIdea.name);
+          res.sendStatus(200);
           return;
         } else {
-          res.redirect(req.body.nextLink);
+          res.sendStatus(200);
           return;
         }
-
       }
 
       // if there's a slider value
-      if(req.body[sliderValue]){
+      if(req.body[reviewScore]){
         console.log("Reviewer Saving viability score");
 
         // already in the middle of a review by this user of this idea
-        if(req.session.ideaReview){
+        if(req.session.ideaReview && req.session.ideaReview.ideaSeedId.toString() === thisIdea.id.toString()){
+          console.log("This user has a review in session.")
           IdeaReview.findOne({_id : req.session.ideaReview._id}, function(err, review){
-            review[reviewScore] = req.body[sliderValue];
-            review.save(function(err, raw){
-
-              // if the persons done entering scores, route them to the idea page and get out of the viability score pages
-              if(req.body.nextLink == "/ideas/"){
-                res.redirect("/ideas/"+ thisIdea.name);
-                return;
-              } else {
-                res.redirect(req.body.nextLink);
-              }
-            });
+            if(review){
+              review[reviewScore] = req.body[reviewScore];
+              review.save(function(err, raw){
+                // if the persons done entering scores, route them to the idea page and get out of the viability score pages
+                if(req.body.nextLink == "/ideas/"){
+                  res.sendStatus(200);
+                  return;
+                } else {
+                  res.sendStatus(200);
+                }
+              });
+            } else {
+              res.sendStatus(200);
+              return;
+            }
           });
         // need to find an existing review by this user of this idea, or create a new review object
         } else {
@@ -370,14 +374,15 @@ var postViabilityFormInfo = function postViabilityFormInfo( req, res, sliderValu
             //if there is a review already for this user and idea
             if(currentReview.length > 0){
               review = currentReview[0];
-              review[reviewScore] = req.body[sliderValue];
+              req.session.ideaReview = review;
+              review[reviewScore] = req.body[reviewScore];
               review.save(function(err, raw){
                 // if the persons done entering scores, route them to the idea page and get out of the viability score pages
                 if(req.body.nextLink == "/ideas/"){
-                  res.redirect("/ideas/"+ thisIdea.name);
+                  res.sendStatus(200);
                   return;
                 } else {
-                  res.redirect(req.body.nextLink);
+                  res.sendStatus(200);
                 }
               });
             // if no review by this user for this idea
@@ -388,12 +393,12 @@ var postViabilityFormInfo = function postViabilityFormInfo( req, res, sliderValu
                 reviewer : req.user.username
               };
               
-              newReview[reviewScore] = req.body[sliderValue];
+              newReview[reviewScore] = req.body[reviewScore];
 
               IdeaReview.create(newReview, function(err, newReview){
                 if(err) { console.log("new review not created correctly")}
-                idea.ideaReviews.push(newReview.id);
-                idea.save(function(err, updatedIdea){
+                thisIdea.ideaReviews.push(newReview.id);
+                thisIdea.save(function(err, updatedIdea){
                   req.session.ideaReview = newReview;
                   res.sendStatus(200);
                 });
@@ -418,10 +423,10 @@ var postViabilityFormInfo = function postViabilityFormInfo( req, res, sliderValu
             problems[0].save(function (err, raw) {
               // if the persons done entering scores, route them to the idea page and get out of the viability score pages
               if(req.body.nextLink == "/ideas/"){
-                res.redirect("/ideas/"+ thisIdea.name);
+                res.sendStatus(200);
                 return;
               } else {
-                res.redirect(req.body.nextLink);
+                res.sendStatus(200);
               }
             });
           } else {
@@ -438,10 +443,10 @@ var postViabilityFormInfo = function postViabilityFormInfo( req, res, sliderValu
                 thisIdea.save(function (err, raw) {
                   // if the persons done entering scores, route them to the idea page and get out of the viability score pages
                   if(req.body.nextLink == "/ideas/"){
-                    res.redirect("/ideas/"+ thisIdea.name);
+                    res.sendStatus(200);
                     return;
                   } else {
-                    res.redirect(req.body.nextLink);
+                    res.sendStatus(200);
                   }
                 });
               
