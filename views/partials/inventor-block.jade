@@ -11,7 +11,8 @@
 			p No current Aptitudes
 		ul
 			each aptitude, index in inventorAptitudeIds
-				li #{aptitude.title}
+				li 
+					a(href='/jam/' + aptitude) #{aptitude.title}
 	if isPending
 		.footer.inventor-block.multiple-button
 			a(href='/imagineer/' + inventorName)
