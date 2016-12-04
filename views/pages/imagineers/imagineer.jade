@@ -12,23 +12,29 @@ html
           if Object.keys(user).length != 0 && user.id == profileAccount.id
             a(href="/imagineer-dashboard/")
               h1.profile-name #{profileAccount.nickname}
-                img(src="/pencil.png" height="25" width="25")
+                img(src="/pencil.png" height="15" width="15")
           else
             h1.profile-name #{profileAccount.nickname}
           .profile-membership
-            if hasActiveMembership
-              if membershipDocument['membershipType'] === "one_month"
-                h4 Premium Member
-                h5 One Month Membership Active from #{membershipDocument['formattedStartDate']} to #{membershipDocument['formattedEndDate']}
-              else if membershipDocument['membershipType'] === "six_month"
-                h4 Premium Member
-                h5 Six Month Membership Active from #{membershipDocument['formattedStartDate']} to #{membershipDocument['formattedEndDate']}
-              else if membershipDocument['membershipType'] === "twelve_month"
-                h4 Premium Member
-                h5 Twelve Month Membership Active from #{membershipDocument['formattedStartDate']} to #{membershipDocument['formattedEndDate']}
-            else
-              h4 Free Member
-              a.btn.btn-go(href="/membership-options") Become a Premium Member
+            if user.id == profileAccount.id
+              if hasActiveMembership
+                if membershipDocument['membershipType'] === "one_month"
+                  h4 Premium Member
+                  h5 One Month Membership Active from #{membershipDocument['formattedStartDate']} to #{membershipDocument['formattedEndDate']}
+                else if membershipDocument['membershipType'] === "six_month"
+                  h4 Premium Member
+                  h5 Six Month Membership Active from #{membershipDocument['formattedStartDate']} to #{membershipDocument['formattedEndDate']}
+                else if membershipDocument['membershipType'] === "twelve_month"
+                  h4 Premium Member
+                  h5 Twelve Month Membership Active from #{membershipDocument['formattedStartDate']} to #{membershipDocument['formattedEndDate']}
+              else
+                h4 Free Member
+                a.btn.btn-go(href="/membership-options") Become a Premium Member
+          
+          if user.id != profileAccount.id
+            img(src="/mind-meld2.png", width="30")
+            p.text-left Link minds with #{profileAccount.nickname}
+
           if aptitudes && aptitudes.length > 0
           .profileAptitudes
             each aptitude in aptitudes
