@@ -22,7 +22,9 @@ html
                 br
                 if aptitudes && aptitudes.length > 0
                   each aptitude in aptitudes
-                    a.btn(class="btn-industry" style=("opacity: 0.8; url('/aptitudes/'+ aptitude.title")) #{aptitude.title}
+                    a.btn(class="btn-industry" style=("opacity: 0.8; url('/aptitudes/'+ aptitude.title")) 
+                      span.fa.fa-wrench
+                      |   #{aptitude.title}
           else if Object.keys(user).length != 0 && user.id == profileAccount.id
             a(href="/imagineer-dashboard/")
               img.avatar(src="/avatar.png" height="120" width="120")
@@ -130,7 +132,7 @@ html
         .col-md-6
           if Object.keys(user).length != 0 && user.id == profileAccount.id
             .row
-              .jumbotron
+              .jumbotron(style="margin: 25px 25px 25px 0px")
                 h2 My Collaborations:
                 if collaboratorIdeas.length > 0
                   ul
@@ -143,10 +145,12 @@ html
                         span.idea-text-date= val['creationDate']
                 else
                   p Collaborate with others confidentially to advance world changing ideas:
-                  a.home-login.btn.btn-industry.btn-md.btn-block( href="/ideas" ) Invite Collaborators
+                  a.home-login.btn.btn-industry.btn-md.btn-block( href="/ideas" ) 
+                    span.fa.fa-users(style="padding-right: 25px")
+                    |   Invite Collaborators
           else
             .row
-              .jumbotron
+              .jumbotron(style="margin: 25px 25px 25px 0px")
                 h2.profile-name #{profileAccount.nickname}'s Collaborations:
                 if collaboratorIdeas.length > 0
                   ul
@@ -163,7 +167,7 @@ html
         .col-md-6
           if Object.keys(user).length != 0 && user.id == profileAccount.id
             .row
-              .jumbotron
+              .jumbotron(style="margin: 25px 25px 25px 0px")
                 h2 My Contributions:
                 if reviewNames.length > 0
                   ul
@@ -177,10 +181,15 @@ html
                           span.idea-text-date= val['creationDate']
                 else
                   p Add your own solutions and criticisms to other ideas to earn rewards:
-                  a.home-login.btn.btn-industry.btn-md.btn-block( href="/ideas" ) Contribute to Other Ideas
+                  a.home-login.btn.btn-industry.btn-md.btn-block( href="/ideas" ) 
+                    img(src='/einstein_points.png', width='25')
+                    |  Contribute to Other Ideas
+
+                  
+
           else
             .row
-              .jumbotron
+              .jumbotron(style="margin: 25px 25px 25px 0px")
                 h2.profile-name #{profileAccount.nickname}'s Contributions:
                 if reviewNames.length > 0
                   ul

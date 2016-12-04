@@ -84,8 +84,9 @@ html
             h3 My Aptitudes : 
             ul
               each aptitude in aptitudes
-                li(data-apt-id="#{aptitude.identifier}")
-                  p #{aptitude.title}
+                a.btn(class="btn-industry" style=("opacity: 0.8; url('/aptitudes/'+ aptitude.title")) 
+                  span.fa.fa-wrench
+                  |   #{aptitude.title}
           if Object.keys(user).length != 0
             form.imagineer-profile-edit(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
               .form-group
@@ -95,11 +96,13 @@ html
               .aptitude-footer
                 button.btn.btn-go#aptitudeSubmit(type='submit') Save
   .row.edit-profile-view-profile
-    .col-md-4.col-xs-1
-    .col-md-4.col-xs-10
-      .view-profile-btn
-        a.home-logout.btn.btn-go.btn-lg.btn-block( href="/imagineer/" + user.nickname) View Profile
-    .col-md-4.col-xs-1
+    .container.row#profile-edit-top-row
+      .col-xs-3
+        .view-profile-btn
+          a.home-logout.btn.btn-go.btn-lg.btn-block( href="/imagineer/" + user.nickname) 
+            span.fa.fa-chevron-circle-left
+            |   Return to Your Profile
+
           
   #schoolModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog
