@@ -2216,3 +2216,17 @@ img.prizeImage {
 #filePatentModal .row {
   margin:1em;
 }
+
+.profileimagewtext {
+  position: relative; 
+  width: 100%; /* for IE 6 */
+}
+
+.h2 .overimage { 
+   color: white; 
+   font: bold 24px/45px Work Sans; 
+   letter-spacing: -1px;  
+   background: rgb(0, 0, 0); /* fallback color */
+   background: rgba(0, 0, 0, 0.7);
+   padding: 10px; 
+}
