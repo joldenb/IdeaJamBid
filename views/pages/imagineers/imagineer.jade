@@ -89,17 +89,19 @@ html
           if Object.keys(user).length != 0 && user.id == profileAccount.id
             if accountIdeaSeeds.length > 0
               h2 My Original Ideas:
-              ul
+              p
                 each val, index in accountIdeaSeeds
                   if val.name && (val.visibility == "public" || val.inventorName == user.username)
-                    li
-                      a(href="/ideas/" + val.name)
-                        h4.idea-text-name= val.name
-                      span.idea-text-date= val['creationDate']
+                    img(src="/add_idea.png", width="100")
+                    br
+                    a(href="/ideas/" + val.name)
+                      p.idea-text-name= val.name
+                    p Created:
+                    p.idea-text-date= val['creationDate']
             if !accountIdeaSeeds
               ul
                 li
-                  p Your brilliance can change the world - with only one click:
+                  p Add a new contribution to the IdeaJam network:
                 li
                   a.btn.btn-go( href="/introduce-idea/new"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Start a New Idea
 
