@@ -2,9 +2,10 @@
 	a(href='/imagineer/' + inventorName)
 		.idea-image.inventor-block.image-block(style="background-image : url('" + '#{inventorImage || "/avatar.png"}' + "');" + inventorImageStyle)
 	.title-description.inventor-block
-		p <b>Inventor Name: </b>#{inventorName || 'No Inventor Name'}
-		.suggestion-category
-			p <b>Einstein Points: </b>#{inventorPoints || 'No Einstein Points'}
+		h4 #{inventorName || 'No Inventor Name'}
+		.suggestion-category.text-center
+			img(src='/einstein_points.png', width='25')
+			|  #{inventorPoints || 'No Einstein Points'}
 		if inventorAptitudeIds.length > 0
 			p <b>Aptitudes: </b>
 		else
