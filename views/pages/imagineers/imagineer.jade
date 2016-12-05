@@ -12,7 +12,7 @@ html
 
           if accountHeadshot
             .imagineerProfilePicWrapper
-              div(class="imagineerProfilePic" style="height: 300px; max-width: 400px; background-image : url('" + accountHeadshot.amazonURL + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + accountHeadshot.style); 
+              div(class="imagineerProfilePic" style="height: 300px; max-width: 400px; background-image : url('" + accountHeadshot.amazonURL + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + accountHeadshot.style)
                 h1(class="profile-name" style="color: white; background: rgba(0, 0, 0, 0.5); padding: 10px; ") #{profileAccount.nickname} 
                 br
                 br
@@ -22,7 +22,7 @@ html
                 br
                 if aptitudes && aptitudes.length > 0
                   each aptitude in aptitudes
-                    a.btn(class="btn-industry" style=("opacity: 0.8; url('/aptitudes/'+ aptitude.title")) 
+                    a.btn(class="btn-industry" style="opacity: 0.8;" href="/aptitudes/#{aptitude.title}") 
                       span.fa.fa-wrench
                       |   #{aptitude.title}
           else if Object.keys(user).length != 0 && user.id == profileAccount.id
@@ -107,12 +107,9 @@ html
                       p.idea-text-name= val.name
                     p Created:
                     p.idea-text-date= val['creationDate']
-            if !accountIdeaSeeds
-              ul
-                li
-                  p Add a new contribution to the IdeaJam network:
-                li
-                  a.btn.btn-go( href="/introduce-idea/new"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Start a New Idea
+            if !accountIdeaSeeds || accountIdeaSeeds.length == 0
+              h4 Add a new contribution to the IdeaJam network:
+              a.btn.btn-go( href="/introduce-idea/new"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Start a New Idea
 
           else
             h2.profile-name #{profileAccount.nickname}'s Original Ideas:

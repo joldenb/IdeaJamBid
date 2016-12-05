@@ -925,6 +925,15 @@ a.plus-overlay img{
   height: 10em;
 }
 
+.inventor-block .suggestion-category img {
+  height:30px;
+  width: 35px;
+}
+
+.inventor-block .suggestion-category h4 {
+  display: inline;
+}
+
 .footer.variant-suggestion .radio {
   position: absolute;
   top: 25%;
