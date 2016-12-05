@@ -50,10 +50,11 @@ html
           h3 The #{component.text.toLowerCase()} of <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b> is #{component.descriptions[0]}.
           if ( component['descriptions'].length > 1)
             h4 Additionally, the #{component.text} can be described as : 
-            ul
-              each description, index in component['descriptions']
-                if index > 0
-                  li #{description}
+            each description, index in component['descriptions']
+              if index > 0
+                .row.component-list 
+                  .col-md-12
+                    h4 #{description}
           else
             ul
               li.no-descriptions No More Descriptions Yet
@@ -82,10 +83,12 @@ html
           h3 The dimensions of #{component.text} are #{component['dimensions'][0]}.
           if( component['dimensions'].length  > 1)
             h4 Additionally, #{component.text} can be made to these dimensions:
-            ul
-              each dimension, index in component['dimensions']
-                if dimension && index > 0
-                  li #{dimension}
+            each dimension, index in component['dimensions']
+              if dimension && index > 0
+                .row.component-list
+                  .col-md-12
+                    h4 #{dimension}
+
         else
           h5 <i>Component dimensions not entered yet.</i>
 
@@ -94,10 +97,11 @@ html
           h3 The #{component.text} is ideally made of #{component['materials'][0]}.
           if( component['materials'].length > 1)
             h4 Additionally, #{component.text} can be made of:
-            ul
-              each material, index in component['materials']
-                if material && index > 0
-                  li #{material}
+            each material, index in component['materials']
+              if material && index > 0
+                .row.component-list
+                  .col-md-12
+                    h4 #{material}
         else
           h5 <i>Component materials not entered yet.</i>
 

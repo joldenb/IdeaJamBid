@@ -25,7 +25,7 @@ html
               //- If all the requirements are met, light up the patent application button
             else if hasActiveMembership
               a.btn.btn-generate-application.btn-lg#file-patent(data-toggle="modal" data-target="#filePatentModal")  Generate Patent Application
-            else if (idea.visibility != "private" || listOfVisibleSections.length > 3)
+            else
               a.btn.btn-generate-application.btn-lg#purchase-patent-application-button(href="/membership-options" ) Generate Patent Application
         .row.patent-refine-fund
           .col-xs-4

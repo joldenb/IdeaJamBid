@@ -733,11 +733,9 @@ canvas {
 .component-descriptions {
   margin: 0 auto;
   color: black;
-  font-family: Roboto Slab, serif; 
 }
 
 .component-descriptions form {
-  font-family: Roboto;
   letter-spacing: 1px;
 }
 
@@ -855,6 +853,10 @@ a.plus-overlay img{
 .idea-summary.col-md-4, .idea-summary.col-md-8, .component-summary.col-md-8,  .component-summary.col-md-4 {
   padding-top: 2em;
   padding-left:1em;
+}
+
+.component-summary.container .btn p {
+  margin:0;
 }
 
 .profile-einstein-points {
@@ -2240,7 +2242,11 @@ img.prizeImage {
 }
 
 .related-components button {
-  margin: 0 1em;
+  margin-right: 1em;
+}
+
+.related-components {
+  margin-bottom: 1em;
 }
 
 .delete-description img, .delete-material img, .delete-dimension img {

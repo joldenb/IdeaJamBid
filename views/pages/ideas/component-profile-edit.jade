@@ -67,9 +67,9 @@ html
             each description, index in component['descriptions']
               if index > 0
                 .row.component-list 
-                  .col-md-8
+                  .col-md-10
                     h4 #{description}
-                  .col-md-4
+                  .col-md-2
                     a.delete-description(data-description="#{description}")
                       img(src="/delete.png")
           else
@@ -131,9 +131,9 @@ html
             each dimension, index in component['dimensions']
               if dimension && index > 0
                 .row.component-list
-                  .col-md-8
+                  .col-md-10
                     h4 #{dimension}
-                  .col-md-4
+                  .col-md-2
                     a.delete-dimension(data-dimension="#{dimension}")
                       img(src="/delete.png")
 
@@ -179,9 +179,9 @@ html
             each material, index in component['materials']
               if material && index > 0
                 .row.component-list
-                  .col-md-8
+                  .col-md-10
                     h4 #{material}
-                  .col-md-4
+                  .col-md-2
                     a.delete-material(data-material="#{material}")
                       img(src="/delete.png")
           .row
@@ -220,7 +220,7 @@ html
 
       if idea.name && idea.inventorName == user.username
         .related-components
-          h4 Related Components
+          h3 Related Components
           if relatedComponents.length > 0
             each thisComponent in relatedComponents
               if thisComponent[0]['text']            
@@ -261,8 +261,8 @@ html
                       p #{thisComponent[2]}
           else
             div <i>No related components yet</i>
-          button(type="button" id="modalButton" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Add a New Related Component
-          button(type="button" id="componentModalButton" class="btn btn-primary" data-toggle="modal" data-target="#addComponentModal") Add a New Subcomponent
+          button(type="button" id="modalButton" class="btn btn-electric" data-toggle="modal" data-target="#myModal") Add a New Related Component
+          button(type="button" id="componentModalButton" class="btn btn-electric" data-toggle="modal" data-target="#addComponentModal") Add a New Subcomponent
     input(type="hidden", name="_csrf", value="#{csrfToken}")
     #addComponentModal.modal.fade.annotate-modal(role="dialog")
       .modal-dialog
@@ -384,6 +384,8 @@ html
         .modal-footer
           a.btn.btn-info(data-dismiss="modal") No
           a.btn.btn-go#deleteMaterialConfirm Yes
+  .pagefooter
+    include ../../partials/footer.jade
 
   script(src='/exif.js')
   include ../../partials/js-includes.jade
