@@ -8,7 +8,14 @@ html
 
   .container-fluid
     .row
-      h1.col-md-12 You must connect a bank account using stripe before funding your campaign
+      h1.col-md-12 Connect Stripe to Handle Payments
+    .row
+      .col-md-12
+        h4 The IdeaJam crowdfunding platform harnessess the power of Stripe.  Stripe builds the most powerful and flexible tools for internet commerce.  Stripe is trusted by 100,000+ businesses in 100+ countries, across nearly every industry, to handle internet payments. 
+        h4 You can learn more about the Stripe platform here:
+        a(href='https://stripe.com/') 
+          h3 Stripe
+        h2 Before we go live with your campaign, you must set up your Stripe account and connect it to IdeaJam.  You can either sign in to your existing Stripe account or set up a new one by clicking the below button:
     .row
       .col-sm-4
         input(type="hidden", name="_csrf", value="#{csrfToken}")

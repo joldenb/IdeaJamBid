@@ -9,8 +9,8 @@ html
     .container-fluid
       .row
         .col-md-8.col-md-offset-2
-          h1 New Campaign
-          p.lead Please provide some info
+          h1 Fund #{idea.name}
+          p.lead How much would you like to raise?
           form(role='form',
                action='/ideas/' + idea.name + '/campaign/new',
                method="post")
@@ -21,42 +21,60 @@ html
                 div.input-group-addon $
                 input.form-control(type='number', pattern="[0-9]", name="goal", id="goal" placeholder='10000' required)
                 div.input-group-addon .00
-            .form-group
+              p (Example: "$10000")
+              p Caution: You will only receive your funds if you achieve your goal!  Be careful not to set your goal too high.
+
+            //- ****************************
+            //- This is interesting - I think that each variant will independently get here.  Not sure we need this.
+            //- Let's come back to this and consider.  -Jeff
+            //- ****************************
+            //-.form-group
               label(for="variant") Variant
               select.form-control(id="variant", name="variant")
                 option(selected="selected" value="none") None
                 each variant in idea.variants
                   option(value="#{variant.name}") #{variant.name}
+
+            //- ********************
+            //- The below rewards set up should be split out onto another page
+            //- We should set up a dashboard for crowdfunding similar to the idea dashboard
+            //- ********************
             .form-group.row
-              .col-md-12.h4 Prizes
+              .col-md-12
+                h2 Add a Reward:
+                p An effective campaign will incorporate rewards, which you must deliver to those who contribute to your supporters.  Rewards will typically include an option to pre-order the concept you wish to build.
               .col-md-12(id="prizes")
                 .row
                   .col-md-6.col-md-offset-1.prizeBlock
                     .form-group
-                      label(for="prizeName0") Name
-                      input.form-control(type='text', name="prizeName0", id="prizeName0" placeholder='1 set of ...' maxlength=50 required)
+                      label(for="prizeName0") Name of Reward
+                      input.form-control(type='text', name="prizeName0", id="prizeName0" placeholder='Enter Reward Name' maxlength=50 required)
+                      p (Examples: "Early-stage #{idea.name}s" or "A t-shirt displaying #{idea.name}.")
                     .form-group
-                      label(for="prizeDesc0") Description
-                      input.form-control(type='text', name="prizeDesc0", id="prizeDesc0" placeholder='You will receive ...' maxlength=1000 required)
+                      label(for="prizeDesc0") Description of Reward
+                      input.form-control(type='text', name="prizeDesc0", id="prizeDesc0" placeholder='Describe the Reward' maxlength=1000 required)
+                      p (Example: "A fully manufactured, fully functioning #{idea.name} with all the bells and whistles, delivered upon our creation and exection of a product spec design and a manufacturing plan.")
                     .form-group
-                      label(for="prizeCost0") Cost
+                      label(for="prizeCost0") Donation Required for Reward
                       .input-group
                         div.input-group-addon $
                         input.form-control(type='number', pattern="[0-9]" name="prizeCost0", id="prizeCost0" placeholder='25' required)
                         div.input-group-addon .00
+                        
                     .form-group
-                      label(for="prizeImage0") Image
+                      label(for="prizeImage0") Image of Reward
                       .input-group
                         label.btn.btn-default.fileInput
                           span.glyphicon.glyphicon-cloud-upload
                           input(type="file", id="prizeImage0" name="prizeImage0" style="display:none;", accept="image/jpeg, image/png")
                           input(type="hidden", id="prizeImageUrl0", name="prizeImageUrl0")
                         img.thumbnail.prizeImage.hidden(id="prizeImageThumb0", src="")
+                        p Create and upload an image of the reward.  Better quality images of the reward you wish to offer will help you earn more donations for #{idea.name}.
                 .row#addPrizeRow
                   .col-xs-6.col-sm-4.col-md-offset-1
-                    button.btn.btn-go.btn-block(id="addPrize", type="button") Add Another Prize
+                    button.btn.btn-go.btn-block(id="addPrize", type="button") Add Another Reward
             .form-group
-                p The campaign will end 60 days from creation, if created today this campaign will end on #{endDate}
+                p The campaign will end 60 days from creation. If created today, your crowdfunding campaign for #{idea.name}will end on #{endDate}.  
             .row
               .col-xs-4
                 a.home-logout.btn.btn-industry.btn-block.btn-lg( href="/imagineer/" + user.nickname ) Cancel

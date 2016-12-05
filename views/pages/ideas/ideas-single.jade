@@ -834,6 +834,14 @@ html
         a(class="btn btn-info btn-lg") 
           span.fa.fa-linkedin LinkedIn
       .col-md-3
+    br    
+    .row
+        .col-md-4
+        .col-md-4
+          a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign/new' ontouchstart="this.style.background = '#007338';") 
+            span.fa.fa-usd
+            |   Crowdfund #{idea.name}
+        .col-md-4
 
   .pagefooter
     include ../../partials/footer.jade
