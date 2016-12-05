@@ -2,16 +2,18 @@
 	a(href='/imagineer/' + inventorName)
 		.idea-image.inventor-block.image-block(style="background-image : url('" + '#{inventorImage || "/avatar.png"}' + "');" + inventorImageStyle)
 	.title-description.inventor-block
-		p <b>Inventor Name: </b>#{inventorName || 'No Inventor Name'}
+		h4 #{inventorName || 'No Inventor Name'}
 		.suggestion-category
-			p <b>Einstein Points: </b>#{inventorPoints || 'No Einstein Points'}
+			img(src='/einstein_points.png', width='25') 
+			h4 #{inventorPoints || 'No Einstein Points'}
 		if inventorAptitudeIds.length > 0
 			p <b>Aptitudes: </b>
 		else
 			p No current Aptitudes
 		ul
 			each aptitude, index in inventorAptitudeIds
-				li #{aptitude.title}
+				li 
+					a(href='/jam/#{aptitude.title}') #{aptitude.title}
 	if isPending
 		.footer.inventor-block.multiple-button
 			a(href='/imagineer/' + inventorName)

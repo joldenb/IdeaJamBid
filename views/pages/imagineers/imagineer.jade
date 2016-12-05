@@ -9,38 +9,30 @@ html
     div.container
       .row
         .col-md-6
-          if Object.keys(user).length != 0 && user.id == profileAccount.id
-            a(href="/imagineer-dashboard/")
-              h1.profile-name #{profileAccount.nickname}
-                img(src="/pencil.png" height="25" width="25")
-          else
-            h1.profile-name #{profileAccount.nickname}
-          .profile-membership
-            if hasActiveMembership
-              if membershipDocument['membershipType'] === "one_month"
-                h4 Premium Member
-                h5 One Month Membership Active from #{membershipDocument['formattedStartDate']} to #{membershipDocument['formattedEndDate']}
-              else if membershipDocument['membershipType'] === "six_month"
-                h4 Premium Member
-                h5 Six Month Membership Active from #{membershipDocument['formattedStartDate']} to #{membershipDocument['formattedEndDate']}
-              else if membershipDocument['membershipType'] === "twelve_month"
-                h4 Premium Member
-                h5 Twelve Month Membership Active from #{membershipDocument['formattedStartDate']} to #{membershipDocument['formattedEndDate']}
-            else
-              h4 Free Member
-              a.btn.btn-go(href="/membership-options") Become a Premium Member
-          if aptitudes && aptitudes.length > 0
-          .profileAptitudes
-            each aptitude in aptitudes
-              a.btn.btn-industry( href='/aptitudes/'+ aptitude.title) #{aptitude.title}
 
           if accountHeadshot
             .imagineerProfilePicWrapper
               div(class="imagineerProfilePic" style="height: 300px; max-width: 400px; background-image : url('" + accountHeadshot.amazonURL + "');  background-position: center center; background-repeat: no-repeat; background-size: cover;" + accountHeadshot.style)
-            
+                h1(class="profile-name" style="color: white; background: rgba(0, 0, 0, 0.5); padding: 10px; ") #{profileAccount.nickname} 
+                br
+                br
+                br
+                br
+                br
+                br
+                if aptitudes && aptitudes.length > 0
+                  each aptitude in aptitudes
+                    a.btn(class="btn-industry" style="opacity: 0.8;" href="/aptitudes/#{aptitude.title}") 
+                      span.fa.fa-wrench
+                      |   #{aptitude.title}
           else if Object.keys(user).length != 0 && user.id == profileAccount.id
             a(href="/imagineer-dashboard/")
               img.avatar(src="/avatar.png" height="120" width="120")
+          //- This is how you connect or become friends with another user:
+          if user.id != profileAccount.id
+            img(src="/mind-meld2.png", width="30")
+            span.text-left Link minds with #{profileAccount.nickname}
+
             //- div(class="imagineer-profile profile-einstein-points") #{user.einsteinPoints || "0"}            
           
           //- .view-all-components-wrapper
@@ -64,6 +56,27 @@ html
               ul
                 li
                   h4 #[a(class="network-link") #{locationNetwork}]
+          if Object.keys(user).length != 0 && user.id == profileAccount.id
+            a(href="/imagineer-dashboard/")
+              h2.profile-name Edit my profile
+                img(src="/pencil.png" height="15" width="15")
+
+          .profile-membership
+            if user.id == profileAccount.id
+              if hasActiveMembership
+                if membershipDocument['membershipType'] === "one_month"
+                  h4 Premium Member
+                  h5 One Month Membership Active from #{membershipDocument['formattedStartDate']} to #{membershipDocument['formattedEndDate']}
+                else if membershipDocument['membershipType'] === "six_month"
+                  h4 Premium Member
+                  h5 Six Month Membership Active from #{membershipDocument['formattedStartDate']} to #{membershipDocument['formattedEndDate']}
+                else if membershipDocument['membershipType'] === "twelve_month"
+                  h4 Premium Member
+                  h5 Twelve Month Membership Active from #{membershipDocument['formattedStartDate']} to #{membershipDocument['formattedEndDate']}
+              else
+                h4 Free Member
+                a.btn.btn-go(href="/membership-options") Become a Premium Member
+
           //- .profileOtherNetworks
           //-   if generalJams && generalJams.length > 0
           //-     h4 Other Jams 
@@ -72,30 +85,31 @@ html
           //-         li
           //-           a(href='/jam/'+ otherJam)
           //-             p #{otherJam}
-          if Object.keys(user).length != 0 && user.id == profileAccount.id
-            .row.text-center
-              a.home-login.btn.btn-industry.btn-md( href="/view-jams/#{profileAccount.nickname}") View My Jam Leaderboards
-          else
-            .row.text-center
-              a.home-login.btn.btn-industry.btn-md( href="/view-jams/#{profileAccount.nickname}") View #{profileAccount.nickname}'s Jam Leaderboards
+
     
         .col-md-6
           if Object.keys(user).length != 0 && user.id == profileAccount.id
+            .row.text-left
+              a.home-login.btn.btn-industry.btn-md( href="/view-jams/#{profileAccount.nickname}") View My Jam Leaderboards
+          else
+            .row.text-left
+              a.home-login.btn.btn-industry.btn-md( href="/view-jams/#{profileAccount.nickname}") View #{profileAccount.nickname}'s Jam Leaderboards
+
+          if Object.keys(user).length != 0 && user.id == profileAccount.id
             if accountIdeaSeeds.length > 0
               h2 My Original Ideas:
-              ul
+              p
                 each val, index in accountIdeaSeeds
                   if val.name && (val.visibility == "public" || val.inventorName == user.username)
-                    li
-                      a(href="/ideas/" + val.name)
-                        h4.idea-text-name= val.name
-                      span.idea-text-date= val['creationDate']
-            if !accountIdeaSeeds
-              ul
-                li
-                  p Your brilliance can change the world - with only one click:
-                li
-                  a.btn.btn-go( href="/introduce-idea/new"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Start a New Idea
+                    img(src="/add_idea.png", width="100")
+                    br
+                    a(href="/ideas/" + val.name)
+                      p.idea-text-name= val.name
+                    p Created:
+                    p.idea-text-date= val['creationDate']
+            if !accountIdeaSeeds || accountIdeaSeeds.length == 0
+              h4 Add a new contribution to the IdeaJam network:
+              a.btn.btn-go( href="/introduce-idea/new"  ontouchstart="this.style.background = '#337ab7';" ontouchend="this.style.background = '#D6DE26';") Start a New Idea
 
           else
             h2.profile-name #{profileAccount.nickname}'s Original Ideas:
@@ -115,7 +129,7 @@ html
         .col-md-6
           if Object.keys(user).length != 0 && user.id == profileAccount.id
             .row
-              .jumbotron
+              .jumbotron(style="margin: 25px 25px 25px 0px")
                 h2 My Collaborations:
                 if collaboratorIdeas.length > 0
                   ul
@@ -128,10 +142,12 @@ html
                         span.idea-text-date= val['creationDate']
                 else
                   p Collaborate with others confidentially to advance world changing ideas:
-                  a.home-login.btn.btn-industry.btn-md.btn-block( href="/ideas" ) Invite Collaborators
+                  a.home-login.btn.btn-industry.btn-md.btn-block( href="/ideas" ) 
+                    span.fa.fa-users(style="padding-right: 25px")
+                    |   Invite Collaborators
           else
             .row
-              .jumbotron
+              .jumbotron(style="margin: 25px 25px 25px 0px")
                 h2.profile-name #{profileAccount.nickname}'s Collaborations:
                 if collaboratorIdeas.length > 0
                   ul
@@ -148,7 +164,7 @@ html
         .col-md-6
           if Object.keys(user).length != 0 && user.id == profileAccount.id
             .row
-              .jumbotron
+              .jumbotron(style="margin: 25px 25px 25px 0px")
                 h2 My Contributions:
                 if reviewNames.length > 0
                   ul
@@ -162,10 +178,15 @@ html
                           span.idea-text-date= val['creationDate']
                 else
                   p Add your own solutions and criticisms to other ideas to earn rewards:
-                  a.home-login.btn.btn-industry.btn-md.btn-block( href="/ideas" ) Contribute to Other Ideas
+                  a.home-login.btn.btn-industry.btn-md.btn-block( href="/ideas" ) 
+                    img(src='/einstein_points.png', width='25')
+                    |  Contribute to Other Ideas
+
+                  
+
           else
             .row
-              .jumbotron
+              .jumbotron(style="margin: 25px 25px 25px 0px")
                 h2.profile-name #{profileAccount.nickname}'s Contributions:
                 if reviewNames.length > 0
                   ul

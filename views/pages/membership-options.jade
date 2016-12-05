@@ -9,9 +9,10 @@ html
     div.container
       .row
         .col-xs-1
-          i.fa.fa-exclamation-triangle.fa-5x(style='color:red', aria-hidden='true')
+          i.fa.fa-check-square-o.fa-5x(aria-hidden='true', style='color:green')
         .col-xs-11
-          h2 Patent Application Downloads Only Available to Premium Members
+          h2 Congratulations, your brilliance has been saved on IdeaJam!
+          h4 Become a premium member to generate unlimited patent applications to protect your ideas.
       .row
         .jumbotron
           h1.text-center Become a Premium Member
@@ -22,10 +23,10 @@ html
         .col-md-4
           h2 1 Month, $74.99
           ul
-            li Generate and download unlimited provisional patent applications for any and all of your ideas built out on IdeaJam during your premium membership
+            li Iterate, generate and download unlimited provisional patent applications for each of your ideas built out on IdeaJam during your premium membership
             li Massive cost savings compared to the buildout of just one patent application on LegalZoom&reg; ($260.00) or patent attorney/agent drafting costs (thousands)
             li Control the creation of detailed substance and disclosure related to your ideas by adding many components of your ideas and related component details into your idea profiles and patent applications
-            li Incorporate crowdsourced improvements to your ideas, with rights assigned to you, to strengthen the disclosure of your patent applications
+            li Incorporate crowdsourced improvements to each of your ideas, with rights assigned to you, to strengthen the disclosure of your patent applications
           if !Object.keys(user).length > 0
             a.btn.btn-go.btn-lg(data-toggle="modal" data-target="#loginModal" ) Get Started
           else

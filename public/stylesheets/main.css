@@ -69,8 +69,8 @@ h1, h2, h3, h4 {
 
 .header {
   text-align: right;
-  color: white;
-  background-color: #414142;
+  color: #414142;
+  background-color: #ffffff;
   font-size: large;
 }
 
@@ -363,15 +363,18 @@ table.suggestion-table .col-md-4 {
   height : 48%;
   margin-top : -40px;
   padding-left: 1em;  
+  background-color: #f5f5f5;
 }
 
 .title-description.inventor-block {
   margin: 0;
   padding-top: 1em;
+  background-color: #f5f5f5;
 }
 
 .title-description.view-all-jams {
   margin-top: 0;
+  background-color: #f5f5f5;
 }
 
 .view-all-idea-description, .view-all-jam-description {
@@ -379,6 +382,7 @@ table.suggestion-table .col-md-4 {
   text-overflow: ellipsis;
   word-wrap: break-word;
   overflow: hidden;  
+  background-color: #f5f5f5;
 }
 
 .title-description.view-all-ideas h3 {
@@ -386,6 +390,7 @@ table.suggestion-table .col-md-4 {
   overflow: hidden;
   text-overflow: ellipsis;
   -o-text-overflow: ellipsis;
+  background-color: #f5f5f5;
 }
 
 .footer.view-all-ideas, .footer.view-all-jams {
@@ -926,6 +931,15 @@ a.plus-overlay img{
   height: 10em;
 }
 
+.inventor-block .suggestion-category img {
+  height:30px;
+  width: 35px;
+}
+
+.inventor-block .suggestion-category h4 {
+  display: inline;
+}
+
 .footer.variant-suggestion .radio {
   position: absolute;
   top: 25%;
@@ -1098,6 +1112,7 @@ button.btn.btn-info.modal-view-all {
 
 .header .newUserName {
   padding-right: .5%;
+  color: #414142;
 }
 
 .navbar-brand {
@@ -1325,7 +1340,7 @@ button.suggestion-tactics, button.suggestion-targets {
   }
 
   body  div.header.navbar.navbar-default  div  div.dropdown.custom-nav  ul {
-    background-color: #414142;
+    background-color: #ffffff;
   }
   
   body  div.header.navbar.navbar-default  div  div.dropdown.custom-nav  .btn {
@@ -2223,6 +2238,7 @@ img.prizeImage {
   margin:1em;
 }
 
+
 .top-row-header img {
   width: 80px;
 }
@@ -2258,4 +2274,17 @@ img.prizeImage {
 .delete-description img:hover, .delete-material img:hover, .delete-dimension img:hover {
   border : 1px solid #414141;
   border-radius: 5px;
+}
+.profileimagewtext {
+  position: relative; 
+  width: 100%; /* for IE 6 */
+}
+
+.h2 .overimage { 
+   color: white; 
+   font: bold 24px/45px Work Sans; 
+   letter-spacing: -1px;  
+   background: rgb(0, 0, 0); /* fallback color */
+   background: rgba(0, 0, 0, 0.7);
+   padding: 10px; 
 }

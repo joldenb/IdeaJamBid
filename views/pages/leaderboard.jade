@@ -6,10 +6,15 @@ html
     .header.navbar.navbar-default.jamTopNav
       include ../partials/header.jade
 
+    h1(class="profile-name" style="margin-top: -1px; color: white; background: rgba(0, 0, 0, 0.5); padding: 10px; ") IdeaJam Leaderboard
     .container.leaderboard
       .row
-        h3 Top Inventors
-          a.jam-btn.btn.btn-industry( href="/imagineers") View All
+        h3 With ##### Einstein Points, you are ranked XXXXX out of YYYYY imagineers on IdeaJam
+        h4 You are ranked X of Y imagineers in Your Jam 1
+        h4 You are ranked X of Y imagineers in Your Jam 2
+        h4 You are ranked X of Y imagineers in Your Jam 3
+      .row
+        h1 Top IdeaJam Imagineers:
 
       each inventor, index in topInventors
         - var inventorImage
@@ -54,10 +59,12 @@ html
                 - inventorPoints = topInventors[index + 2].einsteinPoints
                 - inventorAptitudeIds = topInventors[index + 2].aptitudes
                 include ../partials/inventor-block.jade
+      .row
+        a.jam-btn.btn.btn-industry( href="/imagineers") View All Imagineers
 
       .row
-        h3#ideaSection Top Ideas
-          a.jam-btn.btn.btn-industry( href="/ideas") View All
+        h3#ideaSection Top IdeaJam Ideas:
+          a.jam-btn.btn.btn-industry( href="/ideas") View All Ideas
 
       if ideas.length > 0
         each idea, index in ideas

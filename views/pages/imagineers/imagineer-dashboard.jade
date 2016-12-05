@@ -64,42 +64,50 @@ html
       div#begin-info-general-jams.generalJamList
         .generalJams
           if generalJams
-            h3 Jams : 
+            h3 My Jams : 
             ul
               each jam in generalJams
                 li
                   a(href='/jam/' + jam)
                     p #{jam}
           if Object.keys(user).length != 0
-            form.imagineer-profile-edit(role='form', id="saveGeneralJam" action="/save-jam", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            form.imagineer-profile-edit(role='form', id="saveGeneralJam" action="/save-jam", method="post", style='max-width: 400px;', data-idea-doc=idea)
               .form-group
                 |  
                 input.form-control.ui-front(type='text', id="jamName", name="jamName", placeholder='What jam would you like to join?', autocomplete="on")
+                p (Example: "Startup Denver" or "Rockies Venture Club")
                 input(type="hidden", name="_csrf", value="#{csrfToken}")
-              .general-jam-footer
-                button.btn.btn-go#generalJamSubmit(type='submit') Save
+              .aptitude-footer
+                button.btn.btn-go#generalJamSubmit(type='submit') + Join a Jam
       div#begin-info-aptitudes.aptitudeList
         .profileAptitudes
           if aptitudes
+            span.fa.fa-wrench.fa-4x
             h3 My Aptitudes : 
             ul
               each aptitude in aptitudes
-                li(data-apt-id="#{aptitude.identifier}")
-                  p #{aptitude.title}
+                a.btn(class="btn-industry" style=("opacity: 0.8; url('/aptitudes/'+ aptitude.title")) 
+                  span.fa.fa-wrench
+                  |   #{aptitude.title}
           if Object.keys(user).length != 0
-            form.imagineer-profile-edit(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 300px;', data-idea-doc=idea)
+            form.imagineer-profile-edit(role='form', id="saveAptitude" action="/save-aptitude", method="post", style='max-width: 400px;', data-idea-doc=idea)
               .form-group
                 |  
                 input.form-control.ui-front(type='text', id="aptitudeTitle", name="aptitudeTitle", placeholder='What skill set can you contribute?', autocomplete="on")
+                p (Example: "Marketing" or "Electrical Engineering")
                 input(type="hidden", name="_csrf", value="#{csrfToken}")
               .aptitude-footer
-                button.btn.btn-go#aptitudeSubmit(type='submit') Save
+                button.btn.btn-go#aptitudeSubmit(type='submit') 
+                  span.fa.fa-wrench
+                  |   + Add an Aptitude
   .row.edit-profile-view-profile
-    .col-md-4.col-xs-1
-    .col-md-4.col-xs-10
-      .view-profile-btn
-        a.home-logout.btn.btn-go.btn-lg.btn-block( href="/imagineer/" + user.nickname) View Profile
-    .col-md-4.col-xs-1
+    .container.row#profile-edit-top-row
+      .col-xs-3
+        .view-profile-btn
+          a.home-logout.btn.btn-go.btn-lg.btn-block( href="/imagineer/" + user.nickname) 
+            span.fa.fa-chevron-circle-left
+            |   Return to Your Profile
+
           
   #schoolModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog

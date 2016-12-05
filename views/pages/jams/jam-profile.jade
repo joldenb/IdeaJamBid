@@ -9,18 +9,18 @@ html
     if networkImage
       a(href="/jam/" + networkName)
         .desktop-network-header-img(style="background-image : url('" + '#{networkImage || "/lightbulb.png"}' + "');"+ideaImageStyle)
-        img.mobile-network-header-img(src='#{networkImage}')
+        img.mobile-network-header-img(src='#{networkImage}' style="zoom:8 ; height: auto; max-height: 100%; width: auto; max-width: 100%;")
+        h1(class="profile-name" style="margin-top: -1px; color: white; background: rgba(0, 0, 0, 0.5); padding: 10px; ") #{networkName}
 
     .container.network-profile.jam-page
-      a.jam-btn.btn.btn-industry.btn-lg( href="/view-jams" ) View All Jams
-      a.jam-btn.btn.btn-industry.btn-lg( href="/jam/" + networkName + "/view-all-members") View All Members
+      a.jam-btn.btn.btn-industry.btn-lg( href="/jam/" + networkName + "/view-all-members" style="align: text-right") View All Members
       if user && !userIsCurrentMember && !isPending
         a#joinJamButton.home-login.btn.btn-industry.btn-lg Join This Jam
       else if user && isPending
         h5 Pending Membership
       if isAdmin
         a.jam-btn.btn.btn-industry.btn-lg(href="/jam/" + networkName + "/admin") Admin Console
-
+      br
       span.jamH2
         .navbar.jamNav.desktopOnly
           .navbar-inner
@@ -154,6 +154,8 @@ html
       a(href="/view-all-jam-suggestions/" + networkName)
         div
           button(class="btn btn-industry btn-lg btn-block") View All Suggestions
+      br
+      a.jam-btn.btn.btn-industry.btn-lg( href="/view-jams" ) View All Jams
 
   #loginModal.modal.fade.annotate-modal(role="dialog")
     .modal-dialog

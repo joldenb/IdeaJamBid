@@ -7,6 +7,7 @@ html
       include ../../partials/header.jade
 
     if !networkImage
+      h1(class="profile-name" style="margin-top: -1px; color: white; background: rgba(0, 0, 0, 0.5); padding: 10px; ") #{networkName} Jam Settings
       form(role='form', id="jamProfilePicForm" action="/add-network-profile-pic", method="post", enctype="multipart/form-data")
         .form-group
           h3 Upload a new Profile Picture for the #{networkName} Jam
@@ -18,7 +19,8 @@ html
     else
       a(href="/jam/" + networkName)
         .desktop-network-header-img(style="background-image : url('" + '#{networkImage || "/lightbulb.png"}' + "');"+ideaImageStyle)
-        img.mobile-network-header-img(src='#{networkImage}')
+        img.mobile-network-header-img(src='#{networkImage}' style="zoom:2 ; height: auto; max-height: 100%; width: auto; max-width: 100%;")
+        h1(class="profile-name" style="margin-top: -1px; color: white; background: rgba(0, 0, 0, 0.5); padding: 10px; ") #{networkName} Jam Settings
 
     .container.network-profile.jam-page
 

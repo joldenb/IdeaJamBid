@@ -151,7 +151,8 @@ html
         h2 Suggestions to Imperfections
         .view-all-components-wrapper
           a.btn.btn-electric.btn-lg.btn-block#componentsViewAllLink(type="button" href='/ideas/' + idea.name + '/view-all-suggestions') View All Suggestions
-
+    .row
+      a.btn(type="button"  class="btn btn-go btn-lg btn-block" href='/ideas/' + idea.name + '/campaign/new' ontouchstart="this.style.background = '#007338';") Crowdfund #{idea.name}
 
   .pagefooter
     include ../../partials/footer.jade
