@@ -69,8 +69,8 @@ h1, h2, h3, h4 {
 
 .header {
   text-align: right;
-  color: white;
-  background-color: #414142;
+  color: #414142;
+  background-color: #ffffff;
   font-size: large;
 }
 
@@ -1097,6 +1097,7 @@ button.btn.btn-info.modal-view-all {
 
 .header .newUserName {
   padding-right: .5%;
+  color: #414142;
 }
 
 .navbar-brand {
@@ -1324,7 +1325,7 @@ button.suggestion-tactics, button.suggestion-targets {
   }
 
   body  div.header.navbar.navbar-default  div  div.dropdown.custom-nav  ul {
-    background-color: #414142;
+    background-color: #ffffff;
   }
   
   body  div.header.navbar.navbar-default  div  div.dropdown.custom-nav  .btn {
