@@ -45,7 +45,7 @@ html
       if ideaInventor
         h4 Part of <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b> by #[a(href='/imagineer/'+ ideaInventor.nickname) #{ideaInventor.nickname}] 
       .return-button
-        a.home-logout.btn.btn-industry.btn-lg( href="/ideas/#{idea.name}/edit#add-components-row") Back to Idea Summary
+        a.home-logout.btn.btn-industry.btn-lg( href="/ideas/#{idea.name}/edit/component-details") Back to All Components
       br
         
 
@@ -60,16 +60,25 @@ html
       .component-descriptions
         if component.text && component.descriptions && component.descriptions[0]
           h3 The #{component.text.toLowerCase()} of <b>#[a(href='/ideas/'+ idea.name) #{idea.name}]</b> is #{component.descriptions[0]}.
+            a.delete-description(data-description="#{component.descriptions[0]}") 
+              img(src="/delete.png")
           if ( component['descriptions'].length > 1)
             h4 Additionally, the #{component.text} can be described as : 
-            ul
-              each description, index in component['descriptions']
-                if index > 0
-                  li #{description}
+            each description, index in component['descriptions']
+              if index > 0
+                .row.component-list 
+                  .col-md-8
+                    h4 #{description}
+                  .col-md-4
+                    a.delete-description(data-description="#{description}")
+                      img(src="/delete.png")
           else
             ul
               li.no-descriptions No More Descriptions Yet
-          a.btn.btn-industry#addAnotherDescription Add Additional Description
+          .row
+            .col-xs-12
+              a.btn.btn-electric#addAnotherDescription 
+                p Add Additional Description
           if idea.name && idea.inventorName == user.username
             form.add-another-description-form(role='form', id="addDescription" action="/add-description", method="post", data-idea-doc=idea, style="display:none;")
               .row
@@ -88,7 +97,10 @@ html
                   input.form-control(name="description", id="description")
                   input(type="hidden", name="_csrf", value="#{csrfToken}")
                 .col-sm-4
-                  button.btn.btn-success#submit(type='submit') Save Description
+                  if component.text && component.descriptions && component.descriptions[0]
+                    button.btn.btn-success#submit(type='submit') Save Description
+                  else
+                    button.btn.btn-success#submit(type='submit' style="display:none;") Save Description
             p (Example: "The Mr. Fusion is a portable power plant that creates a nuclear reaction to generate 1.21 gigawatts of power")
 
   
@@ -112,13 +124,24 @@ html
       .component-dimensions
         if( component['dimensions'].length > 0)
           h3 The dimensions of #{component.text} are #{component['dimensions'][0]}.
+            a.delete-dimension(data-dimension="#{component['dimensions'][0]}")
+              img(src="/delete.png")
           if( component['dimensions'].length  > 1)
             h4 Additionally, #{component.text} can be made to these dimensions:
-            ul
-              each dimension, index in component['dimensions']
-                if dimension && index > 0
-                  li #{dimension}
-          a.btn.btn-industry#showDimensions Add Additional Dimensions
+            each dimension, index in component['dimensions']
+              if dimension && index > 0
+                .row.component-list
+                  .col-md-8
+                    h4 #{dimension}
+                  .col-md-4
+                    a.delete-dimension(data-dimension="#{dimension}")
+                      img(src="/delete.png")
+
+          .row
+            .col-xs-12
+              a.btn.btn-electric#showDimensions 
+                p Add Additional Dimensions
+
           if idea.name && idea.inventorName == user.username
             form(role='form', id="addDimension" action="/add-dimension", method="post", data-idea-doc=idea, style="display:none;")
               .row
@@ -140,19 +163,31 @@ html
                   p (Example: "The Mr. Fusion is 15 inches wide, 36 inches tall, and 15 inches deep")
                   input(type="hidden", name="_csrf", value="#{csrfToken}")
                 .col-sm-4
-                  button.btn.btn-success#dimensionSubmit(type='submit') Save Dimensions
+                  if component.text && component.descriptions && component.descriptions[0]
+                    button.btn.btn-success#dimensionSubmit(type='submit') Save Dimensions
+                  else
+                    button.btn.btn-success#dimensionSubmit(type='submit' style="display:none;") Save Dimensions
 
 
       .component-materials
         if( component['materials'].length > 0)
           h3 The #{component.text} is ideally made of #{component['materials'][0]}.
+            a.delete-material(data-material="#{component['materials'][0]}")
+              img(src="/delete.png")
           if( component['materials'].length > 1)
             h4 Additionally, #{component.text} can be made of:
-            ul
-              each material, index in component['materials']
-                if material && index > 0
-                  li #{material}
-          a.btn.btn-industry#showMaterials Add Additional Materials
+            each material, index in component['materials']
+              if material && index > 0
+                .row.component-list
+                  .col-md-8
+                    h4 #{material}
+                  .col-md-4
+                    a.delete-material(data-material="#{material}")
+                      img(src="/delete.png")
+          .row
+            .col-xs-12
+              a.btn.btn-electric#showMaterials
+                p Add Additional Materials
           if idea.name && idea.inventorName == user.username
             form(role='form', id="addMaterial" action="/add-material", method="post", data-idea-doc=idea, style="display:none;")
               .row
@@ -174,7 +209,14 @@ html
                   p (Examples: "The Mr. Fusion is ideally made of titanium" or "The Mr. Fusion is ideally made of an alloy comprising at least 15% Molybdenum, 15% Chromium, and 5% Iron")
                   input(type="hidden", name="_csrf", value="#{csrfToken}")
                 .col-sm-4
-                  button.btn.btn-success#materialSubmit(type='submit') Save Materials
+                  if component.text && component.descriptions && component.descriptions[0]
+                    button.btn.btn-success#materialSubmit(type='submit') Save Materials
+                  else
+                    button.btn.btn-success#materialSubmit(type='submit' style="display:none;") Save Materials
+
+      if !(component.text && component.descriptions && component.descriptions[0])
+        button.btn.btn-go.btn-lg#submitAll(type='submit') Save All
+
 
       if idea.name && idea.inventorName == user.username
         .related-components
@@ -221,7 +263,7 @@ html
             div <i>No related components yet</i>
           button(type="button" id="modalButton" class="btn btn-primary" data-toggle="modal" data-target="#myModal") Add a New Related Component
           button(type="button" id="componentModalButton" class="btn btn-primary" data-toggle="modal" data-target="#addComponentModal") Add a New Subcomponent
-
+    input(type="hidden", name="_csrf", value="#{csrfToken}")
     #addComponentModal.modal.fade.annotate-modal(role="dialog")
       .modal-dialog
         .modal-content
@@ -306,6 +348,43 @@ html
                 button.btn.btn-info(data-dismiss="modal") Cancel
                 button.btn.btn-success#componentTitleSubmit(type='submit') Save Component Title
 
+  input(type="hidden" id="title-component-identifier" name="component-identifier" value="#{component['identifier']}")
+  #deleteDimensionModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Are you sure you want to delete this dimension?
+        .modal-body
+        .modal-footer
+          a.btn.btn-info(data-dismiss="modal") No
+          a.btn.btn-go#deleteDimensionConfirm Yes
+
+  #deleteDescriptionModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Are you sure you want to delete this description?
+        .modal-body
+        .modal-footer
+          a.btn.btn-info(data-dismiss="modal") No
+          a.btn.btn-go#deleteDescriptionConfirm Yes
+
+  #deleteMaterialModal.modal.fade.annotate-modal(role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button(type="button", class="close" data-dismiss="modal") &times;
+          .modal-title 
+            h2 Are you sure you want to delete this material?
+        .modal-body
+        .modal-footer
+          a.btn.btn-info(data-dismiss="modal") No
+          a.btn.btn-go#deleteMaterialConfirm Yes
+
   script(src='/exif.js')
   include ../../partials/js-includes.jade
   script(type="text/javascript").
@@ -358,10 +437,10 @@ html
       var input = document.getElementsByTagName ("textarea");
 
       // This is for the main solution text input
-      var requiredText = $("#addRelatedComponent textarea").val();
+      var requiredRelCompText = $("#addRelatedComponent textarea").val();
       input[0].addEventListener ("mousedown", function () {
-        if (String($(this).val()).indexOf(requiredText) == -1) {
-              $(this).val(requiredText);
+        if (String($(this).val()).indexOf(requiredRelCompText) == -1) {
+              $(this).val(requiredRelCompText);
         }
         if (this.selectionStart < $("#addRelatedComponent textarea").val().length) {
           this.selectionStart = $("#addRelatedComponent textarea").val().length;
@@ -369,8 +448,8 @@ html
       }, false);
 
       input[0].addEventListener ("keydown", function () {
-        if (String($(this).val()).indexOf(requiredText) == -1) {
-              $(this).val(requiredText);
+        if (String($(this).val()).indexOf(requiredRelCompText) == -1) {
+              $(this).val(requiredRelCompText);
         }
         if (this.selectionStart < $("#addRelatedComponent textarea").val().length) {
           this.selectionStart = $("#addRelatedComponent textarea").val().length;
@@ -378,7 +457,7 @@ html
       }, false);
     
       $("#newRelCompDesc").keyup(function(){
-        $("#charactersRemaining").text((200 + requiredText.length - $(this).val().length) + " characters remaining");
+        $("#charactersRemaining").text((200 + requiredRelCompText.length - $(this).val().length) + " characters remaining");
       })
     });
 
@@ -754,7 +833,67 @@ html
       });
     }, false);
 
+    $("#submitAll").click(function(event){
+      if($("#description").val().slice(requiredText.length) != ""){
+        $("#materialSubmit").click();
+        $("#dimensionSubmit").click();
+        $("#addDescription #submit").click();      
+      } else {
+        if(!$("#descriptionNeeded").length){
+          $("<h5 id='descriptionNeeded'>Please add a description.</h5>").prependTo("#addDescription");
+        }
+      }
+    });
 
+    $(".delete-material").click(function(event){
+      $("#deleteMaterialModal").modal('show');
+      $("#deleteMaterialConfirm").attr("data-material", $(this).data("material"))
+    });
 
+    $(".delete-description").click(function(event){
+      $("#deleteDescriptionModal").modal('show');
+      $("#deleteDescriptionConfirm").attr("data-description", $(this).data("description"))
+    });
 
+    $(".delete-dimension").click(function(event){
+      $("#deleteDimensionModal").modal('show');
+      $("#deleteDimensionConfirm").attr("data-dimension", $(this).data("dimension"))
+    });
+
+    $("#deleteDimensionConfirm").click(function(event){
+
+      var data = { 
+        _csrf : $('[name="_csrf"]').val(),
+        "dimension" : $(this).data("dimension"),
+        "component-identifier" : $("#title-component-identifier").val()
+      }
+
+      $.post("/delete-dimension", data, function(data, response){
+        window.location.reload(true);
+      })
+    });
+
+    $("#deleteDescriptionConfirm").click(function(event){
+      var data = { 
+        _csrf : $('[name="_csrf"]').val(),
+        "description" : $(this).data("description"),
+        "component-identifier" : $("#title-component-identifier").val()
+      }
+
+      $.post("/delete-description", data, function(data, response){
+        window.location.reload(true);
+      })
+    });
+
+    $("#deleteMaterialConfirm").click(function(event){
+      var data = { 
+        _csrf : $('[name="_csrf"]').val(),
+        "material" : $(this).data("material"),
+        "component-identifier" : $("#title-component-identifier").val()
+      }
+
+      $.post("/delete-material", data, function(data, response){
+        window.location.reload(true);
+      });
+    });
 

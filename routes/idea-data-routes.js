@@ -915,6 +915,35 @@ router.post('/add-description', csrfProtection, function(req, res) {
 });
 
 ////////////////////////////////////////////////
+// Delete a description to a component
+////////////////////////////////////////////////
+router.post('/delete-description', csrfProtection, function(req, res) {
+
+  if( !(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
+
+    Component.findOne({"identifier" : req.body["component-identifier"]}, function(err, component){
+      if(err){
+        res.json({error: err});
+      }
+
+      if(component){
+        if( req.body.description!=="" && component.descriptions.indexOf(req.body.description) != -1 ){
+          //check if there's a period at the end
+          component.descriptions.splice( component.descriptions.indexOf(req.body.description) );
+        }
+        component.save(function(err){
+          res.sendStatus(200);
+        });
+      } else {
+        res.sendStatus(409);
+      }
+    });
+});
+
+////////////////////////////////////////////////
 // Add a dimension to a component
 ////////////////////////////////////////////////
 router.post('/add-dimension', csrfProtection, function(req, res) {
@@ -932,6 +961,34 @@ router.post('/add-dimension', csrfProtection, function(req, res) {
       if(component){
         if( req.body.dimension!=="" ){
           component.dimensions.push(req.body.dimension);
+        }
+        component.save(function(err){
+          res.sendStatus(200);
+        });
+      } else {
+        res.sendStatus(409);
+      }
+    });
+});
+
+////////////////////////////////////////////////
+// Delete a dimension to a component
+////////////////////////////////////////////////
+router.post('/delete-dimension', csrfProtection, function(req, res) {
+
+  if( !(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
+
+    Component.findOne({"identifier" : req.body["component-identifier"]}, function(err, component){
+      if(err){
+        res.json({error: err});
+      }
+
+      if(component){
+        if( req.body.dimension!=="" && component.dimensions.indexOf(req.body.dimension) != -1){
+          component.dimensions.splice(component.dimensions.indexOf(req.body.dimension), 1);
         }
         component.save(function(err){
           res.sendStatus(200);
@@ -970,5 +1027,32 @@ router.post('/add-material', csrfProtection, function(req, res) {
     });
 });
 
+////////////////////////////////////////////////
+// Delete a material to a component
+////////////////////////////////////////////////
+router.post('/delete-material', csrfProtection, function(req, res) {
+
+  if( !(req.user && req.user.username)){
+    res.redirect('/');
+    return;
+  }
+
+    Component.findOne({"identifier" : req.body["component-identifier"]}, function(err, component){
+      if(err){
+        res.json({error: err});
+      }
+
+      if(component){
+        if( req.body.material!=="" && component.materials.indexOf(req.body.material) != -1){
+          component.materials.splice(component.materials.indexOf(req.body.material), 1);
+        }
+        component.save(function(err){
+          res.sendStatus(200);
+        });
+      } else {
+        res.sendStatus(409);
+      }
+    });
+});
 
 module.exports = router;
